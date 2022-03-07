@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">digital outlet officer</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Masuk</string>
+    <string name="forget_password">Lupa kata sandi?</string>
+    <string name="call_cs">Hubungi CS</string>
+    <string name="invisible_password">********</string>
+    <string name="visible_password">Masukan kata sandi</string>
+</resources>
