@@ -202,10 +202,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_version_name_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu_bold"
-                android:text="2.0.1"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sixty_sp"
                 app:layout_constraintBottom_toBottomOf="parent"

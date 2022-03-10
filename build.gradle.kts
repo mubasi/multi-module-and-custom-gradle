@@ -3,12 +3,13 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven("https://plugins.gradle.org/m2/")
-        jcenter()
+        maven(url="https://plugins.gradle.org/m2/")
     }
     dependencies {
         classpath(MainGradle.kotlin)
         classpath(MainGradle.gradle)
+        classpath(MainGradle.jacoco_gradle)
+        classpath(MainGradle.sonarqube_gradle)
     }
 }
 
@@ -17,6 +18,7 @@ allprojects {
         mavenCentral()
         google()
         jcenter()
+        maven(url="https://plugins.gradle.org/m2/")
     }
 }
 
