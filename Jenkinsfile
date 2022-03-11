@@ -14,7 +14,7 @@ pipeline {
     }
     environment {
         SERVICE="outlet-mall_officer"
-        BUCKET="outlet-apk
+        BUCKET="outlet-apk"
         TEAMS_MICROSOFT = credentials('786c8d07-a295-487e-83d2-1c4cbe71e2a2')
     }
     stages {
@@ -92,6 +92,7 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT",
