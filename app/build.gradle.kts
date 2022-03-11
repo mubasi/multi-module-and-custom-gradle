@@ -5,8 +5,9 @@ plugins {
     id(Plugins.application)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    kotlin(Plugins.parcelize)
     jacoco
-    id("org.sonarqube")
+    id(Plugins.sonarqube)
 }
 
 val keyProperties = Properties()
@@ -14,6 +15,7 @@ val keyPropertiesFile = rootProject.file("local.properties")
 if (keyPropertiesFile.exists()) {
     keyProperties.load(FileInputStream(keyPropertiesFile))
 }
+
 
 jacoco {
     toolVersion = "0.8.7"
@@ -71,7 +73,7 @@ android {
 
     productFlavors {
         create("prod") {
-            manifestPlaceholders += mapOf("appName" to "Officer App")
+            manifestPlaceholders["appName"] = "Officer App"
             dimension = "env"
         }
         create("stage") {
@@ -109,21 +111,34 @@ android {
     }
 }
 dependencies {
+    implementation(Kotlin.ktx)
+    implementation(Kotlin.coroutine_core)
+    implementation(Kotlin.coroutines_android)
+
     implementation(Navigation.ktx)
     implementation(Navigation.ui_ktx)
     implementation(Navigation.fragment)
+
+    implementation(UiMaterial.appcompat)
+    implementation(UiMaterial.material)
+    implementation(UiMaterial.recyclerview)
 
     implementation(Koin.scope)
     implementation(Koin.viewmodel)
     implementation(Koin.ext)
 
-    implementation(Kotlin.ktx)
-    implementation(UiMaterial.appcompat)
-    implementation("com.google.android.material:material:1.5.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    testImplementation("junit:junit:4.+")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(Lifecycle.runtime)
+
+    testImplementation(Mockk.mockk)
+    testImplementation(Mockk.agent_jvm)
+
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testRuntimeOnly(Junit5.vintage_engine)
+
+    testImplementation(Junit.junit)
+    androidTestImplementation(Junit.android_junit)
+    androidTestImplementation(Junit.espresso_core)
 }
 
 sonarqube {

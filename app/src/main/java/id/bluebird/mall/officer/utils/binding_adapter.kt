@@ -8,7 +8,7 @@ import id.bluebird.mall.officer.R
 
 object binding_adapter {
     @JvmStatic
-    @BindingAdapter("setCursorLastPosition")
+    @BindingAdapter("app:setCursorLastPosition")
     fun setCursorPosition(editText: EditText, text: String?) {
         if (text != null && text.isNotEmpty()) {
             editText.setSelection(text.length)
