@@ -96,7 +96,8 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        setCursorLastPosition="@{vm.password}"
+                        android:text="=@{vm.password}"
+                        app:setCursorLastPosition="@{vm.password}"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -105,7 +106,7 @@
                         android:inputType="@{vm.visibilityPassword ? InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT}"
                         android:paddingStart="@dimen/sixty_dp"
                         android:paddingEnd="@dimen/sixty_dp"
-                        android:text="@={vm.password}" />
+                        />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"

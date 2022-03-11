@@ -15,7 +15,7 @@ class LoginViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.D
 
     val loginState: MutableLiveData<CommonState> = MutableLiveData()
     val visibilityPassword: MutableLiveData<Boolean> = MutableLiveData(false)
-    val password: MutableLiveData<String> = MutableLiveData()
+    val password :MutableLiveData<String> = MutableLiveData()
     val username: MutableLiveData<String> = MutableLiveData()
 
     fun changePasswordVisibility() {
