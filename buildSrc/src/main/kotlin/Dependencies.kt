@@ -1,4 +1,4 @@
-private const val kotlin_version = "1.5.32"
+private const val kotlin_version = "1.5.21"
 
 object MainGradle {
     const val gradle = "com.android.tools.build:gradle:4.2.2"
@@ -7,7 +7,8 @@ object MainGradle {
     const val google_service = "com.google.gms:google-services:4.3.3"
     const val firebase = "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta02"
     const val safe_args = "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
-    const val jacoco = "org.jacoco:org.jacoco.core:0.8.7"
+    val jacoco_gradle by lazy { "org.jacoco:org.jacoco.core:0.8.7" }
+    val sonarqube_gradle by lazy { "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3" }
     const val firebase_analytics = "com.google.firebase:firebase-crashlytics-gradle:2.8.1"
     const val exifinterface = "androidx.exifinterface:exifinterface:1.3.3"
 }
@@ -22,11 +23,13 @@ object Compose {
 }
 
 object Navigation {
-    private const val nav_version = "2.4.1"
+    private const val nav_version = "2.3.5"
 
     val compose by lazy { "androidx.navigation:navigation-compose:$nav_version" }
     val ktx by lazy { "androidx.navigation:navigation-fragment-ktx:$nav_version" }
     val ui_ktx by lazy { "androidx.navigation:navigation-ui-ktx:$nav_version" }
+    val fragment by lazy { "androidx.navigation:navigation-fragment-ktx:$nav_version" }
+
 }
 
 object Plugins {
@@ -39,7 +42,6 @@ object Plugins {
     const val safeargs = "androidx.navigation.safeargs.kotlin"
     const val gms = "com.google.gms.google-services"
     const val crashlytics = "com.google.firebase.crashlytics"
-    const val jacoco = "jacoco"
 }
 
 object Grpc {
@@ -67,21 +69,19 @@ object Kotlin {
     const val std_reflect = "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     const val std_jdk7 = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     const val std = "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    const val ktx = "androidx.core:core-ktx:1.6.0"
+    val ktx by lazy { "androidx.core:core-ktx:1.6.0" }
     const val coroutines_android =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     const val coroutine_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
 }
 
-object Ui {
+object UiMaterial {
     private const val nav_version = "2.3.5"
 
-    const val appcompat = "androidx.appcompat:appcompat:1.2.0"
+    const val appcompat = "androidx.appcompat:appcompat:1.4.1"
     const val material = "com.google.android.material:material:1.3.0"
     const val recyclerview = "androidx.recyclerview:recyclerview:1.0.0"
     const val fragment = "androidx.fragment:fragment-ktx:1.3.5"
-    const val nav_fragment = "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    const val nav_ui = "androidx.navigation:navigation-ui-ktx:$nav_version"
 }
 
 object Koin {

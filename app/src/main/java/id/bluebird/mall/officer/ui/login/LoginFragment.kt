@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import id.bluebird.mall.officer.BuildConfig
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.LoginState
@@ -34,6 +35,7 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.tvVersionNameLogin.text = BuildConfig.VERSION_NAME
         mLoginViewModel.loginState.observe(this, {
             when (it) {
                 is CommonState.Error -> {
