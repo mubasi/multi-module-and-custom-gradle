@@ -10,6 +10,8 @@
     <color name="tsnack_color">#00b496</color>
     <color name="tsnack_error_color">#F8EAE8</color>
     <color name="primary_color">#005EB8</color>
+    <color name="error_color">#BE321E</color>
+    <color name="success_color">#00B496</color>
 
     // font
     <color name="gray_subtitle">#444444</color>

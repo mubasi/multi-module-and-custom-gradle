@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import id.bluebird.mall.officer.BuildConfig
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
@@ -36,7 +37,7 @@ class LoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.tvVersionNameLogin.text = BuildConfig.VERSION_NAME
-        mLoginViewModel.loginState.observe(this, {
+        mLoginViewModel.loginState.observe(viewLifecycleOwner) {
             when (it) {
                 is CommonState.Error -> {
                     topSnackBarError(mBinding.clMainBodyLogin, it.error.message ?: "Kesalahan")
@@ -44,11 +45,14 @@ class LoginFragment : BaseFragment() {
                 is LoginState.Phone -> {
                     intentToDial()
                 }
+                is LoginState.Success -> {
+                    findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
             }
-        })
+        }
     }
 
-    fun intentToDial() {
+    private fun intentToDial() {
         val intent = Intent(Intent.ACTION_DIAL)
         intent.data = Uri.parse("tel:08120812")
         context?.startActivity(intent)

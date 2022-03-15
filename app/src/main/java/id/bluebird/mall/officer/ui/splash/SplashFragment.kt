@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.databinding.FragmentSplashBinding
 import id.bluebird.mall.officer.ui.BaseFragment
+import id.bluebird.mall.officer.utils.AuthUtils
 
 class SplashFragment : BaseFragment() {
 
@@ -30,7 +31,11 @@ class SplashFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Handler().postDelayed({
-            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+            if (AuthUtils.getAccessToken().isNotEmpty()) {
+                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+            } else {
+                findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+            }
         }, 2000)
     }
 }

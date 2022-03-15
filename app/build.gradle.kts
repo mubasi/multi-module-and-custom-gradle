@@ -139,6 +139,8 @@ dependencies {
     testImplementation(Junit.junit)
     androidTestImplementation(Junit.android_junit)
     androidTestImplementation(Junit.espresso_core)
+
+    implementation(OtherLib.hawk)
 }
 
 sonarqube {

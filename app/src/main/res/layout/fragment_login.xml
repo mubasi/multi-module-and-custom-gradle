@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,13 +11,12 @@
 
         <import type="android.text.InputType" />
 
-        <import type="id.bluebird.mall.officer.common.CommonState"/>
+        <import type="id.bluebird.mall.officer.common.CommonState" />
 
         <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_parent_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -65,9 +66,14 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_editext_disable"
                     android:hint="Budi"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLength="32"
+                    android:maxLines="1"
                     android:paddingStart="@dimen/sixty_dp"
                     android:paddingEnd="@dimen/sixty_dp"
-                    android:text="@={vm.username}" />
+                    android:text="@={vm.username}"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
             <LinearLayout
@@ -96,17 +102,21 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:text="=@{vm.password}"
-                        app:setCursorLastPosition="@{vm.password}"
+                        android:id="@+id/edt_password_login"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
                         android:background="@null"
                         android:hint="@{vm.visibilityPassword? @string/visible_password : @string/invisible_password}"
+                        android:imeOptions="actionDone"
                         android:inputType="@{vm.visibilityPassword ? InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT}"
+                        android:lines="1"
+                        android:maxLength="32"
+                        android:maxLines="1"
                         android:paddingStart="@dimen/sixty_dp"
                         android:paddingEnd="@dimen/sixty_dp"
-                        />
+                        android:text="@={vm.password}"
+                        app:setCursorLastPosition="@{vm.password}" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="wrap_content"
@@ -132,24 +142,24 @@
                 app:layout_constraintTop_toBottomOf="@id/ll_password_login">
 
                 <ProgressBar
-                    show="@{(vm.loginState instanceof CommonState.Progress)}"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:show="@{(vm.loginState instanceof CommonState.Progress)}" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_login"
-                    passwordBind="@{vm.password}"
-                    show="@{!(vm.loginState instanceof CommonState.Progress)}"
-                    username_bind="@{vm.username}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_button_login"
+                    android:background="@drawable/bg_button_enable_login"
                     android:fontFamily="@font/ubuntu_regular"
                     android:onClick="@{() -> vm.login()}"
                     android:text="@string/login"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sixty_sp" />
+                    android:textSize="@dimen/sixty_sp"
+                    app:password="@{vm.password}"
+                    app:show="@{!(vm.loginState instanceof CommonState.Progress)}"
+                    app:username="@{vm.username}" />
             </LinearLayout>
 
             <LinearLayout
@@ -196,6 +206,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_color"
+                android:scaleType="fitXY"
                 android:src="@drawable/no"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
