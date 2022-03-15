@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.LoginState
+import id.bluebird.mall.officer.utils.AuthUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -15,7 +16,7 @@ class LoginViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.D
 
     val loginState: MutableLiveData<CommonState> = MutableLiveData()
     val visibilityPassword: MutableLiveData<Boolean> = MutableLiveData(false)
-    val password :MutableLiveData<String> = MutableLiveData()
+    val password: MutableLiveData<String> = MutableLiveData()
     val username: MutableLiveData<String> = MutableLiveData()
 
     fun changePasswordVisibility() {
@@ -27,11 +28,12 @@ class LoginViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.D
         viewModelScope.launch(dispatcher) {
             loginState.postValue(CommonState.Progress)
             delay(2000)
-            loginState.postValue(CommonState.Error(Throwable("User tidak ditemukan")))
+            loginState.postValue(LoginState.Success)
+            AuthUtils.putAccessToken("wijeoajofjaoniaubvkan")
         }
     }
 
-    fun callPhone(){
+    fun callPhone() {
         loginState.value = LoginState.Phone
     }
 }

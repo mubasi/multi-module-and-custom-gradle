@@ -10,4 +10,9 @@ sealed interface CommonState {
 
 sealed class LoginState : CommonState {
     object Phone : LoginState()
+    object Success : LoginState()
+}
+
+sealed class HomeState :CommonState {
+    object Logout : HomeState()
 }
