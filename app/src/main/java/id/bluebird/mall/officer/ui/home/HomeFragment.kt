@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -41,6 +42,17 @@ class HomeFragment : BaseFragment() {
                 when (it) {
                     HomeState.Logout -> {
                         dialogLogout()
+                    }
+                    HomeState.OnSync -> {
+                        requireActivity().window.setFlags(
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        )
+                    }
+                    CommonState.Idle -> {
+                        requireActivity().window.clearFlags(
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        )
                     }
                 }
             }

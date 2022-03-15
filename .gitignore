@@ -18,6 +18,7 @@
 /.idea/assetWizardSettings.xml
 /.idea/.name
 /.idea/kotlinScripting.xml
+/.idea/deploymentTargetDropDown.xml
 
 *.jks
 .key.properties

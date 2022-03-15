@@ -9,5 +9,9 @@ class DateUtils {
             val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
             return sdf.format(Date().time)
         }
+        fun getLastSycnFormat():String{
+            val sdf = SimpleDateFormat("dd MMM yyyy '•' hh:mm", Locale.getDefault())
+            return sdf.format(Date().time)
+        }
     }
 }

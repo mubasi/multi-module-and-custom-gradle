@@ -10,4 +10,6 @@
     <string name="exit">Keluar</string>
     <string name="cancel">Batal</string>
     <string name="exit_message">Anda yakin ingin keluar?</string>
+    <string name="sycn">Sync</string>
+    <string name="sync_on_progress">Sedang melakukan singkronisasi</string>
 </resources>
