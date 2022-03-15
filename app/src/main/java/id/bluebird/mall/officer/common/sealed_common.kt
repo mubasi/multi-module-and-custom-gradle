@@ -13,6 +13,7 @@ sealed class LoginState : CommonState {
     object Success : LoginState()
 }
 
-sealed class HomeState :CommonState {
+sealed class HomeState : CommonState {
     object Logout : HomeState()
+    object OnSync : HomeState()
 }
