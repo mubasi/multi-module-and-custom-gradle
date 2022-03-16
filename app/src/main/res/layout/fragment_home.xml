@@ -101,6 +101,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="20dp"
+                                    android:onClick="@{() -> vm.dummyIndicator()}"
                                     android:src="@{vm.connectionState ? @drawable/ic_connection_status : @drawable/ic_disconnection_status}" />
 
                                 <androidx.appcompat.widget.AppCompatImageView

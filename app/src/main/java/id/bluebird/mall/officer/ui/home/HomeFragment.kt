@@ -54,9 +54,27 @@ class HomeFragment : BaseFragment() {
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                         )
                     }
+                    HomeState.DummyIndicator -> {
+                        dialogIndicatorSample()
+                    }
                 }
             }
         }
+    }
+
+    private fun dialogIndicatorSample() {
+        AlertDialog.Builder(requireContext())
+            .setPositiveButton(
+                "Green"
+            ) { dialog, _ ->
+                mHomeViewModel.changeIndicator(true)
+                dialog.cancel()
+            }
+            .setNegativeButton("Red") { dialog, _ ->
+                mHomeViewModel.changeIndicator(false    )
+                dialog.cancel() }
+            .setCancelable(false)
+            .create().show()
     }
 
     private fun dialogLogout() {
