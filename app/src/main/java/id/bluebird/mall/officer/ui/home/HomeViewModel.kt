@@ -37,4 +37,11 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
             _homeState.postValue(CommonState.Idle)
         }
     }
+
+    fun dummyIndicator(){
+        _homeState.value = HomeState.DummyIndicator
+    }
+    fun changeIndicator(isConnected: Boolean){
+       connectionState.value = isConnected
+    }
 }
