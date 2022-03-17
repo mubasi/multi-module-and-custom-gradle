@@ -63,9 +63,23 @@ object Grpc {
     val pb_google_apis by lazy { "com.google.api.grpc:googleapis-common-protos:0.0.3" }
 }
 
+object Retrofit2 {
+    private const val version = "2.9.0"
+    val retrofit by lazy { "com.squareup.retrofit2:retrofit:$version" }
+    val moshi by lazy { "com.squareup.retrofit2:converter-moshi:2.4.0" }
+}
+
+object OkHttp {
+    val bom by lazy { "com.squareup.okhttp3:okhttp-bom:4.9.3" }
+    val okhttp by lazy { "com.squareup.okhttp3:okhttp" }
+    val interceptor by lazy { "com.squareup.okhttp3:logging-interceptor" }
+    val mock_web_server by lazy { "com.squareup.okhttp3:mockwebserver" }
+}
+
 object Kotlin {
     private const val coroutines_version = "1.6.0"
 
+    val coroutines_test by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version" }
     val javax_annotation by lazy { "javax.annotation:javax.annotation-api:1.3.2" }
     val std_reflect by lazy { "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version" }
     val std_jdk7 by lazy { "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version" }
@@ -159,4 +173,6 @@ object OtherLib {
     val hawk by lazy { "com.orhanobut:hawk:2.0.1" }
     val timber by lazy { "com.jakewharton.timber:timber:4.7.1" }
     val anko by lazy { "org.jetbrains.anko:anko:0.10.8" }
+    val json by lazy { "org.json:json:20220320" }
+    val turbin by lazy { "app.cash.turbine:turbine:0.7.0" }
 }

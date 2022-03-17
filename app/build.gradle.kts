@@ -35,7 +35,13 @@ android {
         versionCode = 1
         versionName = "1.0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "BASE_URL", "\"http://localhost\"")
         vectorDrawables.useSupportLibrary = true
+    }
+
+    /** used for unit-test run with Junit5 */
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 
     signingConfigs {
@@ -92,7 +98,6 @@ android {
             versionNameSuffix = " Dev"
             applicationIdSuffix = ".dev"
             manifestPlaceholders["appName"] = "Officer App (Dev)"
-
         }
     }
 
@@ -137,6 +142,13 @@ dependencies {
 
     implementation(Lifecycle.runtime)
 
+    implementation(Retrofit2.retrofit)
+    implementation(Retrofit2.moshi)
+
+    implementation(platform(OkHttp.bom))
+    implementation(OkHttp.okhttp)
+    implementation(OkHttp.interceptor)
+
     testImplementation(Mockk.mockk)
     testImplementation(Mockk.agent_jvm)
 
@@ -145,8 +157,11 @@ dependencies {
     testRuntimeOnly(Junit5.vintage_engine)
 
     testImplementation(Junit.junit)
+    testImplementation(Kotlin.coroutines_test)
     androidTestImplementation(Junit.android_junit)
     androidTestImplementation(Junit.espresso_core)
+    testImplementation(OtherLib.turbin)
+    testImplementation(OtherLib.json)
 
     implementation(OtherLib.hawk)
 }

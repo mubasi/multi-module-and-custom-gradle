@@ -1,27 +1,35 @@
-package id.bluebird.mall.officer.case.queue
+package id.bluebird.mall.officer.common.uses_case.queue
 
 import id.bluebird.mall.officer.ui.home.model.QueueCache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-interface SkipQueueCases {
+interface RestoreQueueCases {
     operator fun invoke(
         currentQueue: QueueCache?,
+        restoreQueue: QueueCache,
         waitingQueue: HashMap<Long, QueueCache>,
         delayQueue: HashMap<Long, QueueCache>
     ): Flow<QueueCaseModel>
 }
 
-class SkipQueueCasesImpl : SkipQueueCases {
+class RestoreQueueCasesImpl : RestoreQueueCases {
     override fun invoke(
         currentQueue: QueueCache?,
+        restoreQueue: QueueCache,
         waitingQueue: HashMap<Long, QueueCache>,
         delayQueue: HashMap<Long, QueueCache>
     ): Flow<QueueCaseModel> = flow {
         try {
             currentQueue?.let {
                 removeCurrentQueue(currentQueue, waitingQueue, delayQueue)
-                emit(QueueCaseModel(getNextQueue(waitingQueue), delayQueue, waitingQueue))
+                emit(
+                    QueueCaseModel(
+                        restoreQueue(restoreQueue, delayQueue),
+                        delayQueue,
+                        waitingQueue
+                    )
+                )
             } ?: run {
                 throw NullPointerException()
             }
@@ -33,27 +41,22 @@ class SkipQueueCasesImpl : SkipQueueCases {
     private fun removeCurrentQueue(
         currentQueue: QueueCache,
         waitingQueue: HashMap<Long, QueueCache>,
-        delayQueue: HashMap<Long, QueueCache>
+        delayQueue: HashMap<Long, QueueCache>,
     ) {
-        waitingQueue.remove(currentQueue.number)
-        currentQueue.isDelay = true
         currentQueue.isCurrentQueue = false
-        delayQueue[currentQueue.number] = currentQueue
+        if (currentQueue.isDelay) {
+            delayQueue[currentQueue.number] = currentQueue
+        } else {
+            waitingQueue[currentQueue.number] = currentQueue
+        }
     }
 
-    private fun getNextQueue(waitingQueue: HashMap<Long, QueueCache>): QueueCache? {
-        if (waitingQueue.isEmpty()) {
-            return null
-        }
-        val newCurrentQueue = if (waitingQueue.size == 1) {
-            waitingQueue.values.first()
-        } else {
-            val sorted = waitingQueue.values.sortedByDescending { it.number }
-            sorted.last()
-        }
-        newCurrentQueue.isCurrentQueue = true
-        waitingQueue.remove(newCurrentQueue.number)
-        return newCurrentQueue
+    private fun restoreQueue(
+        newQueueCache: QueueCache,
+        delayQueue: HashMap<Long, QueueCache>
+    ): QueueCache {
+        newQueueCache.isCurrentQueue = true
+        delayQueue.remove(newQueueCache.number)
+        return newQueueCache
     }
 }
-

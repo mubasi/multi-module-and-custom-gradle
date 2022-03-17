@@ -1,4 +1,4 @@
-package id.bluebird.mall.officer.case.user
+package id.bluebird.mall.officer.common.uses_case.user
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
