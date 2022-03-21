@@ -125,7 +125,7 @@
                         android:layout_weight="1"
                         android:onClick="@{() -> vm.changePasswordVisibility()}"
                         android:padding="4dp"
-                        android:src="@{vm.visibilityPassword ? @drawable/ic_mask:@drawable/ic_mask_disable}" />
+                        android:src="@{vm.visibilityPassword ? @drawable/ic_cross:@drawable/ic_mask_disable}" />
 
                 </LinearLayout>
             </LinearLayout>

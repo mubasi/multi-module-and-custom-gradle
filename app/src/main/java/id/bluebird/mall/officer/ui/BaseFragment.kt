@@ -11,16 +11,17 @@ import id.bluebird.mall.officer.utils.top_snack.TSnackbar
 abstract class BaseFragment : Fragment() {
 
     private lateinit var mainBodyFromFragment: View
-
     fun updateMainBody(view: View) {
         mainBodyFromFragment = view
     }
 
-    fun topSnackBar(message: String, textColor: Int?, background: Int?) {
+    protected fun topSnackBar(message: String, textColor: Int?, background: Int?) {
         val snackbar: TSnackbar = TSnackbar
             .make(mainBodyFromFragment, message, TSnackbar.LENGTH_LONG)
         val snackbarView: View = snackbar.view
         snackbarView.setBackgroundResource(background ?: R.color.tsnack_color)
+        snackbarView.findViewById<ImageView>(R.id.snackbar_image).visibility = View.GONE
+        snackbarView.findViewById<ImageView>(R.id.snackbar_action).visibility = View.GONE
         val text =
             snackbarView.findViewById<TextView>(R.id.snackbar_text)
         text.setTextColor(
@@ -32,7 +33,7 @@ abstract class BaseFragment : Fragment() {
         snackbar.show()
     }
 
-    fun topSnackBarError(message: String) {
+    protected fun topSnackBarError(message: String) {
         val snackbar: TSnackbar = TSnackbar
             .make(mainBodyFromFragment, message, TSnackbar.LENGTH_LONG)
         val snackbarView: View = snackbar.view

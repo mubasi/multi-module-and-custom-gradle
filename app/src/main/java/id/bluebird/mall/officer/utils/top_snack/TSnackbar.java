@@ -2,7 +2,6 @@ package id.bluebird.mall.officer.utils.top_snack;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.media.Image;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,7 +14,6 @@ import android.view.ViewParent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -199,6 +197,7 @@ public final class TSnackbar {
         }
         return result;
     }
+
 
     public void setText(@NonNull CharSequence message) {
         final TextView tv = mView.getMessageView();
@@ -404,6 +403,7 @@ public final class TSnackbar {
     public static class SnackbarLayout extends LinearLayout {
         private TextView mMessageView;
         private ImageView mActionView;
+        private ImageView mSnackbarImage;
 
         private final int mMaxWidth;
         private final int mMaxInlineActionWidth;
@@ -452,10 +452,18 @@ public final class TSnackbar {
             super.onFinishInflate();
             mMessageView = findViewById(R.id.snackbar_text);
             mActionView = findViewById(R.id.snackbar_action);
+            mSnackbarImage = findViewById(R.id.snackbar_image);
         }
 
         TextView getMessageView() {
             return mMessageView;
+        }
+
+
+        public void setSnackBarImage(Integer id) {
+            if (id == null) {
+                mSnackbarImage.setVisibility(View.GONE);
+            }
         }
 
         @Override
