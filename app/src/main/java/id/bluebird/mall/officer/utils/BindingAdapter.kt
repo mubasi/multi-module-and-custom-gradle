@@ -1,11 +1,13 @@
 package id.bluebird.mall.officer.utils
 
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import id.bluebird.mall.officer.R
+import id.bluebird.mall.officer.ui.home.HomeViewModel
 
 object BindingAdapter {
     @JvmStatic
@@ -46,6 +48,17 @@ object BindingAdapter {
                     R.drawable.bg_button_enable_login,
                     null
                 )
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:VmBinding")
+    fun searchQueue(editText: EditText, vm: HomeViewModel) {
+        editText.setOnEditorActionListener { _, p1, _ ->
+            if (p1 == EditorInfo.IME_ACTION_SEARCH) {
+                vm.actionSearch()
+            }
+            false
         }
     }
 }

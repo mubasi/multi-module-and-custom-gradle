@@ -33,6 +33,7 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateMainBody(mBinding.clMainBodyHome)
         homeStateListener()
     }
 
@@ -57,6 +58,13 @@ class HomeFragment : BaseFragment() {
                     HomeState.DummyIndicator -> {
                         dialogIndicatorSample()
                     }
+                    is CommonState.Error -> TODO()
+                    HomeState.ParamSearchQueueEmpty -> {
+                        topSnackBarError(getString(R.string.search_cannot_empty))
+                    }
+                    HomeState.ParamSearchQueueLessThanTwo -> {
+                        topSnackBarError(getString(R.string.search_cannot_less_than_two))
+                    }
                 }
             }
         }
@@ -71,8 +79,9 @@ class HomeFragment : BaseFragment() {
                 dialog.cancel()
             }
             .setNegativeButton("Red") { dialog, _ ->
-                mHomeViewModel.changeIndicator(false    )
-                dialog.cancel() }
+                mHomeViewModel.changeIndicator(false)
+                dialog.cancel()
+            }
             .setCancelable(false)
             .create().show()
     }

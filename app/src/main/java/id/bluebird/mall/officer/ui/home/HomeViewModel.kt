@@ -17,6 +17,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     private val _homeState: MutableLiveData<CommonState> = MutableLiveData()
     var homeState = _homeState
 
+    val searchQueue: MutableLiveData<String> = MutableLiveData()
     val locationName: MutableLiveData<String> = MutableLiveData()
     val lastSync: MutableLiveData<String> = MutableLiveData("Last sync : 11 Jan 2022 • 13:48")
     val subLocationName: MutableLiveData<String> = MutableLiveData("Lobby Utara")
@@ -38,10 +39,28 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
         }
     }
 
-    fun dummyIndicator(){
+    fun actionSearch() {
+        when {
+            searchQueue.value.isNullOrEmpty() -> {
+                _homeState.value = HomeState.ParamSearchQueueEmpty
+            }
+            searchQueue.value != null -> {
+                searchQueue.value?.let {
+                    if (it.length < 2) {
+                        _homeState.value = HomeState.ParamSearchQueueLessThanTwo
+                    } else {
+                        // implementation search
+                    }
+                }
+            }
+        }
+    }
+
+    fun dummyIndicator() {
         _homeState.value = HomeState.DummyIndicator
     }
-    fun changeIndicator(isConnected: Boolean){
-       connectionState.value = isConnected
+
+    fun changeIndicator(isConnected: Boolean) {
+        connectionState.value = isConnected
     }
 }

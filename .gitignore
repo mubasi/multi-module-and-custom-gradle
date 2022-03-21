@@ -20,6 +20,9 @@
 /.idea/kotlinScripting.xml
 /.idea/deploymentTargetDropDown.xml
 
+/app/src/main/res/raw/ca.pem
+/app/src/main/res/raw/client.pem
+/app/src/main/res/raw/client_key.key
 *.jks
 .key.properties
 *.keystore
