@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.*
 
 plugins {
     id(Plugins.application)
@@ -126,6 +126,9 @@ dependencies {
     implementation(Koin.scope)
     implementation(Koin.viewmodel)
     implementation(Koin.ext)
+
+    implementation(MqttPaho.client)
+    implementation(MqttPaho.android_service)
 
     implementation(Lifecycle.runtime)
 

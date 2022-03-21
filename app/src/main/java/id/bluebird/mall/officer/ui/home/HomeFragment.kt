@@ -13,12 +13,15 @@ import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.databinding.FragmentHomeBinding
 import id.bluebird.mall.officer.ui.BaseFragment
+import id.bluebird.mall.officer.ui.MainViewModel
 import id.bluebird.mall.officer.utils.AuthUtils
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : BaseFragment() {
     private lateinit var mBinding: FragmentHomeBinding
     private val mHomeViewModel: HomeViewModel by viewModel()
+    private val mainViewModel: MainViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +38,16 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         updateMainBody(mBinding.clMainBodyHome)
         homeStateListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.mqttConnect()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mainViewModel.mqttDisconnect()
     }
 
     private fun homeStateListener() {
