@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.Default) :
     ViewModel() {
@@ -21,9 +22,11 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     val locationName: MutableLiveData<String> = MutableLiveData()
     val lastSync: MutableLiveData<String> = MutableLiveData("Last sync : 11 Jan 2022 • 13:48")
     val subLocationName: MutableLiveData<String> = MutableLiveData("Lobby Utara")
+    val counter: MutableLiveData<CounterModel> = MutableLiveData(CounterModel())
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
+        randomCounter()
     }
 
     fun logout() {
@@ -34,9 +37,18 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
         viewModelScope.launch(dispatcher) {
             _homeState.postValue(HomeState.OnSync)
             delay(2000)
+            randomCounter()
             lastSync.postValue("Last sync: ${DateUtils.getLastSycnFormat()}")
             _homeState.postValue(CommonState.Idle)
         }
+    }
+
+    /** random() used for counter dummy value*/
+    private fun randomCounter() {
+        val random1 = Random.nextLong(0, 1000)
+        val random2 = Random.nextLong(0, 100)
+        val random3 = Random.nextLong(0, 100)
+        counter.postValue(CounterModel(random1, random2, random3))
     }
 
     fun actionSearch() {
