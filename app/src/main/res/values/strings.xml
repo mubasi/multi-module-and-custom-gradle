@@ -14,4 +14,7 @@
     <string name="sync_on_progress">Sedang melakukan singkronisasi</string>
     <string name="search_cannot_empty">Pencarian tidak boleh kosong</string>
     <string name="search_cannot_less_than_two">Pencarian harus lebih dari dua karakter</string>
+    <string name="done">Selesai</string>
+    <string name="delay">Tertunda</string>
+    <string name="queue">Antrian</string>
 </resources>

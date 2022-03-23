@@ -38,33 +38,31 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun homeStateListener() {
-        with(mHomeViewModel) {
-            mHomeViewModel.homeState.observe(viewLifecycleOwner) {
-                when (it) {
-                    HomeState.Logout -> {
-                        dialogLogout()
-                    }
-                    HomeState.OnSync -> {
-                        requireActivity().window.setFlags(
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        )
-                    }
-                    CommonState.Idle -> {
-                        requireActivity().window.clearFlags(
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        )
-                    }
-                    HomeState.DummyIndicator -> {
-                        dialogIndicatorSample()
-                    }
-                    is CommonState.Error -> TODO()
-                    HomeState.ParamSearchQueueEmpty -> {
-                        topSnackBarError(getString(R.string.search_cannot_empty))
-                    }
-                    HomeState.ParamSearchQueueLessThanTwo -> {
-                        topSnackBarError(getString(R.string.search_cannot_less_than_two))
-                    }
+        mHomeViewModel.homeState.observe(viewLifecycleOwner) {
+            when (it) {
+                HomeState.Logout -> {
+                    dialogLogout()
+                }
+                HomeState.OnSync -> {
+                    requireActivity().window.setFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    )
+                }
+                CommonState.Idle -> {
+                    requireActivity().window.clearFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    )
+                }
+                HomeState.DummyIndicator -> {
+                    dialogIndicatorSample()
+                }
+                is CommonState.Error -> TODO()
+                HomeState.ParamSearchQueueEmpty -> {
+                    topSnackBarError(getString(R.string.search_cannot_empty))
+                }
+                HomeState.ParamSearchQueueLessThanTwo -> {
+                    topSnackBarError(getString(R.string.search_cannot_less_than_two))
                 }
             }
         }
