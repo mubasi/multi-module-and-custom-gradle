@@ -36,11 +36,12 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        updateMainBody(mBinding.clMainBodyLogin)
         mBinding.tvVersionNameLogin.text = BuildConfig.VERSION_NAME
         mLoginViewModel.loginState.observe(viewLifecycleOwner) {
             when (it) {
                 is CommonState.Error -> {
-                    topSnackBarError(mBinding.clMainBodyLogin, it.error.message ?: "Kesalahan")
+                    topSnackBarError(it.error.message ?: "Kesalahan")
                 }
                 is LoginState.Phone -> {
                     intentToDial()

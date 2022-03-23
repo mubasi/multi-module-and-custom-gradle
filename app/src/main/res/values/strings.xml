@@ -12,4 +12,6 @@
     <string name="exit_message">Anda yakin ingin keluar?</string>
     <string name="sycn">Sync</string>
     <string name="sync_on_progress">Sedang melakukan singkronisasi</string>
+    <string name="search_cannot_empty">Pencarian tidak boleh kosong</string>
+    <string name="search_cannot_less_than_two">Pencarian harus lebih dari dua karakter</string>
 </resources>
