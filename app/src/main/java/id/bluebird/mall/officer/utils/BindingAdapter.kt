@@ -1,11 +1,14 @@
 package id.bluebird.mall.officer.utils
 
+import android.content.Context
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.ViewModel
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.ui.home.HomeViewModel
 
@@ -53,10 +56,21 @@ object BindingAdapter {
 
     @JvmStatic
     @BindingAdapter("app:VmBinding")
-    fun searchQueue(editText: EditText, vm: HomeViewModel) {
+    fun searchQueue(editText: EditText, vm: ViewModel) {
         editText.setOnEditorActionListener { _, p1, _ ->
             if (p1 == EditorInfo.IME_ACTION_SEARCH) {
-                vm.actionSearch()
+                if (editText.hasFocus()) {
+                    editText.clearFocus()
+                    val imm = editText.context.getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                    ) as? InputMethodManager
+                    imm?.hideSoftInputFromWindow(editText.windowToken, 0)
+                }
+                when {
+                    vm is HomeViewModel -> {
+                        vm.actionSearch()
+                    }
+                }
             }
             false
         }

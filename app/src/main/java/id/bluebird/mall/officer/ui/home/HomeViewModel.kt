@@ -26,6 +26,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
+        _homeState.value = CommonState.Idle
         randomCounter()
     }
 
@@ -62,6 +63,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
                         _homeState.value = HomeState.ParamSearchQueueLessThanTwo
                     } else {
                         // implementation search
+                        _homeState.value = CommonState.Idle
                     }
                 }
             }
