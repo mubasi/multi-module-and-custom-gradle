@@ -3,7 +3,9 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven(url="https://plugins.gradle.org/m2/")
+        maven(url = "https://plugins.gradle.org/m2/")
+        maven("https://repo.eclipse.org/content/repositories/paho-snapshots/")
+
     }
     dependencies {
         classpath(MainGradle.kotlin)
@@ -17,11 +19,12 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven(url="https://plugins.gradle.org/m2/")
+        maven(url = "https://plugins.gradle.org/m2/")
+        maven("https://repo.eclipse.org/content/repositories/paho-snapshots/")
     }
 }
 
 
-tasks.register("clean", Delete::class){
+tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }

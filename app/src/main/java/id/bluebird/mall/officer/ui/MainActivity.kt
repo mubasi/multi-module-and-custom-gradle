@@ -1,15 +1,18 @@
-package id.bluebird.mall.officer
+package id.bluebird.mall.officer.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mNavController: NavController
+    private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,5 +26,15 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fcv_main) as NavHostFragment
         mNavController = navHostFragment.navController
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.mqttConnect()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.mqttDisconnect()
     }
 }
