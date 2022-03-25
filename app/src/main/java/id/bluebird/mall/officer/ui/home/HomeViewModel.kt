@@ -35,6 +35,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     }
 
     fun sync() {
+        _homeState.value = HomeState.ClearFocus
         viewModelScope.launch(dispatcher) {
             _homeState.postValue(HomeState.OnSync)
             delay(2000)
