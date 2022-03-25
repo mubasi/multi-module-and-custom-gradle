@@ -17,6 +17,7 @@ sealed class HomeState : CommonState {
     object Logout : HomeState()
     object DummyIndicator : HomeState()
     object OnSync : HomeState()
+    object ClearFocus : HomeState()
     object ParamSearchQueueEmpty : HomeState()
     object ParamSearchQueueLessThanTwo : HomeState()
 }

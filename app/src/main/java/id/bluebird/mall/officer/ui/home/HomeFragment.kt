@@ -1,10 +1,12 @@
 package id.bluebird.mall.officer.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -51,33 +53,49 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun homeStateListener() {
-        mHomeViewModel.homeState.observe(viewLifecycleOwner) {
-            when (it) {
-                HomeState.Logout -> {
-                    dialogLogout()
-                }
-                HomeState.OnSync -> {
-                    requireActivity().window.setFlags(
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    )
-                }
-                CommonState.Idle -> {
-                    requireActivity().window.clearFlags(
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    )
-                }
-                HomeState.DummyIndicator -> {
-                    dialogIndicatorSample()
-                }
-                is CommonState.Error -> TODO()
-                HomeState.ParamSearchQueueEmpty -> {
-                    topSnackBarError(getString(R.string.search_cannot_empty))
-                }
-                HomeState.ParamSearchQueueLessThanTwo -> {
-                    topSnackBarError(getString(R.string.search_cannot_less_than_two))
+        with(mHomeViewModel) {
+            mHomeViewModel.homeState.observe(viewLifecycleOwner) {
+                when (it) {
+                    HomeState.Logout -> {
+                        clearSearchFocus()
+                        dialogLogout()
+                    }
+                    HomeState.OnSync -> {
+                        requireActivity().window.setFlags(
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        )
+                    }
+                    CommonState.Idle -> {
+                        requireActivity().window.clearFlags(
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        )
+                    }
+                    HomeState.DummyIndicator -> {
+                        dialogIndicatorSample()
+                    }
+                    is CommonState.Error -> TODO()
+                    HomeState.ParamSearchQueueEmpty -> {
+                        topSnackBarError(getString(R.string.search_cannot_empty))
+                    }
+                    HomeState.ParamSearchQueueLessThanTwo -> {
+                        topSnackBarError(getString(R.string.search_cannot_less_than_two))
+                    }
+                    HomeState.ClearFocus -> {
+                        clearSearchFocus()
+                    }
                 }
             }
+        }
+    }
+
+    private fun clearSearchFocus() {
+        if (mBinding.edtSearchQueueMain.hasFocus()) {
+            mBinding.edtSearchQueueMain.clearFocus()
+            val imm = context?.getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(mBinding.coordinatorRootHome.windowToken, 0)
         }
     }
 
