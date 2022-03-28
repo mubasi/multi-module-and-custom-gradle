@@ -69,6 +69,11 @@ android {
         }
     }
 
+    sourceSets {
+        val main by getting
+        main.res.srcDirs("src/main/res", "src/main/res/home")
+    }
+
     flavorDimensions("env")
 
     productFlavors {

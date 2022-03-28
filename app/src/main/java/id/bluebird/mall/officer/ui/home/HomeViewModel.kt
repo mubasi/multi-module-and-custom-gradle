@@ -5,19 +5,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
+import id.bluebird.mall.officer.ui.home.dialog.Action
 import id.bluebird.mall.officer.utils.DateUtils
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.random.Random
 
 class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.Default) :
     ViewModel() {
+
+    companion object {
+        const val MAX_TIMER = 30
+    }
+
     val connectionState: MutableLiveData<Boolean> = MutableLiveData(false)
     private val _homeState: MutableLiveData<CommonState> = MutableLiveData()
     var homeState = _homeState
 
+    val taxiNumber: MutableLiveData<String> = MutableLiveData()
+    val currentQueue: MutableLiveData<QueueCache> = MutableLiveData()
+    val delayCallTimer: MutableLiveData<Int> = MutableLiveData(30)
     val searchQueue: MutableLiveData<String> = MutableLiveData()
     val locationName: MutableLiveData<String> = MutableLiveData()
     val lastSync: MutableLiveData<String> = MutableLiveData("Last sync : 11 Jan 2022 • 13:48")
@@ -26,8 +32,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
-        _homeState.value = CommonState.Idle
-        randomCounter()
+        currentQueue.value = QueueCache(999, isDelay = false, isCurrentQueue = true)
     }
 
     fun logout() {
@@ -35,7 +40,6 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     }
 
     fun sync() {
-        _homeState.value = HomeState.ClearFocus
         viewModelScope.launch(dispatcher) {
             _homeState.postValue(HomeState.OnSync)
             delay(2000)
@@ -51,6 +55,37 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
         val random2 = Random.nextLong(0, 100)
         val random3 = Random.nextLong(0, 100)
         counter.postValue(CounterModel(random1, random2, random3))
+    }
+
+    private fun delay() {
+        viewModelScope.launch(dispatcher) {
+            while (isActive) {
+                delay(1000)
+                delayCallTimer.value?.let {
+                    if (it > 30) {
+                        cancel()
+                    }
+                    delayCallTimer.postValue(it.plus(1))
+                }
+            }
+        }
+    }
+
+    fun callCurrentQueue() {
+        delayCallTimer.value?.let {
+            if ((it in 1..29).not()) {
+                delayCallTimer.value = 0
+                delay()
+            }
+        }
+    }
+
+    fun skipCurrentQueue(item: QueueCache) {
+        _homeState.value = HomeState.SkipCurrentQueue(item)
+    }
+
+    fun successCurrentQueue(queue: String) {
+        _homeState.value = HomeState.SuccessCurrentQueue(queue)
     }
 
     fun actionSearch() {
@@ -69,6 +104,17 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
                 }
             }
         }
+    }
+
+    fun submitBottomSheet(action: Action, item: QueueCache) {
+        if (action == Action.SKIP) {
+            _homeState.value = HomeState.SuccessSkiped(item.getQueue())
+        }
+    }
+
+    fun submitRitaseDialog() {
+        taxiNumber.value = ""
+        _homeState.value = HomeState.SuccessRitase(currentQueue.value?.getQueue() ?: "-")
     }
 
     fun dummyIndicator() {

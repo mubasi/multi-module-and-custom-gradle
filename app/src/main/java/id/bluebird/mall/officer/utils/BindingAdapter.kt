@@ -1,11 +1,13 @@
 package id.bluebird.mall.officer.utils
 
+import android.app.Dialog
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
@@ -22,6 +24,12 @@ object BindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("app:enable")
+    fun setAppEnable(view: View, bool: Boolean?) {
+        view.isClickable = bool == true
+    }
+
+    @JvmStatic
     @BindingAdapter("app:show")
     fun setVisibility(view: View, bool: Boolean?) {
         view.visibility = if (bool == false) {
@@ -34,9 +42,19 @@ object BindingAdapter {
     @JvmStatic
     @BindingAdapter("app:username", "app:password")
     fun setLoginButtonDisplay(button: Button, username: String?, password: String?) {
-        if (username == null || username.isEmpty()
-            || password == null || password.isEmpty()
-        ) {
+        val isDisplay = username == null || username.isEmpty()
+                || password == null || password.isEmpty()
+        setButtonDisplay(button, isDisplay)
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:displayButton")
+    fun setDisplayButton(button: Button, isDisplay: Boolean) {
+        setButtonDisplay(button, isDisplay.not())
+    }
+
+    private fun setButtonDisplay(button: Button, isDisplay: Boolean) {
+        if (isDisplay) {
             button.isEnabled = false
             button.background = ResourcesCompat.getDrawable(
                 button.context.resources,
@@ -73,6 +91,86 @@ object BindingAdapter {
                 }
             }
             false
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:successQueueButton")
+    fun successQueueButton(imageView: ImageView, isCurrentQueue: Boolean) {
+        if (isCurrentQueue) {
+            imageView.setBackgroundResource(R.drawable.bg_success_enable)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_fill,
+                    null
+                )
+            )
+        } else {
+            imageView.setBackgroundResource(R.drawable.bg_queue_disable)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_fill_disable,
+                    null
+                )
+            )
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:delayQueueButton")
+    fun delayQueueButton(imageView: ImageView, isCurrentQueue: Boolean) {
+        if (isCurrentQueue) {
+            imageView.setBackgroundResource(R.drawable.bg_delay_enable)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_cross,
+                    null
+                )
+            )
+        } else {
+            imageView.setBackgroundResource(R.drawable.bg_queue_disable)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_cross_disable,
+                    null
+                )
+            )
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:callQueueButton")
+    fun callQueueButton(imageView: ImageView, isCurrentQueue: Boolean) {
+        if (isCurrentQueue) {
+//            imageView.setBackgroundResource(R.drawable.bg_call_enable)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_announcement_enable,
+                    null
+                )
+            )
+        } else {
+            imageView.setBackgroundResource(android.R.color.transparent)
+            imageView.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    imageView.context.resources,
+                    R.drawable.ic_announcement_disable,
+                    null
+                )
+            )
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:cancelDialogRitase")
+    fun cancelDialogRitase(view: View, dialog: Dialog) {
+        view.setOnClickListener {
+            dialog.cancel()
         }
     }
 }

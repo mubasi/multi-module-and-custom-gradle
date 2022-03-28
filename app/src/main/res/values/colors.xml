@@ -10,12 +10,16 @@
     <color name="tsnack_color">#00b496</color>
     <color name="tsnack_error_color">#F8EAE8</color>
     <color name="primary_color">#005EB8</color>
-    <color name="primary_color_two">#669ED4</color>
+    <color name="primary_color_second">#669ED4</color>
+    <color name="primary_color_third">#E6EFF8</color>
     <color name="error_color">#BE321E</color>
+    <color name="error_color_third">#F8EAE8</color>
     <color name="rating_color">#C89B00</color>
-    <color name="rating_color_two">#DEC366</color>
+    <color name="gray_disable">#888888</color>
+    <color name="rating_color_second">#DEC366</color>
     <color name="success_color">#00B496</color>
-    <color name="success_color_two">#66D2C0</color>
+    <color name="success_color_second">#66D2C0</color>
+    <color name="success_color_third">#E6F7F4</color>
     <color name="search_line_color">#DEDEDE</color>
 
     // font
