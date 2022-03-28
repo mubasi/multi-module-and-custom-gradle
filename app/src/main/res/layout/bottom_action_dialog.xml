@@ -37,8 +37,9 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imv_cancel_bottom_sheet_action"
-            android:layout_width="9dp"
-            android:layout_height="10dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="10dp"
             android:src="@drawable/ic_cross_disable"
             app:cancelDialogRitase="@{dialog}"
             app:layout_constraintRight_toRightOf="parent"
@@ -74,11 +75,11 @@
                 android:layout_marginBottom="@dimen/sixty_dp"
                 android:background="@drawable/bg_button_enable_login"
                 android:fontFamily="@font/ubuntu_bold"
+                android:onClick="@{() -> vm.submitBottomSheet(action, item)}"
                 android:text="@{yesAction}"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/sixty_sp"
-                android:onClick="@{() -> vm.submitBottomSheet(action, item)}" />
+                android:textSize="@dimen/sixty_sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel_bottom_sheet_action"

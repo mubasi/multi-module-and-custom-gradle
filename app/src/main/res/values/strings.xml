@@ -23,7 +23,7 @@
     <string name="skip">Skip</string>
     <string name="ritase_title">Pencatat ritase</string>
     <string name="ritase_message">Masukan nomor lambung taxi penjemputan untuk mencatat ritase</string>
-    <string name="hint_ritase">A.099</string>
+    <string name="hint_ritase">KK1204</string>
     <string name="note_ritase">Catat ritase</string>
     <string name="restore">Restore</string>
 </resources>
