@@ -26,4 +26,5 @@
     <string name="hint_ritase">KK1204</string>
     <string name="note_ritase">Catat ritase</string>
     <string name="restore">Restore</string>
+    <string name="waiting">Menunggu</string>
 </resources>

@@ -1,8 +1,9 @@
 package id.bluebird.mall.officer.common.di
 
 import android.content.Context
+import id.bluebird.mall.officer.case.queue.SkipQueueCases
+import id.bluebird.mall.officer.case.queue.SkipQueueCasesImpl
 import id.bluebird.mall.officer.common.Mqtt
-import id.bluebird.mall.officer.ui.MainViewModel
 import id.bluebird.mall.officer.ui.home.HomeViewModel
 import id.bluebird.mall.officer.ui.login.LoginViewModel
 import org.koin.android.ext.koin.androidContext
@@ -13,19 +14,18 @@ import org.koin.dsl.module
 
 private val vmModule = module {
     viewModel { LoginViewModel() }
-    viewModel { MainViewModel(get()) }
-    viewModel { HomeViewModel() }
+    viewModel { HomeViewModel(get()) }
 }
 
-private val casesUser = module {
-
+private val queueCases = module {
+    single<SkipQueueCases> { SkipQueueCasesImpl() }
 }
 
 private val connectionModule = module {
     single { Mqtt(androidContext()) }
 }
 
-private val modules = listOf(vmModule, casesUser, connectionModule)
+private val modules = listOf(vmModule, queueCases, connectionModule)
 
 lateinit var koin: Koin
 

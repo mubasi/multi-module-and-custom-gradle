@@ -10,12 +10,14 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.databinding.FragmentHomeBinding
 import id.bluebird.mall.officer.ui.BaseFragment
-import id.bluebird.mall.officer.ui.MainViewModel
 import id.bluebird.mall.officer.ui.home.dialog.Action
 import id.bluebird.mall.officer.ui.home.dialog.ActionBottomSheet
 import id.bluebird.mall.officer.ui.home.dialog.RitaseDialogFragment
@@ -26,9 +28,13 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class HomeFragment : BaseFragment() {
     private val mHomeViewModel: HomeViewModel by sharedViewModel()
     private lateinit var mBinding: FragmentHomeBinding
-    private val mainViewModel: MainViewModel by sharedViewModel()
     private var mRitaseDialog: Dialog? = null
     private var mActionBottomSheet: Dialog? = null
+    private lateinit var mVp2Home: ViewPager2
+    private lateinit var mTabLayout: TabLayout
+    private val mSlideFragment: SlideFragment by lazy {
+        SlideFragment(this)
+    }
 
 
     override fun onCreateView(
@@ -39,7 +45,19 @@ class HomeFragment : BaseFragment() {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         mBinding.vm = mHomeViewModel
         mBinding.lifecycleOwner = this
+        mVp2Home = mBinding.includeViewPagerHome.vpHome
+        mTabLayout = mBinding.includeViewPagerHome.tlHome
         return mBinding.root
+    }
+
+    private fun setTabLayout() {
+        TabLayoutMediator(mTabLayout, mVp2Home) { tab, position ->
+            tab.text = if (position == 0) {
+                "${getString(R.string.waiting)} (0)"
+            } else {
+                "${getString(R.string.delay)} (0)"
+            }
+        }.attach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,7 +65,16 @@ class HomeFragment : BaseFragment() {
         updateMainBody(mBinding.clMainBodyHome)
         homeStateListener()
         touchListener()
-
+        mVp2Home.adapter = mSlideFragment
+        setTabLayout()
+        mHomeViewModel.let { vm ->
+            vm.queueWaiting.observe(viewLifecycleOwner) {
+                mTabLayout.getTabAt(0)?.text = "${getString(R.string.waiting)} (${it.size})"
+            }
+            vm.queueDelay.observe(viewLifecycleOwner) {
+                mTabLayout.getTabAt(1)?.text = "${getString(R.string.delay)} (${it.size})"
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -74,15 +101,10 @@ class HomeFragment : BaseFragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        mainViewModel.mqttConnect()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        mHomeViewModel.homeStateOnIdle()
         cancelAllDialog()
-        mainViewModel.mqttDisconnect()
     }
 
     private fun homeStateListener() {

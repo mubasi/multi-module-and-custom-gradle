@@ -13,6 +13,7 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.ui.home.HomeViewModel
+import id.bluebird.mall.officer.ui.home.QueueCache
 
 object BindingAdapter {
     @JvmStatic
@@ -24,9 +25,9 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:enable")
-    fun setAppEnable(view: View, bool: Boolean?) {
-        view.isClickable = bool == true
+    @BindingAdapter("app:enable", "app:VmIsNoNull")
+    fun setAppEnable(view: View, bool: Boolean?, vm: HomeViewModel?) {
+        view.isClickable = bool == true && vm != null
     }
 
     @JvmStatic
@@ -144,9 +145,8 @@ object BindingAdapter {
 
     @JvmStatic
     @BindingAdapter("app:callQueueButton")
-    fun callQueueButton(imageView: ImageView, isCurrentQueue: Boolean) {
-        if (isCurrentQueue) {
-//            imageView.setBackgroundResource(R.drawable.bg_call_enable)
+    fun callQueueButton(imageView: ImageView, item: QueueCache) {
+        if (item.isCurrentQueue) {
             imageView.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     imageView.context.resources,
@@ -155,7 +155,7 @@ object BindingAdapter {
                 )
             )
         } else {
-            imageView.setBackgroundResource(android.R.color.transparent)
+            imageView.setBackgroundResource(R.drawable.bg_queue_disable)
             imageView.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     imageView.context.resources,

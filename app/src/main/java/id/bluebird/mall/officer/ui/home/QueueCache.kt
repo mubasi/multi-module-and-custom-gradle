@@ -7,7 +7,8 @@ data class QueueCache(
     val number: Long = 1,
     val subLocation: String = "A",
     var isCurrentQueue: Boolean = false,
-    var isDelay: Boolean = false
+    var isDelay: Boolean = false,
+    var isVisible: Boolean = true
 ) {
     fun getQueue(): String = "${subLocation}.${
         when {

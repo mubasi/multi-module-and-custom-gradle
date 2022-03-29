@@ -33,5 +33,11 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <style name="TabLayoutCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily">@font/ubuntu_bold</item>
+        <item name="android:textSize">@dimen/sixty_sp</item>
+    </style>
+
 
 </resources>
