@@ -3,14 +3,20 @@ package id.bluebird.mall.officer.ui.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.officer.case.queue.SkipQueueCases
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.ui.home.dialog.Action
 import id.bluebird.mall.officer.utils.DateUtils
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.random.Random
 
-class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.Default) :
+class HomeViewModel(
+    private val skipQueueCases: SkipQueueCases,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default
+) :
     ViewModel() {
 
     companion object {
@@ -21,6 +27,8 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     private val _homeState: MutableLiveData<CommonState> = MutableLiveData()
     var homeState = _homeState
 
+    val queueDelay: MutableLiveData<List<QueueCache>> = MutableLiveData()
+    val queueWaiting: MutableLiveData<List<QueueCache>> = MutableLiveData()
     val taxiNumber: MutableLiveData<String> = MutableLiveData()
     val currentQueue: MutableLiveData<QueueCache> = MutableLiveData()
     val delayCallTimer: MutableLiveData<Int> = MutableLiveData(30)
@@ -29,6 +37,8 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
     val lastSync: MutableLiveData<String> = MutableLiveData("Last sync : 11 Jan 2022 • 13:48")
     val subLocationName: MutableLiveData<String> = MutableLiveData("Lobby Utara")
     val counter: MutableLiveData<CounterModel> = MutableLiveData(CounterModel())
+    private val delays: HashMap<Long, QueueCache> = HashMap()
+    private val waitings: HashMap<Long, QueueCache> = HashMap()
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
@@ -39,12 +49,27 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
         _homeState.value = HomeState.Logout
     }
 
+    fun homeStateOnIdle() {
+        _homeState.value = CommonState.Idle
+    }
+
     fun sync() {
         viewModelScope.launch(dispatcher) {
             _homeState.postValue(HomeState.OnSync)
             delay(2000)
             randomCounter()
             lastSync.postValue("Last sync: ${DateUtils.getLastSycnFormat()}")
+            val random = Random.nextInt(1, 31)
+            val t = random.div(2)
+            for (i in 1 until t) {
+                waitings[i.toLong()] =
+                    QueueCache(i.toLong(), isDelay = false, isCurrentQueue = false)
+            }
+            for (i in t until random) {
+                delays[i.toLong()] = QueueCache(i.toLong(), isDelay = true, isCurrentQueue = false)
+            }
+            queueWaiting.postValue(waitings.values.toList())
+            queueDelay.postValue(delays.values.toList())
             _homeState.postValue(CommonState.Idle)
         }
     }
@@ -67,6 +92,46 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
                     }
                     delayCallTimer.postValue(it.plus(1))
                 }
+            }
+        }
+    }
+
+    fun skipCurrentQueue() {
+        viewModelScope.launch(dispatcher) {
+            skipQueueCases.invoke(currentQueue.value, waitings, delays)
+                .catch {
+
+                }
+                .collectLatest {
+                    currentQueue.postValue(it.currentQueue)
+                    delays.putAll(it.delayQueue)
+                    queueDelay.postValue(delays.values.toList())
+                    waitings.putAll(it.waitingQueue)
+                    queueWaiting.postValue(waitings.values.toList())
+                    if (it.currentQueue != null) {
+                        _homeState.postValue(HomeState.SuccessSkiped(it.currentQueue.getQueue()))
+                    }
+                }
+        }
+    }
+
+    fun restoreQueue(item: QueueCache) {
+        removeCurrentQueue()
+        item.isCurrentQueue = true
+        currentQueue.value = item
+        delays.remove(item.number)
+        queueDelay.value = delays.values.toList()
+    }
+
+    private fun removeCurrentQueue() {
+        val tempCurrent = currentQueue.value
+        tempCurrent?.let {
+            it.isCurrentQueue = false
+            if (it.isDelay) {
+                delays[it.number] = it
+            } else {
+                waitings[it.number] = it
+                queueWaiting.value = waitings.values.toList()
             }
         }
     }
@@ -108,6 +173,7 @@ class HomeViewModel(private val dispatcher: CoroutineDispatcher = Dispatchers.De
 
     fun submitBottomSheet(action: Action, item: QueueCache) {
         if (action == Action.SKIP) {
+            skipCurrentQueue()
             _homeState.value = HomeState.SuccessSkiped(item.getQueue())
         }
     }

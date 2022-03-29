@@ -29,7 +29,7 @@
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="145dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -118,8 +118,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
+            android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -358,11 +357,23 @@
                     layout="@layout/content_current_queue"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/include_viewPager_home"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cl_counter_home"
                     app:vm="@{vm}" />
 
+                <include
+                    android:id="@+id/include_viewPager_home"
+                    layout="@layout/content_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sixty_dp"
+                    android:layout_marginBottom="@dimen/sixty_dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/include_current_queue_home" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

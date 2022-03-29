@@ -13,7 +13,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mNavController: NavController
-    private val mainViewModel: MainViewModel by viewModel()
     private val mHomeViewModel: HomeViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +31,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mainViewModel.mqttConnect()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mainViewModel.mqttDisconnect()
     }
 }
