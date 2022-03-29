@@ -1,4 +1,4 @@
-package id.bluebird.mall.officer.ui.home
+package id.bluebird.mall.officer.ui.home.queue_tab
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.databinding.TabFragmentBinding
+import id.bluebird.mall.officer.ui.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class QueueFragment(private val fragmentType: FragmentType) : Fragment() {

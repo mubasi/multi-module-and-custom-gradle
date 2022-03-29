@@ -1,6 +1,6 @@
 package id.bluebird.mall.officer.case.queue
 
-import id.bluebird.mall.officer.ui.home.QueueCache
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

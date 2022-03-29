@@ -7,7 +7,7 @@
         <variable
             name="vm"
             type="id.bluebird.mall.officer.ui.home.HomeViewModel" />
-        <import type="id.bluebird.mall.officer.ui.home.FragmentType" />
+        <import type="id.bluebird.mall.officer.ui.home.queue_tab.FragmentType" />
     </data>
 
 

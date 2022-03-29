@@ -1,6 +1,6 @@
 package id.bluebird.mall.officer.common
 
-import id.bluebird.mall.officer.ui.home.QueueCache
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 
 sealed interface GeneralError
 
@@ -17,6 +17,7 @@ sealed class LoginState : CommonState {
 
 sealed class HomeState : CommonState {
     object Logout : HomeState()
+    object LogoutSuccess : HomeState()
     object DummyIndicator : HomeState()
     object OnSync : HomeState()
     object ParamSearchQueueEmpty : HomeState()

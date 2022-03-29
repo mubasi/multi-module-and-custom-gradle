@@ -26,7 +26,7 @@
 
         <variable
             name="item"
-            type="id.bluebird.mall.officer.ui.home.QueueCache" />
+            type="id.bluebird.mall.officer.ui.home.model.QueueCache" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

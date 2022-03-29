@@ -12,23 +12,27 @@ import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.databinding.BottomActionDialogBinding
 import id.bluebird.mall.officer.ui.home.HomeViewModel
-import id.bluebird.mall.officer.ui.home.QueueCache
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ActionBottomSheet(
     private val action: Action,
-    private val queue: QueueCache
+    private val queue: QueueCache?
 ) : BottomSheetDialogFragment() {
     private val mHomeViewModel: HomeViewModel by sharedViewModel()
+
+    constructor(action: Action) : this(action, null)
+
+    companion object {
+        const val TAG = "actionBottomSheet"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dialog?.let {
-            it.setCancelable(false)
-        }
+        dialog?.setCancelable(false)
         return null
     }
 
@@ -56,23 +60,28 @@ class ActionBottomSheet(
     }
 
     private fun getTittle(): String {
+        if (action == Action.LOGOUT) {
+            return getString(R.string.exit_message)
+        }
         val prefix = when (action) {
             Action.SKIP -> getString(R.string.skip_queue_number)
             else -> ""
         }
-        return "$prefix ${queue.getQueue()} ?"
+        return "$prefix ${queue?.getQueue()} ?"
     }
 
     private fun getStringActionYes() = when (action) {
         Action.SKIP -> getString(R.string.skip)
         Action.RESTORE -> getString(R.string.restore)
+        Action.LOGOUT -> getString(R.string.exit)
         else -> ""
     }
 
     private fun listenHomeState() {
         mHomeViewModel.homeState.observe(this) {
             when (it) {
-                is HomeState.SuccessSkiped -> {
+                is HomeState.SuccessSkiped,
+                is HomeState.LogoutSuccess -> {
                     dismiss()
                 }
             }
@@ -82,5 +91,5 @@ class ActionBottomSheet(
 }
 
 enum class Action {
-    SKIP, RESTORE
+    SKIP, RESTORE, LOGOUT
 }
