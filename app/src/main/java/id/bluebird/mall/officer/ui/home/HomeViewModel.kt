@@ -3,6 +3,7 @@ package id.bluebird.mall.officer.ui.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.officer.case.queue.RestoreQueueCases
 import id.bluebird.mall.officer.case.queue.SkipQueueCases
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
@@ -15,6 +16,7 @@ import kotlin.random.Random
 
 class HomeViewModel(
     private val skipQueueCases: SkipQueueCases,
+    private val restoreQueueCases: RestoreQueueCases,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
     ViewModel() {
@@ -96,11 +98,11 @@ class HomeViewModel(
         }
     }
 
-    fun skipCurrentQueue() {
+    private fun skipCurrentQueue() {
         viewModelScope.launch(dispatcher) {
             skipQueueCases.invoke(currentQueue.value, waitings, delays)
-                .catch {
-
+                .catch { cause: Throwable ->
+                    _homeState.postValue(CommonState.Error(cause))
                 }
                 .collectLatest {
                     currentQueue.postValue(it.currentQueue)
@@ -116,23 +118,20 @@ class HomeViewModel(
     }
 
     fun restoreQueue(item: QueueCache) {
-        removeCurrentQueue()
-        item.isCurrentQueue = true
-        currentQueue.value = item
-        delays.remove(item.number)
-        queueDelay.value = delays.values.toList()
-    }
-
-    private fun removeCurrentQueue() {
-        val tempCurrent = currentQueue.value
-        tempCurrent?.let {
-            it.isCurrentQueue = false
-            if (it.isDelay) {
-                delays[it.number] = it
-            } else {
-                waitings[it.number] = it
-                queueWaiting.value = waitings.values.toList()
-            }
+        viewModelScope.launch(dispatcher) {
+            restoreQueueCases.invoke(currentQueue.value, item, waitings, delays)
+                .catch { cause: Throwable ->
+                    _homeState.postValue(CommonState.Error(cause))
+                }.collectLatest {
+                    currentQueue.postValue(it.currentQueue)
+                    delays.putAll(it.delayQueue)
+                    queueDelay.postValue(delays.values.toList())
+                    waitings.putAll(it.waitingQueue)
+                    queueWaiting.postValue(waitings.values.toList())
+                    if (it.currentQueue != null) {
+                        _homeState.postValue(HomeState.SuccessSkiped(it.currentQueue.getQueue()))
+                    }
+                }
         }
     }
 

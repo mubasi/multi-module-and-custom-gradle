@@ -1,6 +1,8 @@
 package id.bluebird.mall.officer.common.di
 
 import android.content.Context
+import id.bluebird.mall.officer.case.queue.RestoreQueueCases
+import id.bluebird.mall.officer.case.queue.RestoreQueueCasesImpl
 import id.bluebird.mall.officer.case.queue.SkipQueueCases
 import id.bluebird.mall.officer.case.queue.SkipQueueCasesImpl
 import id.bluebird.mall.officer.common.Mqtt
@@ -14,11 +16,12 @@ import org.koin.dsl.module
 
 private val vmModule = module {
     viewModel { LoginViewModel() }
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
 }
 
 private val queueCases = module {
     single<SkipQueueCases> { SkipQueueCasesImpl() }
+    single<RestoreQueueCases> { RestoreQueueCasesImpl() }
 }
 
 private val connectionModule = module {
