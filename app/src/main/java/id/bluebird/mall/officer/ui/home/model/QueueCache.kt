@@ -1,4 +1,4 @@
-package id.bluebird.mall.officer.ui.home
+package id.bluebird.mall.officer.ui.home.model
 
 import androidx.annotation.Keep
 

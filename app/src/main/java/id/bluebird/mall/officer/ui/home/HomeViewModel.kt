@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.case.queue.RestoreQueueCases
 import id.bluebird.mall.officer.case.queue.SkipQueueCases
+import id.bluebird.mall.officer.case.user.LogoutCases
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.ui.home.dialog.Action
+import id.bluebird.mall.officer.ui.home.model.CounterModel
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 import id.bluebird.mall.officer.utils.DateUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
@@ -17,6 +20,7 @@ import kotlin.random.Random
 class HomeViewModel(
     private val skipQueueCases: SkipQueueCases,
     private val restoreQueueCases: RestoreQueueCases,
+    private val logoutCases: LogoutCases,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
     ViewModel() {
@@ -170,10 +174,17 @@ class HomeViewModel(
         }
     }
 
-    fun submitBottomSheet(action: Action, item: QueueCache) {
-        if (action == Action.SKIP) {
-            skipCurrentQueue()
-            _homeState.value = HomeState.SuccessSkiped(item.getQueue())
+    fun submitBottomSheet(action: Action, item: QueueCache?) {
+        when (action) {
+            Action.SKIP -> {
+                item?.let {
+                    skipCurrentQueue()
+                    _homeState.value = HomeState.SuccessSkiped(item.getQueue())
+                }
+            }
+            Action.LOGOUT -> {
+                doLogout()
+            }
         }
     }
 
@@ -188,5 +199,13 @@ class HomeViewModel(
 
     fun changeIndicator(isConnected: Boolean) {
         connectionState.value = isConnected
+    }
+
+    private fun doLogout() {
+        viewModelScope.launch(dispatcher) {
+            logoutCases.invoke().collectLatest {
+                _homeState.postValue(HomeState.LogoutSuccess)
+            }
+        }
     }
 }

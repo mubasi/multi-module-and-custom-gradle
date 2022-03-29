@@ -1,4 +1,4 @@
-package id.bluebird.mall.officer.ui.home
+package id.bluebird.mall.officer.ui.home.queue_tab
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.databinding.ItemQueueBinding
+import id.bluebird.mall.officer.ui.home.HomeViewModel
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 
 class QueueAdapter(
     private val fragmentType: FragmentType,

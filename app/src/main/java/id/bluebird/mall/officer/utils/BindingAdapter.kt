@@ -13,7 +13,7 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.ui.home.HomeViewModel
-import id.bluebird.mall.officer.ui.home.QueueCache
+import id.bluebird.mall.officer.ui.home.model.QueueCache
 
 object BindingAdapter {
     @JvmStatic

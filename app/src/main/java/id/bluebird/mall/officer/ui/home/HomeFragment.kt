@@ -111,8 +111,14 @@ class HomeFragment : BaseFragment() {
         mHomeViewModel.homeState.observe(viewLifecycleOwner) {
             when (it) {
                 HomeState.Logout -> {
-                    clearSearchFocus()
-                    dialogLogout()
+                    ActionBottomSheet(Action.LOGOUT).show(
+                        childFragmentManager,
+                        ActionBottomSheet.TAG
+                    )
+                }
+                HomeState.LogoutSuccess -> {
+                    AuthUtils.logout()
+                    findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                 }
                 HomeState.OnSync -> {
                     requireActivity().window.setFlags(
@@ -134,7 +140,7 @@ class HomeFragment : BaseFragment() {
                 is HomeState.SkipCurrentQueue -> {
                     ActionBottomSheet(Action.SKIP, it.item).show(
                         childFragmentManager,
-                        Action.SKIP.name
+                        ActionBottomSheet.TAG
                     )
                 }
                 is HomeState.SuccessRitase -> {
@@ -161,16 +167,6 @@ class HomeFragment : BaseFragment() {
         mRitaseDialog?.dismiss()
     }
 
-    private fun clearSearchFocus() {
-        if (mBinding.edtSearchQueueMain.hasFocus()) {
-            mBinding.edtSearchQueueMain.clearFocus()
-            val imm = context?.getSystemService(
-                Context.INPUT_METHOD_SERVICE
-            ) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(mBinding.coordinatorRootHome.windowToken, 0)
-        }
-    }
-
 
     private fun dialogIndicatorSample() {
         AlertDialog.Builder(requireContext())
@@ -186,24 +182,5 @@ class HomeFragment : BaseFragment() {
             }
             .setCancelable(false)
             .create().show()
-    }
-
-    private fun dialogLogout() {
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setPositiveButton(
-                R.string.exit
-            ) { dialog, _ ->
-                AuthUtils.logout()
-                findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
-                dialog.cancel()
-            }
-            .setTitle(R.string.exit)
-            .setMessage(R.string.exit_message)
-            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
-            .setCancelable(false)
-            .create()
-        alertDialog.show()
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
-        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
     }
 }
