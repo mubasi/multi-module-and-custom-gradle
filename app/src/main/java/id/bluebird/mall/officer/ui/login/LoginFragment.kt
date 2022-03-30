@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import id.bluebird.mall.officer.BuildConfig
@@ -51,6 +52,12 @@ class LoginFragment : BaseFragment() {
                 }
             }
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().moveTaskToBack(true)
+            }
+        })
     }
 
     private fun intentToDial() {
