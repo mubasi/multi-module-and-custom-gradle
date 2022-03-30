@@ -28,8 +28,7 @@
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
-                android:layout_height="145dp"
-                >
+                android:layout_height="145dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -119,6 +118,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="48dp"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -180,7 +180,7 @@
                     android:drawableStart="@drawable/ic_search"
                     android:drawablePadding="8dp"
                     android:fontFamily="@font/ubuntu_regular"
-                    android:hint="Cari no. antrian"
+                    android:hint="@string/search_number_queue_hint"
                     android:imeOptions="actionSearch"
                     android:inputType="text"
                     android:lines="1"
@@ -200,7 +200,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_counter_home"
                     android:layout_width="0dp"
-                    android:layout_height="64dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/sixty_dp"
                     app:layout_constraintBottom_toTopOf="@id/include_current_queue_home"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -210,11 +210,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_counter_done_home"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:background="@drawable/bg_search_queue_home"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toLeftOf="@id/cl_counter_delay_home"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/cl_counter_delay_home"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -234,14 +234,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
+                            android:layout_marginBottom="@dimen/eight_dp"
                             android:fontFamily="@font/ubuntu_bold"
                             android:text="@{String.valueOf(vm.counter.success)}"
                             android:textColor="@color/success_color"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="@id/tv_title_counter_done_home"
-                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_done_home"
-                            app:layout_constraintTop_toBottomOf="@id/tv_title_counter_done_home" />
+                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_done_home" />
 
                         <View
                             android:id="@+id/view_done_counter_home"
@@ -257,13 +257,13 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_counter_delay_home"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="12dp"
                         android:background="@drawable/bg_search_queue_home"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/cl_counter_done_home"
-                        app:layout_constraintRight_toLeftOf="@id/cl_counter_queue_home"
+                        app:layout_constraintLeft_toRightOf="@id/cl_counter_queue_home"
+                        app:layout_constraintRight_toLeftOf="@id/cl_counter_done_home"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -283,14 +283,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
+                            android:layout_marginBottom="@dimen/eight_dp"
                             android:fontFamily="@font/ubuntu_bold"
                             android:text="@{String.valueOf(vm.counter.delay)}"
                             android:textColor="@color/rating_color"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="@id/tv_title_counter_delay_home"
-                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_delay_home"
-                            app:layout_constraintTop_toBottomOf="@id/tv_title_counter_delay_home" />
+                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_delay_home" />
 
                         <View
                             android:id="@+id/view_counter_delay_home"
@@ -306,11 +306,11 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/cl_counter_queue_home"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:background="@drawable/bg_search_queue_home"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/cl_counter_delay_home"
-                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/cl_counter_delay_home"
+                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -320,7 +320,7 @@
                             android:layout_marginStart="@dimen/eight_dp"
                             android:layout_marginTop="6dp"
                             android:fontFamily="@font/ubuntu_bold"
-                            android:text="@string/queue"
+                            android:text="@string/number_of_queue"
                             android:textColor="@color/gray_subtitle"
                             app:layout_constraintLeft_toRightOf="@id/view_counter_queue_home"
                             app:layout_constraintRight_toRightOf="parent"
@@ -330,14 +330,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
+                            android:layout_marginBottom="@dimen/eight_dp"
                             android:fontFamily="@font/ubuntu_bold"
                             android:text="@{String.valueOf(vm.counter.queue)}"
                             android:textColor="@color/primary_color"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="@id/tv_title_counter_queue_home"
-                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_queue_home"
-                            app:layout_constraintTop_toBottomOf="@id/tv_title_counter_queue_home" />
+                            app:layout_constraintRight_toRightOf="@id/tv_title_counter_queue_home" />
 
                         <View
                             android:id="@+id/view_counter_queue_home"
@@ -370,9 +370,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/sixty_dp"
                     android:layout_marginBottom="@dimen/sixty_dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/include_current_queue_home" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

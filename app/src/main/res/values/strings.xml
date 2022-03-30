@@ -17,6 +17,7 @@
     <string name="done">Selesai</string>
     <string name="delay">Tertunda</string>
     <string name="queue">Antrian</string>
+    <string name="number_of_queue">Jumlah \nantrian</string>
     <string name="current_queue">Antrian sekarang</string>
     <string name="number_queue">No. antrian</string>
     <string name="skip_queue_number">Skip antrian</string>
@@ -27,4 +28,5 @@
     <string name="note_ritase">Catat ritase</string>
     <string name="restore">Restore</string>
     <string name="waiting">Menunggu</string>
+    <string name="search_number_queue_hint">Cari no. antrian</string>
 </resources>
