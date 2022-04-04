@@ -3,7 +3,11 @@ package id.bluebird.mall.officer.ui.home
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -144,10 +148,30 @@ class HomeFragment : BaseFragment() {
                     )
                 }
                 is HomeState.SuccessRitase -> {
-                    topSnackBar("${it.queueNumber} selesai", null, null)
+                    val number = "${getString(R.string.number_queue_message)} ${it.queueNumber}"
+                    val message =
+                        "${getString(R.string.ritase)} $number ${getString(R.string.success_note)}"
+                    val spannable = SpannableString(message)
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        7,
+                        23,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    topSnackBarSuccess(spannable)
                 }
                 is HomeState.SuccessSkiped -> {
-                    topSnackBar("${it.queueNumber} dilewatkan", null, null)
+                    val message =
+                        "${getString(R.string.number_queue_message)} ${it.queueNumber} ${getString(R.string.delay_success)}"
+                    val spannable = SpannableString(message)
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        0,
+                        16,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    topSnackBarDelay(spannable)
                 }
                 is CommonState.Error -> {
                     cancelAllDialog()

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -62,11 +63,27 @@ class LoginFragment : BaseFragment() {
                 is LoginState.Phone -> {
                     intentToDial()
                 }
-                is GeneralError.NotFound -> {
-                    topSnackBarError(it.message)
-                }
                 LoginState.Success -> {
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                }
+                CommonState.Idle -> {
+                    // do nothing
+                }
+                CommonState.Progress -> {
+                    // do nothing
+                }
+                LoginState.PasswordIsEmpty -> {
+                    topSnackBarError(getString(R.string.password_cannot_empty))
+                }
+                LoginState.UsernameIsEmpty -> {
+                    topSnackBarError(getString(R.string.username_cannot_empty))
+                }
+                LoginState.LoginIgnored -> {
+                    Toast.makeText(requireContext(), "Login logic is ignored", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                    generalError(it as GeneralError)
                 }
             }
         }

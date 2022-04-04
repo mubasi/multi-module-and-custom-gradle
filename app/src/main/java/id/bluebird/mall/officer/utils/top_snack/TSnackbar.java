@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -121,6 +122,14 @@ public final class TSnackbar {
 
     @NonNull
     public static TSnackbar make(@NonNull View view, @NonNull CharSequence text, @Duration int duration) {
+        TSnackbar snackbar = new TSnackbar(findSuitableParent(view));
+        snackbar.setText(text);
+        snackbar.setDuration(duration);
+        return snackbar;
+    }
+
+    @NonNull
+    public static TSnackbar make(@NonNull View view, @NonNull SpannableString text, @Duration int duration) {
         TSnackbar snackbar = new TSnackbar(findSuitableParent(view));
         snackbar.setText(text);
         snackbar.setDuration(duration);

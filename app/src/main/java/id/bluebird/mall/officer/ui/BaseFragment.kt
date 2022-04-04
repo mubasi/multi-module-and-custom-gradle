@@ -1,11 +1,11 @@
 package id.bluebird.mall.officer.ui
 
+import android.text.SpannableString
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import id.bluebird.mall.officer.R
+import id.bluebird.mall.officer.common.GeneralError
 import id.bluebird.mall.officer.utils.top_snack.TSnackbar
 
 abstract class BaseFragment : Fragment() {
@@ -15,21 +15,13 @@ abstract class BaseFragment : Fragment() {
         mainBodyFromFragment = view
     }
 
-    protected fun topSnackBar(message: String, textColor: Int?, background: Int?) {
+    private fun topSnackBar(message: SpannableString, background: Int?) {
         val snackbar: TSnackbar = TSnackbar
             .make(mainBodyFromFragment, message, TSnackbar.LENGTH_LONG)
         val snackbarView: View = snackbar.view
         snackbarView.setBackgroundResource(background ?: R.color.tsnack_color)
         snackbarView.findViewById<ImageView>(R.id.snackbar_image).visibility = View.GONE
         snackbarView.findViewById<ImageView>(R.id.snackbar_action).visibility = View.GONE
-        val text =
-            snackbarView.findViewById<TextView>(R.id.snackbar_text)
-        text.setTextColor(
-            textColor ?: ContextCompat.getColor(
-                mainBodyFromFragment.context,
-                (android.R.color.white)
-            )
-        )
         snackbar.show()
     }
 
@@ -37,19 +29,35 @@ abstract class BaseFragment : Fragment() {
         val snackbar: TSnackbar = TSnackbar
             .make(mainBodyFromFragment, message, TSnackbar.LENGTH_LONG)
         val snackbarView: View = snackbar.view
-        snackbarView.setBackgroundResource(R.drawable.bg_error_alert)
-        val imageView = snackbarView.findViewById<ImageView>(R.id.snackbar_action)
-        val text =
-            snackbarView.findViewById<TextView>(R.id.snackbar_text)
-        text.setTextColor(
-            ContextCompat.getColor(
-                mainBodyFromFragment.context,
-                (android.R.color.holo_red_dark)
-            )
-        )
-        imageView.setOnClickListener {
-            snackbar.dismiss()
-        }
+        snackbarView.setBackgroundResource(R.color.error_color)
+        snackbarView.findViewById<ImageView>(R.id.snackbar_image).visibility = View.GONE
+        snackbarView.findViewById<ImageView>(R.id.snackbar_action).visibility = View.GONE
         snackbar.show()
+    }
+
+    protected fun topSnackBarSuccess(message: SpannableString) {
+        topSnackBar(message, R.color.success_color)
+    }
+
+    protected fun topSnackBarDelay(message: SpannableString) {
+        topSnackBar(message, R.color.rating_color)
+
+    }
+
+    protected fun generalError(generalError: GeneralError) {
+        when (generalError) {
+            is GeneralError.NotFound -> {
+                topSnackBarError(generalError.message)
+            }
+            is GeneralError.NullPointerException -> {
+                topSnackBarError(generalError.message)
+            }
+            is GeneralError.UnAuthorize -> {
+                topSnackBarError(generalError.message)
+            }
+            is GeneralError.Unknown -> {
+                topSnackBarError(generalError.message)
+            }
+        }
     }
 }
