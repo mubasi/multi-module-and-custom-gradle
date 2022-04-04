@@ -3,11 +3,11 @@ package id.bluebird.mall.officer.ui.home
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.mall.officer.case.queue.RestoreQueueCases
-import id.bluebird.mall.officer.case.queue.SkipQueueCases
-import id.bluebird.mall.officer.case.user.LogoutCases
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
+import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCases
+import id.bluebird.mall.officer.common.uses_case.queue.SkipQueueCases
+import id.bluebird.mall.officer.common.uses_case.user.LogoutCases
 import id.bluebird.mall.officer.ui.home.dialog.Action
 import id.bluebird.mall.officer.ui.home.model.CounterModel
 import id.bluebird.mall.officer.ui.home.model.QueueCache
@@ -30,7 +30,7 @@ class HomeViewModel(
     }
 
     val connectionState: MutableLiveData<Boolean> = MutableLiveData(false)
-    private val _homeState: MutableLiveData<CommonState> = MutableLiveData()
+    private val _homeState: MutableLiveData<HomeState> = MutableLiveData()
     var homeState = _homeState
 
     val queueDelay: MutableLiveData<List<QueueCache>> = MutableLiveData()

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import id.bluebird.mall.officer.BuildConfig
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
+import id.bluebird.mall.officer.common.GeneralError
 import id.bluebird.mall.officer.common.LoginState
 import id.bluebird.mall.officer.databinding.FragmentLoginBinding
 import id.bluebird.mall.officer.ui.BaseFragment
@@ -39,6 +40,20 @@ class LoginFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         updateMainBody(mBinding.clMainBodyLogin)
         mBinding.tvVersionNameLogin.text = BuildConfig.VERSION_NAME
+
+        onBackPressedFragment()
+        state()
+    }
+
+    private fun onBackPressedFragment() {
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().moveTaskToBack(true)
+            }
+        })
+    }
+
+    private fun state() {
         mLoginViewModel.loginState.observe(viewLifecycleOwner) {
             when (it) {
                 is CommonState.Error -> {
@@ -47,17 +62,14 @@ class LoginFragment : BaseFragment() {
                 is LoginState.Phone -> {
                     intentToDial()
                 }
-                is LoginState.Success -> {
+                is GeneralError.NotFound -> {
+                    topSnackBarError(it.message)
+                }
+                LoginState.Success -> {
                     findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                 }
             }
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                requireActivity().moveTaskToBack(true)
-            }
-        })
     }
 
     private fun intentToDial() {

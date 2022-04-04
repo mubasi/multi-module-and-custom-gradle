@@ -102,7 +102,6 @@
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_password_login"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="9"
@@ -123,9 +122,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:onClick="@{() -> vm.changePasswordVisibility()}"
                         android:padding="4dp"
-                        android:src="@{vm.visibilityPassword ? @drawable/ic_cross:@drawable/ic_mask_disable}" />
+                        android:tag="0"
+                        app:passwordToggle="@{vm}" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -218,6 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/ubuntu_bold"
+                android:text="@{vm.version}"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sixty_sp"
                 app:layout_constraintBottom_toBottomOf="parent"

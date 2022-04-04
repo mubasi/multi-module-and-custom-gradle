@@ -1,4 +1,4 @@
-package id.bluebird.mall.officer.case.queue
+package id.bluebird.mall.officer.common.uses_case.queue
 
 import androidx.annotation.Keep
 import id.bluebird.mall.officer.ui.home.model.QueueCache

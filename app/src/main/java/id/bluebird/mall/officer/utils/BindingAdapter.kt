@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.ui.home.HomeViewModel
 import id.bluebird.mall.officer.ui.home.model.QueueCache
+import id.bluebird.mall.officer.ui.login.LoginViewModel
 
 object BindingAdapter {
     @JvmStatic
@@ -21,6 +22,23 @@ object BindingAdapter {
     fun setCursorPosition(editText: EditText, text: String?) {
         if (text != null && text.isNotEmpty()) {
             editText.setSelection(text.length)
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:passwordToggle")
+    fun setPasswordToggle(imageView: ImageView, vm: LoginViewModel) {
+        imageView.setImageResource(R.drawable.ic_mask_disable)
+        imageView.setOnClickListener {
+            vm.visibilityPassword.value = if (imageView.tag == "0") {
+                imageView.tag = "1"
+                imageView.setImageResource(R.drawable.ic_mask)
+                true
+            } else {
+                imageView.tag = "0"
+                imageView.setImageResource(R.drawable.ic_mask_disable)
+                false
+            }
         }
     }
 
