@@ -6,10 +6,7 @@ import id.bluebird.mall.officer.common.network.Retrofit
 import id.bluebird.mall.officer.common.network.api_interface.IUser
 import id.bluebird.mall.officer.common.repository.UserRepository
 import id.bluebird.mall.officer.common.repository.UserRepositoryImpl
-import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCases
-import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCasesImpl
-import id.bluebird.mall.officer.common.uses_case.queue.SkipQueueCases
-import id.bluebird.mall.officer.common.uses_case.queue.SkipQueueCasesImpl
+import id.bluebird.mall.officer.common.uses_case.queue.*
 import id.bluebird.mall.officer.common.uses_case.user.LoginCase
 import id.bluebird.mall.officer.common.uses_case.user.LoginCaseImpl
 import id.bluebird.mall.officer.common.uses_case.user.LogoutCases
@@ -24,7 +21,7 @@ import org.koin.dsl.module
 
 private val vmModule = module {
     viewModel { LoginViewModel(get()) }
-    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get()) }
 }
 
 private val repositoryModule = module {
@@ -38,6 +35,7 @@ private val userCases = module {
 private val queueCases = module {
     single<SkipQueueCases> { SkipQueueCasesImpl() }
     single<RestoreQueueCases> { RestoreQueueCasesImpl() }
+    single<RitaseCase> { RitaseCaseImpl() }
 }
 private val retrofitModules = module {
     val retrofit = Retrofit.getRetrofit()

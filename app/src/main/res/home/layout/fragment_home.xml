@@ -213,8 +213,8 @@
                         android:layout_height="80dp"
                         android:background="@drawable/bg_search_queue_home"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/cl_counter_delay_home"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -309,8 +309,8 @@
                         android:layout_height="80dp"
                         android:background="@drawable/bg_search_queue_home"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintRight_toLeftOf="@id/cl_counter_delay_home"
                         app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/cl_counter_delay_home"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -361,6 +361,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/cl_counter_home"
+                    app:show="@{vm.currentQueue.number != -1 }"
                     app:vm="@{vm}" />
 
                 <include

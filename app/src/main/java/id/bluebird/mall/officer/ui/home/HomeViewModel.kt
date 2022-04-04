@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCases
+import id.bluebird.mall.officer.common.uses_case.queue.RitaseCase
 import id.bluebird.mall.officer.common.uses_case.queue.SkipQueueCases
 import id.bluebird.mall.officer.common.uses_case.user.LogoutCases
 import id.bluebird.mall.officer.ui.home.dialog.Action
@@ -21,6 +22,7 @@ class HomeViewModel(
     private val skipQueueCases: SkipQueueCases,
     private val restoreQueueCases: RestoreQueueCases,
     private val logoutCases: LogoutCases,
+    private val ritaseCase: RitaseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
     ViewModel() {
@@ -65,7 +67,7 @@ class HomeViewModel(
             delay(2000)
             randomCounter()
             lastSync.postValue("Last sync: ${DateUtils.getLastSycnFormat()}")
-            val random = Random.nextInt(1, 31)
+            val random = Random.nextInt(1, 15)
             val t = random.div(2)
             for (i in 1 until t) {
                 waitings[i.toLong()] =
@@ -188,8 +190,20 @@ class HomeViewModel(
     }
 
     fun submitRitaseDialog() {
-        taxiNumber.value = ""
-        _homeState.value = HomeState.SuccessRitase(currentQueue.value?.getQueue() ?: "-")
+        viewModelScope.launch {
+            taxiNumber.value = ""
+            ritaseCase.invoke(currentQueue.value, waitings)
+                .catch {
+                    // do nothing
+                }
+                .collectLatest {
+                    currentQueue.postValue(it.currentQueue)
+                    waitings.putAll(it.waitingQueue)
+                    queueWaiting.postValue(it.waitingQueue.values.toList())
+                    _homeState.value =
+                        HomeState.SuccessRitase(currentQueue.value?.getQueue() ?: "-")
+                }
+        }
     }
 
     fun dummyIndicator() {

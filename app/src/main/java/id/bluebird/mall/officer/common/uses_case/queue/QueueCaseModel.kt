@@ -6,6 +6,6 @@ import id.bluebird.mall.officer.ui.home.model.QueueCache
 @Keep
 data class QueueCaseModel(
     val currentQueue: QueueCache?,
-    val delayQueue: HashMap<Long, QueueCache>,
-    val waitingQueue: HashMap<Long, QueueCache>
+    val delayQueue: HashMap<Long, QueueCache> = HashMap(),
+    val waitingQueue: HashMap<Long, QueueCache> = HashMap()
 )
