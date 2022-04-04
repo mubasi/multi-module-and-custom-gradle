@@ -179,7 +179,6 @@ class HomeViewModel(
             Action.SKIP -> {
                 item?.let {
                     skipCurrentQueue()
-                    _homeState.value = HomeState.SuccessSkiped(item.getQueue())
                 }
             }
             Action.LOGOUT -> {

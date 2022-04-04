@@ -29,4 +29,10 @@
     <string name="restore">Restore</string>
     <string name="waiting">Menunggu</string>
     <string name="search_number_queue_hint">Cari no. antrian</string>
+    <string name="password_cannot_empty">Password tidak boleh kosong</string>
+    <string name="username_cannot_empty">Username tidak boleh kosong</string>
+    <string name="ritase">Ritase</string>
+    <string name="number_queue_message">No. antrian</string>
+    <string name="success_note">berhasil dicatat</string>
+    <string name="delay_success">berhasil ditunda</string>
 </resources>

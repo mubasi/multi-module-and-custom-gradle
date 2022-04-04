@@ -10,6 +10,7 @@ import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.LoginState
 import id.bluebird.mall.officer.common.uses_case.user.LoginCase
 import id.bluebird.mall.officer.utils.AuthUtils
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -26,6 +27,9 @@ class LoginViewModel(
     val version: MutableLiveData<String> = MutableLiveData()
     private var ignoreStaticClass = false
 
+    // akan dihapus dimasa yg akan datang
+    private var ignoreLogin = false
+
     init {
         version.value = BuildConfig.VERSION_NAME
     }
@@ -38,26 +42,38 @@ class LoginViewModel(
     fun login() {
         viewModelScope.launch {
             loginState.postValue(CommonState.Progress)
-            loginCase.invoke(username.value, password.value)
-                .catch { e ->
-                    loginState.postValue(CommonState.Error(e))
-                }.collectLatest {
-                    when (val res = it) {
-                        is CasesResult.OnSuccess -> {
-                            if (ignoreStaticClass.not()) {
-                                AuthUtils.putAccessToken(res.result)
+            if (ignoreLogin.not()) {
+                loginCase.invoke(username.value, password.value)
+                    .catch { e ->
+                        loginState.postValue(CommonState.Error(e))
+                    }.collectLatest {
+                        when (val res = it) {
+                            is CasesResult.OnSuccess -> {
+                                if (ignoreStaticClass.not()) {
+                                    AuthUtils.putAccessToken(res.result)
+                                }
+                                loginState.postValue(LoginState.Success)
                             }
-                            loginState.postValue(LoginState.Success)
-                        }
-                        is CasesResult.OnError -> {
-                            loginState.postValue(res.generalError)
+                            is CasesResult.OnError -> {
+                                loginState.postValue(res.generalError)
+                            }
                         }
                     }
-                }
+            } else {
+                delay(1000)
+                loginState.postValue(LoginState.Success)
+                AuthUtils.putAccessToken("")
+            }
         }
     }
 
     fun callPhone() {
         loginState.value = LoginState.Phone
+    }
+
+    // akan dihapus dimasa yg akan datang
+    fun ignoreLoginLogic() {
+        ignoreLogin = true
+        loginState.value = LoginState.LoginIgnored
     }
 }

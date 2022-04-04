@@ -18,7 +18,5 @@
     class="id.bluebird.mall.officer.utils.top_snack.TSnackbar$SnackbarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/sixty_dp"
-    android:layout_marginEnd="@dimen/sixty_dp"
     android:layout_marginTop="@dimen/thirty_two_dp"
     android:layout_gravity="top" />

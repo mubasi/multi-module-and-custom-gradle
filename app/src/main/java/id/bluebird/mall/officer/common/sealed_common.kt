@@ -18,6 +18,7 @@ sealed class CommonState : LoginState, HomeState {
 sealed interface LoginState {
     object Phone : LoginState
     object Success : LoginState
+    object LoginIgnored : LoginState
     object PasswordIsEmpty : LoginState
     object UsernameIsEmpty : LoginState
 }
