@@ -26,6 +26,7 @@ import id.bluebird.mall.officer.ui.home.dialog.Action
 import id.bluebird.mall.officer.ui.home.dialog.ActionBottomSheet
 import id.bluebird.mall.officer.ui.home.dialog.RitaseDialogFragment
 import id.bluebird.mall.officer.utils.AuthUtils
+import id.bluebird.mall.officer.utils.ExceptionHandler
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -202,11 +203,14 @@ class HomeFragment : BaseFragment() {
                 is CommonState.Error -> {
                     cancelAllDialog()
                 }
+                CommonState.ConnectionNotFound -> {
+                    topSnackBarError(ExceptionHandler.CONNECTION_NOT_FOUND)
+                }
                 HomeState.ParamSearchQueueEmpty -> {
-                    topSnackBarError(getString(R.string.search_cannot_empty))
+                    topSnackBarError(ExceptionHandler.SEARCH_CANNOT_EMPTY)
                 }
                 HomeState.ParamSearchQueueLessThanTwo -> {
-                    topSnackBarError(getString(R.string.search_cannot_less_than_two))
+                    topSnackBarError(ExceptionHandler.SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER)
                 }
             }
         }
