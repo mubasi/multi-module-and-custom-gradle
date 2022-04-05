@@ -121,7 +121,7 @@
                         android:indeterminate="false"
                         android:max="@{vm.MAX_TIMER}"
                         android:progress="@{vm.delayCallTimer}"
-                        android:visibility="@{item.currentQueue ? View.VISIBLE : View.VISIBLE, default=gone}"
+                        android:visibility="@{item.currentQueue ? View.VISIBLE : View.GONE, default=gone}"
                         app:indicatorColor="@color/success_color_third"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"

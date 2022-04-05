@@ -14,7 +14,7 @@ object Retrofit {
 
     private const val AUTHORIZATION = "Authorization"
     private const val RESPONSE = "Response Api"
-    private val mRetrofit = Retrofit.Builder().baseUrl("http://192.168.1.25:9090/")
+    private val mRetrofit = Retrofit.Builder().baseUrl("http://192.168.1.11:9090/")
         .client(okHttpClient())
         .addConverterFactory(MoshiConverterFactory.create())
         .build()

@@ -43,11 +43,13 @@ class RestoreQueueCasesImpl : RestoreQueueCases {
         waitingQueue: HashMap<Long, QueueCache>,
         delayQueue: HashMap<Long, QueueCache>,
     ) {
-        currentQueue.isCurrentQueue = false
-        if (currentQueue.isDelay) {
-            delayQueue[currentQueue.number] = currentQueue
-        } else {
-            waitingQueue[currentQueue.number] = currentQueue
+        if (currentQueue.number > 0) {
+            currentQueue.isCurrentQueue = false
+            if (currentQueue.isDelay) {
+                delayQueue[currentQueue.number] = currentQueue
+            } else {
+                waitingQueue[currentQueue.number] = currentQueue
+            }
         }
     }
 
