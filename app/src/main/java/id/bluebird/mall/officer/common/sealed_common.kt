@@ -32,7 +32,9 @@ sealed interface HomeState {
     object ParamSearchQueueLessThanTwo : HomeState
     data class SuccessRitase(val queueNumber: String) : HomeState
     data class SuccessSkiped(val queueNumber: String) : HomeState
+    data class SuccessRestored(val queueNumber: String) : HomeState
     data class SkipCurrentQueue(val item: QueueCache) : HomeState
+    data class RestoreQueue(val item: QueueCache) : HomeState
     data class SuccessCurrentQueue(val queueNumber: String) : HomeState
 }
 

@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.GeneralError
+import id.bluebird.mall.officer.utils.ExceptionHandler
 import id.bluebird.mall.officer.utils.top_snack.TSnackbar
 
 abstract class BaseFragment : Fragment() {
@@ -26,8 +27,12 @@ abstract class BaseFragment : Fragment() {
     }
 
     protected fun topSnackBarError(message: String) {
+        val messageInIndo = ExceptionHandler.getTranslateErrorToIndonesia(
+            requireContext(),
+            message
+        )
         val snackbar: TSnackbar = TSnackbar
-            .make(mainBodyFromFragment, message, TSnackbar.LENGTH_LONG)
+            .make(mainBodyFromFragment, messageInIndo, TSnackbar.LENGTH_LONG)
         val snackbarView: View = snackbar.view
         snackbarView.setBackgroundResource(R.color.error_color)
         snackbarView.findViewById<ImageView>(R.id.snackbar_image).visibility = View.GONE
@@ -41,7 +46,6 @@ abstract class BaseFragment : Fragment() {
 
     protected fun topSnackBarDelay(message: SpannableString) {
         topSnackBar(message, R.color.rating_color)
-
     }
 
     protected fun generalError(generalError: GeneralError) {

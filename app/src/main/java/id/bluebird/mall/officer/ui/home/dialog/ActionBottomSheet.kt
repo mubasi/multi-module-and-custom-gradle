@@ -65,7 +65,7 @@ class ActionBottomSheet(
         }
         val prefix = when (action) {
             Action.SKIP -> getString(R.string.skip_queue_number)
-            else -> ""
+            else -> getString(R.string.restore_queue_number)
         }
         return "$prefix ${queue?.getQueue()} ?"
     }
@@ -81,6 +81,7 @@ class ActionBottomSheet(
         mHomeViewModel.homeState.observe(this) {
             when (it) {
                 is HomeState.SuccessSkiped,
+                is HomeState.SuccessRestored,
                 is HomeState.LogoutSuccess -> {
                     dismiss()
                 }

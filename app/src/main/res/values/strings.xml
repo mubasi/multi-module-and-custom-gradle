@@ -32,7 +32,12 @@
     <string name="password_cannot_empty">Password tidak boleh kosong</string>
     <string name="username_cannot_empty">Username tidak boleh kosong</string>
     <string name="ritase">Ritase</string>
-    <string name="number_queue_message">No. antrian</string>
-    <string name="success_note">berhasil dicatat</string>
-    <string name="delay_success">berhasil ditunda</string>
+    <string name="number_queue_message">no. antrian</string>
+    <string name="number_queue_message_caps">No. antrian</string>
+    <string name="restore_queue_number">Restore antrian</string>
+    <string name="success_note">berhasil tercatat</string>
+    <string name="delay_success">telah ditunda</string>
+    <string name="restore_success">berhasil direstore</string>
+    <string name="user_not_found">User tidak ditemukan</string>
+    <string name="error_is_unknown">Error tidak dikenali</string>
 </resources>

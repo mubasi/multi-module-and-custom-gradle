@@ -16,7 +16,7 @@ class QueueAdapter(
     RecyclerView.Adapter<QueueAdapter.ViewHolder>() {
     private val items: MutableList<QueueCache> by lazy {
         val items: MutableList<QueueCache> = ArrayList()
-        items.add(QueueCache(1, isDelay = false, isCurrentQueue = false, isVisible = false))
+        items.add(QueueCache(1, isDelay = false, isCurrentQueue = true, isVisible = false))
         items
     }
 
@@ -35,7 +35,11 @@ class QueueAdapter(
 
     fun setItems(newItems: List<QueueCache>) {
         items.clear()
-        items.addAll(newItems)
+        if (newItems.isEmpty()) {
+            items.add(QueueCache(1, isDelay = false, isCurrentQueue = true, isVisible = false))
+        } else {
+            items.addAll(newItems)
+        }
         notifyDataSetChanged()
     }
 

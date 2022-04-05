@@ -7,7 +7,11 @@
         <variable
             name="vm"
             type="id.bluebird.mall.officer.ui.home.HomeViewModel" />
+
+        <import type="android.view.View" />
+
         <import type="id.bluebird.mall.officer.ui.home.queue_tab.FragmentType" />
+
     </data>
 
 
@@ -36,8 +40,8 @@
             layout="@layout/item_queue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:fragmentType="@{FragmentType.WAITING}"
             android:layout_marginTop="8dp"
+            app:fragmentType="@{FragmentType.WAITING}"
             app:item="@{vm.currentQueue}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
