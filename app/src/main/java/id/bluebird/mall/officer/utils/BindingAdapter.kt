@@ -43,15 +43,25 @@ object BindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:enable", "app:VmIsNoNull")
-    fun setAppEnable(view: View, bool: Boolean?, vm: HomeViewModel?) {
-        view.isClickable = bool == true && vm != null
+    @BindingAdapter("app:enable")
+    fun setAppEnable(view: View, bool: Boolean?) {
+        view.isClickable = bool == true
     }
 
     @JvmStatic
     @BindingAdapter("app:show")
     fun setVisibility(view: View, bool: Boolean?) {
         view.visibility = if (bool == false) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:showw")
+    fun setVisibility(view: View, item: QueueCache?) {
+        view.visibility = if (!item!!.isCurrentQueue) {
             View.GONE
         } else {
             View.VISIBLE
@@ -163,8 +173,9 @@ object BindingAdapter {
 
     @JvmStatic
     @BindingAdapter("app:callQueueButton")
-    fun callQueueButton(imageView: ImageView, item: QueueCache) {
-        if (item.isCurrentQueue) {
+    fun callQueueButton(imageView: ImageView, bool: Boolean) {
+        if (bool) {
+            imageView.setBackgroundResource(android.R.color.transparent)
             imageView.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     imageView.context.resources,

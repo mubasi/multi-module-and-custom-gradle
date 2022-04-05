@@ -147,6 +147,12 @@ class HomeFragment : BaseFragment() {
                         ActionBottomSheet.TAG
                     )
                 }
+                is HomeState.RestoreQueue -> {
+                    ActionBottomSheet(Action.RESTORE, it.item).show(
+                        childFragmentManager,
+                        ActionBottomSheet.TAG
+                    )
+                }
                 is HomeState.SuccessRitase -> {
                     val number = "${getString(R.string.number_queue_message)} ${it.queueNumber}"
                     val message =
@@ -163,7 +169,11 @@ class HomeFragment : BaseFragment() {
                 }
                 is HomeState.SuccessSkiped -> {
                     val message =
-                        "${getString(R.string.number_queue_message)} ${it.queueNumber} ${getString(R.string.delay_success)}"
+                        "${getString(R.string.number_queue_message_caps)} ${it.queueNumber} ${
+                            getString(
+                                R.string.delay_success
+                            )
+                        }"
                     val spannable = SpannableString(message)
                     spannable.setSpan(
                         StyleSpan(Typeface.BOLD),
@@ -172,6 +182,22 @@ class HomeFragment : BaseFragment() {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                     topSnackBarDelay(spannable)
+                }
+                is HomeState.SuccessRestored -> {
+                    val message =
+                        "${getString(R.string.number_queue_message_caps)} ${it.queueNumber} ${
+                            getString(
+                                R.string.restore_success
+                            )
+                        }"
+                    val spannable = SpannableString(message)
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        0,
+                        16,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    topSnackBarSuccess(spannable)
                 }
                 is CommonState.Error -> {
                     cancelAllDialog()

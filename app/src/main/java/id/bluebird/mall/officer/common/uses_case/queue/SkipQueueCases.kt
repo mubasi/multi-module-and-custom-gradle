@@ -41,9 +41,9 @@ class SkipQueueCasesImpl : SkipQueueCases {
         delayQueue[currentQueue.number] = currentQueue
     }
 
-    private fun getNextQueue(waitingQueue: HashMap<Long, QueueCache>): QueueCache? {
+    private fun getNextQueue(waitingQueue: HashMap<Long, QueueCache>): QueueCache {
         if (waitingQueue.isEmpty()) {
-            return null
+            return QueueCache()
         }
         val newCurrentQueue = if (waitingQueue.size == 1) {
             waitingQueue.values.first()

@@ -1,7 +1,9 @@
 package id.bluebird.mall.officer.utils
 
+import android.content.Context
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.GeneralError
 import id.bluebird.mall.officer.common.network.model.ErrorModel
 import okhttp3.ResponseBody
@@ -11,8 +13,16 @@ import javax.net.ssl.HttpsURLConnection
 class ExceptionHandler {
     companion object {
         const val RESPONSE_BODY_IS_NULL = "body_null"
+        const val OFFICER_NOT_FOUND = "officer not found"
 
         private const val UNKNOWN = "unknown"
+
+        fun getTranslateErrorToIndonesia(context: Context, e: String): String {
+            return when (e) {
+                OFFICER_NOT_FOUND -> context.getString(R.string.user_not_found)
+                else -> context.getString(R.string.error_is_unknown)
+            }
+        }
 
         fun generateExceptionCode(code: Int?, errorBody: ResponseBody?): GeneralError {
             if (code == null) {

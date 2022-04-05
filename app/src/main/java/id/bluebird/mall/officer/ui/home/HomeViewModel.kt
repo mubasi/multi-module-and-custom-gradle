@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.HomeState
+import id.bluebird.mall.officer.common.uses_case.queue.QueueCaseModel
 import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCases
 import id.bluebird.mall.officer.common.uses_case.queue.RitaseCase
 import id.bluebird.mall.officer.common.uses_case.queue.SkipQueueCases
@@ -50,7 +51,7 @@ class HomeViewModel(
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
-        currentQueue.value = QueueCache(999, isDelay = false, isCurrentQueue = true)
+        currentQueue.value = QueueCache(1, isDelay = false, isCurrentQueue = true)
     }
 
     fun logout() {
@@ -67,9 +68,9 @@ class HomeViewModel(
             delay(2000)
             randomCounter()
             lastSync.postValue("Last sync: ${DateUtils.getLastSycnFormat()}")
-            val random = Random.nextInt(1, 15)
+            val random = Random.nextInt(2, 18)
             val t = random.div(2)
-            for (i in 1 until t) {
+            for (i in 2 until t) {
                 waitings[i.toLong()] =
                     QueueCache(i.toLong(), isDelay = false, isCurrentQueue = false)
             }
@@ -104,6 +105,20 @@ class HomeViewModel(
         }
     }
 
+    private fun doRestoreQueue(item: QueueCache) {
+        viewModelScope.launch(dispatcher) {
+            restoreQueueCases.invoke(currentQueue.value, item, waitings, delays)
+                .catch { cause: Throwable ->
+                    _homeState.postValue(CommonState.Error(cause))
+                }.collectLatest {
+                    notifyDataQueueChanged(it)
+                    if (it.currentQueue != null) {
+                        _homeState.postValue(HomeState.SuccessRestored(it.currentQueue.getQueue()))
+                    }
+                }
+        }
+    }
+
     private fun skipCurrentQueue() {
         viewModelScope.launch(dispatcher) {
             skipQueueCases.invoke(currentQueue.value, waitings, delays)
@@ -111,11 +126,7 @@ class HomeViewModel(
                     _homeState.postValue(CommonState.Error(cause))
                 }
                 .collectLatest {
-                    currentQueue.postValue(it.currentQueue)
-                    delays.putAll(it.delayQueue)
-                    queueDelay.postValue(delays.values.toList())
-                    waitings.putAll(it.waitingQueue)
-                    queueWaiting.postValue(waitings.values.toList())
+                    notifyDataQueueChanged(it)
                     if (it.currentQueue != null) {
                         _homeState.postValue(HomeState.SuccessSkiped(it.currentQueue.getQueue()))
                     }
@@ -124,22 +135,9 @@ class HomeViewModel(
     }
 
     fun restoreQueue(item: QueueCache) {
-        viewModelScope.launch(dispatcher) {
-            restoreQueueCases.invoke(currentQueue.value, item, waitings, delays)
-                .catch { cause: Throwable ->
-                    _homeState.postValue(CommonState.Error(cause))
-                }.collectLatest {
-                    currentQueue.postValue(it.currentQueue)
-                    delays.putAll(it.delayQueue)
-                    queueDelay.postValue(delays.values.toList())
-                    waitings.putAll(it.waitingQueue)
-                    queueWaiting.postValue(waitings.values.toList())
-                    if (it.currentQueue != null) {
-                        _homeState.postValue(HomeState.SuccessSkiped(it.currentQueue.getQueue()))
-                    }
-                }
-        }
+        _homeState.value = HomeState.RestoreQueue(item)
     }
+
 
     fun callCurrentQueue() {
         delayCallTimer.value?.let {
@@ -186,6 +184,11 @@ class HomeViewModel(
             Action.LOGOUT -> {
                 doLogout()
             }
+            Action.RESTORE -> {
+                item?.let {
+                    doRestoreQueue(it)
+                }
+            }
         }
     }
 
@@ -199,9 +202,10 @@ class HomeViewModel(
                 .collectLatest {
                     currentQueue.postValue(it.currentQueue)
                     waitings.putAll(it.waitingQueue)
-                    queueWaiting.postValue(it.waitingQueue.values.toList())
+                    queueWaiting.postValue(sortQueue(it.waitingQueue))
                     _homeState.value =
                         HomeState.SuccessRitase(currentQueue.value?.getQueue() ?: "-")
+                    delayCallTimer.postValue(MAX_TIMER)
                 }
         }
     }
@@ -220,5 +224,23 @@ class HomeViewModel(
                 _homeState.postValue(HomeState.LogoutSuccess)
             }
         }
+    }
+
+    private fun sortQueue(queueMap: HashMap<Long, QueueCache>): List<QueueCache> {
+        return if (queueMap.isEmpty()) {
+            ArrayList()
+        } else {
+            val list = queueMap.values.toList()
+            return list.sortedBy { it.number }
+        }
+    }
+
+    private fun notifyDataQueueChanged(it: QueueCaseModel) {
+        currentQueue.postValue(it.currentQueue)
+        delays.putAll(it.delayQueue)
+        queueDelay.postValue(sortQueue(it.delayQueue))
+        waitings.putAll(it.waitingQueue)
+        queueWaiting.postValue(sortQueue(it.waitingQueue))
+        delayCallTimer.postValue(MAX_TIMER)
     }
 }
