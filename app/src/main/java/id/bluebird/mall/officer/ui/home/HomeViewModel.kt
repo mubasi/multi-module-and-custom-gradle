@@ -216,6 +216,9 @@ class HomeViewModel(
 
     fun changeIndicator(isConnected: Boolean) {
         connectionState.value = isConnected
+        if (isConnected.not()) {
+            _homeState.value = CommonState.ConnectionNotFound
+        }
     }
 
     private fun doLogout() {

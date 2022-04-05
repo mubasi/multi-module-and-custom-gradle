@@ -12,6 +12,7 @@ sealed class GeneralError : LoginState {
 sealed class CommonState : LoginState, HomeState {
     object Progress : CommonState()
     object Idle : CommonState()
+    object ConnectionNotFound : CommonState()
     data class Error(val error: Throwable) : CommonState()
 }
 

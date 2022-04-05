@@ -14,12 +14,18 @@ class ExceptionHandler {
     companion object {
         const val RESPONSE_BODY_IS_NULL = "body_null"
         const val OFFICER_NOT_FOUND = "officer not found"
+        const val CONNECTION_NOT_FOUND = "connectionNotFound"
+        const val SEARCH_CANNOT_EMPTY = "SearchCannotEmpty"
+        const val SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER = "searchNotLessThanTwo"
 
         private const val UNKNOWN = "unknown"
 
-        fun getTranslateErrorToIndonesia(context: Context, e: String): String {
+        fun getTranslateErrorToIndonesia(context: Context, e: String?): String {
             return when (e) {
                 OFFICER_NOT_FOUND -> context.getString(R.string.user_not_found)
+                CONNECTION_NOT_FOUND -> context.getString(R.string.connection_not_found)
+                SEARCH_CANNOT_EMPTY -> context.getString(R.string.search_cannot_empty)
+                SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER -> context.getString(R.string.search_cannot_less_than_two)
                 else -> context.getString(R.string.error_is_unknown)
             }
         }
