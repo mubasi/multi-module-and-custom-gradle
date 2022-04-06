@@ -21,6 +21,7 @@ class RitaseDialogFragment : DialogFragment() {
 
     private val mHomeViewModel: HomeViewModel by sharedViewModel()
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -30,6 +31,7 @@ class RitaseDialogFragment : DialogFragment() {
             it.requestWindowFeature(STYLE_NO_TITLE)
             it.setCancelable(false)
         }
+        mHomeViewModel.taxiNumber.value = ""
         return null
     }
 
