@@ -121,23 +121,27 @@ class HomeViewModel(
 
     private fun skipCurrentQueue() {
         viewModelScope.launch(dispatcher) {
-            skipQueueCases.invoke(currentQueue.value, waitings, delays)
-                .catch { cause: Throwable ->
-                    _homeState.postValue(CommonState.Error(cause))
-                }
-                .collectLatest {
-                    notifyDataQueueChanged(it)
-                    if (it.currentQueue != null) {
-                        _homeState.postValue(HomeState.SuccessSkiped(it.currentQueue.getQueue()))
+            val tempCurrentQueue = currentQueue.value
+            if (tempCurrentQueue != null) {
+                skipQueueCases.invoke(currentQueue.value, waitings, delays)
+                    .catch { cause: Throwable ->
+                        _homeState.postValue(CommonState.Error(cause))
                     }
-                }
+                    .collectLatest {
+                        notifyDataQueueChanged(it)
+                        if (it.currentQueue != null) {
+                            _homeState.postValue(HomeState.SuccessSkiped(tempCurrentQueue.getQueue()))
+                        }
+                    }
+            } else {
+                _homeState.postValue(HomeState.CurrentQueueIsEmpty)
+            }
         }
     }
 
     fun restoreQueue(item: QueueCache) {
         _homeState.value = HomeState.RestoreQueue(item)
     }
-
 
     fun callCurrentQueue() {
         delayCallTimer.value?.let {

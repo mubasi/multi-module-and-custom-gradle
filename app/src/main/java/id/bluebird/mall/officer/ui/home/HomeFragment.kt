@@ -19,6 +19,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
+import id.bluebird.mall.officer.common.GeneralError
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.databinding.FragmentHomeBinding
 import id.bluebird.mall.officer.ui.BaseFragment
@@ -211,6 +212,15 @@ class HomeFragment : BaseFragment() {
                 }
                 HomeState.ParamSearchQueueLessThanTwo -> {
                     topSnackBarError(ExceptionHandler.SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER)
+                }
+                CommonState.Progress -> {
+                    // do nothing
+                }
+                HomeState.CurrentQueueIsEmpty -> {
+                    topSnackBarError(ExceptionHandler.CURRENT_QUEUE_CANNOT_EMPTY)
+                }
+                else -> {
+                    generalError(it as GeneralError)
                 }
             }
         }
