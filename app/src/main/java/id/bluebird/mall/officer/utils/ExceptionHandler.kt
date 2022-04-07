@@ -17,6 +17,7 @@ class ExceptionHandler {
         const val CONNECTION_NOT_FOUND = "connectionNotFound"
         const val SEARCH_CANNOT_EMPTY = "SearchCannotEmpty"
         const val SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER = "searchNotLessThanTwo"
+        const val CURRENT_QUEUE_CANNOT_EMPTY = "cannotCannotEmpty"
 
         private const val UNKNOWN = "unknown"
 
@@ -26,6 +27,7 @@ class ExceptionHandler {
                 CONNECTION_NOT_FOUND -> context.getString(R.string.connection_not_found)
                 SEARCH_CANNOT_EMPTY -> context.getString(R.string.search_cannot_empty)
                 SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER -> context.getString(R.string.search_cannot_less_than_two)
+                CURRENT_QUEUE_CANNOT_EMPTY -> context.getString(R.string.current_cannot_empty)
                 else -> context.getString(R.string.error_is_unknown)
             }
         }

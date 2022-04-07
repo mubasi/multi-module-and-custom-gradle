@@ -2,7 +2,7 @@ package id.bluebird.mall.officer.common
 
 import id.bluebird.mall.officer.ui.home.model.QueueCache
 
-sealed class GeneralError : LoginState {
+sealed class GeneralError : LoginState, HomeState {
     data class UnAuthorize(val message: String) : GeneralError()
     data class NotFound(val message: String) : GeneralError()
     data class NullPointerException(val message: String) : GeneralError()
@@ -28,6 +28,7 @@ sealed interface HomeState {
     object Logout : HomeState
     object LogoutSuccess : HomeState
     object DummyIndicator : HomeState
+    object CurrentQueueIsEmpty : HomeState
     object OnSync : HomeState
     object ParamSearchQueueEmpty : HomeState
     object ParamSearchQueueLessThanTwo : HomeState
