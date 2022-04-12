@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.officer.common.CommonState
+import id.bluebird.mall.officer.common.HomeDialogState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.common.uses_case.queue.QueueCaseModel
 import id.bluebird.mall.officer.common.uses_case.queue.RestoreQueueCases
@@ -36,6 +37,10 @@ class HomeViewModel(
     private val _homeState: MutableLiveData<HomeState> = MutableLiveData()
     var homeState = _homeState
 
+    private val _homeDialogState: MutableLiveData<HomeDialogState> = MutableLiveData()
+    var homeDialogState = _homeDialogState
+
+    val subLocationInitial: MutableLiveData<String> = MutableLiveData("A.")
     val queueDelay: MutableLiveData<List<QueueCache>> = MutableLiveData()
     val queueWaiting: MutableLiveData<List<QueueCache>> = MutableLiveData()
     val taxiNumber: MutableLiveData<String> = MutableLiveData()
@@ -48,6 +53,7 @@ class HomeViewModel(
     val counter: MutableLiveData<CounterModel> = MutableLiveData(CounterModel())
     private val delays: HashMap<Long, QueueCache> = HashMap()
     private val waitings: HashMap<Long, QueueCache> = HashMap()
+    private var mTempCurrentQueue: QueueCache = QueueCache()
 
     init {
         locationName.value = "Gandaria City, ${DateUtils.getTodayDate()}"
@@ -62,13 +68,17 @@ class HomeViewModel(
         _homeState.value = CommonState.Idle
     }
 
+    fun homeDialogStateIdle() {
+        _homeDialogState.value = HomeDialogState.Idle
+    }
+
     fun sync() {
         viewModelScope.launch(dispatcher) {
             _homeState.postValue(HomeState.OnSync)
             delay(2000)
             randomCounter()
             lastSync.postValue("Last sync: ${DateUtils.getLastSycnFormat()}")
-            val random = Random.nextInt(2, 18)
+            val random = Random.nextInt(2, 50)
             val t = random.div(2)
             for (i in 2 until t) {
                 waitings[i.toLong()] =
@@ -107,7 +117,9 @@ class HomeViewModel(
 
     private fun doRestoreQueue(item: QueueCache) {
         viewModelScope.launch(dispatcher) {
-            restoreQueueCases.invoke(currentQueue.value, item, waitings, delays)
+            val tempCurrentQueue =
+                if (mTempCurrentQueue.number > 0) mTempCurrentQueue else currentQueue.value
+            restoreQueueCases.invoke(tempCurrentQueue, item, waitings, delays)
                 .catch { cause: Throwable ->
                     _homeState.postValue(CommonState.Error(cause))
                 }.collectLatest {
@@ -115,6 +127,8 @@ class HomeViewModel(
                     if (it.currentQueue != null) {
                         _homeState.postValue(HomeState.SuccessRestored(it.currentQueue.getQueue()))
                     }
+                    mTempCurrentQueue = QueueCache()
+                    searchQueue.postValue("")
                 }
         }
     }
@@ -139,9 +153,6 @@ class HomeViewModel(
         }
     }
 
-    fun restoreQueue(item: QueueCache) {
-        _homeState.value = HomeState.RestoreQueue(item)
-    }
 
     fun callCurrentQueue() {
         delayCallTimer.value?.let {
@@ -152,12 +163,16 @@ class HomeViewModel(
         }
     }
 
+    fun restoreQueue(item: QueueCache) {
+        _homeDialogState.value = HomeDialogState.RestoreQueue(item)
+    }
+
     fun skipCurrentQueue(item: QueueCache) {
-        _homeState.value = HomeState.SkipCurrentQueue(item)
+        _homeDialogState.value = HomeDialogState.SkipCurrentQueue(item)
     }
 
     fun successCurrentQueue(queue: String) {
-        _homeState.value = HomeState.SuccessCurrentQueue(queue)
+        _homeDialogState.value = HomeDialogState.SuccessCurrentQueue(queue)
     }
 
     fun actionSearch() {
@@ -166,16 +181,43 @@ class HomeViewModel(
                 _homeState.value = HomeState.ParamSearchQueueEmpty
             }
             searchQueue.value != null -> {
-                searchQueue.value?.let {
-                    if (it.length < 2) {
+                searchQueue.value?.let { param ->
+                    if (param.length < 2) {
                         _homeState.value = HomeState.ParamSearchQueueLessThanTwo
                     } else {
-                        // implementation search
-                        _homeState.value = CommonState.Idle
+                        // dummyData
+                        currentQueue.value?.let {
+                            val searchParam = "${subLocationInitial.value}$param"
+                            val result = if (it.getQueue() == searchParam) {
+                                it
+                            } else {
+                                val delay = delays[param.toLong()]
+                                val waiting = waitings[param.toLong()]
+                                delay ?: waiting
+                            }
+                            if (result == null) {
+                                _homeState.postValue(HomeState.SearchResultIsEmpty)
+                            } else {
+                                replaceTempCurrentQueue(result)
+                                _homeState.postValue(HomeState.ShowSearchResult)
+                            }
+                        }
+
                     }
                 }
             }
         }
+    }
+
+    fun onSearchTextChanged(text: CharSequence) {
+        if (text.isEmpty()) {
+            _homeState.value = CommonState.Idle
+            rollBackTempCurrent()
+        }
+    }
+
+    fun clearSearchQueue() {
+        searchQueue.value = ""
     }
 
     fun submitBottomSheet(action: Action, item: QueueCache?) {
@@ -249,5 +291,19 @@ class HomeViewModel(
         waitings.putAll(it.waitingQueue)
         queueWaiting.postValue(sortQueue(it.waitingQueue))
         delayCallTimer.postValue(MAX_TIMER)
+    }
+
+    private fun rollBackTempCurrent() {
+        if (mTempCurrentQueue.number > 0) {
+            currentQueue.postValue(mTempCurrentQueue)
+            mTempCurrentQueue = QueueCache()
+        }
+    }
+
+    private fun replaceTempCurrentQueue(queueCache: QueueCache) {
+        if (!queueCache.isCurrentQueue) {
+            mTempCurrentQueue = currentQueue.value ?: QueueCache()
+            currentQueue.value = queueCache
+        }
     }
 }

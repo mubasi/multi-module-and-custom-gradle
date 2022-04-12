@@ -56,6 +56,7 @@ class RitaseDialogFragment : DialogFragment() {
         mHomeViewModel.homeState.observe(this) {
             when (it) {
                 is HomeState.SuccessRitase -> {
+                    mHomeViewModel.homeDialogStateIdle()
                     dismiss()
                 }
             }

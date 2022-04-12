@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
@@ -200,6 +201,18 @@ object BindingAdapter {
     fun cancelDialogRitase(view: View, dialog: Dialog) {
         view.setOnClickListener {
             dialog.cancel()
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:displayQueueTitle")
+    fun setMessageForQueueTittle(textView: TextView, queueCache: QueueCache?) {
+        queueCache?.let {
+            textView.text = when {
+                queueCache.isCurrentQueue -> textView.context.getString(R.string.current_queue)
+                queueCache.isDelay -> textView.context.getString(R.string.delay)
+                else -> textView.context.getString(R.string.waiting)
+            }
         }
     }
 }

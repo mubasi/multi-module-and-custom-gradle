@@ -83,6 +83,7 @@ class ActionBottomSheet(
                 is HomeState.SuccessSkiped,
                 is HomeState.SuccessRestored,
                 is HomeState.LogoutSuccess -> {
+                    mHomeViewModel.homeDialogStateIdle()
                     dismiss()
                 }
             }
