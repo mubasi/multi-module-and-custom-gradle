@@ -13,9 +13,12 @@ data class QueueCache(
     fun getQueue(): String = "${subLocation}.${
         when {
             number < 10 -> {
-                "00${number}"
+                "000${number}"
             }
             number < 100 -> {
+                "00$number"
+            }
+            number < 1000 -> {
                 "0$number"
             }
             else -> number

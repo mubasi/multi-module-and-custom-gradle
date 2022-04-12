@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import id.bluebird.mall.officer.R
 import id.bluebird.mall.officer.common.CommonState
 import id.bluebird.mall.officer.common.GeneralError
+import id.bluebird.mall.officer.common.HomeDialogState
 import id.bluebird.mall.officer.common.HomeState
 import id.bluebird.mall.officer.databinding.FragmentHomeBinding
 import id.bluebird.mall.officer.ui.BaseFragment
@@ -51,8 +52,8 @@ class HomeFragment : BaseFragment() {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
         mBinding.vm = mHomeViewModel
         mBinding.lifecycleOwner = this
-        mVp2Home = mBinding.includeViewPagerHome.vpHome
-        mTabLayout = mBinding.includeViewPagerHome.tlHome
+        mVp2Home = mBinding.llMainBodyHome.includeViewPagerHome.vpHome
+        mTabLayout = mBinding.llMainBodyHome.includeViewPagerHome.tlHome
         return mBinding.root
     }
 
@@ -110,10 +111,30 @@ class HomeFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         mHomeViewModel.homeStateOnIdle()
+        mHomeViewModel.homeDialogStateIdle()
         cancelAllDialog()
     }
 
     private fun homeStateListener() {
+        mHomeViewModel.homeDialogState.observe(viewLifecycleOwner) {
+            when (it) {
+                is HomeDialogState.SuccessCurrentQueue -> {
+                    RitaseDialogFragment().show(childFragmentManager, RitaseDialogFragment.TAG)
+                }
+                is HomeDialogState.SkipCurrentQueue -> {
+                    ActionBottomSheet(Action.SKIP, it.item).show(
+                        childFragmentManager,
+                        ActionBottomSheet.TAG
+                    )
+                }
+                is HomeDialogState.RestoreQueue -> {
+                    ActionBottomSheet(Action.RESTORE, it.item).show(
+                        childFragmentManager,
+                        ActionBottomSheet.TAG
+                    )
+                }
+            }
+        }
         mHomeViewModel.homeState.observe(viewLifecycleOwner) {
             when (it) {
                 HomeState.Logout -> {
@@ -140,21 +161,7 @@ class HomeFragment : BaseFragment() {
                 HomeState.DummyIndicator -> {
                     dialogIndicatorSample()
                 }
-                is HomeState.SuccessCurrentQueue -> {
-                    RitaseDialogFragment().show(childFragmentManager, RitaseDialogFragment.TAG)
-                }
-                is HomeState.SkipCurrentQueue -> {
-                    ActionBottomSheet(Action.SKIP, it.item).show(
-                        childFragmentManager,
-                        ActionBottomSheet.TAG
-                    )
-                }
-                is HomeState.RestoreQueue -> {
-                    ActionBottomSheet(Action.RESTORE, it.item).show(
-                        childFragmentManager,
-                        ActionBottomSheet.TAG
-                    )
-                }
+
                 is HomeState.SuccessRitase -> {
                     val number = "${getString(R.string.number_queue_message)} ${it.queueNumber}"
                     val message =
@@ -213,6 +220,8 @@ class HomeFragment : BaseFragment() {
                 HomeState.ParamSearchQueueLessThanTwo -> {
                     topSnackBarError(ExceptionHandler.SEARCH_CANNOT_LESS_THAN_TWO_CHARACTER)
                 }
+                HomeState.SearchResultIsEmpty,
+                HomeState.ShowSearchResult,
                 CommonState.Progress -> {
                     // do nothing
                 }

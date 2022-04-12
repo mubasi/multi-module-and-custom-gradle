@@ -32,12 +32,18 @@ sealed interface HomeState {
     object OnSync : HomeState
     object ParamSearchQueueEmpty : HomeState
     object ParamSearchQueueLessThanTwo : HomeState
+    object ShowSearchResult : HomeState
+    object SearchResultIsEmpty : HomeState
     data class SuccessRitase(val queueNumber: String) : HomeState
     data class SuccessSkiped(val queueNumber: String) : HomeState
     data class SuccessRestored(val queueNumber: String) : HomeState
-    data class SkipCurrentQueue(val item: QueueCache) : HomeState
-    data class RestoreQueue(val item: QueueCache) : HomeState
-    data class SuccessCurrentQueue(val queueNumber: String) : HomeState
+}
+
+sealed interface HomeDialogState {
+    object Idle : HomeDialogState
+    data class SkipCurrentQueue(val item: QueueCache) : HomeDialogState
+    data class RestoreQueue(val item: QueueCache) : HomeDialogState
+    data class SuccessCurrentQueue(val queueNumber: String) : HomeDialogState
 }
 
 sealed class CasesResult<out T : Any> {
