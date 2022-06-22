@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="vm"
+            type="id.bluebird.mall.home.HomeViewModel" />
+
+        <variable
+            name="item"
+            type="id.bluebird.mall.home.model.QueueCache" />
+
+        <variable
+            name="fragmentType"
+            type="id.bluebird.mall.home.queue_tab.FragmentType" />
+
+        <import type="id.bluebird.mall.home.queue_tab.FragmentType" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/cl_queue_parent_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sixty_sp"
+        android:background="@drawable/bg_search_queue_home"
+        android:visibility="@{item.visible ? View.VISIBLE: View.GONE, default=visible}"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_tittle_queue_home">
+
+        <LinearLayout
+            android:id="@+id/ll_queue_number_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/sixty_sp"
+            android:paddingTop="@dimen/eight_dp"
+            android:paddingEnd="@dimen/sixty_sp"
+            android:paddingBottom="@dimen/eight_dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="@string/number_queue"
+                android:textColor="@color/gray_subtitle" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/ubuntu_bold"
+                android:maxLength="6"
+                android:text="@{item.getQueue()}"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_line_current_queue"
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:background="@color/search_line_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/ll_queue_number_item"
+            app:layout_constraintRight_toLeftOf="@id/ll_main_action_button_home"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/ll_main_action_button_home"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/view_line_current_queue"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginStart="@dimen/sixty_dp"
+                android:layout_marginEnd="@dimen/sixty_dp"
+                android:background="@drawable/bg_cancel_bottom_sheet_action"
+                android:fontFamily="@font/ubuntu_bold"
+                android:onClick="@{() -> vm.restoreQueue(item)}"
+                android:text="@string/restore"
+                android:textAllCaps="false"
+                android:textColor="@color/primary_color"
+                android:visibility="@{fragmentType == FragmentType.DELAY ? View.VISIBLE: View.GONE, default=visible}" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_current_queue_button_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{fragmentType == FragmentType.WAITING ? View.VISIBLE: View.GONE, default=gone}">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_call_queue_item"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:onClick="@{() -> vm.callCurrentQueue()}"
+                    app:enable="@{item.currentQueue}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/imv_delay_queue_item"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:max="@{vm.MAX_TIMER}"
+                        android:progress="@{vm.delayCallTimer}"
+                        app:indicatorColor="@color/success_color_third"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:showw="@{item}"
+                        app:trackColor="@color/search_line_color"
+                        app:trackThickness="19dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:scaleType="center"
+                        app:callQueueButton="@{item.currentQueue}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imv_delay_queue_item"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:onClick="@{() -> vm.skipCurrentQueue(item)}"
+                    android:scaleType="center"
+                    app:delayQueueButton="@{item.currentQueue}"
+                    app:enable="@{item.currentQueue}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/cl_call_queue_item"
+                    app:layout_constraintRight_toLeftOf="@id/imv_success_queue_item"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imv_success_queue_item"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:onClick="@{() -> vm.successCurrentQueue(item.getQueue())}"
+                    android:scaleType="center"
+                    app:enable="@{item.currentQueue}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/imv_delay_queue_item"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:successQueueButton="@{item.currentQueue}">
+
+                </androidx.appcompat.widget.AppCompatImageView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

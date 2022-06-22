@@ -1,8 +1,8 @@
-const val kotlin_version = "1.5.21"
+const val kotlin_version = "1.6.10"
 
 object MainGradle {
-    val gradle by lazy { "com.android.tools.build:gradle:4.2.2" }
-    val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.10" }
+    val gradle by lazy { "com.android.tools.build:gradle:7.0.0" }
+    val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.18" }
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
     val google_service by lazy { "com.google.gms:google-services:4.3.3" }
     val firebase by lazy { "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta02" }
@@ -23,7 +23,7 @@ object Compose {
 }
 
 object Navigation {
-    private const val nav_version = "2.3.5"
+    private const val nav_version = "2.4.2"
 
     val compose by lazy { "androidx.navigation:navigation-compose:$nav_version" }
     val ktx by lazy { "androidx.navigation:navigation-fragment-ktx:$nav_version" }
@@ -32,8 +32,16 @@ object Navigation {
 
 }
 
+object Hilt {
+    private const val version = "2.38.1"
+    val gradle by lazy { "com.google.dagger:hilt-android-gradle-plugin:$version" }
+    val android by lazy { "com.google.dagger:hilt-android:$version" }
+    val compiler by lazy { "com.google.dagger:hilt-android-compiler:$version" }
+}
+
 object Plugins {
     val application by lazy { "com.android.application" }
+    val library by lazy { "com.android.library" }
     val android by lazy { "android" }
     val parcelize by lazy { "plugin.parcelize" }
     val android_extensions by lazy { "android-extensions" }
@@ -51,15 +59,16 @@ object Grpc {
 
     val okhttp by lazy { "io.grpc:grpc-okhttp:1.32.2" }
     val protobuf_lite by lazy { "io.grpc:grpc-protobuf-lite:$grpc_version" }
-    val stub by lazy { "io.grpc:grpc-stub:$grpc_version" }
+    val stub by lazy { "io.grpc:grpc-stub:1.40.1" }
     val android by lazy { "io.grpc:grpc-android:$grpc_version" }
     val java by lazy { "io.grpc:protoc-gen-grpc-kotlin:$grpc_version" }
-    val protobuf_artifact by lazy { "com.google.protobuf:protoc:3.9.1" }
+    val protobuf_artifact by lazy { "com.google.protobuf:protoc:$protobuf_version" }
     val java_artifact by lazy { "io.grpc:protoc-gen-grpc-kotlin:1.37.0" }
     val get_javalite_arifact by lazy { "com.google.protobuf:protoc-gen-javalite:3.0.0" }
-    val gen_artifact by lazy { "io.grpc:protoc-gen-grpc-kotlin:$grpc_version" }
-    val pb_java by lazy { "com.google.protobuf:protobuf-kotlin:$protobuf_version" }
-    val pb_java_utils by lazy { "com.google.protobuf:protobuf-kotlin-util:$protobuf_version" }
+    val gen_artifact by lazy { "io.grpc:protoc-gen-grpc-java:1.46.0" }
+    val pb_kotlin by lazy { "com.google.protobuf:protobuf-kotlin:$protobuf_version" }
+    val pb_java by lazy { "com.google.protobuf:protobuf-java:$protobuf_version" }
+    val pb_java_utils by lazy { "com.google.protobuf:protobuf-java-util:$protobuf_version" }
     val pb_google_apis by lazy { "com.google.api.grpc:googleapis-common-protos:0.0.3" }
 }
 
@@ -102,12 +111,13 @@ object UiMaterial {
 }
 
 object Koin {
-    private const val koin_version = "2.0.1"
+    private const val koin_version = "3.2.0"
 
-    val scope by lazy { "org.koin:koin-androidx-scope:$koin_version" }
-    val viewmodel by lazy { "org.koin:koin-androidx-viewmodel:$koin_version" }
-    val ext by lazy { "org.koin:koin-androidx-ext:$koin_version" }
-    val logging_interceptor by lazy { "com.squareup.okhttp3:logging-interceptor:4.2.0" }
+    val core by lazy { "io.insert-koin:koin-core:$koin_version" }
+    val test by lazy { "io.insert-koin:koin-test:$koin_version" }
+    val junit4 by lazy { "io.insert-koin:koin-test-junit4:$koin_version" }
+    val junit5 by lazy { "io.insert-koin:koin-test-junit5:$koin_version" }
+    val android by lazy { "io.insert-koin:koin-android:$koin_version" }
 }
 
 object Firebase {

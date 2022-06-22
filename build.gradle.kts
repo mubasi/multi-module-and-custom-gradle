@@ -12,6 +12,8 @@ buildscript {
         classpath(MainGradle.gradle)
         classpath(MainGradle.jacoco_gradle)
         classpath(MainGradle.sonarqube_gradle)
+        classpath(MainGradle.protobuf)
+        classpath(MainGradle.safe_args)
     }
 }
 

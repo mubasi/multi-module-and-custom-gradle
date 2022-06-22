@@ -2,40 +2,9 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/splash_nav">
 
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="id.bluebird.mall.officer.ui.splash.SplashFragment"
-        android:label="Splash">
-        <action
-            android:id="@+id/action_splashFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/login_fragment_in"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_splashFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:enterAnim="@anim/home_fragment_in"
-            app:exitAnim="@anim/home_fragment_out"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="id.bluebird.mall.officer.ui.login.LoginFragment"
-        android:label="LoginFragment">
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="id.bluebird.mall.officer.ui.home.HomeFragment"
-        android:label="HomeFragment">
-        <action
-            android:id="@+id/action_homeFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/loginFragment" />
-    </fragment>
+    <include app:graph="@navigation/splash_nav" />
+    <include app:graph="@navigation/login_nav" />
+    <include app:graph="@navigation/home_nav" />
 </navigation>
