@@ -126,7 +126,6 @@ dependencies {
     implementation(project(":feature_login"))
     implementation(project(":feature_splash"))
     implementation(project(":domain_user"))
-    implementation(project(":domain_queue"))
 }
 
 sonarqube {

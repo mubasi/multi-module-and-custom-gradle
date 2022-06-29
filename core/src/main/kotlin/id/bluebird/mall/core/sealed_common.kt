@@ -1,26 +1,18 @@
 package id.bluebird.mall.core
 
 
-sealed class GeneralError : LoginState, HomeState {
+sealed class GeneralError : HomeState {
     data class UnAuthorize(val message: String) : GeneralError()
     data class NotFound(val message: String) : GeneralError()
     data class NullPointerException(val message: String) : GeneralError()
     data class Unknown(val message: String) : GeneralError()
 }
 
-sealed class CommonState : LoginState, HomeState {
+sealed class CommonState : HomeState {
     object Progress : CommonState()
     object Idle : CommonState()
     object ConnectionNotFound : CommonState()
     data class Error(val error: Throwable) : CommonState()
-}
-
-sealed interface LoginState {
-    object Phone : LoginState
-    object Success : LoginState
-    object LoginIgnored : LoginState
-    object PasswordIsEmpty : LoginState
-    object UsernameIsEmpty : LoginState
 }
 
 sealed interface HomeState {

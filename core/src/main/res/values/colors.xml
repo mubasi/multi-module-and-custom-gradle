@@ -16,6 +16,7 @@
     <color name="error_color_third">#F8EAE8</color>
     <color name="rating_color">#C89B00</color>
     <color name="gray_disable">#888888</color>
+    <color name="gray_body_text">#666666</color>
     <color name="rating_color_second">#DEC366</color>
     <color name="success_color">#00B496</color>
     <color name="success_color_second">#66D2C0</color>

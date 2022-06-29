@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="not_found_title">Username atau password salah</string>
+    <string name="not_found_message">Silakan periksa kembali username atau password anda</string>
+    <string name="unknown_title">Tidak dikenal</string>
+    <string name="unknown_message">Maaf kesalahan tidak dikenal</string>
+    <string name="title_logo">Selamat datang di VSM Pangkalan</string>
+</resources>

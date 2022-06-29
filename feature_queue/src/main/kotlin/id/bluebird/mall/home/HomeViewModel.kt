@@ -11,21 +11,14 @@ import id.bluebird.mall.home.dialog.Action
 import id.bluebird.mall.home.model.CounterModel
 import id.bluebird.mall.home.model.QueueCache
 import id.bluebird.mall.home.utils.HomeDialogState
-import id.bluebird.mall.queue.RestoreQueueCases
-import id.bluebird.mall.queue.RitaseCase
-import id.bluebird.mall.queue.SkipQueueCases
 import id.bluebird.mall.user.domain.LogoutCases
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.random.Random
 
 class HomeViewModel(
-    private val skipQueueCases: SkipQueueCases,
-    private val restoreQueueCases: RestoreQueueCases,
     private val logoutCases: LogoutCases,
-    private val ritaseCase: RitaseCase,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
     ViewModel() {
@@ -121,13 +114,6 @@ class HomeViewModel(
             val tempCurrentQueue =
                 if (mTempCurrentQueue.number > 0) mTempCurrentQueue.number else currentQueue.value?.number
                     ?: -1
-            restoreQueueCases.invoke(tempCurrentQueue)
-                .catch { cause: Throwable ->
-                    _homeState.postValue(CommonState.Error(cause))
-                }.collect {
-                    mTempCurrentQueue = QueueCache()
-                    searchQueue.postValue("")
-                }
         }
     }
 
@@ -231,13 +217,6 @@ class HomeViewModel(
     fun submitRitaseDialog() {
         viewModelScope.launch {
             taxiNumber.value = ""
-            ritaseCase.invoke(1L)
-                .catch {
-                    // do nothing
-                }
-                .collectLatest {
-
-                }
         }
     }
 

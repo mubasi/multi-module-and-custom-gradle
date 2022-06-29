@@ -32,9 +32,9 @@ class SplashFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         Handler().postDelayed({
             val nav = if (AuthUtils.getAccessToken().isNotEmpty()) {
-                NavigationSealed.Home(this)
+                NavigationSealed.Home(R.id.splashFragment, this)
             } else {
-                NavigationSealed.Login(this)
+                NavigationSealed.Login(R.id.splashFragment, this)
             }
             NavigationNav.navigate(nav)
         }, 2000)

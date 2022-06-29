@@ -65,6 +65,5 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":domain_user"))
-    implementation(project(":domain_queue"))
     implementation(project(":navigation"))
 }

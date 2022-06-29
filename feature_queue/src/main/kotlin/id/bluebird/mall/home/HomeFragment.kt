@@ -143,7 +143,7 @@ class HomeFragment : BaseFragment() {
                 }
                 HomeState.LogoutSuccess -> {
                     AuthUtils.logout()
-                    NavigationNav.navigate(NavigationSealed.Login(this))
+                    NavigationNav.navigate(NavigationSealed.Login(null, this))
                 }
                 HomeState.OnSync -> {
                     requireActivity().window.setFlags(

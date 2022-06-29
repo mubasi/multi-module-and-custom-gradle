@@ -3,6 +3,7 @@ package id.bluebird.mall.navigation
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 
 object NavigationNav {
@@ -12,7 +13,8 @@ object NavigationNav {
         val request = NavDeepLinkRequest.Builder
             .fromUri(uri)
             .build()
-        findNavController(navigationSealed.fragment).navigate(request)
+        val navOptions = getNavOptions(navigationSealed.action)
+        findNavController(navigationSealed.fragment).navigate(request, navOptions = navOptions)
     }
 
     private fun getNavigateUri(navigationSealed: NavigationSealed): Uri {
@@ -23,4 +25,9 @@ object NavigationNav {
         }
         return "android-app://id.bluebird.mall/$target".toUri()
     }
+
+    private fun getNavOptions(action: Int?): NavOptions? =
+        if (action == null) null else NavOptions.Builder()
+            .setPopUpTo(destinationId = action, inclusive = true, saveState = false).build()
+
 }

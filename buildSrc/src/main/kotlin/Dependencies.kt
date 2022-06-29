@@ -57,7 +57,8 @@ object Grpc {
     private const val grpc_version = "1.24.2"
     private const val protobuf_version = "3.9.1"
 
-    val okhttp by lazy { "io.grpc:grpc-okhttp:1.32.2" }
+    val okhttp by lazy { "io.grpc:grpc-okhttp:1.46.0" }
+    val core by lazy { "io.grpc:grpc-core:1.46.0" }
     val protobuf_lite by lazy { "io.grpc:grpc-protobuf-lite:$grpc_version" }
     val stub by lazy { "io.grpc:grpc-stub:1.40.1" }
     val android by lazy { "io.grpc:grpc-android:$grpc_version" }
