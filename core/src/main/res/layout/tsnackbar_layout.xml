@@ -14,6 +14,8 @@
   ~ limitations under the License.
 -->
 <view xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     style="@style/Widget.Design.Snackbar"
     class="id.bluebird.mall.core.utils.top_snack.TSnackbar$SnackbarLayout"
     android:layout_width="match_parent"

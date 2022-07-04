@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_user">Cari pengguna</string>
+    <string name="users_space">Pengguna</string>
+    <string name="delete_user_message">"Yakin untuk menghapus "</string>
+    <string name="delete_user">Hapus pengguna</string>
+    <string name="non_active_user">Non aktifkan pengguna</string>
+    <string name="non_active_user_message">Yakin untuk non aktifkan</string>
+    <string name="created_success">berhasil dibuat</string>
+    <string name="edited_success">berhasil diubah</string>
+    <string name="location_not_selected">Lokasi belum dipilih</string>
+    <string name="name_must_not_empty">Nama tidak boleh kosong</string>
+    <string name="password_must_not_empty">Password tidak boleh kosong</string>
+    <string name="email_cannot_empty">Email tidak boleh kosong</string>
+    <string name="username_must_not_empty">Username tidak boleh kosong</string>
+    <string name="delete_user_success">berhasil di hapus</string>
+    <string name="force_logout_user_success">berhasil di non aktifkan</string>
+    <string name="get_users_failed">Gagal mendapatkan user</string>
+    <string name="back">Kembali</string>
+    <string name="active">Aktif</string>
+    <string name="yes">Iya</string>
+    <string name="non_active">Tidak aktif</string>
+</resources>

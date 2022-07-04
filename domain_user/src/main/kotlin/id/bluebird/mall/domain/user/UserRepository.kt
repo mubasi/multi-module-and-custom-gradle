@@ -6,5 +6,7 @@ import proto.UserOuterClass
 
 interface UserRepository {
     fun doLogin(loginParam: LoginParam): Flow<UserOuterClass.UserLoginResponse>
-    fun doLogout(id: Long)
+    fun forceLogout(uuid: String): Flow<UserOuterClass.ForceLogoutResponse>
+    fun deleteUser(uuid: String, by: Long): Flow<UserOuterClass.DeleteUserResponse>
+    fun searchUser(param: String): Flow<UserOuterClass.SearchUserResponse>
 }

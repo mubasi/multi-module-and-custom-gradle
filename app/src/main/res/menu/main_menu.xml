@@ -6,7 +6,7 @@
             android:icon="@drawable/ic_cross"
             android:title="@string/fleet_queue" />
         <item
-            android:id="@+id/queuePassengerFragment"
+            android:id="@+id/queue_passenger_nav"
             android:icon="@drawable/ic_armada_penumpang"
             android:title="@string/queue_passenger" />
         <item
@@ -14,7 +14,7 @@
             android:icon="@drawable/ic_cross"
             android:title="@string/monitor" />
         <item
-            android:id="@+id/action_user_setting"
+            android:id="@+id/user_management_nav"
             android:icon="@drawable/ic_cross"
             android:title="@string/user_setting" />
         <item

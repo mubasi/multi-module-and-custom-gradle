@@ -109,6 +109,7 @@ object UiMaterial {
     val recyclerview by lazy { "androidx.recyclerview:recyclerview:1.2.1" }
     val viewpager2 by lazy { "androidx.viewpager2:viewpager2:1.0.0" }
     val fragment by lazy { "androidx.fragment:fragment-ktx:1.3.5" }
+    val constrainlayout by lazy { "androidx.constraintlayout:constraintlayout:2.1.4" }
 }
 
 object Koin {

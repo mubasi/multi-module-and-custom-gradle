@@ -80,9 +80,9 @@ internal class MainActivity : AppCompatActivity() {
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(
-                    R.id.queuePassengerFragment,
+                    R.id.queue_passenger_nav,
                     R.id.action_monitoring,
-                    R.id.action_user_setting
+                    R.id.user_management_nav
                 ), mBinding.drawerLayout
             )
     }

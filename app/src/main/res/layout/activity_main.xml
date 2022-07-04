@@ -16,26 +16,40 @@
             android:layout_height="match_parent"
             tools:context=".ui.main.MainActivity">
 
-            <com.google.android.material.appbar.AppBarLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/appBar_home"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/white"
-                    app:titleTextColor="@android:color/black" />
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </com.google.android.material.appbar.AppBarLayout>
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@android:color/white"
+                        app:titleTextColor="@android:color/black" />
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/main_nav_host_fragment"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:defaultNavHost="true"
-                app:layout_anchorGravity="center" />
+                </com.google.android.material.appbar.AppBarLayout>
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/main_nav_host_fragment"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:defaultNavHost="true"
+                    app:layout_anchorGravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/appBar_home" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -46,12 +60,12 @@
             android:layout_gravity="start"
             android:background="@drawable/bg_main_nav_with_decor"
             android:fitsSystemWindows="true"
-            app:itemBackground="@drawable/bg_main_nav"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             app:headerLayout="@layout/nav_header_main"
-            app:itemTextColor="@android:color/white"
+            app:itemBackground="@drawable/bg_main_nav"
             app:itemIconTint="@color/nav_menu_icon_color"
+            app:itemTextColor="@android:color/white"
             app:menu="@menu/main_menu">
 
             <LinearLayout

@@ -1,6 +1,7 @@
 package id.bluebird.mall.domain.user.domain.usescases
 
 import id.bluebird.mall.core.utils.hawk.AuthUtils.putAccessToken
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.UserRepository
 import id.bluebird.mall.domain.user.domain.intercator.Login
 import id.bluebird.mall.domain.user.model.LoginParam
@@ -26,6 +27,14 @@ class LoginCaseImpl(private val userRepository: UserRepository) : Login {
             }
             emitAll(userRepository.doLogin(loginParam = param).transform {
                 val result = it.accessToken.putAccessToken()
+                UserUtils.putUser(
+                    userId = it.userId,
+                    locationId = it.locationId,
+                    uuid = it.uuid,
+                    userRole = it.userRole,
+                    username = username,
+                    fleetTypeId = it.fleetType
+                )
                 emit(result)
             })
         }

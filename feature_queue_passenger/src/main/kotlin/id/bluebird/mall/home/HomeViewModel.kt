@@ -7,18 +7,18 @@ import id.bluebird.mall.core.CommonState
 import id.bluebird.mall.core.HomeState
 import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
 import id.bluebird.mall.core.extensions.StringExtensions.getTodayDate
+import id.bluebird.mall.core.utils.hawk.UserUtils
+import id.bluebird.mall.domain.user.domain.intercator.ForceLogout
 import id.bluebird.mall.home.dialog.Action
 import id.bluebird.mall.home.model.CounterModel
 import id.bluebird.mall.home.model.QueueCache
 import id.bluebird.mall.home.utils.HomeDialogState
-import id.bluebird.mall.user.domain.LogoutCases
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collectLatest
 import kotlin.random.Random
 
 class HomeViewModel(
-    private val logoutCases: LogoutCases,
+    private val logoutCases: ForceLogout,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Default
 ) :
     ViewModel() {
@@ -233,7 +233,7 @@ class HomeViewModel(
 
     private fun doLogout() {
         viewModelScope.launch(dispatcher) {
-            logoutCases.invoke().collectLatest {
+            logoutCases.invoke(UserUtils.getUUID()).collect {
                 _homeState.postValue(HomeState.LogoutSuccess)
             }
         }

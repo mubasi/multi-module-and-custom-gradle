@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grey_color">#dedede</color>
+    <color name="bg_edit_text_color">#f8f8f8</color>
+    <color name="active_color">#009078</color>
+</resources>

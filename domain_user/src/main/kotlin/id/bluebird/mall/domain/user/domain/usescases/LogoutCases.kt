@@ -1,15 +1,18 @@
-package id.bluebird.mall.user.domain
+package id.bluebird.mall.domain.user.domain.usescases
 
+import id.bluebird.mall.domain.user.UserRepository
+import id.bluebird.mall.domain.user.domain.intercator.ForceLogout
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.transform
 
-interface LogoutCases {
-    operator fun invoke(): Flow<Boolean>
-}
+class LogoutCasesImpl(private val userRepository: UserRepository) : ForceLogout {
 
-class LogoutCasesImpl : LogoutCases {
-    override fun invoke(): Flow<Boolean> = flow {
-        kotlinx.coroutines.delay(1000)
-        emit(true)
+    override fun invoke(uuid: String): Flow<Boolean> = flow {
+        val response = userRepository.forceLogout(uuid)
+        emitAll(response.transform {
+            emit(true)
+        })
     }
 }
