@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_perimeter"
+            android:icon="@drawable/ic_cross"
+            android:title="@string/fleet_queue" />
+        <item
+            android:id="@+id/queuePassengerFragment"
+            android:icon="@drawable/ic_armada_penumpang"
+            android:title="@string/queue_passenger" />
+        <item
+            android:id="@+id/action_monitoring"
+            android:icon="@drawable/ic_cross"
+            android:title="@string/monitor" />
+        <item
+            android:id="@+id/action_user_setting"
+            android:icon="@drawable/ic_cross"
+            android:title="@string/user_setting" />
+        <item
+            android:id="@+id/action_logout"
+            android:icon="@drawable/ic_cross"
+            android:title="@string/exit" />
+    </group>
+</menu>

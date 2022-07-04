@@ -18,7 +18,7 @@ import org.koin.dsl.module
 object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
-        viewModel { HomeViewModel(get(), get()) }
+        viewModel { HomeViewModel(get()) }
     }
 
     private val userCases = module {

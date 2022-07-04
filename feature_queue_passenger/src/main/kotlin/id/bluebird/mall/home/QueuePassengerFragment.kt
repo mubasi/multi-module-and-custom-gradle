@@ -21,7 +21,7 @@ import id.bluebird.mall.core.GeneralError
 import id.bluebird.mall.core.HomeState
 import id.bluebird.mall.core.ui.BaseFragment
 import id.bluebird.mall.core.utils.hawk.AuthUtils
-import id.bluebird.mall.home.databinding.FragmentHomeBinding
+import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.dialog.Action
 import id.bluebird.mall.home.dialog.ActionBottomSheet
 import id.bluebird.mall.home.dialog.RitaseDialogFragment
@@ -31,9 +31,9 @@ import id.bluebird.mall.navigation.NavigationSealed
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class HomeFragment : BaseFragment() {
+class QueuePassengerFragment : BaseFragment() {
     private val mHomeViewModel: HomeViewModel by viewModel()
-    private lateinit var mBinding: FragmentHomeBinding
+    private lateinit var mBinding: FragmentQueuePassengerBinding
     private var mRitaseDialog: Dialog? = null
     private var mActionBottomSheet: Dialog? = null
     private lateinit var mVp2Home: ViewPager2
@@ -47,7 +47,8 @@ class HomeFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        mBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_queue_passenger, container, false)
         mBinding.vm = mHomeViewModel
         mBinding.lifecycleOwner = this
         mVp2Home = mBinding.llMainBodyHome.includeViewPagerHome.vpHome

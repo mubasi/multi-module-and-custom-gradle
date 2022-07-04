@@ -43,4 +43,8 @@
     <string name="connection_not_found">Anda belum terhubung..</string>
     <string name="current_cannot_empty">Antrian sekarang tidak boleh kosong</string>
     <string name="queue_not_found">Antrian tidak ditemukan</string>
+    <string name="vsm_pangkalan">Vsm Pangkalan</string>
+    <string name="fleet_queue">Antrian armada</string>
+    <string name="monitor">Pemantauan</string>
+    <string name="user_setting">Pengaturan pengguna</string>
 </resources>
