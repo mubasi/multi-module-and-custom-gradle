@@ -37,8 +37,8 @@ val unitTestReport = task<JacocoReport>("jacocoStageUnitTestReport") {
     sourceDirectories.setFrom(
         fileTree("${project.buildDir}") {
             include(
-                "src/main/java/**",
-                "src/main/kotlin/**"
+                "src/main/java/",
+                "src/main/kotlin/"
             )
         }
     )

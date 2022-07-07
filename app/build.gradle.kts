@@ -27,16 +27,17 @@ apply {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = Version.compileSdk
     defaultConfig {
         applicationId = "id.bluebird.mall.officer"
-        minSdk = 26
-        targetSdk = 31
-        versionCode = 1
-        versionName = "1.0.1"
+        minSdk = Version.minSdk
+        targetSdk = Version.targetSdk
+        versionCode = Version.versionCode
+        versionName = Version.versionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"http://localhost\"")
+        buildConfigField(type = "String", name = "BASE_URL", value = "\"http://localhost\"")
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
     }
 
     /** used for unit-test run with Junit5 */
@@ -77,27 +78,27 @@ android {
 
     sourceSets {
         val main by getting
-        main.res.srcDirs("src/main/res", "src/main/res/home")
+        main.res.srcDirs("src/main/res")
     }
 
-    flavorDimensions("env")
+    flavorDimensions.add("env")
 
     productFlavors {
         create("prod") {
-            manifestPlaceholders["appName"] = "Officer App"
+            manifestPlaceholders["appName"] = Version.appName
             dimension = "env"
         }
         create("stage") {
             dimension = "env"
             versionNameSuffix = " Staging"
             applicationIdSuffix = ".staging"
-            manifestPlaceholders["appName"] = "Officer App (Staging)"
+            manifestPlaceholders["appName"] = Version.appNameStaging
         }
         create("develop") {
             dimension = "env"
             versionNameSuffix = " Dev"
             applicationIdSuffix = ".dev"
-            manifestPlaceholders["appName"] = "Officer App (Dev)"
+            manifestPlaceholders["appName"] = Version.appNameDev
         }
     }
 
@@ -121,49 +122,13 @@ android {
     }
 }
 dependencies {
-    implementation(Kotlin.ktx)
-    implementation(Kotlin.coroutine_core)
-    implementation(Kotlin.coroutines_android)
-
-    implementation(Navigation.ktx)
-    implementation(Navigation.ui_ktx)
-    implementation(Navigation.fragment)
-
-    implementation(UiMaterial.appcompat)
-    implementation(UiMaterial.material)
-    implementation(UiMaterial.recyclerview)
-
-    implementation(Koin.scope)
-    implementation(Koin.viewmodel)
-    implementation(Koin.ext)
-
-    implementation(MqttPaho.client)
-    implementation(MqttPaho.android_service)
-
-    implementation(Lifecycle.runtime)
-
-    implementation(Retrofit2.retrofit)
-    implementation(Retrofit2.moshi)
-
-    implementation(platform(OkHttp.bom))
-    implementation(OkHttp.okhttp)
-    implementation(OkHttp.interceptor)
-
-    testImplementation(Mockk.mockk)
-    testImplementation(Mockk.agent_jvm)
-
-    testImplementation(Junit5.jupiter)
-    testImplementation(Junit5.suite)
-    testRuntimeOnly(Junit5.vintage_engine)
-
-    testImplementation(Junit.junit)
-    testImplementation(Kotlin.coroutines_test)
-    androidTestImplementation(Junit.android_junit)
-    androidTestImplementation(Junit.espresso_core)
-    testImplementation(OtherLib.turbin)
-    testImplementation(OtherLib.json)
-
-    implementation(OtherLib.hawk)
+    implementation(project(":core"))
+    implementation(project(":feature_queue_passenger"))
+    implementation(project(":feature_login"))
+    implementation(project(":feature_splash"))
+    implementation(project(":feature_user_management"))
+    implementation(project(":domain_user"))
+    implementation(project(":domain_location"))
 }
 
 sonarqube {
@@ -175,8 +140,8 @@ sonarqube {
         property("sonar.tests", "./src/test/java")
         property("sonar.test.inclusions", "**/*Test*/**")
         property("sonar.sourceEncoding", "UTF-8")
-        property("sonar.sources", "./src/main/")
-        property("sonar.java.coveragePlugin", "jacoco")
+        property("sonar.sources", "**/src/main/kotlin")
+        property("sonar.kotlin.coveragePlugin", "jacoco")
         property("sonar.junit.reportPaths", "build/test-results/testStageDebugUnitTest")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
@@ -184,5 +149,3 @@ sonarqube {
         )
     }
 }
-
-

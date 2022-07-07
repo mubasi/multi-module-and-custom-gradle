@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dialog"
+            type="android.app.Dialog" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="yesAction"
+            type="String" />
+
+        <variable
+            name="vm"
+            type="id.bluebird.mall.home.HomeViewModel" />
+
+        <variable
+            name="action"
+            type="id.bluebird.mall.home.dialog.Action" />
+
+        <variable
+            name="item"
+            type="id.bluebird.mall.home.model.QueueCache" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet_action"
+        android:padding="@dimen/sixty_dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imv_cancel_bottom_sheet_action"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_cross_disable"
+            app:cancelDialogRitase="@{dialog}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title_bottom_action_dialog"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="@{title}"
+            android:textColor="@color/gray_subtitle"
+            android:textSize="20sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tv_title_bottom_action_dialog"
+            app:layout_constraintRight_toRightOf="@id/tv_title_bottom_action_dialog"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_bottom_action_dialog">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_yes_bottom_sheet_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/sixty_dp"
+                android:background="@drawable/bg_button_enable_login"
+                android:fontFamily="@font/ubuntu_bold"
+                android:onClick="@{() -> vm.submitBottomSheet(action, item)}"
+                android:text="@{yesAction}"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/sixty_sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_cancel_bottom_sheet_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_cancel_bottom_sheet_action"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textColor="@color/primary_color"
+                app:cancelDialogRitase="@{dialog}" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

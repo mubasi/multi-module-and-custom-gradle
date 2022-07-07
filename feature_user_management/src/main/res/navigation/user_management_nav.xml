@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/user_management_nav"
+    app:startDestination="@id/userListFragment">
+
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="id.bluebird.mall.feature_user_management.list.UserListFragment"
+        android:label="@string/user_management_title">
+        <action
+            android:id="@+id/action_userListFragment_to_createUserFragment"
+            app:destination="@id/createUserFragment">
+            <argument
+                android:name="userId"
+                android:defaultValue="-1L"
+                app:argType="long" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/createUserFragment"
+        android:name="id.bluebird.mall.feature_user_management.create.CreateUserFragment"
+        android:label="CreateUserFragment">
+        <argument
+            android:name="userId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+</navigation>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sixty_dp">16dp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="thirty_six_dp">36dp</dimen>
+    <dimen name="thirty_two_dp">32dp</dimen>
+
+    //font
+    <dimen name="text_size">14sp</dimen>
+    <dimen name="sixty_sp">16sp</dimen>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/queue_passenger_nav"
+    app:startDestination="@id/queuePassengerFragment">
+
+    <fragment
+        android:id="@+id/queuePassengerFragment"
+        android:name="id.bluebird.mall.home.QueuePassengerFragment"
+        android:label="@string/queue_passenger">
+
+        <deepLink app:uri="android-app://id.bluebird.mall/home" />
+
+    </fragment>
+</navigation>
