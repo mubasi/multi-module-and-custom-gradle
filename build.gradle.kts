@@ -4,6 +4,7 @@ buildscript {
         google()
         mavenCentral()
         maven(url = "https://plugins.gradle.org/m2/")
+        maven(url = "https://jitpack.io")
         maven("https://repo.eclipse.org/content/repositories/paho-snapshots/")
 
     }
@@ -14,7 +15,6 @@ buildscript {
         classpath(MainGradle.sonarqube_gradle)
         classpath(MainGradle.protobuf)
         classpath(MainGradle.safe_args)
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }
 

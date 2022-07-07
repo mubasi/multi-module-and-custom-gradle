@@ -47,7 +47,7 @@ object Plugins {
     val android_extensions by lazy { "android-extensions" }
     val kapt by lazy { "kapt" }
     val protobuf by lazy { "com.google.protobuf" }
-    val safeargs by lazy { "androidx.navigation.safeargs.kotlin" }
+    val safeargs by lazy { "androidx.navigation.safeargs" }
     val gms by lazy { "com.google.gms.google-services" }
     val crashlytics by lazy { "com.google.firebase.crashlytics" }
     val sonarqube by lazy { "org.sonarqube" }

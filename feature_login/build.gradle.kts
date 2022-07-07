@@ -26,7 +26,6 @@ android {
             name = "VERSION_NAME",
             value = "\"${Version.versionName}\""
         )
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     tasks.withType<Test> {

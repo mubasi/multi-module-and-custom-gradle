@@ -37,6 +37,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(type = "String", name = "BASE_URL", value = "\"http://localhost\"")
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
     }
 
     /** used for unit-test run with Junit5 */
@@ -127,6 +128,7 @@ dependencies {
     implementation(project(":feature_splash"))
     implementation(project(":feature_user_management"))
     implementation(project(":domain_user"))
+    implementation(project(":domain_location"))
 }
 
 sonarqube {

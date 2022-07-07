@@ -6,8 +6,6 @@
     <string name="delete_user">Hapus pengguna</string>
     <string name="non_active_user">Non aktifkan pengguna</string>
     <string name="non_active_user_message">Yakin untuk non aktifkan</string>
-    <string name="created_success">berhasil dibuat</string>
-    <string name="edited_success">berhasil diubah</string>
     <string name="location_not_selected">Lokasi belum dipilih</string>
     <string name="name_must_not_empty">Nama tidak boleh kosong</string>
     <string name="password_must_not_empty">Password tidak boleh kosong</string>
@@ -20,4 +18,16 @@
     <string name="active">Aktif</string>
     <string name="yes">Iya</string>
     <string name="non_active">Tidak aktif</string>
+    <string name="role">Peran</string>
+    <string name="location_assignment">Lokasi penugasaan</string>
+    <string name="new_password">Password baru</string>
+    <string name="edt_hint">john doe</string>
+    <string name="password_hint">********</string>
+    <string name="role_not_selected">Role belum dipilih</string>
+    <string name="save">Simpan</string>
+    <string name="name">Nama</string>
+    <string name="old_password">Password lama</string>
+    <string name="created_success">berhasil dibuat</string>
+    <string name="edited_success">berhasil diubah</string>
+    <string name="user_management_title">Pengaturan pengguna</string>
 </resources>

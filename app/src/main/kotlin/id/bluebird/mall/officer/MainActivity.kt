@@ -7,17 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
+import id.bluebird.mall.feature_user_management.utils.NavControllerUserDomain
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
 
 internal class MainActivity : AppCompatActivity() {
 
-    private lateinit var mNavController: NavController
+    private lateinit var mNavController: androidx.navigation.NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var mToogle: ActionBarDrawerToggle
@@ -45,20 +45,30 @@ internal class MainActivity : AppCompatActivity() {
         navController.setGraph(R.navigation.main_nav)
         mBinding.navView.menu.findItem(R.id.action_perimeter).isVisible = false
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        navController.addOnDestinationChangedListener { nav, destination, args ->
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
                         toolbar.visibility = View.GONE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     }
+                    R.id.createUserFragment -> {
+                        mToogle.isDrawerIndicatorEnabled = false
+                        NavControllerUserDomain.setToolbar(supportActionBar, toolbar, nav, args)
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    }
                     else -> {
                         toolbar.visibility = View.VISIBLE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        setToggle()
                     }
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -80,9 +90,9 @@ internal class MainActivity : AppCompatActivity() {
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(
-                    R.id.queue_passenger_nav,
+                    R.id.queuePassengerFragment,
                     R.id.action_monitoring,
-                    R.id.user_management_nav
+                    R.id.userListFragment
                 ), mBinding.drawerLayout
             )
     }
@@ -103,5 +113,7 @@ internal class MainActivity : AppCompatActivity() {
             R.string.nav_app_bar_navigate_up_description
         )
         mBinding.drawerLayout.addDrawerListener(mToogle)
+        mToogle.isDrawerIndicatorEnabled = true
+        mToogle.syncState()
     }
 }

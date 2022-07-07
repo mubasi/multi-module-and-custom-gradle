@@ -22,7 +22,6 @@ android {
         targetSdk = Version.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures {

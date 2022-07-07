@@ -1,10 +1,8 @@
-import com.google.protobuf.gradle.*
-
 plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
-    id(Plugins.protobuf)
+//    id(Plugins.protobuf)
 //    jacoco
 }
 
@@ -25,7 +23,7 @@ android {
         targetSdk = Version.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+//        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,11 +36,11 @@ android {
         }
     }
 
-    sourceSets.getByName("main") {
-        proto {
-            srcDir("src/main/proto")
-        }
-    }
+//    sourceSets.getByName("main") {
+//        proto {
+//            srcDir("src/main/proto")
+//        }
+//    }
 
     flavorDimensions.add("env")
 
@@ -73,13 +71,10 @@ dependencies {
 
     compileOnly(Kotlin.javax_annotation)
 
-    protobuf(Grpc.pb_java)
-    protobuf(Grpc.pb_java_utils)
-    protobuf(Grpc.pb_google_apis)
+//    protobuf(Grpc.pb_java)
+//    protobuf(Grpc.pb_java_utils)
+//    protobuf(Grpc.pb_google_apis)
 
-//    implementation(Grpc.okhttp)
-    implementation(Grpc.protobuf_lite)
-    implementation(Grpc.stub)
 }
 
 sourceSets {
@@ -91,27 +86,27 @@ sourceSets {
     }
 }
 
-
-protobuf {
-    protoc {
-        artifact = Grpc.protobuf_artifact
-    }
-    plugins {
-        create("javalite") {
-            artifact = Grpc.get_javalite_arifact
-        }
-        create("grpc") {
-            artifact = (Grpc.gen_artifact)
-        }
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.plugins {
-                create("javalite") {}
-                create("grpc") { // Options added to --grpc_out
-                    option("lite")
-                }
-            }
-        }
-    }
-}
+//
+//protobuf {
+//    protoc {
+//        artifact = Grpc.protobuf_artifact
+//    }
+//    plugins {
+//        create("javalite") {
+//            artifact = Grpc.get_javalite_arifact
+//        }
+//        create("grpc") {
+//            artifact = (Grpc.gen_artifact)
+//        }
+//    }
+//    generateProtoTasks {
+//        all().forEach { task ->
+//            task.plugins {
+//                create("javalite") {}
+//                create("grpc") { // Options added to --grpc_out
+//                    option("lite")
+//                }
+//            }
+//        }
+//    }
+//}

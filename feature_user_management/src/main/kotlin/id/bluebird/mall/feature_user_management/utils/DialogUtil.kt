@@ -2,15 +2,11 @@ package id.bluebird.mall.feature_user_management.utils
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.databinding.ActionBottomViewBinding
 import id.bluebird.mall.feature_user_management.databinding.ErrorViewBinding
-import id.bluebird.mall.feature_user_management.utils.top_snack.TSnackbar
 
 
 object DialogUtil {
@@ -28,22 +24,6 @@ object DialogUtil {
             ?.setOnClickListener { bottomDialog.dismiss() }
         bottomDialog.show()
         return bottomDialog
-    }
-
-    fun topSnackBar(view: View, message: String, textColor: Int?, background: Int?) {
-        val snackbar: TSnackbar = TSnackbar
-            .make(view, message, TSnackbar.LENGTH_LONG)
-        val snackbarView: View = snackbar.view
-        snackbarView.setBackgroundResource(background ?: R.color.tsnack_color)
-        val text =
-            snackbarView.findViewById<TextView>(R.id.snackbar_text)
-        text.setTextColor(
-            textColor ?: ContextCompat.getColor(
-                view.context,
-                (android.R.color.white)
-            )
-        )
-        snackbar.show()
     }
 
     fun actionDialogUser(

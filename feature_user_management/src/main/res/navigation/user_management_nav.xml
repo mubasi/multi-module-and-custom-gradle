@@ -7,13 +7,23 @@
     <fragment
         android:id="@+id/userListFragment"
         android:name="id.bluebird.mall.feature_user_management.list.UserListFragment"
-        android:label="UserListFragment">
+        android:label="@string/user_management_title">
         <action
             android:id="@+id/action_userListFragment_to_createUserFragment"
-            app:destination="@id/createUserFragment" />
+            app:destination="@id/createUserFragment">
+            <argument
+                android:name="userId"
+                android:defaultValue="-1L"
+                app:argType="long" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/createUserFragment"
         android:name="id.bluebird.mall.feature_user_management.create.CreateUserFragment"
-        android:label="CreateUserFragment" />
+        android:label="CreateUserFragment">
+        <argument
+            android:name="userId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
 </navigation>

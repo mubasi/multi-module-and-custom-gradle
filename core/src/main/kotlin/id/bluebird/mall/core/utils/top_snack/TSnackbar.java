@@ -39,7 +39,7 @@ import id.bluebird.mall.core.R;
 
 public final class TSnackbar {
 
-    public static abstract class Callback {
+    public abstract static class Callback {
 
         public static final int DISMISS_EVENT_SWIPE = 0;
 
@@ -231,7 +231,7 @@ public final class TSnackbar {
                 .show(mDuration, mManagerCallback);
     }
 
-    public void dismiss(){
+    public void dismiss() {
         SnackbarManager.getInstance().dismiss(mManagerCallback, 1);
     }
 
@@ -412,7 +412,6 @@ public final class TSnackbar {
     public static class SnackbarLayout extends LinearLayout {
         private TextView mMessageView;
         private ImageView mActionView;
-        private ImageView mSnackbarImage;
 
         private final int mMaxWidth;
         private final int mMaxInlineActionWidth;
@@ -461,18 +460,10 @@ public final class TSnackbar {
             super.onFinishInflate();
             mMessageView = findViewById(R.id.snackbar_text);
             mActionView = findViewById(R.id.snackbar_action);
-            mSnackbarImage = findViewById(R.id.snackbar_image);
         }
 
         TextView getMessageView() {
             return mMessageView;
-        }
-
-
-        public void setSnackBarImage(Integer id) {
-            if (id == null) {
-                mSnackbarImage.setVisibility(View.GONE);
-            }
         }
 
         @Override

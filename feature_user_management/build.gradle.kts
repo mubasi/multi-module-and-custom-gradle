@@ -2,6 +2,7 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    id(Plugins.safeargs)
 }
 
 android {
@@ -11,6 +12,7 @@ android {
         minSdk = 26
         targetSdk = 32
 
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -56,4 +58,6 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":domain_user"))
+    implementation(project(":domain_location"))
+
 }

@@ -17,11 +17,11 @@ class SnackbarManager {
     private static final int SHORT_DURATION_MS = 1500;
     private static final int LONG_DURATION_MS = 2750;
 
-    private static id.bluebird.mall.core.utils.top_snack.SnackbarManager sSnackbarManager;
+    private static SnackbarManager sSnackbarManager;
 
-    static id.bluebird.mall.core.utils.top_snack.SnackbarManager getInstance() {
+    static SnackbarManager getInstance() {
         if (sSnackbarManager == null) {
-            sSnackbarManager = new id.bluebird.mall.core.utils.top_snack.SnackbarManager();
+            sSnackbarManager = new SnackbarManager();
         }
         return sSnackbarManager;
     }

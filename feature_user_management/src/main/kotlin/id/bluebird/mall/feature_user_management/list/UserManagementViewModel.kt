@@ -1,7 +1,6 @@
 package id.bluebird.mall.feature_user_management.list
 
 import android.text.Editable
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,18 +24,6 @@ class UserManagementViewModel(
     private val userSettings: MutableList<UserSettingCache> = ArrayList()
     private var searchJob: Job? = null
     private var loginUserId: Long? = -1
-
-    @VisibleForTesting
-    fun getUsers(): List<UserSettingCache> = userSettings
-
-    @VisibleForTesting
-    fun searchJob() = searchJob
-
-    @VisibleForTesting
-    fun setUserSetting(list: List<UserSettingCache>) {
-        userSettings.clear()
-        userSettings.addAll(list)
-    }
 
     fun init() {
         val temp = UserUtils.getPrivilege()
@@ -78,15 +65,17 @@ class UserManagementViewModel(
             .collect {
                 userSettings.clear()
                 it.forEach { userSearch ->
-                    userSearch.apply {
-                        userSettings.add(
-                            UserSettingCache(
-                                id = id,
-                                userName = username,
-                                uuid = uuid,
-                                status = status
+                    if (userSearch.id != UserUtils.getUserId()) {
+                        userSearch.apply {
+                            userSettings.add(
+                                UserSettingCache(
+                                    id = id,
+                                    userName = username,
+                                    uuid = uuid,
+                                    status = status
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 userSettingSealed.postValue(UserSettingSealed.GetUsers(userSettings))
@@ -103,6 +92,7 @@ class UserManagementViewModel(
                 }
                 .collect {
                     userSettingSealed.postValue(UserSettingSealed.DeleteSuccess(userSettingCache))
+                    delay(200)
                     updateUserList(userSettingCache, true)
                 }
         }
@@ -136,6 +126,21 @@ class UserManagementViewModel(
                 break
             }
         }
+    }
+
+    fun result(name: String, isActionCreate: Boolean) {
+        viewModelScope.launch {
+            delay(300)
+            if (isActionCreate) {
+                userSettingSealed.postValue(UserSettingSealed.CreateUserSuccess(name))
+            } else {
+                userSettingSealed.postValue(UserSettingSealed.EditUserSuccess(name))
+            }
+        }
+    }
+
+    fun setIdle() {
+        userSettingSealed.value = UserSettingSealed.Idle
     }
 
     fun onCreateUser() {

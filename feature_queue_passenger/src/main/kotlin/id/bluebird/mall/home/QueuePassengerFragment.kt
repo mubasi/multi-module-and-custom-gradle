@@ -173,7 +173,7 @@ class QueuePassengerFragment : BaseFragment() {
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
 
-                    topSnackBarSuccess(spannable)
+//                    topSnackBarSuccess(spannable)
                 }
                 is HomeState.SuccessSkiped -> {
                     val message =
@@ -189,7 +189,7 @@ class QueuePassengerFragment : BaseFragment() {
                         16,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    topSnackBarDelay(spannable)
+//                    topSnackBarDelay(spannable)
                 }
                 is HomeState.SuccessRestored -> {
                     val message =
@@ -205,7 +205,7 @@ class QueuePassengerFragment : BaseFragment() {
                         16,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-                    topSnackBarSuccess(spannable)
+//                    topSnackBarSuccess(spannable)
                 }
                 is CommonState.Error -> {
                     cancelAllDialog()

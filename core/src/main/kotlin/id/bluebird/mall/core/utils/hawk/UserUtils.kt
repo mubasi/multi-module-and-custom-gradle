@@ -9,6 +9,7 @@ object UserUtils {
     private const val UUID = "uuid"
     private const val USER_ID = "userId"
     private const val FLEET_TYPE_ID = "fleetTypeId"
+    private const val IS_USER_AIRPORT = "isUserAirport"
 
     const val ADMIN = "ADMIN"
     const val SUPER = "SUPERADMIN"
@@ -27,20 +28,24 @@ object UserUtils {
 
     private fun Long.putFleetTypeId(): Boolean = Hawk.put(FLEET_TYPE_ID, this)
 
+    private fun Boolean.putIsUserAirport(): Boolean = Hawk.put(IS_USER_AIRPORT, this)
+
     fun putUser(
         userId: Long,
         locationId: Long,
         uuid: String,
         userRole: String,
         username: String,
-        fleetTypeId: Long
+        fleetTypeId: Long,
+        isUserAirport: Boolean
     ): Boolean {
         return userId.putUserId() &&
                 locationId.putLocationId() &&
                 uuid.putUuid() &&
                 userRole.putUserRole() &&
                 username.putUsername() &&
-                fleetTypeId.putFleetTypeId()
+                fleetTypeId.putFleetTypeId() &&
+                isUserAirport.putIsUserAirport()
     }
 
     fun getLocationId(): Long = Hawk.get(LOCATION_ID) ?: -1
@@ -54,4 +59,6 @@ object UserUtils {
     fun getUUID(): String = Hawk.get(UUID) ?: ""
 
     fun getUsername(): String? = Hawk.get(USERNAME)
+
+    fun getIsUserAirport(): Boolean = Hawk.get(IS_USER_AIRPORT)
 }

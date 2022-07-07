@@ -33,7 +33,8 @@ class LoginCaseImpl(private val userRepository: UserRepository) : Login {
                     uuid = it.uuid,
                     userRole = it.userRole,
                     username = username,
-                    fleetTypeId = it.fleetType
+                    fleetTypeId = it.fleetType,
+                    isUserAirport = it.isAirport
                 )
                 emit(result)
             })
