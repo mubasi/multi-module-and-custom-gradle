@@ -63,7 +63,12 @@ class LoginFragment : BaseFragment() {
                     intentToDial()
                 }
                 LoginState.Success -> {
-                    NavigationNav.navigate(NavigationSealed.Home(R.id.loginFragment, this))
+                    NavigationNav.navigate(
+                        NavigationSealed.Home(
+                            destination = R.id.loginFragment,
+                            frag = this
+                        )
+                    )
                 }
                 LoginState.PasswordIsEmpty -> {
                     topSnackBarError(getString(R.string.password_cannot_empty))

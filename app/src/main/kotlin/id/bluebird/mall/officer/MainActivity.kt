@@ -30,9 +30,7 @@ internal class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        with(mBinding) {
-            setSupportActionBar(mBinding.toolbar)
-        }
+        setSupportActionBar(mBinding.toolbar)
 
         navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
@@ -43,7 +41,7 @@ internal class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         NavigationUI.setupWithNavController(mBinding.navView, navController)
         navController.setGraph(R.navigation.main_nav)
-        mBinding.navView.menu.findItem(R.id.action_perimeter).isVisible = false
+//        mBinding.navView.menu.findItem(R.id.action_perimeter).isVisible = false
 
         navController.addOnDestinationChangedListener { nav, destination, args ->
             with(mBinding) {
@@ -67,10 +65,6 @@ internal class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.main_nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
@@ -86,10 +80,10 @@ internal class MainActivity : AppCompatActivity() {
 
     private fun setNavViewByUserRole() {
         navController.setGraph(R.navigation.main_nav)
-        mBinding.navView.menu.findItem(R.id.action_perimeter).isVisible = false
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(
+                    R.id.queueFleetFragment,
                     R.id.queuePassengerFragment,
                     R.id.action_monitoring,
                     R.id.userListFragment
