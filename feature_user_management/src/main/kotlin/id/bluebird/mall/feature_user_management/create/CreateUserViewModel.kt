@@ -3,8 +3,8 @@ package id.bluebird.mall.feature_user_management.create
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.UserDomainState
-import id.bluebird.mall.domain.user.UserErr
 import id.bluebird.mall.domain.user.domain.intercator.CreateEditUser
 import id.bluebird.mall.domain.user.domain.intercator.GetRoles
 import id.bluebird.mall.domain.user.domain.intercator.GetUserById
@@ -86,14 +86,11 @@ class CreateUserViewModel(
                 }
                 .collect {
                     when (it) {
-                        is UserDomainState.Success -> {
-                            assignUserToField(it.value)
+                        is GetUserByIdState.Success -> {
+                            assignUserToField(it.result)
                         }
-                        UserErr.UserIdIsLess -> {
+                        GetUserByIdState.UserIdIsWrong -> {
                             assignUserToField(null)
-                        }
-                        else -> {
-
                         }
                     }
                 }
