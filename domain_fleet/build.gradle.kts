@@ -2,7 +2,6 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
-//    id(Plugins.protobuf)
 //    jacoco
 }
 
@@ -26,6 +25,10 @@ android {
 //        consumerProguardFiles("consumer-rules.pro")
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,12 +38,6 @@ android {
             )
         }
     }
-
-//    sourceSets.getByName("main") {
-//        proto {
-//            srcDir("src/main/proto")
-//        }
-//    }
 
     flavorDimensions.add("env")
 
@@ -71,42 +68,11 @@ dependencies {
 
     compileOnly(Kotlin.javax_annotation)
 
-//    protobuf(Grpc.pb_java)
-//    protobuf(Grpc.pb_java_utils)
-//    protobuf(Grpc.pb_google_apis)
-
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testImplementation(OtherLib.turbin)
+    testImplementation(Mockk.mockk)
+    testImplementation(Junit.junit)
+    testImplementation(Kotlin.coroutines_test)
+    testRuntimeOnly(Junit5.vintage_engine)
 }
-
-//sourceSets {
-//    create("main") {
-//        java {
-//            srcDir("build/generated/source/proto/main/javalite")
-//            srcDir("build/generated/source/proto/main/grpc")
-//        }
-//    }
-//}
-
-//
-//protobuf {
-//    protoc {
-//        artifact = Grpc.protobuf_artifact
-//    }
-//    plugins {
-//        create("javalite") {
-//            artifact = Grpc.get_javalite_arifact
-//        }
-//        create("grpc") {
-//            artifact = (Grpc.gen_artifact)
-//        }
-//    }
-//    generateProtoTasks {
-//        all().forEach { task ->
-//            task.plugins {
-//                create("javalite") {}
-//                create("grpc") { // Options added to --grpc_out
-//                    option("lite")
-//                }
-//            }
-//        }
-//    }
-//}

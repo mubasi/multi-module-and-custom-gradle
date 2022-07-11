@@ -1,5 +1,7 @@
 package id.bluebird.mall.domain_fleet
 
-sealed class DomainFleetState<out T : Any> {
-    data class Success<out T : Any>(val value: T) : DomainFleetState<T>()
+import id.bluebird.mall.domain_fleet.model.CountResult
+
+sealed class GetCountState {
+    data class Success(val countResult: CountResult) : GetCountState()
 }

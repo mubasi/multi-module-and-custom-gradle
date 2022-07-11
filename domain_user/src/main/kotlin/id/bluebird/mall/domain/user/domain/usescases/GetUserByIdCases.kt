@@ -1,7 +1,6 @@
 package id.bluebird.mall.domain.user.domain.usescases
 
-import id.bluebird.mall.domain.user.UserDomainState
-import id.bluebird.mall.domain.user.UserErr
+import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.UserRepository
 import id.bluebird.mall.domain.user.domain.intercator.GetUserById
 import id.bluebird.mall.domain.user.model.CreateUserResult
@@ -15,7 +14,7 @@ class GetUserByIdCases(private val userRepository: UserRepository) : GetUserById
 
     private lateinit var mResult: CreateUserResult
 
-    override fun invoke(userId: Long): Flow<UserDomainState<CreateUserResult>> = flow {
+    override fun invoke(userId: Long): Flow<GetUserByIdState> = flow {
         if (userId > 0) {
             val response = userRepository.getUserById(userId)
                 .flowOn(Dispatchers.IO)
@@ -34,9 +33,9 @@ class GetUserByIdCases(private val userRepository: UserRepository) : GetUserById
                     subLocationsId = list
                 )
             }
-            emit(UserDomainState.Success(mResult))
+            emit(GetUserByIdState.Success(mResult))
         } else {
-            emit(UserErr.UserIdIsLess)
+            emit(GetUserByIdState.UserIdIsWrong)
         }
     }
 }

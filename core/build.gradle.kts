@@ -145,16 +145,15 @@ dependencies {
 
     api(Grpc.okhttp)
 
+
     testApi(Junit5.jupiter)
     testApi(Junit5.suite)
-    testRuntimeOnly(Junit5.vintage_engine)
-
+    testApi(OtherLib.turbin)
+    testApi(Mockk.mockk)
     testApi(Junit.junit)
     testApi(Kotlin.coroutines_test)
-    androidTestApi(Junit.android_junit)
-    androidTestApi(Junit.espresso_core)
+    testRuntimeOnly(Junit5.vintage_engine)
 
-    testApi(OtherLib.turbin)
     testApi(OtherLib.json)
     api(OtherLib.hawk)
 }
