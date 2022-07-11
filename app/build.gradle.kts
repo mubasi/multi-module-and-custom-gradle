@@ -124,10 +124,12 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature_queue_passenger"))
+    implementation(project(":feature_queue_fleet"))
     implementation(project(":feature_login"))
     implementation(project(":feature_splash"))
     implementation(project(":feature_user_management"))
     implementation(project(":domain_user"))
+    implementation(project(":domain_fleet"))
     implementation(project(":domain_location"))
 }
 

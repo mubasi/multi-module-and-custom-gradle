@@ -15,6 +15,7 @@ buildscript {
         classpath(MainGradle.sonarqube_gradle)
         classpath(MainGradle.protobuf)
         classpath(MainGradle.safe_args)
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }
 

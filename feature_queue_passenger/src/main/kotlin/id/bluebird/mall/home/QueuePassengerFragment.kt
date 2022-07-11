@@ -144,7 +144,7 @@ class QueuePassengerFragment : BaseFragment() {
                 }
                 HomeState.LogoutSuccess -> {
                     AuthUtils.logout()
-                    NavigationNav.navigate(NavigationSealed.Login(null, this))
+                    NavigationNav.navigate(NavigationSealed.Login(frag = this))
                 }
                 HomeState.OnSync -> {
                     requireActivity().window.setFlags(

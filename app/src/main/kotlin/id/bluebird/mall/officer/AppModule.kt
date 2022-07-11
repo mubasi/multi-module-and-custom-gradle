@@ -5,10 +5,15 @@ import id.bluebird.mall.domain.user.UserRepository
 import id.bluebird.mall.domain.user.UserRepositoryImpl
 import id.bluebird.mall.domain.user.domain.intercator.*
 import id.bluebird.mall.domain.user.domain.usescases.*
+import id.bluebird.mall.domain_fleet.FleetRepository
+import id.bluebird.mall.domain_fleet.FleetRepositoryImpl
+import id.bluebird.mall.domain_fleet.domain.cases.GetCount
+import id.bluebird.mall.domain_fleet.domain.interactor.GetCountCases
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
+import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
 import id.bluebird.mall.home.HomeViewModel
@@ -23,6 +28,7 @@ object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
         viewModel { HomeViewModel(get()) }
+        viewModel { QueueFleetViewModel(get(), get()) }
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
     }
@@ -37,6 +43,10 @@ object AppModule {
         single<GetUserById> { GetUserByIdCases(get()) }
     }
 
+    private val fleetCases = module {
+        single<GetCount> { GetCountCases(get()) }
+    }
+
     private val locationCases = module {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
     }
@@ -44,6 +54,7 @@ object AppModule {
     private val repository = module {
         single<UserRepository> { UserRepositoryImpl() }
         single<LocationRepository> { LocationRepositoryImpl() }
+        single<FleetRepository> { FleetRepositoryImpl() }
     }
 
     lateinit var koin: Koin
@@ -54,6 +65,7 @@ object AppModule {
             modules(
                 listOf(
                     locationCases,
+                    fleetCases,
                     userCases,
                     repository,
                     vmModule,

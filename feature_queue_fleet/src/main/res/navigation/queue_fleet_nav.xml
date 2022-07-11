@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/queue_fleet_nav"
+    app:startDestination="@id/queueFleetFragment">
+
+    <fragment
+        android:id="@+id/queueFleetFragment"
+        android:name="id.bluebird.mall.feature_queue_fleet.main.QueueFleetFragment"
+        android:label="@string/fleet_title">
+
+        <action
+            android:id="@+id/action_queueFleetFragment_to_addFleetDialog"
+            app:destination="@id/addFleetDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/addFleetDialog"
+        android:name="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetDialog"
+        android:label="AddFleetDialog" />
+
+    <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
+
+</navigation>
