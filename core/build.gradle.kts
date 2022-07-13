@@ -120,6 +120,8 @@ dependencies {
     api(UiMaterial.recyclerview)
     api(UiMaterial.material)
 
+    api(Lifecycle.runtime_ktx)
+
     api(Navigation.ktx)
     api(Navigation.ui_ktx)
     api(Navigation.fragment)

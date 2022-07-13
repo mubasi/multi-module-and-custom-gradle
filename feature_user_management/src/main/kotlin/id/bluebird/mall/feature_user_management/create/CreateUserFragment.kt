@@ -31,7 +31,7 @@ class CreateUserFragment : Fragment() {
 
     private val createUserViewModel: CreateUserViewModel by viewModel()
     private lateinit var mBinding: FragmentCreateUserBinding
-    val args: CreateUserFragmentArgs by navArgs()
+    private val _args: CreateUserFragmentArgs by navArgs()
     private var isCreateUser = false
 
     override fun onCreateView(
@@ -48,7 +48,7 @@ class CreateUserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.createUserVM = createUserViewModel
-        createUserViewModel.initUser(args.userId)
+        createUserViewModel.initUser(_args.userId)
         setListener()
         observer()
         createUserViewModel.getUser()

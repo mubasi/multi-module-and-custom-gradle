@@ -11,8 +11,10 @@ import id.bluebird.mall.domain_fleet.GetCountState
 import id.bluebird.mall.domain_fleet.domain.cases.GetCount
 import id.bluebird.mall.feature_queue_fleet.model.CountCache
 import id.bluebird.mall.feature_queue_fleet.model.UserInfo
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -28,8 +30,9 @@ class QueueFleetViewModel(
 
     val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
     val counterLiveData: MutableLiveData<CountCache> = MutableLiveData()
-    private val _queueFleetState = MutableStateFlow<QueueFleetState>(QueueFleetState.Idle)
-    val queueFleetState = _queueFleetState.asStateFlow()
+    private val _queueFleetState: MutableSharedFlow<QueueFleetState> =
+        MutableSharedFlow()
+    val queueFleetState: SharedFlow<QueueFleetState> = _queueFleetState.asSharedFlow()
 
     private var mCountCache: CountCache = CountCache()
     private lateinit var mUserInfo: UserInfo
@@ -50,21 +53,22 @@ class QueueFleetViewModel(
 
     private fun getUserById() {
         viewModelScope.launch {
-            _queueFleetState.value = QueueFleetState.ProgressGetUser
+            _queueFleetState.emit(QueueFleetState.ProgressGetUser)
             getUserById.invoke(mUserInfo.userId)
                 .catch { cause ->
-                    _queueFleetState.value =
+                    _queueFleetState.emit(
                         QueueFleetState.FailedGetUser(cause.message ?: ERROR_MESSAGE_UNKNOWN)
+                    )
                 }
                 .collect {
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo.locationId = it.result.locationId
                             mUserInfo.subLocationId = it.result.subLocationsId.first()
-                            _queueFleetState.value = QueueFleetState.GetUserInfoSuccess
+                            _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
                         }
                         GetUserByIdState.UserIdIsWrong -> {
-                            _queueFleetState.value = QueueFleetState.FailedGetUser(ERROR_USER_ID)
+                            _queueFleetState.emit(QueueFleetState.FailedGetUser(ERROR_USER_ID))
                         }
                     }
                 }
@@ -75,8 +79,9 @@ class QueueFleetViewModel(
         viewModelScope.launch {
             getCount.invoke(mUserInfo.subLocationId)
                 .catch { cause ->
-                    _queueFleetState.value =
+                    _queueFleetState.emit(
                         QueueFleetState.FailedGetCounter(cause.message ?: ERROR_MESSAGE_UNKNOWN)
+                    )
                 }
                 .collect {
                     when (it) {
@@ -93,6 +98,19 @@ class QueueFleetViewModel(
                     }
 
                 }
+        }
+    }
+
+    fun updateRequestCount(count: Long) {
+        if (count >= RequestFleetDialogViewModel.MINIMUM_COUNTER_VALUE) {
+            mCountCache.request = count
+            counterLiveData.value = mCountCache
+        }
+    }
+
+    fun showRequestFleet() {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.ShowRequestFleet(mUserInfo.subLocationId))
         }
     }
 }
