@@ -11,4 +11,10 @@ interface FleetRepository {
     ): Flow<AssignmentPangkalanOuterClass.StockCountResponse>
 
     fun searchFleet(param: String): Flow<AssignmentPangkalanOuterClass.SearchStockRequest>
+
+    fun requestFleet(
+        count: Long,
+        locationId: Long,
+        subLocation: Long
+    ): Flow<AssignmentPangkalanOuterClass.RequestTaxiResponse>
 }

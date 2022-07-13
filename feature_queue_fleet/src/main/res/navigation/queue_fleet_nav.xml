@@ -7,17 +7,8 @@
     <fragment
         android:id="@+id/queueFleetFragment"
         android:name="id.bluebird.mall.feature_queue_fleet.main.QueueFleetFragment"
-        android:label="@string/fleet_title">
+        android:label="@string/fleet_title" />
 
-        <action
-            android:id="@+id/action_queueFleetFragment_to_addFleetDialog"
-            app:destination="@id/addFleetDialog" />
-    </fragment>
-
-    <dialog
-        android:id="@+id/addFleetDialog"
-        android:name="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetDialog"
-        android:label="AddFleetDialog" />
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
 

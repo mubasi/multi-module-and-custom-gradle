@@ -2,6 +2,7 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    id(Plugins.safeargs)
 //    jacoco
 }
 
@@ -71,6 +72,7 @@ dependencies {
     implementation(project(":domain_fleet"))
     implementation(project(":domain_user"))
     implementation(Kotlin.coroutines_android)
+    implementation(UiMaterial.swipe)
 
     compileOnly(Kotlin.javax_annotation)
 

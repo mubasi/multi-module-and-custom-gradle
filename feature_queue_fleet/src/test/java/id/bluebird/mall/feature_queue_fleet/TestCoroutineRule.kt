@@ -1,4 +1,4 @@
-package id.bluebird.mall.feature_queue_fleet.main
+package id.bluebird.mall.feature_queue_fleet
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

@@ -10,4 +10,5 @@
     <string name="message_error_character_input">No. lambung harus memiliki minimal 5 karakter.</string>
     <string name="hint_search_fleet_number">Masukan no taksi</string>
     <string name="add">Tambah</string>
+    <string name="request_fleet">Request armada</string>
 </resources>

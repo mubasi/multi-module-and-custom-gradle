@@ -36,4 +36,21 @@ class FleetRepositoryImpl(
                     this.fleetNumber = param
                 }
         }
+
+    override fun requestFleet(
+        count: Long,
+        locationId: Long,
+        subLocation: Long
+    ): Flow<AssignmentPangkalanOuterClass.RequestTaxiResponse> =
+        flow {
+            val request = AssignmentPangkalanOuterClass.RequestTaxiRequest.newBuilder()
+                .apply {
+                    this.count = count
+                    this.locationId = locationId
+                    requestFrom = subLocation
+                }
+                .build()
+            val result = assignmentGrpc.requestTaxi(request)
+            emit(result)
+        }
 }

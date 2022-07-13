@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import id.bluebird.mall.feature_queue_fleet.R
 import id.bluebird.mall.feature_queue_fleet.databinding.FleetFragmentBinding
-import kotlinx.coroutines.flow.collectLatest
+import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class QueueFleetFragment : Fragment() {
 
-    private val mQueueFleetViewModel: QueueFleetViewModel by viewModel()
+    private val _mQueueFleetViewModel: QueueFleetViewModel by viewModel()
     private lateinit var mBinding: FleetFragmentBinding
 
     override fun onCreateView(
@@ -35,16 +35,25 @@ class QueueFleetFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            vm = mQueueFleetViewModel
+            vm = _mQueueFleetViewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        mQueueFleetViewModel.initUserId(null)
+        _mQueueFleetViewModel.initUserId(null)
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            with(mQueueFleetViewModel) {
-                queueFleetState.collectLatest {
+            with(_mQueueFleetViewModel) {
+                queueFleetState.collect {
                     when (it) {
                         QueueFleetState.GetUserInfoSuccess -> {
                             getCounter()
+                        }
+                        is QueueFleetState.ShowRequestFleet -> {
+                            RequestFleetDialog(
+                                it.subLocationId,
+                                _mQueueFleetViewModel::updateRequestCount
+                            ).show(
+                                childFragmentManager,
+                                RequestFleetDialog.TAG
+                            )
                         }
                         else -> {
                             // do nothing
@@ -53,5 +62,6 @@ class QueueFleetFragment : Fragment() {
                 }
             }
         }
+
     }
 }

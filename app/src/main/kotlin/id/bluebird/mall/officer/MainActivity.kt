@@ -41,8 +41,6 @@ internal class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         NavigationUI.setupWithNavController(mBinding.navView, navController)
         navController.setGraph(R.navigation.main_nav)
-//        mBinding.navView.menu.findItem(R.id.action_perimeter).isVisible = false
-
         navController.addOnDestinationChangedListener { nav, destination, args ->
             with(mBinding) {
                 when (destination.id) {

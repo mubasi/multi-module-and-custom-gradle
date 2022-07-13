@@ -105,6 +105,7 @@ object UiMaterial {
     private const val nav_version = "2.3.5"
 
     val appcompat by lazy { "androidx.appcompat:appcompat:1.4.1" }
+    val swipe by lazy { "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0" }
     val material by lazy { "com.google.android.material:material:1.3.0" }
     val recyclerview by lazy { "androidx.recyclerview:recyclerview:1.2.1" }
     val viewpager2 by lazy { "androidx.viewpager2:viewpager2:1.0.0" }
@@ -134,10 +135,11 @@ object Firebase {
 }
 
 object Lifecycle {
-    private const val lifecycle_version = "2.4.1"
+    private const val lifecycle_version = "2.5.0"
     val extensions by lazy { "androidx.lifecycle:lifecycle-extensions:$lifecycle_version" }
     val viewmodel_ktx by lazy { "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" }
     val runtime by lazy { "androidx.lifecycle:lifecycle-runtime:$lifecycle_version" }
+    val runtime_ktx by lazy { "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version" }
 }
 
 object Room {

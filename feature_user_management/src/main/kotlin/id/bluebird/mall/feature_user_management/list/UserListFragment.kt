@@ -121,18 +121,6 @@ class UserListFragment : Fragment() {
 
             }
         }
-//        val destination = UserListFragmentDirections.actionUserListFragmentToCreateUserFragment()
-//        id?.let {
-//            destination.userId = id
-//        }
-//        findNavController().navigate(destination)
-//        mUserSettingVM.setIdle()
-//        setFragmentResultListener(CreateUserFragment.REQUEST_KEY) { _, bundle ->
-//            mUserSettingVM.result(
-//                bundle.getString(CreateUserFragment.NAME_PARAM, ""),
-//                bundle.getBoolean(CreateUserFragment.ACTION_PARAM)
-//            )
-//        }
     }
 
     private fun initRecyclerView() {
