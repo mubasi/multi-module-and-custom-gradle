@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@id/crossRequestFleetDialog">
 
             <androidx.appcompat.widget.AppCompatImageButton
-                bindButton="@{vm.counter}"
+                bindMinusButton="@{vm.counter}"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@drawable/bg_request_add_fleet"
@@ -59,18 +59,23 @@
                 android:src="@drawable/ic_minus_enable" />
 
             <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/counterView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="@drawable/bg_stock_request"
                 android:fontFamily="@font/ubuntu_bold"
+                android:imeOptions="actionDone"
                 android:inputType="number"
+                android:maxLength="2"
+                android:onClick="@{() -> vm.focusableEnable()}"
                 android:paddingStart="31dp"
                 android:paddingTop="12dp"
                 android:paddingEnd="31dp"
                 android:paddingBottom="12dp"
-                android:text="@{String.valueOf(vm.counter)}"
+                android:text="@={vm.counter}"
+                android:textCursorDrawable="@null"
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatImageButton

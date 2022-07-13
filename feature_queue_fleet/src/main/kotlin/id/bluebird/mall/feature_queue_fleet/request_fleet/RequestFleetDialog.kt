@@ -1,10 +1,13 @@
 package id.bluebird.mall.feature_queue_fleet.request_fleet
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
@@ -40,7 +43,7 @@ class RequestFleetDialog(
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return BottomSheetDialog(requireContext(), R.style.SheetDialog)
+        return BottomSheetDialog(requireContext(), R.style.BottomSheetDialog)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,6 +51,13 @@ class RequestFleetDialog(
         with(mBinding) {
             lifecycleOwner = viewLifecycleOwner
             vm = _mRequestFleetDialogViewModel
+            counterView.setOnEditorActionListener { _, i, _ ->
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    _mRequestFleetDialogViewModel.requestFleet()
+                    return@setOnEditorActionListener true
+                }
+                false
+            }
         }
         _mRequestFleetDialogViewModel.initSubLocationId(subLocationId = subLocationId)
 
@@ -73,6 +83,14 @@ class RequestFleetDialog(
                         }
                         is RequestFleetDialogState.MessageError -> {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        }
+                        is RequestFleetDialogState.FocusState -> {
+                            if (it.isFocus.not()) {
+                                val imm: InputMethodManager = mBinding.root.context
+                                    .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+                            }
+                            mBinding.counterView.isCursorVisible = it.isFocus
                         }
                         else -> {
                             // do nothing

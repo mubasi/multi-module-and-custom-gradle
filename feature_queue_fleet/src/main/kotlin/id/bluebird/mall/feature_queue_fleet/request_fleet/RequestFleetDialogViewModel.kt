@@ -21,11 +21,12 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : View
     private val _requestFleetDialogState: MutableSharedFlow<RequestFleetDialogState> =
         MutableSharedFlow()
     val requestFleetDialogState = _requestFleetDialogState.asSharedFlow()
-    val counter: MutableLiveData<Int> = MutableLiveData(1)
+    val counter: MutableLiveData<String> = MutableLiveData("1")
     private var _subLocationId = -1L
 
     fun initSubLocationId(subLocationId: Long) {
         _subLocationId = subLocationId
+        counter.value = "1"
     }
 
     fun cancelFleetDialog() {
@@ -34,23 +35,31 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : View
         }
     }
 
+    fun focusableEnable() {
+        viewModelScope.launch {
+            _requestFleetDialogState.emit(RequestFleetDialogState.FocusState(true))
+        }
+    }
+
     fun addCounter() {
-        var temp = counter.value ?: MINIMUM_COUNTER_VALUE
-        temp++
-        counter.value = temp
+        counter.value = (getValueCounter() + 1).toString()
+        viewModelScope.launch {
+            _requestFleetDialogState.emit(RequestFleetDialogState.FocusState(false))
+        }
     }
 
     fun minusCounter() {
-        var temp = counter.value ?: MINIMUM_COUNTER_VALUE
-        if (temp > MINIMUM_COUNTER_VALUE) {
-            temp--
-            counter.value = temp
+        if (getValueCounter() > MINIMUM_COUNTER_VALUE) {
+            counter.value = (getValueCounter() - 1).toString()
+        }
+        viewModelScope.launch {
+            _requestFleetDialogState.emit(RequestFleetDialogState.FocusState(false))
         }
     }
 
     fun requestFleet() {
         viewModelScope.launch {
-            requestFleet.invoke(counter.value?.toLong() ?: -1L, _subLocationId)
+            requestFleet.invoke(getValueCounter().toLong(), _subLocationId)
                 .catch { cause ->
                     _requestFleetDialogState.emit(
                         RequestFleetDialogState.Err(cause)
@@ -77,5 +86,9 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : View
                     cancel()
                 }
         }
+    }
+
+    private fun getValueCounter(): Int {
+        return (counter.value.orEmpty().toIntOrNull() ?: 0)
     }
 }

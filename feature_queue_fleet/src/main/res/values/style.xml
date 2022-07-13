@@ -12,4 +12,10 @@
         <item name="fontFamily">@font/ubuntu_bold</item>
         <item name="android:textColor">@color/primary_0</item>
     </style>
+
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>
