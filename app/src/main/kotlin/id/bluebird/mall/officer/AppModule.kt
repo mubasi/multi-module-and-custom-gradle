@@ -13,6 +13,12 @@ import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
+import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
+import id.bluebird.mall.domain_pasenger.QueueReceiptRepositoryimpl
+import id.bluebird.mall.domain_pasenger.domain.cases.GetQueueReceipt
+import id.bluebird.mall.domain_pasenger.domain.cases.TakeQueue
+import id.bluebird.mall.domain_pasenger.domain.interactor.GetQueueReceiptCases
+import id.bluebird.mall.domain_pasenger.domain.interactor.TakeQueueCases
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
@@ -21,6 +27,8 @@ import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
 import id.bluebird.mall.home.HomeViewModel
+import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
+import id.bluebird.mall.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.mall.login.LoginViewModel
 import id.bluebird.mall.officer.logout.LogoutDialogViewModel
 import org.koin.android.ext.koin.androidContext
@@ -40,6 +48,8 @@ object AppModule {
         viewModel { LogoutDialogViewModel(get()) }
         viewModel { AddFleetViewModel(get(), get()) }
         viewModel { SearchFleetViewModel() }
+        viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
+        viewModel { QueueTicketViewModel(get()) }
     }
 
     private val userCases = module {
@@ -64,10 +74,16 @@ object AppModule {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
     }
 
+    private val passengerCases = module {
+        single<GetQueueReceipt> { GetQueueReceiptCases(get()) }
+        single<TakeQueue> { TakeQueueCases(get()) }
+    }
+
     private val repository = module {
         single<UserRepository> { UserRepositoryImpl() }
         single<LocationRepository> { LocationRepositoryImpl() }
         single<FleetRepository> { FleetRepositoryImpl() }
+        single<QueueReceiptRepository> { QueueReceiptRepositoryimpl() }
     }
 
     private val adapter = module {
@@ -86,7 +102,8 @@ object AppModule {
                     userCases,
                     repository,
                     vmModule,
-                    adapter
+                    adapter,
+                    passengerCases
                 )
             )
         }.koin

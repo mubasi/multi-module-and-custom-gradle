@@ -108,6 +108,7 @@ dependencies {
     implementation(project(":feature_user_management"))
     implementation(project(":domain_user"))
     implementation(project(":domain_fleet"))
+    implementation(project(":domain_passenger"))
     implementation(project(":domain_location"))
     implementation(project(":navigation"))
 

@@ -23,7 +23,6 @@ class LogoutDialogViewModel(private val userRepository: UserRepository) : ViewMo
 
     fun prosesDialog() {
         viewModelScope.launch {
-//            _logoutDialogState.emit(LogoutDialogState.ProsesDialog)
             userRepository.forceLogout(UserUtils.getUUID())
                 .catch { cause ->
                     _logoutDialogState.emit(LogoutDialogState.Err(cause))

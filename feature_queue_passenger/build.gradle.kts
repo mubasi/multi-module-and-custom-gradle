@@ -63,6 +63,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":domain_passenger"))
     implementation(project(":domain_user"))
     implementation(project(":navigation"))
+    implementation("com.ncorti:slidetoact:0.9.0")
 }

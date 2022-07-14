@@ -19,6 +19,7 @@ sealed interface HomeState {
     object Logout : HomeState
     object LogoutSuccess : HomeState
     object DummyIndicator : HomeState
+    object DialogQueueReceipt : HomeState
     object CurrentQueueIsEmpty : HomeState
     object OnSync : HomeState
     object ParamSearchQueueEmpty : HomeState
