@@ -18,7 +18,6 @@ import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.databinding.FragmentCreateUserBinding
 import id.bluebird.mall.feature_user_management.databinding.ItemChipsLocationBinding
 import id.bluebird.mall.feature_user_management.utils.DialogUtil
-import id.bluebird.mall.feature_user_management.utils.NavControllerUserDomain
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateUserFragment : Fragment() {
@@ -87,7 +86,11 @@ class CreateUserFragment : Fragment() {
             actionSealed.observe(viewLifecycleOwner) {
                 when (it) {
                     CreateUserState.OnBack -> {
-                        NavControllerUserDomain.popBack(findNavController())
+                        findNavController().popBackStack(
+                            destinationId = R.id.createUserFragment,
+                            inclusive = true,
+                            saveState = false
+                        )
                     }
                     is CreateUserState.GetInformationOnError -> TODO()
                     CreateUserState.GetInformationSuccess -> {

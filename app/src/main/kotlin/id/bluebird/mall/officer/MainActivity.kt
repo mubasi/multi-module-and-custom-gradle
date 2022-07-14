@@ -12,8 +12,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
-import id.bluebird.mall.feature_user_management.utils.NavControllerUserDomain
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
+import id.bluebird.mall.officer.extensions.backArrowButton
+import id.bluebird.mall.officer.extensions.setToolbarAddFleetFragment
+import id.bluebird.mall.officer.extensions.setToolbarCreateUserFragment
 
 internal class MainActivity : AppCompatActivity() {
 
@@ -41,7 +43,7 @@ internal class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         NavigationUI.setupWithNavController(mBinding.navView, navController)
         navController.setGraph(R.navigation.main_nav)
-        navController.addOnDestinationChangedListener { nav, destination, args ->
+        navController.addOnDestinationChangedListener { _, destination, args ->
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -49,9 +51,10 @@ internal class MainActivity : AppCompatActivity() {
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                     }
                     R.id.createUserFragment -> {
-                        mToogle.isDrawerIndicatorEnabled = false
-                        NavControllerUserDomain.setToolbar(supportActionBar, toolbar, nav, args)
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                        navigateToCreateUser(args = args)
+                    }
+                    R.id.addFleetFragment -> {
+                        navigateToAddFleet()
                     }
                     else -> {
                         toolbar.visibility = View.VISIBLE
@@ -107,5 +110,37 @@ internal class MainActivity : AppCompatActivity() {
         mBinding.drawerLayout.addDrawerListener(mToogle)
         mToogle.isDrawerIndicatorEnabled = true
         mToogle.syncState()
+    }
+
+    private fun hideDrawerMenu() {
+        mToogle.isDrawerIndicatorEnabled = false
+        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    private fun navigateToCreateUser(args: Bundle?) {
+        with(mBinding) {
+            hideDrawerMenu()
+            toolbar.setToolbarCreateUserFragment(
+                actionBar = supportActionBar,
+                args = args
+            )
+            toolbar.backArrowButton(
+                navController,
+                destinationId = R.id.createUserFragment
+            )
+        }
+    }
+
+    private fun navigateToAddFleet() {
+        with(mBinding) {
+            hideDrawerMenu()
+            toolbar.setToolbarAddFleetFragment(
+                actionBar = supportActionBar
+            )
+            toolbar.backArrowButton(
+                navController,
+                destinationId = R.id.createUserFragment
+            )
+        }
     }
 }
