@@ -7,8 +7,26 @@
     <fragment
         android:id="@+id/queueFleetFragment"
         android:name="id.bluebird.mall.feature_queue_fleet.main.QueueFleetFragment"
-        android:label="@string/fleet_title" />
+        android:label="@string/fleet_title">
+        <action
+            android:id="@+id/action_queueFleetFragment_to_addFleetFragment"
+            app:destination="@id/addFleetFragment">
+            <argument
+                android:name="subLocation"
+                android:defaultValue="0L"
+                app:argType="long" />
+        </action>
+    </fragment>
 
+    <fragment
+        android:id="@+id/addFleetFragment"
+        android:name="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetFragment"
+        android:label="@string/add_fleet">
+        <argument
+            android:name="subLocation"
+            android:defaultValue="0L"
+            app:argType="long" />
+    </fragment>
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
 

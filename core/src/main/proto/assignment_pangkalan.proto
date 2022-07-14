@@ -153,7 +153,7 @@ message UpdateStockAggregatorResp {
 }
 
 // BDO 437....
-message PagingRequest {
+message Paging {
   int32 page = 1;
   int32 item_per_page = 2;
 }
@@ -161,7 +161,7 @@ message PagingRequest {
 message SearchStockRequest {
   string fleet_number = 1;
   int64  sub_location_id = 2;
-  PagingRequest paging = 3;
+  Paging paging = 3;
 }
 message SearchStockResponse {
   int64 total = 1;

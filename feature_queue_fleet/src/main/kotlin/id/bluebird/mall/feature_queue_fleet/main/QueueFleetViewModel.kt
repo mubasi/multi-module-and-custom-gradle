@@ -57,7 +57,9 @@ class QueueFleetViewModel(
             getUserById.invoke(mUserInfo.userId)
                 .catch { cause ->
                     _queueFleetState.emit(
-                        QueueFleetState.FailedGetUser(cause.message ?: ERROR_MESSAGE_UNKNOWN)
+                        QueueFleetState.FailedGetUser(
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                        )
                     )
                 }
                 .collect {
@@ -80,7 +82,9 @@ class QueueFleetViewModel(
             getCount.invoke(mUserInfo.subLocationId)
                 .catch { cause ->
                     _queueFleetState.emit(
-                        QueueFleetState.FailedGetCounter(cause.message ?: ERROR_MESSAGE_UNKNOWN)
+                        QueueFleetState.FailedGetCounter(
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                        )
                     )
                 }
                 .collect {
@@ -110,7 +114,19 @@ class QueueFleetViewModel(
 
     fun showRequestFleet() {
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.ShowRequestFleet(mUserInfo.subLocationId))
+            _queueFleetState.emit(QueueFleetState.ShowRequestFleet(subLocationId = mUserInfo.subLocationId))
+        }
+    }
+
+    fun addFleet() {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.AddFleet(subLocationId = mUserInfo.subLocationId))
+        }
+    }
+
+    fun stateIdle() {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.Idle)
         }
     }
 }

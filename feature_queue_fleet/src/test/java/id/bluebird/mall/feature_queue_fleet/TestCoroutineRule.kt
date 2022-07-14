@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtensionContext
 class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
     AfterEachCallback {
 
-
     override fun beforeEach(context: ExtensionContext?) {
         Dispatchers.setMain(StandardTestDispatcher())
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {

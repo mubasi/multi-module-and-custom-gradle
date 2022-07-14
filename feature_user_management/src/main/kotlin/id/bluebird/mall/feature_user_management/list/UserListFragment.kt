@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.create.CreateUserFragment
 import id.bluebird.mall.feature_user_management.utils.DialogUtil
-import id.bluebird.mall.feature_user_management.utils.NavControllerUserDomain
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListFragment : Fragment() {
@@ -108,17 +109,17 @@ class UserListFragment : Fragment() {
     }
 
     private fun gotoCreateUser(id: Long?) {
-        NavControllerUserDomain.navigateToCreateFragment(this, id) { result, bundle ->
-            if (result) {
-                bundle?.let {
-                    mUserSettingVM.result(
-                        it.getString(CreateUserFragment.NAME_PARAM, ""),
-                        it.getBoolean(CreateUserFragment.ACTION_PARAM)
-                    )
-                }
-            } else {
-                mUserSettingVM.setIdle()
-
+        val destination =
+            UserListFragmentDirections.actionUserListFragmentToCreateUserFragment().apply {
+                userId = id ?: 0
+            }
+        findNavController().navigate(destination)
+        setFragmentResultListener(CreateUserFragment.REQUEST_KEY) { _, bundle ->
+            bundle.let {
+                mUserSettingVM.result(
+                    it.getString(CreateUserFragment.NAME_PARAM, ""),
+                    it.getBoolean(CreateUserFragment.ACTION_PARAM)
+                )
             }
         }
     }

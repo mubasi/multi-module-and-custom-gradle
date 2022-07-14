@@ -243,6 +243,42 @@ internal class QueueFleetViewModelTest {
         // Result
         Assertions.assertEquals(1, events.size)
         Assertions.assertEquals(QueueFleetState.ShowRequestFleet(100), events.last())
+    }
 
+
+    @Test
+    fun `addFleet, result state is AddFleet`() = runTest {
+        // Given
+        val events = mutableListOf<QueueFleetState>()
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(events)
+        }
+        _vm.showRequestFleet()
+        runCurrent()
+        job.cancel()
+
+        // Result
+        Assertions.assertEquals(1, events.size)
+        Assertions.assertEquals(QueueFleetState.AddFleet(-1), events.last())
+    }
+
+    @Test
+    fun `idleState, result state is Idle`() = runTest {
+        // Given
+        val events = mutableListOf<QueueFleetState>()
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(events)
+        }
+        _vm.stateIdle()
+        runCurrent()
+        job.cancel()
+
+        // Result
+        Assertions.assertEquals(1, events.size)
+        Assertions.assertEquals(QueueFleetState.AddFleet(-1), events.last())
     }
 }

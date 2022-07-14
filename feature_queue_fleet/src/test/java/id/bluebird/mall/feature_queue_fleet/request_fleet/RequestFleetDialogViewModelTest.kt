@@ -33,7 +33,6 @@ internal class RequestFleetDialogViewModelTest {
         // Given
         val events = mutableListOf<RequestFleetDialogState>()
         _vm.initSubLocationId(100)
-        _vm.counter.value = 11
 
         // Mock
         every { _requestFleet.invoke(any(), any()) } returns flow {
@@ -58,7 +57,6 @@ internal class RequestFleetDialogViewModelTest {
         runTest {
             // Given
             val events = mutableListOf<RequestFleetDialogState>()
-            _vm.counter.value = 0
 
             // Mock
             every { _requestFleet.invoke(any(), any()) } returns flow {
@@ -87,7 +85,6 @@ internal class RequestFleetDialogViewModelTest {
             // Given
             val events = mutableListOf<RequestFleetDialogState>()
             _vm.initSubLocationId(-1)
-            _vm.counter.value = 10
 
             // Mock
             every { _requestFleet.invoke(any(), any()) } returns flow {
@@ -131,36 +128,89 @@ internal class RequestFleetDialogViewModelTest {
     @Test
     fun `addCounter, given counter is 10, result counter became 11`() = runTest {
         // Given
-        _vm.counter.value = 10
+        _vm.counter.value = "10"
+        val events = mutableListOf<RequestFleetDialogState>()
 
         // Execute
+        val job = launch {
+            _vm.requestFleetDialogState.toList(events)
+        }
         _vm.addCounter()
+        runCurrent()
+        job.cancel()
 
         // Result
-        Assertions.assertEquals(11, _vm.counter.value)
+        Assertions.assertEquals("11", _vm.counter.value)
+        Assertions.assertEquals(
+            RequestFleetDialogState.FocusState(false),
+            events.last()
+        )
     }
+
+    @Test
+    fun `addCounter, given counter isEmpty, result counter became 1`() = runTest {
+        // Given
+        _vm.counter.value = ""
+        val events = mutableListOf<RequestFleetDialogState>()
+
+        // Execute
+        val job = launch {
+            _vm.requestFleetDialogState.toList(events)
+        }
+        _vm.addCounter()
+        runCurrent()
+        job.cancel()
+
+        // Result
+        Assertions.assertEquals("1", _vm.counter.value)
+        Assertions.assertEquals(
+            RequestFleetDialogState.FocusState(false),
+            events.last()
+        )
+    }
+
 
     @Test
     fun `minusCounter, given counter is 10, result counter became 9`() = runTest {
         // Given
-        _vm.counter.value = 10
+        _vm.counter.value = "10"
+        val events = mutableListOf<RequestFleetDialogState>()
 
         // Execute
+        val job = launch {
+            _vm.requestFleetDialogState.toList(events)
+        }
         _vm.minusCounter()
+        runCurrent()
+        job.cancel()
 
         // Result
-        Assertions.assertEquals(9, _vm.counter.value)
+        Assertions.assertEquals("9", _vm.counter.value)
+        Assertions.assertEquals(
+            RequestFleetDialogState.FocusState(false),
+            events.last()
+        )
     }
 
     @Test
     fun `minusCounter, given counter is 1, result counter is not change`() = runTest {
         // Given
-        _vm.counter.value = 1
+        val events = mutableListOf<RequestFleetDialogState>()
 
         // Execute
+        val job = launch {
+            _vm.requestFleetDialogState.toList(events)
+        }
         _vm.minusCounter()
+        runCurrent()
+        job.cancel()
 
         // Result
-        Assertions.assertEquals(1, _vm.counter.value)
+        Assertions.assertEquals("1", _vm.counter.value)
+        Assertions.assertEquals(
+            RequestFleetDialogState.FocusState(false),
+            events.last()
+        )
     }
+
 }
