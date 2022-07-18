@@ -6,12 +6,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import proto.AssignmentPangkalanGrpc
 import proto.AssignmentPangkalanOuterClass
+import proto.FleetOuterClass
+import proto.FleetServiceGrpc
+import proto.FleetServiceGrpc.newBlockingStub
 
 class FleetRepositoryImpl(
     private val assignmentGrpc: AssignmentPangkalanGrpc.AssignmentPangkalanBlockingStub = AssignmentPangkalanGrpc.newBlockingStub(
         OkHttpChannel.channel
+    ),
+    private val fleetGrpc: FleetServiceGrpc.FleetServiceBlockingStub = newBlockingStub(
+        OkHttpChannel.channel
     )
 ) : FleetRepository {
+
+    companion object {
+        private const val DEFAULT = 0L
+    }
 
     override fun getCount(
         subLocation: Long,
@@ -29,12 +39,22 @@ class FleetRepositoryImpl(
             emit(result)
         }
 
-    override fun searchFleet(param: String): Flow<AssignmentPangkalanOuterClass.SearchStockRequest> =
+    override fun searchFleet(
+        param: String,
+        itemPerPage: Int
+    ): Flow<FleetOuterClass.SearchResponse> =
         flow {
-            val request = AssignmentPangkalanOuterClass.SearchStockRequest.newBuilder()
-                .apply {
-                    this.fleetNumber = param
+            val request = FleetOuterClass.SearchRequest.newBuilder().apply {
+                keyword = param
+                paging = FleetOuterClass.PagingRequest.newBuilder().apply {
+                    this.itemPerPage = itemPerPage
+                    page = 1
                 }
+                    .build()
+            }
+                .build()
+            val result = fleetGrpc.search(request)
+            emit(result)
         }
 
     override fun requestFleet(
@@ -53,4 +73,22 @@ class FleetRepositoryImpl(
             val result = assignmentGrpc.requestTaxi(request)
             emit(result)
         }
+
+    override fun addFleet(
+        fleetNumber: String,
+        subLocationId: Long,
+        locationId: Long
+    ): Flow<AssignmentPangkalanOuterClass.StockResponse> = flow {
+        val request = AssignmentPangkalanOuterClass.StockRequest.newBuilder()
+            .apply {
+                taxiNo = fleetNumber
+                isArrived = false
+                stockType = AssignmentPangkalanOuterClass.StockType.IN
+                isWithPassenger = DEFAULT
+                this.subLocationId = subLocationId
+                this.locationId = locationId
+            }.build()
+        val result = assignmentGrpc.stock(request)
+        emit(result)
+    }
 }

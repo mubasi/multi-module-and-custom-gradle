@@ -6,6 +6,11 @@ sealed class GetCountState {
     data class Success(val countResult: CountResult) : GetCountState()
 }
 
+sealed class SearchFleetState {
+    data class Success(val fleetNumbers: List<String>) : SearchFleetState()
+    object EmptyResult : SearchFleetState()
+}
+
 sealed class RequestState {
     data class Success(val count: Long) : RequestState()
     object CountInvalid : RequestState()

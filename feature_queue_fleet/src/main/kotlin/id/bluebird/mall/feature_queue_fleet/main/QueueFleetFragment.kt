@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import id.bluebird.mall.feature_queue_fleet.R
+import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetFragment
 import id.bluebird.mall.feature_queue_fleet.databinding.FleetFragmentBinding
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -29,7 +32,11 @@ class QueueFleetFragment : Fragment() {
             false
         )
         return mBinding.root
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _mQueueFleetViewModel.stateIdle()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +50,9 @@ class QueueFleetFragment : Fragment() {
             with(_mQueueFleetViewModel) {
                 queueFleetState.collect {
                     when (it) {
+                        is QueueFleetState.AddFleet -> {
+                            navigationToAddFleet(it.subLocationId)
+                        }
                         QueueFleetState.GetUserInfoSuccess -> {
                             getCounter()
                         }
@@ -62,6 +72,16 @@ class QueueFleetFragment : Fragment() {
                 }
             }
         }
+    }
 
+    private fun navigationToAddFleet(subLocationId: Long) {
+        val destination = QueueFleetFragmentDirections.actionQueueFleetFragmentToAddFleetFragment()
+            .apply {
+                subLocation = subLocationId
+            }
+        findNavController().navigate(destination)
+        setFragmentResultListener(AddFleetFragment.RESULT) { _, bundle ->
+            _mQueueFleetViewModel.addSuccess(bundle.getString(AddFleetFragment.REQUEST_ADD, ""))
+        }
     }
 }

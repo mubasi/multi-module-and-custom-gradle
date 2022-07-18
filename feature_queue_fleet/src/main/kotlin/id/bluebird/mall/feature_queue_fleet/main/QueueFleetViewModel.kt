@@ -129,4 +129,11 @@ class QueueFleetViewModel(
             _queueFleetState.emit(QueueFleetState.Idle)
         }
     }
+
+    fun addSuccess(fleetNumber: String) {
+        if (fleetNumber.isNotBlank()) {
+            mCountCache.stock += 1
+            counterLiveData.value = mCountCache
+        }
+    }
 }

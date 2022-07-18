@@ -158,7 +158,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             )
             toolbar.backArrowButton(
                 navController,
-                destinationId = R.id.createUserFragment
+                destinationId = R.id.addFleetFragment
             )
         }
     }

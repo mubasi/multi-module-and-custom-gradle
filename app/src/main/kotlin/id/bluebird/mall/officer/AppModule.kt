@@ -7,14 +7,19 @@ import id.bluebird.mall.domain.user.domain.intercator.*
 import id.bluebird.mall.domain.user.domain.usescases.*
 import id.bluebird.mall.domain_fleet.FleetRepository
 import id.bluebird.mall.domain_fleet.FleetRepositoryImpl
+import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
 import id.bluebird.mall.domain_fleet.domain.cases.GetCount
 import id.bluebird.mall.domain_fleet.domain.cases.RequestFleet
+import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
+import id.bluebird.mall.domain_fleet.domain.interactor.AddFleetUseCases
 import id.bluebird.mall.domain_fleet.domain.interactor.GetCountCases
 import id.bluebird.mall.domain_fleet.domain.interactor.RequestFleetUseCases
+import id.bluebird.mall.domain_fleet.domain.interactor.SearchFleetUseCases
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
+import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
@@ -37,6 +42,7 @@ object AppModule {
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
         viewModel { LogoutDialogViewModel(get()) }
+        viewModel { AddFleetViewModel(get(), get()) }
     }
 
     private val userCases = module {
@@ -52,6 +58,8 @@ object AppModule {
     private val fleetCases = module {
         single<GetCount> { GetCountCases(get()) }
         single<RequestFleet> { RequestFleetUseCases(get()) }
+        single<SearchFleet> { SearchFleetUseCases(get()) }
+        single<AddFleet> { AddFleetUseCases(get()) }
     }
 
     private val locationCases = module {
