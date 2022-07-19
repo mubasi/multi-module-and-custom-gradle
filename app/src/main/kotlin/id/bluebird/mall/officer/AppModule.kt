@@ -7,14 +7,8 @@ import id.bluebird.mall.domain.user.domain.intercator.*
 import id.bluebird.mall.domain.user.domain.usescases.*
 import id.bluebird.mall.domain_fleet.FleetRepository
 import id.bluebird.mall.domain_fleet.FleetRepositoryImpl
-import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
-import id.bluebird.mall.domain_fleet.domain.cases.GetCount
-import id.bluebird.mall.domain_fleet.domain.cases.RequestFleet
-import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
-import id.bluebird.mall.domain_fleet.domain.interactor.AddFleetUseCases
-import id.bluebird.mall.domain_fleet.domain.interactor.GetCountCases
-import id.bluebird.mall.domain_fleet.domain.interactor.RequestFleetUseCases
-import id.bluebird.mall.domain_fleet.domain.interactor.SearchFleetUseCases
+import id.bluebird.mall.domain_fleet.domain.cases.*
+import id.bluebird.mall.domain_fleet.domain.interactor.*
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
@@ -37,7 +31,7 @@ object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
         viewModel { HomeViewModel(get()) }
-        viewModel { QueueFleetViewModel(get(), get()) }
+        viewModel { QueueFleetViewModel(get(), get(), get()) }
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
@@ -52,7 +46,7 @@ object AppModule {
         single<Login> { LoginCaseImpl(get()) }
         single<CreateEditUser> { CreateEditUserCases(get()) }
         single<GetRoles> { GetRolesCases(get()) }
-        single<GetUserById> { GetUserByIdCases(get()) }
+        single<GetUserId> { GetUserIdCases(get()) }
     }
 
     private val fleetCases = module {
@@ -60,6 +54,7 @@ object AppModule {
         single<RequestFleet> { RequestFleetUseCases(get()) }
         single<SearchFleet> { SearchFleetUseCases(get()) }
         single<AddFleet> { AddFleetUseCases(get()) }
+        single<GetListFleet> { GetListFleetUseCases(get()) }
     }
 
     private val locationCases = module {

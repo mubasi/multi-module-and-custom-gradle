@@ -21,6 +21,8 @@ class FleetRepositoryImpl(
 
     companion object {
         private const val DEFAULT = 0L
+        private const val ITEM_PER_PAGE = 500
+        private const val PAGE = 1
     }
 
     override fun getCount(
@@ -91,4 +93,17 @@ class FleetRepositoryImpl(
         val result = assignmentGrpc.stock(request)
         emit(result)
     }
+
+    override fun getListFleet(subLocationId: Long): Flow<AssignmentPangkalanOuterClass.GetListFleetTerminalResp> =
+        flow {
+            val request = AssignmentPangkalanOuterClass.GetListFleetTerminalReq.newBuilder()
+                .apply {
+                    this.subLocation = subLocationId
+                    page = PAGE
+                    itemPerPage = ITEM_PER_PAGE
+                }
+                .build()
+            val result = assignmentGrpc.getListFleetTerminal(request)
+            emit(result)
+        }
 }

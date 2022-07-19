@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.mall.domain_fleet.SearchFleetState
 import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
 import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
+import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -59,7 +61,16 @@ class AddFleetViewModel(
                     _addFleetState.emit(AddFleetState.AddError(err = cause))
                 }
                 .collect {
-                    _addFleetState.emit(AddFleetState.AddFleetSuccess(it))
+                    when (it) {
+                        is id.bluebird.mall.domain_fleet.AddFleetState.Success -> {
+                            val fleetItem = FleetItem(
+                                id = it.fleetItemResult.fleetId,
+                                name = it.fleetItemResult.fleetName,
+                                arriveAt = it.fleetItemResult.arriveAt.convertCreateAtValue()
+                            )
+                            _addFleetState.emit(AddFleetState.AddFleetSuccess(fleetItem))
+                        }
+                    }
                 }
         }
     }

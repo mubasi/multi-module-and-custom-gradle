@@ -7,7 +7,7 @@ import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.UserDomainState
 import id.bluebird.mall.domain.user.domain.intercator.CreateEditUser
 import id.bluebird.mall.domain.user.domain.intercator.GetRoles
-import id.bluebird.mall.domain.user.domain.intercator.GetUserById
+import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserParam
 import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_location.LocationDomainState
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 class CreateUserViewModel(
     private val createEditUser: CreateEditUser,
     private val getRoles: GetRoles,
-    private val getUserById: GetUserById,
+    private val getUserId: GetUserId,
     private val getSubLocationByLocationId: GetSubLocationByLocationId
 ) : ViewModel() {
 
@@ -80,17 +80,11 @@ class CreateUserViewModel(
 
     fun getUser() {
         viewModelScope.launch {
-            getUserById.invoke(mUserId)
-                .catch { cause: Throwable ->
-
-                }
+            getUserId.invoke(mUserId)
                 .collect {
                     when (it) {
                         is GetUserByIdState.Success -> {
                             assignUserToField(it.result)
-                        }
-                        GetUserByIdState.UserIdIsWrong -> {
-                            assignUserToField(null)
                         }
                     }
                 }

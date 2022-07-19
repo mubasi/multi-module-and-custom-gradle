@@ -83,7 +83,7 @@ class AddFleetFragment : Fragment() {
                         )
                         is AddFleetState.AddFleetSuccess -> {
                             val bundle = Bundle()
-                            bundle.putString(REQUEST_ADD, it.fleetNumber)
+                            bundle.putParcelable(REQUEST_ADD, it.fleetItem)
                             setFragmentResult(RESULT, bundle)
                             findNavController().popBackStack()
                         }

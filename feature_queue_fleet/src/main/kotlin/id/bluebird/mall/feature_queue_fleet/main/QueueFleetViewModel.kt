@@ -4,28 +4,29 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.mall.core.utils.hawk.UserUtils
+import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.mall.domain.user.GetUserByIdState
-import id.bluebird.mall.domain.user.domain.intercator.GetUserById
+import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain_fleet.GetCountState
+import id.bluebird.mall.domain_fleet.GetListFleetState
 import id.bluebird.mall.domain_fleet.domain.cases.GetCount
+import id.bluebird.mall.domain_fleet.domain.cases.GetListFleet
 import id.bluebird.mall.feature_queue_fleet.model.CountCache
+import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.model.UserInfo
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class QueueFleetViewModel(
     private val getCount: GetCount,
-    private val getUserById: GetUserById
+    private val getUserId: GetUserId,
+    private val _getFleet: GetListFleet
 ) : ViewModel() {
 
     companion object {
-        internal const val ERROR_MESSAGE_UNKNOWN = "Unknown"
-        internal const val ERROR_USER_ID = "User is wrong"
+        const val ERROR_MESSAGE_UNKNOWN = "Unknown"
     }
 
     val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
@@ -36,25 +37,33 @@ class QueueFleetViewModel(
 
     private var mCountCache: CountCache = CountCache()
     private lateinit var mUserInfo: UserInfo
+    private val _fleetItems: MutableList<FleetItem> = mutableListOf()
 
     @VisibleForTesting
     fun setUserInfo(userInfo: UserInfo) {
         mUserInfo = userInfo
     }
 
-    fun initUserId(userId: Long?) {
-        mUserInfo = if (userId == null) {
-            UserInfo(UserUtils.getUserId())
-        } else {
-            UserInfo(userId)
-        }
+    @VisibleForTesting
+    fun setCountCache(countCache: CountCache) {
+        mCountCache = countCache
+        counterLiveData.value = mCountCache
+    }
+
+    @VisibleForTesting
+    fun setFleetItems(list: List<FleetItem>) {
+        _fleetItems.addAll(list)
+    }
+
+    fun init() {
         getUserById()
     }
 
     private fun getUserById() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetUser)
-            getUserById.invoke(mUserInfo.userId)
+            getUserId.invoke(null)
+                .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _queueFleetState.emit(
                         QueueFleetState.FailedGetUser(
@@ -65,12 +74,10 @@ class QueueFleetViewModel(
                 .collect {
                     when (it) {
                         is GetUserByIdState.Success -> {
+                            mUserInfo = UserInfo(it.result.id)
                             mUserInfo.locationId = it.result.locationId
                             mUserInfo.subLocationId = it.result.subLocationsId.first()
                             _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
-                        }
-                        GetUserByIdState.UserIdIsWrong -> {
-                            _queueFleetState.emit(QueueFleetState.FailedGetUser(ERROR_USER_ID))
                         }
                     }
                 }
@@ -79,29 +86,33 @@ class QueueFleetViewModel(
 
     fun getCounter() {
         viewModelScope.launch {
-            getCount.invoke(mUserInfo.subLocationId)
-                .catch { cause ->
-                    _queueFleetState.emit(
-                        QueueFleetState.FailedGetCounter(
-                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+            if (!mCountCache.isInit) {
+                getCount.invoke(mUserInfo.subLocationId)
+                    .flowOn(Dispatchers.Main)
+                    .catch { cause ->
+                        _queueFleetState.emit(
+                            QueueFleetState.FailedGetCounter(
+                                message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                            )
                         )
-                    )
-                }
-                .collect {
-                    when (it) {
-                        is GetCountState.Success -> {
-                            it.countResult.let { result ->
-                                mCountCache = CountCache(
-                                    stock = result.stock,
-                                    request = result.request,
-                                    ritase = result.ritase
-                                )
-                                counterLiveData.postValue(mCountCache)
+                    }
+                    .collect {
+                        when (it) {
+                            is GetCountState.Success -> {
+                                it.countResult.let { result ->
+                                    mCountCache = CountCache(
+                                        isInit = true,
+                                        stock = result.stock,
+                                        request = result.request,
+                                        ritase = result.ritase
+                                    )
+                                    counterLiveData.postValue(mCountCache)
+                                }
                             }
                         }
-                    }
 
-                }
+                    }
+            }
         }
     }
 
@@ -130,10 +141,48 @@ class QueueFleetViewModel(
         }
     }
 
-    fun addSuccess(fleetNumber: String) {
-        if (fleetNumber.isNotBlank()) {
+    fun addSuccess(fleetItem: FleetItem?) {
+        if (fleetItem != null) {
             mCountCache.stock += 1
             counterLiveData.value = mCountCache
+            viewModelScope.launch {
+                _fleetItems.add(fleetItem)
+                _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
+            }
+        }
+    }
+
+    fun getFleetList() {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.ProgressGetFleetList)
+            if (_fleetItems.isNotEmpty()) {
+                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
+            } else {
+                _getFleet.invoke(mUserInfo.subLocationId)
+                    .flowOn(Dispatchers.Main)
+                    .catch { cause: Throwable ->
+                        _queueFleetState.emit(QueueFleetState.FailedGetList(cause))
+                    }
+                    .collect {
+                        when (it) {
+                            GetListFleetState.EmptyResult -> {
+                                _queueFleetState.emit(QueueFleetState.GetListEmpty)
+                            }
+                            is GetListFleetState.Success -> {
+                                it.list.forEach { item ->
+                                    _fleetItems.add(
+                                        FleetItem(
+                                            id = item.fleetId,
+                                            name = item.fleetName,
+                                            arriveAt = item.arriveAt.convertCreateAtValue()
+                                        )
+                                    )
+                                }
+                                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
+                            }
+                        }
+                    }
+            }
         }
     }
 }
