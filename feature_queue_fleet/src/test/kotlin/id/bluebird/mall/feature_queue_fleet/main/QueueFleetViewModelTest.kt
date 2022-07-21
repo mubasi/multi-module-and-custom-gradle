@@ -235,6 +235,31 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(QueueFleetState.Idle, _events.last())
     }
 
+
+    @Test
+    fun `searchFleet, result state is SearchFleet with subLocationId & FleetItems`() = runTest {
+        // Pre
+        _vm.setUserInfo(UserInfo(userId = 10, subLocationId = 11))
+        _vm.setFleetItems(mutableListOf())
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.searchFleet()
+        runCurrent()
+        job.cancel()
+
+        // Result
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(11, (_events.last() as QueueFleetState.SearchFleet).subLocationId)
+        Assertions.assertEquals(
+            emptyList<FleetItem>(),
+            (_events.last() as QueueFleetState.SearchFleet).list
+        )
+        assert(_events.last() is QueueFleetState.SearchFleet)
+    }
+
     @Test
     fun `getListFleet, given subLocationId, condition don't hit api, result QueueFleetState Success`() =
         runTest {

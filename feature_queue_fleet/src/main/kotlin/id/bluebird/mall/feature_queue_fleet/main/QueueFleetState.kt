@@ -8,6 +8,7 @@ sealed class QueueFleetState {
     object ProgressGetFleetList : QueueFleetState()
     object GetUserInfoSuccess : QueueFleetState()
     object GetListEmpty : QueueFleetState()
+    data class SearchFleet(val subLocationId: Long, val list: List<FleetItem>) : QueueFleetState()
     data class AddFleetSuccess(val list: List<FleetItem>) : QueueFleetState()
     data class AddFleet(val subLocationId: Long) : QueueFleetState()
     data class ShowRequestFleet(val subLocationId: Long) : QueueFleetState()

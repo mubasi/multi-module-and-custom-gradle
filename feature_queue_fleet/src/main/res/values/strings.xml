@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    // Version 1.0.1
     <string name="stock_fleet">Stok armada</string>
     <string name="request">Permintaan</string>
     <string name="eng_request">Request</string>
     <string name="ritase">Ritase</string>
     <string name="fleet_title">Antrian armada</string>
     <string name="add_fleet">Tambah armada</string>
+    <string name="search_fleet">Cari taxi</string>
     <string name="message_add_fleet">Masukkan no. lambung armada untuk menambah armada secara manual.</string>
     <string name="message_error_character_input">No. lambung harus memiliki minimal 5 karakter.</string>
     <string name="hint_search_fleet_number">Masukan no taksi</string>

@@ -13,9 +13,11 @@ import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
+import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
+import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
 import id.bluebird.mall.home.HomeViewModel
@@ -37,6 +39,7 @@ object AppModule {
         viewModel { RequestFleetDialogViewModel(get()) }
         viewModel { LogoutDialogViewModel(get()) }
         viewModel { AddFleetViewModel(get(), get()) }
+        viewModel { SearchFleetViewModel() }
     }
 
     private val userCases = module {
@@ -67,6 +70,10 @@ object AppModule {
         single<FleetRepository> { FleetRepositoryImpl() }
     }
 
+    private val adapter = module {
+        single { FleetsAdapter() }
+    }
+
     lateinit var koin: Koin
 
     fun initDependencyInjection(context: Context) {
@@ -79,6 +86,7 @@ object AppModule {
                     userCases,
                     repository,
                     vmModule,
+                    adapter
                 )
             )
         }.koin
