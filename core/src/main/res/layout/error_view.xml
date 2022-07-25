@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/bg_button_login_enable"
+            android:background="@drawable/bg_button_submit"
             android:fontFamily="@font/ubuntu_bold"
             android:textAlignment="center"
             android:text="@string/back"

@@ -11,4 +11,8 @@
     <string name="hint_search_fleet_number">Masukan no taksi</string>
     <string name="add">Tambah</string>
     <string name="request_fleet">Request armada</string>
+    <string name="add_fleet_failed_title">Menambahkan Fleet gagal</string>
+    <string name="add_fleet_failed_message">Menambahkan fleet gagal, harap coba lagi atau tambahkan fleet lain</string>
+    <string name="search_flett_error_title">Pencarian gagal</string>
+    <string name="search_flett_error_message">Gagal melakukan pencarian fleet</string>
 </resources>
