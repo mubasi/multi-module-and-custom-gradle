@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/queue_fleet_nav"
-            android:icon="@drawable/ic_fleet_queue"
+            android:icon="@drawable/ic_antrian_armada"
             android:title="@string/fleet_queue" />
         <item
             android:id="@+id/queue_passenger_nav"
@@ -11,7 +12,7 @@
             android:title="@string/queue_passenger" />
         <item
             android:id="@+id/action_monitoring"
-            android:icon="@drawable/ic_cross"
+            android:icon="@drawable/ic_pemantauan"
             android:title="@string/monitor" />
         <item
             android:id="@+id/user_management_nav"
@@ -19,7 +20,7 @@
             android:title="@string/user_setting" />
         <item
             android:id="@+id/action_logout"
-            android:icon="@drawable/ic_cross"
-            android:title="@string/exit" />
+            android:icon="@drawable/ic_logout"
+            android:title="@string/exit"/>
     </group>
 </menu>
