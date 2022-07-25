@@ -2,6 +2,7 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    kotlin(Plugins.parcelize)
     id(Plugins.safeargs)
 //    jacoco
 }

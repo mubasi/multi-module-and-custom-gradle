@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.mall.feature_queue_fleet.R
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetFragment
 import id.bluebird.mall.feature_queue_fleet.databinding.FleetFragmentBinding
+import id.bluebird.mall.feature_queue_fleet.main.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,6 +23,9 @@ class QueueFleetFragment : Fragment() {
 
     private val _mQueueFleetViewModel: QueueFleetViewModel by viewModel()
     private lateinit var mBinding: FleetFragmentBinding
+    private val _fleetAdapter: FleetsAdapter by lazy {
+        FleetsAdapter(_mQueueFleetViewModel)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,29 +51,48 @@ class QueueFleetFragment : Fragment() {
         mBinding.apply {
             vm = _mQueueFleetViewModel
             lifecycleOwner = viewLifecycleOwner
+            showList = false
         }
-        _mQueueFleetViewModel.initUserId(null)
+        _mQueueFleetViewModel.init()
+        initRcv()
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            with(_mQueueFleetViewModel) {
-                queueFleetState.collect {
-                    when (it) {
-                        is QueueFleetState.AddFleet -> {
-                            navigationToAddFleet(it.subLocationId)
-                        }
-                        QueueFleetState.GetUserInfoSuccess -> {
-                            getCounter()
-                        }
-                        is QueueFleetState.ShowRequestFleet -> {
-                            RequestFleetDialog(
-                                it.subLocationId,
-                                _mQueueFleetViewModel::updateRequestCount
-                            ).show(
-                                childFragmentManager,
-                                RequestFleetDialog.TAG
-                            )
-                        }
-                        else -> {
-                            // do nothing
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                with(_mQueueFleetViewModel) {
+                    queueFleetState.collect {
+                        when (it) {
+                            is QueueFleetState.AddFleet -> {
+                                navigationToAddFleet(it.subLocationId)
+                            }
+                            QueueFleetState.GetUserInfoSuccess -> {
+                                getCounter()
+                                getFleetList()
+                            }
+                            is QueueFleetState.GetListSuccess -> {
+                                mBinding.showList = true
+                                _fleetAdapter.submitList(it.list)
+                            }
+                            is QueueFleetState.ShowRequestFleet -> {
+                                RequestFleetDialog(
+                                    it.subLocationId,
+                                    _mQueueFleetViewModel::updateRequestCount
+                                ).show(
+                                    childFragmentManager,
+                                    RequestFleetDialog.TAG
+                                )
+                            }
+                            is QueueFleetState.AddFleetSuccess -> {
+                                _fleetAdapter.submitList(it.list)
+                                _fleetAdapter.notifyItemInserted(_fleetAdapter.itemCount)
+                            }
+                            is QueueFleetState.FailedGetList -> {
+                                mBinding.showList = true
+                            }
+                            QueueFleetState.ProgressGetUser -> {
+                                mBinding.showList = false
+                            }
+                            else -> {
+                                // do nothing
+                            }
                         }
                     }
                 }
@@ -81,7 +107,14 @@ class QueueFleetFragment : Fragment() {
             }
         findNavController().navigate(destination)
         setFragmentResultListener(AddFleetFragment.RESULT) { _, bundle ->
-            _mQueueFleetViewModel.addSuccess(bundle.getString(AddFleetFragment.REQUEST_ADD, ""))
+            _mQueueFleetViewModel.addSuccess(bundle.getParcelable(AddFleetFragment.REQUEST_ADD))
+        }
+    }
+
+    private fun initRcv() {
+        with(mBinding) {
+            mainListFleetFleetFragment.adapter = _fleetAdapter
+            mainListFleetFleetFragment.layoutManager = LinearLayoutManager(requireContext())
         }
     }
 }

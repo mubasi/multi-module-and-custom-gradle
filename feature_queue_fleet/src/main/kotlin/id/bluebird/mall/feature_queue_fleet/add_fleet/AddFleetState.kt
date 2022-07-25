@@ -1,5 +1,7 @@
 package id.bluebird.mall.feature_queue_fleet.add_fleet
 
+import id.bluebird.mall.feature_queue_fleet.model.FleetItem
+
 sealed class AddFleetState {
     object OnProgressGetList : AddFleetState()
     object GetListEmpty : AddFleetState()
@@ -9,5 +11,5 @@ sealed class AddFleetState {
     data class UpdateSelectPosition(val lastPosition: Int, val newPosition: Int) :
         AddFleetState()
 
-    data class AddFleetSuccess(val fleetNumber: String) : AddFleetState()
+    data class AddFleetSuccess(val fleetItem: FleetItem) : AddFleetState()
 }

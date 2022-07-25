@@ -8,7 +8,6 @@ sealed class UserDomainState<out T : Any> {
 
 sealed class GetUserByIdState {
     data class Success(val result: CreateUserResult) : GetUserByIdState()
-    object UserIdIsWrong : GetUserByIdState()
 }
 
 sealed interface UserErr {

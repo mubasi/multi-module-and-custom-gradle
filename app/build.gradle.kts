@@ -75,10 +75,9 @@ android {
             isShrinkResources = false
         }
     }
-
-    sourceSets {
-        val main by getting
-        main.res.srcDirs("src/main/res")
+    sourceSets.getByName("test") {
+        kotlin.srcDir(project(":feature_queue_fleet").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain_fleet").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")
@@ -132,6 +131,14 @@ dependencies {
     implementation(project(":domain_fleet"))
     implementation(project(":domain_location"))
     implementation(project(":navigation"))
+
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testImplementation(OtherLib.turbin)
+    testImplementation(Mockk.mockk)
+    testImplementation(Junit.junit)
+    testImplementation(Kotlin.coroutines_test)
+    testRuntimeOnly(Junit5.vintage_engine)
 
 
 }
