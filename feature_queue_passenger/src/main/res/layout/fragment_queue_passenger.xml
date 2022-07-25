@@ -367,7 +367,7 @@
                             android:layout_marginStart="@dimen/eight_dp"
                             android:layout_marginTop="6dp"
                             android:fontFamily="@font/ubuntu_bold"
-                            android:text="@string/number_of_queue"
+                            android:text="@string/queue"
                             android:textColor="@color/gray_subtitle"
                             app:layout_constraintLeft_toRightOf="@id/view_counter_queue_home"
                             app:layout_constraintRight_toRightOf="parent"
@@ -439,5 +439,18 @@
                 android:textColor="@color/primary_color" />
 
         </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addTicket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_add_queue"
+            android:layout_margin="16dp"
+            android:padding="5dp"
+            android:backgroundTint="@color/primary_color"
+            app:tint="@color/white"
+            app:borderWidth="0dp"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

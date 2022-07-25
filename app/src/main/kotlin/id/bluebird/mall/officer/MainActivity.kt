@@ -1,6 +1,7 @@
 package id.bluebird.mall.officer
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -12,12 +13,15 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.material.navigation.NavigationView
+import id.bluebird.mall.core.utils.hawk.AuthUtils
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
 import id.bluebird.mall.officer.extensions.backArrowButton
 import id.bluebird.mall.officer.extensions.setToolbarAddFleetFragment
 import id.bluebird.mall.officer.extensions.setToolbarCreateUserFragment
+import id.bluebird.mall.officer.logout.LogoutDialog
 
-internal class MainActivity : AppCompatActivity() {
+internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mNavController: androidx.navigation.NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -56,6 +60,11 @@ internal class MainActivity : AppCompatActivity() {
                     R.id.addFleetFragment -> {
                         navigateToAddFleet()
                     }
+                    R.id.queuePassengerFragment -> {
+                        toolbar.visibility = View.VISIBLE
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        setToggle()
+                    }
                     else -> {
                         toolbar.visibility = View.VISIBLE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -64,6 +73,8 @@ internal class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        mBinding.navView.setNavigationItemSelectedListener(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -76,6 +87,14 @@ internal class MainActivity : AppCompatActivity() {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             mBinding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
         }
     }
 
@@ -142,5 +161,19 @@ internal class MainActivity : AppCompatActivity() {
                 destinationId = R.id.createUserFragment
             )
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_logout -> {
+                drawer()
+                LogoutDialog().show(supportFragmentManager, LogoutDialog.TAG)
+//                navLogout()
+            } else -> {
+                NavigationUI.onNavDestinationSelected(item, navController)
+                drawer()
+            }
+        }
+        return true
     }
 }

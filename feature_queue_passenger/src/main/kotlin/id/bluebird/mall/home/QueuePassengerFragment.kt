@@ -11,9 +11,11 @@ import android.text.style.StyleSpan
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import id.bluebird.mall.core.CommonState
@@ -112,6 +114,10 @@ class QueuePassengerFragment : BaseFragment() {
         mHomeViewModel.homeStateOnIdle()
         mHomeViewModel.homeDialogStateIdle()
         cancelAllDialog()
+    }
+
+    private fun setFloatingBottom() {
+        val fab : View = mVp2Home.findViewById<FloatingActionButton>(R.id.addTicket)
     }
 
     private fun homeStateListener() {

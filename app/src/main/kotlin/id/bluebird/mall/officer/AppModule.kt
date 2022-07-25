@@ -21,6 +21,7 @@ import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
 import id.bluebird.mall.home.HomeViewModel
 import id.bluebird.mall.login.LoginViewModel
+import id.bluebird.mall.officer.logout.LogoutDialogViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.Koin
@@ -35,6 +36,7 @@ object AppModule {
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
+        viewModel { LogoutDialogViewModel(get()) }
     }
 
     private val userCases = module {
