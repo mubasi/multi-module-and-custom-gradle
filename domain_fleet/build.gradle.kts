@@ -2,17 +2,7 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
-//    jacoco
 }
-
-//jacoco {
-//    toolVersion = "0.8.7"
-//    reportsDir = file("$buildDir/reports")
-//}
-
-//apply {
-//    from("../jacoco.gradle.kts")
-//}
 
 android {
     compileSdk = Version.compileSdk
@@ -22,7 +12,7 @@ android {
         targetSdk = Version.targetSdk
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        consumerProguardFiles("consumer-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     tasks.withType<Test> {
