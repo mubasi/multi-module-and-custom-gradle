@@ -1,5 +1,6 @@
 package id.bluebird.mall.feature_queue_fleet
 
+import android.widget.Button
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
@@ -7,8 +8,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.ViewModel
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
+import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
+import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 
 object DataBinding {
 
@@ -16,6 +20,18 @@ object DataBinding {
     @BindingAdapter("valueCheckList", "bindingVm")
     fun showCheckList(imageView: AppCompatImageView, value: String, vm: AddFleetViewModel) {
         imageView.isVisible = vm.selectedFleetNumber.value == value
+    }
+
+    @JvmStatic
+    @BindingAdapter("bindFleetItem", "bindingVm")
+    fun Button.buttonClick(value: FleetItem, viewModel: ViewModel?) {
+        viewModel?.let {
+            this.setOnClickListener {
+                if (viewModel is SearchFleetViewModel) {
+                    viewModel.departFleet(value)
+                }
+            }
+        }
     }
 
     @JvmStatic

@@ -3,6 +3,7 @@ import id.bluebird.mall.domain_fleet.domain.interactor.GetListFleetUseCasesTest
 import id.bluebird.mall.domain_fleet.domain.interactor.RequestFleetUseCasesTest
 import id.bluebird.mall.domain_fleet.domain.interactor.SearchFleetUseCasesTest
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModelTest
+import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModelTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.platform.suite.api.SelectClasses
 import org.junit.platform.suite.api.Suite
@@ -10,6 +11,7 @@ import org.junit.platform.suite.api.Suite
 @Suite
 @SelectClasses(
     QueueFleetViewModelTest::class,
+    SearchFleetViewModelTest::class,
     GetCountCasesTest::class,
     GetListFleetUseCasesTest::class,
     RequestFleetUseCasesTest::class,

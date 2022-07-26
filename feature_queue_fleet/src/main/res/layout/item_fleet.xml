@@ -10,7 +10,7 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel" />
+            type="androidx.lifecycle.ViewModel" />
 
         <import type="android.view.View" />
     </data>
@@ -68,6 +68,8 @@
                 android:maxWidth="96dp"
                 android:minWidth="48dp"
                 android:text="@string/depart"
+                bindingVm="@{vm}"
+                bindFleetItem="@{fleet}"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="@color/primary_0"

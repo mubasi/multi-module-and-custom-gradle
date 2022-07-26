@@ -123,6 +123,17 @@ class QueueFleetViewModel(
         }
     }
 
+    fun searchFleet() {
+        viewModelScope.launch {
+            _queueFleetState.emit(
+                QueueFleetState.SearchFleet(
+                    subLocationId = mUserInfo.subLocationId,
+                    list = _fleetItems
+                )
+            )
+        }
+    }
+
     fun showRequestFleet() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ShowRequestFleet(subLocationId = mUserInfo.subLocationId))
@@ -149,6 +160,14 @@ class QueueFleetViewModel(
                 _fleetItems.add(fleetItem)
                 _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
             }
+        }
+    }
+
+    fun departSuccess(list: List<FleetItem>) {
+        viewModelScope.launch {
+            _fleetItems.clear()
+            _fleetItems.addAll(list)
+            _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
         }
     }
 

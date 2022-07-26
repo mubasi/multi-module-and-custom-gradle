@@ -1,28 +1,36 @@
-package id.bluebird.mall.feature_queue_fleet.main.adapter
+package id.bluebird.mall.feature_queue_fleet.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import id.bluebird.mall.feature_queue_fleet.R
 import id.bluebird.mall.feature_queue_fleet.databinding.ItemFleetBinding
-import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 
-class FleetsAdapter(private val queueFleetViewModel: QueueFleetViewModel) :
+class FleetsAdapter :
     ListAdapter<FleetItem, FleetsAdapter.ViewHolder>(FleetDiffUtils()) {
+
+
     class ViewHolder(
         private val binding: ItemFleetBinding,
-        private val viewModel: QueueFleetViewModel
+        private val _vm: ViewModel?
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun setData(fleetItem: FleetItem) {
             with(binding) {
-                this.vm = viewModel
                 fleet = fleetItem
+                this.vm = _vm
             }
         }
+    }
+
+    private var _viewModel: ViewModel? = null
+
+    fun initViewModel(viewModel: ViewModel) {
+        _viewModel = viewModel
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +40,7 @@ class FleetsAdapter(private val queueFleetViewModel: QueueFleetViewModel) :
             parent,
             false
         )
-        return ViewHolder(binding = binding, viewModel = queueFleetViewModel)
+        return ViewHolder(binding = binding, _vm = _viewModel)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

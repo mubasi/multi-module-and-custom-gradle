@@ -58,7 +58,10 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         navigateToCreateUser(args = args)
                     }
                     R.id.addFleetFragment -> {
-                        navigateToAddFleet()
+                        navigateBackWithArrow(R.id.addFleetFragment)
+                    }
+                    R.id.searchFleetFragment -> {
+                        navigateBackWithArrow(R.id.searchFleetFragment)
                     }
                     R.id.queuePassengerFragment -> {
                         toolbar.visibility = View.VISIBLE
@@ -150,7 +153,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         }
     }
 
-    private fun navigateToAddFleet() {
+    private fun navigateBackWithArrow(id: Int) {
         with(mBinding) {
             hideDrawerMenu()
             toolbar.setToolbarAddFleetFragment(
@@ -158,7 +161,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             )
             toolbar.backArrowButton(
                 navController,
-                destinationId = R.id.addFleetFragment
+                destinationId = id
             )
         }
     }
