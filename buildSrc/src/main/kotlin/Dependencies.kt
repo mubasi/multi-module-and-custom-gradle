@@ -56,6 +56,17 @@ object Plugins {
 object Grpc {
     private const val grpc_version = "1.24.2"
     private const val protobuf_version = "3.9.1"
+    fun getProtocArtifact(silicon: String): String {
+        return "$protobuf_artifact$silicon"
+    }
+
+    fun getGrpcArtifact(silicon: String): String {
+        return "$gen_artifact$silicon"
+    }
+
+    fun getJavaLite(silicon: String):String{
+        return "$get_javalite_arifact$silicon"
+    }
 
     val okhttp by lazy { "io.grpc:grpc-okhttp:1.46.0" }
     val core by lazy { "io.grpc:grpc-core:1.46.0" }

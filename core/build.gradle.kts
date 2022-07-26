@@ -14,6 +14,7 @@ val keyPropertiesFile = rootProject.file("local.properties")
 if (keyPropertiesFile.exists()) {
     keyProperties.load(FileInputStream(keyPropertiesFile))
 }
+val protobuf_platform = keyProperties.getProperty("protobuf_platform", "")
 
 android {
     compileSdk = Version.compileSdk
@@ -172,14 +173,14 @@ sourceSets {
 
 protobuf {
     protoc {
-        artifact = Grpc.protobuf_artifact
+        artifact = Grpc.getProtocArtifact(protobuf_platform)
     }
     plugins {
         create("javalite") {
-            artifact = Grpc.get_javalite_arifact
+            artifact = Grpc.getJavaLite(protobuf_platform)
         }
         create("grpc") {
-            artifact = (Grpc.gen_artifact)
+            artifact = Grpc.getGrpcArtifact(protobuf_platform)
         }
     }
     generateProtoTasks {

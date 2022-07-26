@@ -1,6 +1,3 @@
-import java.io.FileInputStream
-import java.util.*
-
 plugins {
     id(Plugins.application)
     kotlin(Plugins.android)
@@ -9,13 +6,6 @@ plugins {
     jacoco
     id(Plugins.sonarqube)
 }
-
-val keyProperties = Properties()
-val keyPropertiesFile = rootProject.file("local.properties")
-if (keyPropertiesFile.exists()) {
-    keyProperties.load(FileInputStream(keyPropertiesFile))
-}
-
 
 jacoco {
     toolVersion = "0.8.7"
@@ -45,16 +35,6 @@ android {
         useJUnitPlatform()
     }
 
-    signingConfigs {
-        create("config") {
-            keyAlias = keyProperties["keyAlias"] as String
-            keyPassword = keyProperties["keyPassword"] as String
-            storeFile = file(keyProperties["storeFile"] as String)
-            storePassword = keyProperties["storePassword"] as String
-        }
-    }
-
-
     buildTypes {
         /** keystore(jsk) disimpan di Digital Outlet sharepoints folder "Keys"*/
         getByName("release") {
@@ -66,7 +46,6 @@ android {
                     "proguard-android-optimize.txt"
                 )
             )
-            signingConfig = signingConfigs.getByName("config")
         }
         getByName("debug") {
             isMinifyEnabled = false
@@ -139,8 +118,6 @@ dependencies {
     testImplementation(Junit.junit)
     testImplementation(Kotlin.coroutines_test)
     testRuntimeOnly(Junit5.vintage_engine)
-
-
 }
 
 sonarqube {
