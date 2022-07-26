@@ -53,5 +53,4 @@ dependencies {
     implementation(Kotlin.coroutines_android)
 
     compileOnly(Kotlin.javax_annotation)
-
 }
