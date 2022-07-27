@@ -12,8 +12,8 @@ object StringExtensions {
     }
 
     fun String.getLastSync(): String {
-        val sdf = SimpleDateFormat("dd MMM yyyy '•' hh:mm", Locale.getDefault())
-        return sdf.format(Date().time)
+        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        return "$this, ${sdf.format(Date().time)}"
     }
 
     fun String.convertCreateAtValue(): String {

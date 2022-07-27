@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
+import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_fleet.GetCountState
 import id.bluebird.mall.domain_fleet.GetListFleetState
 import id.bluebird.mall.domain_fleet.domain.cases.GetCount
@@ -31,6 +33,7 @@ class QueueFleetViewModel(
 
     val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
     val counterLiveData: MutableLiveData<CountCache> = MutableLiveData()
+    val titleLocation: MutableLiveData<String> = MutableLiveData("...")
     private val _queueFleetState: MutableSharedFlow<QueueFleetState> =
         MutableSharedFlow()
     val queueFleetState: SharedFlow<QueueFleetState> = _queueFleetState.asSharedFlow()
@@ -63,7 +66,6 @@ class QueueFleetViewModel(
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetUser)
             getUserId.invoke(null)
-                .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _queueFleetState.emit(
                         QueueFleetState.FailedGetUser(
@@ -71,16 +73,24 @@ class QueueFleetViewModel(
                         )
                     )
                 }
+                .flowOn(Dispatchers.Main)
                 .collect {
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
                             mUserInfo.locationId = it.result.locationId
                             mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            createTitleLocation(it.result)
                             _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
                         }
                     }
                 }
+        }
+    }
+
+    private fun createTitleLocation(it:CreateUserResult){
+        with(it) {
+            titleLocation.value = "$locationName $subLocationName".getLastSync()
         }
     }
 
@@ -115,6 +125,7 @@ class QueueFleetViewModel(
             }
         }
     }
+
 
     fun updateRequestCount(count: Long) {
         if (count >= RequestFleetDialogViewModel.MINIMUM_COUNTER_VALUE) {

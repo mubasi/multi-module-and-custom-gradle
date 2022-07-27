@@ -9,5 +9,7 @@ data class CreateUserResult(
     val username: String,
     val roleId: Long = -1,
     val locationId: Long,
-    val subLocationsId: List<Long> = ArrayList()
+    val locationName:String,
+    val subLocationsId: List<Long> = ArrayList(),
+    val subLocationName:String = ""
 )
