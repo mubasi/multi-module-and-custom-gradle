@@ -1,6 +1,7 @@
 package id.bluebird.mall.feature_queue_fleet.main
 
 import com.orhanobut.hawk.Hawk
+import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
@@ -65,7 +66,9 @@ internal class QueueFleetViewModelTest {
                         name = "aa",
                         username = "bb",
                         locationId = 10,
-                        subLocationsId = mutableListOf(1, 2, 3, 4)
+                        locationName = "Location",
+                        subLocationsId = mutableListOf(1, 2, 3, 4),
+                        subLocationName = "Sub Location"
                     )
                 )
             )
@@ -86,6 +89,7 @@ internal class QueueFleetViewModelTest {
             QueueFleetState.GetUserInfoSuccess,
             _events.last()
         )
+        Assertions.assertEquals("Location Sub Location".getLastSync(), _vm.titleLocation.value)
     }
 
     @Test
@@ -98,8 +102,10 @@ internal class QueueFleetViewModelTest {
                     CreateUserResult(
                         name = "aa",
                         username = "bb",
+                        locationName = "Location",
                         locationId = 10,
-                        subLocationsId = mutableListOf(1, 2, 3, 4)
+                        subLocationsId = mutableListOf(1, 2, 3, 4),
+                        subLocationName = "Sub Location",
                     )
                 )
             )

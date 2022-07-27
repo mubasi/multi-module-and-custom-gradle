@@ -30,7 +30,9 @@ class GetUserIdCases(private val userRepository: UserRepository) : GetUserId {
                 id = this.userId,
                 roleId = this.userRole,
                 locationId = this.userAssignmentList.first().locationId,
-                subLocationsId = list
+                locationName = this.userAssignmentList.first().locationName,
+                subLocationsId = list,
+                subLocationName = this.userAssignmentList.first().subLocationName
             )
             emit(GetUserByIdState.Success(mResult))
         }
