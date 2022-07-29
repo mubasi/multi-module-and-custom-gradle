@@ -1,0 +1,138 @@
+syntax="proto3";
+package proto;
+option go_package="./;proto";
+
+import "google/protobuf/empty.proto";
+
+// QueueType
+enum QueueType {
+	RESTORE = 0;
+	GENERATE_QUEUE = 1;
+	TAKE_QUEUE = 2;
+	SEARCH_WAITING_QUEUE = 3;
+	SEARCH_SKIPPED_QUEUE = 4;
+	RITASE = 5;
+	DELETE_SKIPPED_QUEUE = 6;
+}
+
+message Queue {
+	int64  id = 1;
+	string number = 2;
+	string created_at = 3;
+	string message = 4;
+	string current_queue = 5;
+	int64  total_queue = 6;
+	string time_order = 7;
+	int64 sub_location_id = 8;
+}
+//GetCurrentQueue...
+message GetCurrentQueueRequest {
+	int64 location_id = 1;
+}
+message GetCurrentQueueResponse {
+	int64  id = 1;
+	string number = 2;
+	string created_at = 3;
+}
+
+// SkipCurrentQueue
+message RequestSkipCurrentQueue {
+	int64 queue_id = 1;
+	int64 location_id = 2;
+	int64 sub_location_id = 3;
+}
+
+message ResponseSkipCurrentQueue {
+	int64 skipped_id = 1;
+	Queue next_queue = 2;
+}
+
+// GetCountQueue...
+message RequestGetCountQueue {
+	int64 location_id = 1;
+}
+message responseGetCountQueue {
+	int64 location_id = 1;
+	int64 ongoing = 2;
+	int64 skipped = 3;
+	int64 ritase = 4;
+	string modified_at = 5;
+}
+
+// GetSkippedQueue...
+message RequestGetSkippedQueue {
+	int64 location_id = 1;
+}
+message ResponseGetSkippedQueue {
+	int64 count = 1;
+	repeated Queue skipped = 2;
+}
+
+// Queues
+message RequestQueues {
+	int64  	  queue_id = 1;
+	QueueType queue_type = 2;
+	int64 	  location_id = 3;
+	string 	  queue_number = 4;
+	int64 	  sub_location_id = 5;
+	string 	  fleet_number = 6;
+}
+
+message ResponseQueues {
+	string message = 1;
+	string queue_type = 2;
+	Queue  queue = 3;
+}
+
+// SearchQueue...
+message RequestSearchQueue {
+	string    queue_number = 1;
+	int64 	  sub_location_id = 2;
+	int64 	  location_id = 3;
+	QueueType queue_type = 4;
+}
+message ResponseSearchQueue {
+	string   search_type  = 1;
+	repeated Queue queues = 2;
+}
+
+// RequestQueueValidator...
+message RequestQueueValidator  {
+	int64 location_id     = 1;
+	string queue_number   = 2;
+}
+message QueueStatus {
+	bool  is_waiting = 1;
+	int32 skipped 	 = 2;
+}
+// ResponseQueueValidator...
+message ResponseQueueValidator {
+	int64  id 		= 1;
+	string queue_number = 2;
+	QueueStatus status  = 3;
+	string created_at 	= 4;
+	string modified_at  = 5;
+}
+// RequestGetWaitingQueue...
+message RequestGetWaitingQueue {
+	int64 location_id = 1;
+}
+message ResponseGetWaitingQueue {
+	int64 count = 1;
+	repeated Queue waiting = 2;
+}
+// triggerMonitoring
+message ResponseTriggerMonitoring {
+	string message = 1;
+}
+service QueuePangkalan{
+	rpc GetCurrentQueue(GetCurrentQueueRequest) returns (GetCurrentQueueResponse); 
+	rpc SkipCurrentQueue(RequestSkipCurrentQueue) returns (ResponseSkipCurrentQueue);
+	rpc GetCountQueue(RequestGetCountQueue) returns (responseGetCountQueue);
+	rpc GetSkippedQueue(RequestGetSkippedQueue) returns (ResponseGetSkippedQueue);
+	rpc Queues(RequestQueues) returns (ResponseQueues);
+	rpc SearchQueue(RequestSearchQueue) returns (ResponseSearchQueue);
+	rpc QueueNumberValidator(RequestQueueValidator) returns (ResponseQueueValidator);
+	rpc GetWaitingQueue(RequestGetWaitingQueue) returns (ResponseGetWaitingQueue);
+	rpc TriggerMonitoring(google.protobuf.Empty) returns (ResponseTriggerMonitoring);
+}

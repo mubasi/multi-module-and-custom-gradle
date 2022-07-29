@@ -449,6 +449,7 @@
             android:layout_margin="16dp"
             android:padding="5dp"
             android:backgroundTint="@color/primary_color"
+            android:onClick="@{()->vm.dialogQueueReceipt()}"
             app:tint="@color/white"
             app:borderWidth="0dp"/>
 

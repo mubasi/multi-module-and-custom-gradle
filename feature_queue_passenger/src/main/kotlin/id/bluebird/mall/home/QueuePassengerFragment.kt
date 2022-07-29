@@ -27,6 +27,7 @@ import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.dialog.Action
 import id.bluebird.mall.home.dialog.ActionBottomSheet
 import id.bluebird.mall.home.dialog.RitaseDialogFragment
+import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
 import id.bluebird.mall.home.utils.HomeDialogState
 import id.bluebird.mall.navigation.NavigationNav
 import id.bluebird.mall.navigation.NavigationSealed
@@ -151,6 +152,9 @@ class QueuePassengerFragment : BaseFragment() {
                 HomeState.LogoutSuccess -> {
                     AuthUtils.logout()
                     NavigationNav.navigate(NavigationSealed.Login(frag = this))
+                }
+                HomeState.DialogQueueReceipt -> {
+                    DialogQueueReceipt().show(childFragmentManager, DialogQueueReceipt.TAG)
                 }
                 HomeState.OnSync -> {
                     requireActivity().window.setFlags(

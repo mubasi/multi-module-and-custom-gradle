@@ -68,6 +68,11 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         setToggle()
                     }
+                    R.id.queuePassengerFragment -> {
+                        toolbar.visibility = View.VISIBLE
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        setToggle()
+                    }
                     else -> {
                         toolbar.visibility = View.VISIBLE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -171,7 +176,6 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             R.id.action_logout -> {
                 drawer()
                 LogoutDialog().show(supportFragmentManager, LogoutDialog.TAG)
-//                navLogout()
             } else -> {
                 NavigationUI.onNavDestinationSelected(item, navController)
                 drawer()

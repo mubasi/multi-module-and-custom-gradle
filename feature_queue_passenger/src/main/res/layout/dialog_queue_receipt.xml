@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel" />
+
+        <import type="id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptState" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white"
+        android:gravity="bottom"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/take_number_queue_text"
+                android:textStyle="bold"
+                android:textSize="22dp"
+                android:textColor="@color/black"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"/>
+            <ImageButton
+                android:id="@+id/button_close_add_queue"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_cross"
+                android:onClick="@{()->vm.cancelDialog()}"
+                android:layout_marginTop="15dp"
+                android:background="@color/white"/>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_dialog"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="30dp"
+            android:layout_gravity="center_vertical|center_horizontal"/>
+
+        <TextView
+            android:id="@+id/text_queue"
+            android:visibility="gone"
+            android:layout_marginBottom="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:text="@{vm.queueNumber}"
+            android:fontFamily="@font/ubuntu_bold"
+            android:textStyle="bold"
+            android:textSize="22dp"
+            android:textColor="@color/black"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"/>
+
+        <com.ncorti.slidetoact.SlideToActView
+            android:id="@+id/slide_proses"
+            android:visibility="visible"
+            android:layout_marginBottom="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:text="@string/move_to_create_queue"
+            app:text_color="@color/primary_color"
+            app:text_style="bold"
+            app:slider_height="60dp"
+            app:border_radius="10dp"
+            app:area_margin="-8dp"
+            app:slider_icon="@drawable/ic_button_right"
+            app:slider_icon_color="@color/white"
+            app:inner_color="@color/primary_color"
+            app:outer_color="@color/bg_slider"
+            app:complete_icon="@drawable/slidetoact_animated_ic_check"/>
+
+    </LinearLayout>
+</layout>

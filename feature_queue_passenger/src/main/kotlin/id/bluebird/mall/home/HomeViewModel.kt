@@ -261,4 +261,9 @@ class HomeViewModel(
             currentQueue.value = queueCache
         }
     }
+
+
+    fun dialogQueueReceipt() {
+        _homeState.value = HomeState.DialogQueueReceipt
+    }
 }
