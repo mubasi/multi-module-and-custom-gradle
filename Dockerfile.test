@@ -1,0 +1,22 @@
+FROM alvrme/alpine-android:android-30-jdk11 AS build
+
+ARG ANDROID_HOME \
+    BRANCH_NAME=default \ 
+    BUILD_NUMBER=0 
+
+RUN apk update && apk add gettext
+
+WORKDIR /app
+COPY . .
+RUN java -version
+RUN ANDROID_HOME=${ANDROID_HOME} ./gradlew clean jacocoTestReport
+RUN envsubst '${BRANCH_NAME},${BUILD_NUMBER}' < sonar-project.properties > sonar.properties
+RUN ls -all && pwd
+
+FROM sonarsource/sonar-scanner-cli
+ARG TOKEN=898434342df7834234
+WORKDIR /app
+COPY --from=build /app /app
+RUN cp sonar.properties /opt/sonar-scanner/conf/sonar-scanner.properties 
+RUN sonar-scanner -Dproject.settings=sonar.properties -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=3000 -Dsonar.host.url="https://ccq.bluebird.id" -Dsonar.login="$TOKEN"
+

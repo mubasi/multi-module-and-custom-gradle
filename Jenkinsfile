@@ -16,6 +16,11 @@ pipeline {
         SERVICE="outlet-mall_officer"
         BUCKET="outlet-apk"
         TEAMS_MICROSOFT = credentials('786c8d07-a295-487e-83d2-1c4cbe71e2a2')
+        PROJECT= "${env.SERVICE}"
+        TESTING = "${env.EXECUTOR_NUMBER}-${env.BUILD_NUMBER}"
+        BRANCH_NAME = "${env.BRANCH_NAME}"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        ANDROID_HOME="${env.ANDROID_HOME}"
     }
     stages {
         stage('Checkout') {
@@ -42,48 +47,40 @@ pipeline {
                 }
             }
         }
-        stage('Jacoco Report') {
-           steps {
-                sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew clean"
-                sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew jacocoTestReport"
-           }
-        }
-        stage('Code review') {
-            environment {
-                scannerHome = tool 'sonarQubeScanner'
-            }
-            steps {
-                withSonarQubeEnv('sonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
+        // stage('Test Report and Code Review') {
+        //     steps {
+        //         withCredentials([string(credentialsId: '04398f9c-36e4-4161-b6b2-9098e7c26ad9', variable: 'TOKEN')]) {
+        //             sh 'chmod +x testing.sh'
+        //             sh './testing.sh $TESTING $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $TOKEN'
+        //         }
+        //     }
+        // }
         stage('Build') {
+            environment {
+                ALPHA = "${env.VERSION_PREFIX}-echo${env.BUILD_NUMBER}"
+                NAMESPACE="mall-officer"
+            }
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('release/') || env.BRANCH_NAME.startsWith('feature/') 
-                    || env.BRANCH_NAME.startsWith('bugfix/') ) {
-                        sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew clean assembleStage -PBUILD_NUMBER=${env.BUILD_NUMBER}"
-                        sh "gsutil cp -r app/build/outputs/apk/stage/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
-                        sh 'rm service-account.json local.properties officer.jks'
+                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('release/')) {
+                        sh 'chmod +x build.sh'
+                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
-                    else if (env.BRANCH_NAME == 'develop') {
-                        sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew clean assembleStage -PBUILD_NUMBER=${env.BUILD_NUMBER}"
-                        sh "gsutil cp -r app/build/outputs/apk/stage/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
-                        sh 'rm service-account.json local.properties officer.jks'
+                    else if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'testing')  {
+                        sh 'chmod +x build.sh'
+                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
                     else if (env.BRANCH_NAME == 'staging') {
-                        sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew clean assembleStage -PBUILD_NUMBER=${env.BUILD_NUMBER}"
-                        sh "gsutil cp -r app/build/outputs/apk/stage/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
-                        sh 'rm service-account.json local.properties officer.jks'
+                        sh 'chmod +x build.sh'
+                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
                     else if (env.BRANCH_NAME == 'test-sonar-qube') {
-                        sh "ANDROID_HOME=${env.ANDROID_HOME} ./gradlew clean assembleStage -PBUILD_NUMBER=${env.BUILD_NUMBER}"
-                        sh "gsutil cp -r app/build/outputs/apk/stage/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/"
-                        sh 'rm service-account.json local.properties officer.jks'
+                        sh 'chmod +x build.sh'
+                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
+                    }
+                    else if (env.BRANCH_NAME == 'multi-stage') {
+                        sh 'chmod +x build.sh'
+                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
                     else {
                         sh 'exit'
@@ -96,8 +93,7 @@ pipeline {
     post {
         success {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT",
-            factDefinitions: [[name: "debug",   template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/debug/app-stage-debug.apk\">Dowload Debug</a>"],
-                              [name: "release", template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/release/app-stage-release.apk\">Dowload Release</a>"],
+            factDefinitions: [[name: "release", template: "<a href=\"https://storage.cloud.google.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/release/${env.APPLICATION_NAME}-v${env.VERSION_MAJOR}.${env.VERSION_MINOR}.${env.VERSION_PATCH}.apk\">Dowload Release</a>"],
                               [name: "messages", template: "${env.COMMIT_MESSAGE}"]]
         }
         failure {
