@@ -18,11 +18,11 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.home.HomeViewModel" />
+            type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
 
-        <variable
-            name="action"
-            type="id.bluebird.mall.home.dialog.Action" />
+<!--        <variable-->
+<!--            name="action"-->
+<!--            type="id.bluebird.mall.home.dialog.Action" />-->
 
         <variable
             name="item"
@@ -75,7 +75,6 @@
                 android:layout_marginBottom="@dimen/sixty_dp"
                 android:background="@drawable/bg_button_enable_login"
                 android:fontFamily="@font/ubuntu_bold"
-                android:onClick="@{() -> vm.submitBottomSheet(action, item)}"
                 android:text="@{yesAction}"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

@@ -5,17 +5,17 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.home.HomeViewModel" />
+            type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
 
         <variable
             name="item"
             type="id.bluebird.mall.home.model.QueueCache" />
 
-        <variable
-            name="fragmentType"
-            type="id.bluebird.mall.home.queue_tab.FragmentType" />
+<!--        <variable-->
+<!--            name="fragmentType"-->
+<!--            type="id.bluebird.mall.home.queue_tab.FragmentType" />-->
 
-        <import type="id.bluebird.mall.home.queue_tab.FragmentType" />
+<!--        <import type="id.bluebird.mall.home.queue_tab.FragmentType" />-->
 
         <import type="android.view.View" />
     </data>
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sixty_sp"
         android:background="@drawable/bg_search_queue_home"
-        android:visibility="@{item.visible ? View.VISIBLE: View.GONE, default=visible}"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_tittle_queue_home">
@@ -91,23 +91,21 @@
                 android:layout_marginEnd="@dimen/sixty_dp"
                 android:background="@drawable/bg_cancel_bottom_sheet_action"
                 android:fontFamily="@font/ubuntu_bold"
-                android:onClick="@{() -> vm.restoreQueue(item)}"
                 android:text="@string/restore"
                 android:textAllCaps="false"
                 android:textColor="@color/primary_color"
-                android:visibility="@{fragmentType == FragmentType.DELAY ? View.VISIBLE: View.GONE, default=visible}" />
+                android:visibility="gone" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_current_queue_button_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{fragmentType == FragmentType.WAITING ? View.VISIBLE: View.GONE, default=gone}">
+                android:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_call_queue_item"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:onClick="@{() -> vm.callCurrentQueue()}"
                     app:enable="@{item.currentQueue}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -118,8 +116,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:indeterminate="false"
-                        android:max="@{vm.MAX_TIMER}"
-                        android:progress="@{vm.delayCallTimer}"
                         app:indicatorColor="@color/success_color_third"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -144,7 +140,6 @@
                     android:id="@+id/imv_delay_queue_item"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:onClick="@{() -> vm.skipCurrentQueue(item)}"
                     android:scaleType="center"
                     app:delayQueueButton="@{item.currentQueue}"
                     app:enable="@{item.currentQueue}"
@@ -159,7 +154,6 @@
                     android:id="@+id/imv_success_queue_item"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:onClick="@{() -> vm.successCurrentQueue(item.getQueue())}"
                     android:scaleType="center"
                     app:enable="@{item.currentQueue}"
                     app:layout_constraintBottom_toBottomOf="parent"

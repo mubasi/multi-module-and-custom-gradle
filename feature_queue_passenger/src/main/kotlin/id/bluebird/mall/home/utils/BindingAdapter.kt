@@ -11,7 +11,6 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
-import id.bluebird.mall.home.HomeViewModel
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.model.QueueCache
 
@@ -47,11 +46,11 @@ object BindingAdapter {
                     ) as? InputMethodManager
                     imm?.hideSoftInputFromWindow(editText.windowToken, 0)
                 }
-                when {
-                    vm is HomeViewModel -> {
-                        vm.actionSearch()
-                    }
-                }
+//                when {
+//                    vm is HomeViewModel -> {
+//                        vm.actionSearch()
+//                    }
+//                }
             }
             false
         }

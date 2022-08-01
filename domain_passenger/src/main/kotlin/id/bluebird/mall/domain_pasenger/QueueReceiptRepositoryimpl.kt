@@ -46,7 +46,7 @@ class QueueReceiptRepositoryimpl(
             val request = QueuePangkalanOuterClass.RequestQueues.newBuilder()
                 .apply {
                     this.queueId = queueId
-                    this.queueType = QueuePangkalanOuterClass.QueueType.GENERATE_QUEUE
+                    this.queueType = QueuePangkalanOuterClass.QueueType.TAKE_QUEUE
                     this.locationId = locationId
                     this.queueNumber = queueNumber
                     this.subLocationId = subLocationId

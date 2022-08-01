@@ -200,4 +200,5 @@ object OtherLib {
     val anko by lazy { "org.jetbrains.anko:anko:0.10.8" }
     val json by lazy { "org.json:json:20220320" }
     val turbin by lazy { "app.cash.turbine:turbine:0.7.0" }
+    val slidetoact by lazy { "com.ncorti:slidetoact:0.9.0" }
 }
