@@ -26,6 +26,7 @@ import id.bluebird.mall.core.utils.hawk.AuthUtils
 import id.bluebird.mall.home.databinding.DialogQueueReceiptBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import id.bluebird.mall.home.R
+import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.navigation.NavigationNav
 import id.bluebird.mall.navigation.NavigationSealed
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
     }
 
     private lateinit var binding: DialogQueueReceiptBinding
+    private lateinit var mBinding: FragmentQueuePassengerBinding
     private val _dialogQueueReceiptViewModel: DialogQueueReceiptViewModel by viewModel()
 
     override fun onCreateView(
@@ -52,9 +54,9 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
         return BottomSheetDialog(requireContext(), R.style.AppBottomSheetDialogTheme)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = _dialogQueueReceiptViewModel
 
@@ -80,23 +82,23 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
                     dialogQueueReceiptState.collect{
                         when(it) {
                             is DialogQueueReceiptState.FailedGetUser -> {
+                                showSnackbar( Html.fromHtml("Gagal Mengambil Informasi User",1), R.color.error_color)
                                 dialog?.dismiss()
-                                showSnackbar(view, Html.fromHtml("Gagal Mengambil Informasi User",1), R.color.error_color)
                             }
                             is DialogQueueReceiptState.FailedTakeQueue -> {
                                 val noAntrian : String = queueNumber.value.toString();
-                                showSnackbar(view, Html.fromHtml("<b>No. antrian $noAntrian</b> gagal ditambahkan. Silahkan coba lagi",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("<b>No. antrian $noAntrian</b> gagal ditambahkan",1), R.color.error_color)
                                 dialog?.dismiss()
                                 binding.slideProses.visibility = View.VISIBLE
                                 binding.textQueue.visibility = View.VISIBLE
                                 binding.progressDialog.visibility = View.GONE
                             }
                             is DialogQueueReceiptState.FailedGetQueue -> {
-                                dialog?.dismiss()
                                 binding.slideProses.visibility = View.GONE
                                 binding.textQueue.visibility = View.GONE
                                 binding.progressDialog.visibility = View.VISIBLE
-                                showSnackbar(view, Html.fromHtml("Antrian tidak dapat diambil",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("Antrian tidak dapat diambil",1), R.color.error_color)
+                                dialog?.dismiss()
                             }
                             is DialogQueueReceiptState.ProgressGetQueue -> {
                                 binding.slideProses.visibility = View.GONE
@@ -138,12 +140,12 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
         }
     }
 
-    fun showSnackbar(view: View, message: Spanned, color: Int){
-        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+    fun showSnackbar(message: Spanned, color: Int){
+        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
         val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
 
         layoutParams.gravity = Gravity.TOP
-        snackbar.view.setPadding(0, 10, 0, 0)
+        layoutParams.setMargins(-10,50,-10,0)
         snackbar.view.layoutParams = layoutParams
         snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))

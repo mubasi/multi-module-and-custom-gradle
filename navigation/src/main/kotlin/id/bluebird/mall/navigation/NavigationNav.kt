@@ -23,6 +23,7 @@ object NavigationNav {
             is NavigationSealed.Login -> "login"
             is NavigationSealed.Splash -> "splash"
             is NavigationSealed.QueueFleet -> "queue_fleet"
+            is NavigationSealed.QueuePassenger -> "queue_passenger"
         }
         return "android-app://id.bluebird.mall/$target".toUri()
     }

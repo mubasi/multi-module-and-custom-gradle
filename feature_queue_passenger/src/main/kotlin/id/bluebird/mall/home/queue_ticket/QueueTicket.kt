@@ -61,7 +61,7 @@ class QueueTicket : BaseFragment() {
         binding.totalQueue.text = totalQueue
 
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-        showSnackbar(view, Html.fromHtml("<b>No. antrian $queueNumber telah ditambahkan</b>",1), R.color.success_color)
+        showSnackbar(Html.fromHtml("<b>No. antrian $queueNumber telah ditambahkan</b>",1), R.color.success_color)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -95,12 +95,12 @@ class QueueTicket : BaseFragment() {
     }
 
 
-    fun showSnackbar(view: View, message: Spanned, color: Int){
-        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+    fun showSnackbar(message: Spanned, color: Int){
+        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
         val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
 
         layoutParams.gravity = Gravity.TOP
-        snackbar.view.setPadding(0, 10, 0, 0)
+        layoutParams.setMargins(-10,50,-10,0)
         snackbar.view.layoutParams = layoutParams
         snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))

@@ -26,8 +26,8 @@ import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogView
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
-import id.bluebird.mall.home.HomeViewModel
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
+import id.bluebird.mall.home.main.QueuePassengerViewModel
 import id.bluebird.mall.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.mall.login.LoginViewModel
 import id.bluebird.mall.officer.logout.LogoutDialogViewModel
@@ -40,7 +40,6 @@ import org.koin.dsl.module
 object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
-        viewModel { HomeViewModel(get()) }
         viewModel { QueueFleetViewModel(get(), get(), get()) }
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
@@ -50,6 +49,7 @@ object AppModule {
         viewModel { SearchFleetViewModel() }
         viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
         viewModel { QueueTicketViewModel(get()) }
+        viewModel { QueuePassengerViewModel() }
     }
 
     private val userCases = module {

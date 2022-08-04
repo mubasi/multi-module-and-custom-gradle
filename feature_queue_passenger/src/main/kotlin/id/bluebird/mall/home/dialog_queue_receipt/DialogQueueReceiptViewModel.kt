@@ -75,10 +75,11 @@ class DialogQueueReceiptViewModel(
             _dialogQueueReceiptState.emit(
                 DialogQueueReceiptState.ProgressGetQueue
             )
+
             getQueueReceipt.invoke(
                 0,
                 1,
-                mUserInfo.subLocationId,
+                mUserInfo.locationId,
                 "",
                 mUserInfo.subLocationId,
                 ""
@@ -100,7 +101,7 @@ class DialogQueueReceiptViewModel(
                                     result.queue.number,
                                 )
                                 val number = Html.fromHtml("No. antrian <font color=#005eb8>${result.queue.number}</font>",1)
-                                queueNumber.postValue("$number")
+                                queueNumber.value = "$number"
                                 _dialogQueueReceiptState.emit(
                                     DialogQueueReceiptState.GetQueueSuccess
                                 )
@@ -120,13 +121,14 @@ class DialogQueueReceiptViewModel(
             takeQueueReceipt.invoke(
                 0,
                 2,
-                mUserInfo.subLocationId,
+                mUserInfo.locationId,
                 mQueueReceiptCache.queueNumber,
                 mUserInfo.subLocationId,
                 ""
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
+
                     _dialogQueueReceiptState.emit(
                         DialogQueueReceiptState.FailedTakeQueue(
                             message = cause.message ?: QueueTicketViewModel.ERROR_MESSAGE_UNKNOWN

@@ -10,7 +10,7 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.home.HomeViewModel" />
+            type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -70,8 +70,7 @@
                 android:maxLength="10"
                 android:maxLines="1"
                 android:paddingStart="@dimen/sixty_dp"
-                android:paddingEnd="@dimen/sixty_dp"
-                android:text="@={vm.taxiNumber}" />
+                android:paddingEnd="@dimen/sixty_dp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_note_ritase"
@@ -79,9 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:background="@drawable/bg_button_enable_login"
-                android:enabled="@{vm.taxiNumber.length() > 0}"
                 android:fontFamily="@font/ubuntu_bold"
-                android:onClick="@{() ->vm.submitRitaseDialog()}"
                 android:text="@string/note_ritase"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

@@ -6,25 +6,13 @@
 
     <fragment
         android:id="@+id/queuePassengerFragment"
-        android:name="id.bluebird.mall.home.QueuePassengerFragment"
+        android:name="id.bluebird.mall.home.main.QueuePassengerFragment"
         android:label="@string/queue_passenger">
     </fragment>
     <fragment
         android:id="@+id/queueTicket"
         android:name="id.bluebird.mall.home.queue_ticket.QueueTicket"
-        android:label="Antrian Tiket">
-        <argument
-            android:name="queueNumber"
-            app:argType="string"/>
-        <argument
-            android:name="currentNumber"
-            app:argType="string"/>
-        <argument
-            android:name="totalQueue"
-            app:argType="string"/>
-        <argument
-            android:name="createdAt"
-            app:argType="string"/>
+        android:label="@string/queue_ticket_text">
     </fragment>
-    <deepLink app:uri="android-app://id.bluebird.mall/queue_passnger" />
+    <deepLink app:uri="android-app://id.bluebird.mall/queue_passenger" />
 </navigation>
