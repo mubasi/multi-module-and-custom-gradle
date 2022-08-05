@@ -18,4 +18,18 @@
     <string name="search_flett_error_title">Pencarian gagal</string>
     <string name="search_flett_error_message">Gagal melakukan pencarian fleet</string>
     <string name="depart">Berangkat</string>
+    <string name="depart_description">Berangkatkan %s ?</string>
+    <string name="with_passenger">Dengan Penumpang</string>
+    <string name="without_passenger">Tanpa Penumpang</string>
+    <string name="record_ritase">Pencatatan ritase</string>
+    <string name="search_ritase">Cari no. antrian</string>
+    <string name="description_record_ritase">No. antrian terakhir:</string>
+    <string name="record_ritase_button">Catat ritase</string>
+    <string name="search">Cari</string>
+    <string name="ok">Ok</string>
+    <string name="fleet_depart_with_passenger">berangkat dengan penumpang</string>
+    <string name="fleet_depart_without_passenger">berangkat tanpa penumpang</string>
+    <string name="search_queue_error_message">Gagal melakukan pencarian ticket antrian</string>
+    <string name="failed_depart_title">Gagal Memberangkatkan Armada</string>
+    <string name="failed_depart_description">Gagal Memberangkatkan Armada, harap coba beberapa saat lagi</string>
 </resources>

@@ -12,4 +12,7 @@ sealed class AddFleetState {
         AddFleetState()
 
     data class AddFleetSuccess(val fleetItem: FleetItem) : AddFleetState()
+    data class FinishSelectQueue(val number: String): AddFleetState()
+    data class SuccessGetQueue(val list: List<String>): AddFleetState()
+    data class QueueSearchError(val err: Throwable): AddFleetState()
 }

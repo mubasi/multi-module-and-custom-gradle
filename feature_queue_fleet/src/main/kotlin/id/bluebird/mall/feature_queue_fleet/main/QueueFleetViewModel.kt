@@ -9,10 +9,14 @@ import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
+import id.bluebird.mall.domain_fleet.DepartFleetState
 import id.bluebird.mall.domain_fleet.GetCountState
 import id.bluebird.mall.domain_fleet.GetListFleetState
+import id.bluebird.mall.domain_fleet.domain.cases.DepartFleet
 import id.bluebird.mall.domain_fleet.domain.cases.GetCount
 import id.bluebird.mall.domain_fleet.domain.cases.GetListFleet
+import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
+import id.bluebird.mall.domain_pasenger.domain.cases.GetCurrentQueue
 import id.bluebird.mall.feature_queue_fleet.model.CountCache
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.model.UserInfo
@@ -24,7 +28,9 @@ import kotlinx.coroutines.launch
 class QueueFleetViewModel(
     private val getCount: GetCount,
     private val getUserId: GetUserId,
-    private val _getFleet: GetListFleet
+    private val _getFleet: GetListFleet,
+    private val departFleet: DepartFleet,
+    private val getCurrentQueue: GetCurrentQueue,
 ) : ViewModel() {
 
     companion object {
@@ -134,6 +140,85 @@ class QueueFleetViewModel(
         }
     }
 
+    fun departFleet(fleetItem: FleetItem, isWithPassenger: Boolean = false, queueId: String = "") {
+        if (isWithPassenger && queueId.isBlank()) {
+            showRecordRitase(fleetItem, queueId)
+            return
+        }
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.ProgressDepartFleet)
+            departFleet.invoke(
+                mUserInfo.subLocationId,
+                fleetItem.name,
+                isWithPassenger,
+                listOf(fleetItem.id),
+                queueId
+            )
+                .flowOn(Dispatchers.Main)
+                .catch { error ->
+                    _queueFleetState.emit(QueueFleetState.FailedDepart(error.message ?: ERROR_MESSAGE_UNKNOWN))
+                }
+                .collectLatest {
+                    when (it) {
+                        is DepartFleetState.Success -> {
+                            _queueFleetState.emit(
+                                QueueFleetState.SuccessDepartFleet(
+                                    it.fleetDepartResult.taxiNo,
+                                    isWithPassenger
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    fun removeFleet(fleetNumber: String) {
+        mCountCache.stock -= 1
+        if (mCountCache.stock < 0)
+            mCountCache.stock = 0
+
+        counterLiveData.postValue(mCountCache)
+
+        val fleetIndex = _fleetItems.indexOfFirst { it.name == fleetNumber }
+        if (fleetIndex < 0)
+            return
+
+        _fleetItems.removeAt(fleetIndex)
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.FleetDeparted(_fleetItems, fleetIndex))
+        }
+    }
+
+    fun showRecordRitase(fleetItem: FleetItem, queueId: String?) {
+        viewModelScope.launch {
+            var queue = queueId ?: ""
+            with(queueId){
+                if (isNullOrBlank()) {
+                    getCurrentQueue
+                        .invoke()
+                        .flowOn(Dispatchers.Main)
+                        .catch {
+                            queue = ""
+                        }.collect {
+                            when (it) {
+                                is GetCurrentQueueState.Success -> queue = it.currentQueue.number
+                            }
+                        }
+                } else {
+                    this
+                }
+            }
+            _queueFleetState.emit(QueueFleetState.RecordRitaseToDepart(fleetItem, mUserInfo.subLocationId, queue))
+        }
+    }
+
+    fun requestDepart(fleetItem: FleetItem) {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.RequestDepartFleet(fleetItem))
+        }
+    }
+
     fun searchFleet() {
         viewModelScope.launch {
             _queueFleetState.emit(
@@ -171,6 +256,12 @@ class QueueFleetViewModel(
                 _fleetItems.add(fleetItem)
                 _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
             }
+        }
+    }
+
+    fun showSearchQueue(fleetItem: FleetItem, currentQueueId: String) {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.SearchQueueToDepart(fleetItem, mUserInfo.locationId, mUserInfo.subLocationId, currentQueueId))
         }
     }
 

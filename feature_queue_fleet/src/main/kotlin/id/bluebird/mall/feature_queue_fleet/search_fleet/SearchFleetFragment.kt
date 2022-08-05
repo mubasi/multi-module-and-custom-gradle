@@ -62,6 +62,13 @@ class SearchFleetFragment : Fragment() {
                             bindListView(true)
                             _fleetAdapter.submitList(it.list)
                         }
+                        is SearchFleetState.RequestDepartFleetItem -> {
+                            val bundle = Bundle().apply {
+                                putParcelable(REQUEST_SEARCH, it.fleetItem)
+                            }
+                            setFragmentResult(RESULT_SEARCH, bundle)
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }

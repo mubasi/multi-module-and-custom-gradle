@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+        
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="fleetNumber"
+            type="String" />
+
+        <variable
+            name="queueNumber"
+            type="String" />
+
+        <variable
+            name="vm"
+            type="id.bluebird.mall.feature_queue_fleet.depart_fleet.DepartFleetViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="24dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleDepartFleetDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/ubuntu_bold"
+            mainText="@{title}"
+            coloredText="@{fleetNumber}"
+            toColor="@{@color/primary_0}"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupFleetStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:checkedButton="@id/rbWithPassenger"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleDepartFleetDialog">
+
+            <RadioButton
+                android:id="@+id/rbWithPassenger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-4dp"
+                android:buttonTint="@color/radio_button_state_color"
+                android:fontFamily="@font/ubuntu_regular"
+                android:onClick="@{() -> vm.setDepartStatus(true)}"
+                android:paddingVertical="14dp"
+                android:text="@string/with_passenger"
+                android:textColor="@color/gray_subtitle"
+                android:textSize="16sp" />
+
+            <RadioButton
+                android:id="@+id/rbWithoutPassenger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-4dp"
+                android:buttonTint="@color/radio_button_state_color"
+                android:fontFamily="@font/ubuntu_regular"
+                android:onClick="@{() -> vm.setDepartStatus(false)}"
+                android:paddingVertical="14dp"
+                android:text="@string/without_passenger"
+                android:textColor="@color/gray_subtitle"
+                android:textSize="16sp" />
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonCancelDepart"
+            style="@style/BackgroundCancel"
+            android:layout_width="156dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:onClick="@{() -> vm.cancelDepart()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/radioGroupFleetStatus" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonDepart"
+            style="@style/ButtonPrimary"
+            android:layout_width="156dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_submit"
+            android:gravity="center"
+            android:text="@string/depart"
+            android:textAllCaps="false"
+            android:onClick="@{() -> vm.departFleet(queueNumber)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/buttonCancelDepart"
+            app:layout_constraintTop_toTopOf="@id/buttonCancelDepart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

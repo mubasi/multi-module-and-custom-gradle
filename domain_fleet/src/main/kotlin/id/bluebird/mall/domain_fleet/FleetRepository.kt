@@ -26,4 +26,13 @@ interface FleetRepository {
     ): Flow<AssignmentPangkalanOuterClass.StockResponse>
 
     fun getListFleet(subLocationId: Long): Flow<AssignmentPangkalanOuterClass.GetListFleetTerminalResp>
+
+    fun departFleet(
+        locationId: Long,
+        subLocationId: Long,
+        fleetNumber: String,
+        isWithPassenger: Boolean,
+        departFleetItems: List<Long>,
+        queueNumber: String
+    ): Flow<AssignmentPangkalanOuterClass.StockResponse>
 }
