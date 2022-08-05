@@ -1,5 +1,6 @@
 package id.bluebird.mall.domain.user.domain.usescases
 
+import com.google.firebase.auth.FirebaseAuth
 import id.bluebird.mall.domain.user.UserRepository
 import id.bluebird.mall.domain.user.domain.intercator.ForceLogout
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ class LogoutCasesImpl(private val userRepository: UserRepository) : ForceLogout 
     override fun invoke(uuid: String): Flow<Boolean> = flow {
         val response = userRepository.forceLogout(uuid)
         emitAll(response.transform {
+            FirebaseAuth.getInstance().signOut()
             emit(true)
         })
     }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="monitoring_title">Pemantauan</string>
+    <string name="monitoring_hint">Geser kesamping untuk informasi lainnya</string>
+    <string name="rotate_screen">Rotate Screen</string>
+</resources>

@@ -2,6 +2,7 @@ package id.bluebird.mall.feature_queue_fleet.add_fleet
 
 import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
 import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
+import id.bluebird.mall.domain_pasenger.domain.cases.SearchWaitingQueue
 import id.bluebird.mall.feature_queue_fleet.TestCoroutineRule
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,10 +19,11 @@ internal class AddFleetViewModelTest {
     private lateinit var _vm: AddFleetViewModel
     private val _addFleet: AddFleet = mockk()
     private val _searchFleet: SearchFleet = mockk()
+    private val _searchWaitingQueue: SearchWaitingQueue = mockk()
 
     @BeforeEach
     fun setup() {
-        _vm = AddFleetViewModel(searchFleet = _searchFleet, addFleet = _addFleet)
+        _vm = AddFleetViewModel(searchFleet = _searchFleet, addFleet = _addFleet, searchWaitingQueue = _searchWaitingQueue)
     }
 
     @Test

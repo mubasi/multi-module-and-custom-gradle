@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="UbuntuRegularGraySubtle">
+        <item name="android:fontFamily">@font/ubuntu_regular</item>
+        <item name="android:textColor">@color/gray_subtitle</item>
+    </style>
+    <style name="UbuntuMediumGraySubtle">
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+        <item name="android:textColor">@color/gray_subtitle</item>
+    </style>
+    <style name="UbuntuMediumBlack">
+        <item name="android:fontFamily">@font/ubuntu_medium</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="UbuntuBoldWhite">
+        <item name="android:fontFamily">@font/ubuntu_bold</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

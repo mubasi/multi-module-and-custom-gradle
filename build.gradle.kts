@@ -15,6 +15,7 @@ buildscript {
         classpath(MainGradle.sonarqube_gradle)
         classpath(MainGradle.protobuf)
         classpath(MainGradle.safe_args)
+        classpath(MainGradle.google_service)
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }
@@ -25,6 +26,7 @@ allprojects {
         google()
         maven(url = "https://plugins.gradle.org/m2/")
         maven("https://repo.eclipse.org/content/repositories/paho-snapshots/")
+        maven("https://jitpack.io")
     }
 }
 

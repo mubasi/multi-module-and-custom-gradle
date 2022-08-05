@@ -1,6 +1,10 @@
 package id.bluebird.mall.officer
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -32,6 +36,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         navHostFragment.navController
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -47,6 +52,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         NavigationUI.setupWithNavController(mBinding.navView, navController)
         navController.setGraph(R.navigation.main_nav)
         navController.addOnDestinationChangedListener { _, destination, args ->
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -64,6 +70,11 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     }
                     R.id.searchQueueFragment -> {
                         navigateBackWithArrow(R.id.searchQueueFragment)
+                    }
+                    R.id.monitoringFragment -> {
+                        toolbar.visibility = View.VISIBLE
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        setToggle()
                     }
                     else -> {
                         toolbar.visibility = View.VISIBLE
@@ -105,7 +116,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                 setOf(
                     R.id.queueFleetFragment,
                     R.id.queuePassengerFragment,
-                    R.id.action_monitoring,
+                    R.id.monitoring_nav,
                     R.id.userListFragment
                 ), mBinding.drawerLayout
             )
