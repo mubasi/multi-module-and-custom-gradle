@@ -15,12 +15,11 @@ import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdC
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepositoryimpl
-import id.bluebird.mall.domain_pasenger.domain.cases.GetQueueReceipt
-import id.bluebird.mall.domain_pasenger.domain.cases.TakeQueue
-import id.bluebird.mall.domain_pasenger.domain.interactor.GetQueueReceiptCases
-import id.bluebird.mall.domain_pasenger.domain.interactor.TakeQueueCases
+import id.bluebird.mall.domain_pasenger.domain.cases.*
+import id.bluebird.mall.domain_pasenger.domain.interactor.*
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
+import id.bluebird.mall.feature_queue_fleet.depart_fleet.DepartFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
@@ -40,16 +39,17 @@ import org.koin.dsl.module
 object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
-        viewModel { QueueFleetViewModel(get(), get(), get()) }
+        viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
         viewModel { LogoutDialogViewModel(get()) }
-        viewModel { AddFleetViewModel(get(), get()) }
+        viewModel { AddFleetViewModel(get(), get(), get()) }
         viewModel { SearchFleetViewModel() }
         viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
         viewModel { QueueTicketViewModel(get()) }
         viewModel { QueuePassengerViewModel() }
+        viewModel { DepartFleetViewModel() }
     }
 
     private val userCases = module {
@@ -68,6 +68,7 @@ object AppModule {
         single<SearchFleet> { SearchFleetUseCases(get()) }
         single<AddFleet> { AddFleetUseCases(get()) }
         single<GetListFleet> { GetListFleetUseCases(get()) }
+        single<DepartFleet> { DepartFleetUseCases(get()) }
     }
 
     private val locationCases = module {
@@ -77,6 +78,9 @@ object AppModule {
     private val passengerCases = module {
         single<GetQueueReceipt> { GetQueueReceiptCases(get()) }
         single<TakeQueue> { TakeQueueCases(get()) }
+        single<GetWaitingQueue> {GetWaitingQueueCases(get())}
+        single<GetCurrentQueue> {GetCurrentQueueCase(get())}
+        single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}
     }
 
     private val repository = module {

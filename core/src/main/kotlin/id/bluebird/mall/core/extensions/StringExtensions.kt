@@ -1,5 +1,6 @@
 package id.bluebird.mall.core.extensions
 
+import android.text.Spannable
 import com.google.api.client.util.DateTime
 import java.text.SimpleDateFormat
 import java.util.*

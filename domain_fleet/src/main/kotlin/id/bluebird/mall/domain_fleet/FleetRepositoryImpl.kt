@@ -106,4 +106,32 @@ class FleetRepositoryImpl(
             val result = assignmentGrpc.getListFleetTerminal(request)
             emit(result)
         }
+
+    override fun departFleet(
+        locationId: Long,
+        subLocationId: Long,
+        fleetNumber: String,
+        isWithPassenger: Boolean,
+        departFleetItems: List<Long>,
+        queueNumber: String
+    ): Flow<AssignmentPangkalanOuterClass.StockResponse> =
+        flow {
+            val departItems = departFleetItems.map {
+                AssignmentPangkalanOuterClass.DepartFleetItems.newBuilder().apply { stockId = it }.build()
+            }
+            val request = AssignmentPangkalanOuterClass.StockRequest.newBuilder()
+                .apply {
+                    this.locationId = locationId
+                    this.subLocationId = subLocationId
+                    this.taxiNo = fleetNumber
+                    this.isWithPassenger = if (isWithPassenger) 1L else 0L
+                    addAllDepartFleetItems(departItems)
+                    this.stockType = AssignmentPangkalanOuterClass.StockType.OUT
+                    this.isArrived = true
+                    this.queueNumber = queueNumber
+                }
+                .build()
+            val result = assignmentGrpc.stock(request)
+            emit(result)
+        }
 }

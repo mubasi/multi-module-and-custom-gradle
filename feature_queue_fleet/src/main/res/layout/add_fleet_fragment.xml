@@ -12,6 +12,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="isSearchQueue"
+            type="boolean" />
+
+        <variable
             name="vm"
             type="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel" />
     </data>
@@ -51,7 +55,7 @@
                 android:drawableStart="@drawable/ic_search"
                 android:drawablePadding="16dp"
                 android:fontFamily="@font/ubuntu_regular"
-                android:hint="@string/hint_search_fleet_number"
+                android:hint="@{isSearchQueue ? @string/search : @string/hint_search_fleet_number}"
                 android:maxLength="7"
                 android:paddingStart="8dp"
                 android:text="@={vm.param}"
@@ -68,6 +72,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
+                android:visibility="@{isSearchQueue ? View.GONE : View.VISIBLE}"
                 android:src="@drawable/ic_camera" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -119,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{() -> vm.addFleet()}"
-            android:text="@string/add"
+            android:text="@{isSearchQueue ? @string/ok : @string/add}"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

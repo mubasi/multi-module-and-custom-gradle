@@ -8,6 +8,8 @@ import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.mall.domain_fleet.SearchFleetState
 import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
 import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
+import id.bluebird.mall.domain_pasenger.WaitingQueueState
+import id.bluebird.mall.domain_pasenger.domain.cases.SearchWaitingQueue
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,7 +18,8 @@ import kotlinx.coroutines.launch
 
 class AddFleetViewModel(
     private val searchFleet: SearchFleet,
-    private val addFleet: AddFleet
+    private val addFleet: AddFleet,
+    private val searchWaitingQueue: SearchWaitingQueue,
 ) : ViewModel() {
 
     private val _addFleetState: MutableSharedFlow<AddFleetState> = MutableSharedFlow()
@@ -26,12 +29,42 @@ class AddFleetViewModel(
     private var _lastPosition: Int = -1
     private var _newPosition: Int = -1
     private var _subLocation: Long = -1
+    private var _isSearchQueue: Boolean = false
 
-    fun init(subLocationId: Long) {
+    fun init(subLocationId: Long, isSearchQueue: Boolean) {
+        _isSearchQueue = isSearchQueue
         _subLocation = subLocationId
-        searchFleet()
+        if (isSearchQueue) {
+            searchQueue()
+        } else {
+            searchFleet()
+        }
         viewModelScope.launch {
             _addFleetState.emit(AddFleetState.OnProgressGetList)
+        }
+    }
+
+    private fun searchQueue() {
+        viewModelScope.launch {
+            resetValue()
+            _addFleetState.emit(AddFleetState.GetListEmpty)
+            delay(200)
+            _addFleetState.emit(AddFleetState.OnProgressGetList)
+            delay(200)
+            searchWaitingQueue
+                .invoke(param.value ?: "", _subLocation)
+                .catch { e ->
+                    _addFleetState.emit(AddFleetState.QueueSearchError(e))
+                }
+                .flowOn(Dispatchers.Main)
+                .collect {
+                    _addFleetState.emit(
+                        when (it) {
+                            is WaitingQueueState.EmptyResult -> AddFleetState.GetListEmpty
+                            is WaitingQueueState.Success -> AddFleetState.SuccessGetQueue(it.waitingQueue.map { queue -> queue.number })
+                        }
+                    )
+                }
         }
     }
 
@@ -54,6 +87,12 @@ class AddFleetViewModel(
     }
 
     fun addFleet() {
+        if (_isSearchQueue) {
+            viewModelScope.launch {
+                _addFleetState.emit(AddFleetState.FinishSelectQueue(selectedFleetNumber.value ?: ""))
+            }
+            return
+        }
         viewModelScope.launch {
             addFleet.invoke(selectedFleetNumber.value ?: "", _subLocation)
                 .flowOn(Dispatchers.Main)
@@ -76,6 +115,10 @@ class AddFleetViewModel(
     }
 
     fun searchFleet() {
+        if (_isSearchQueue) {
+            searchQueue()
+            return
+        }
         viewModelScope.launch {
             resetValue()
             _addFleetState.emit(AddFleetState.GetListEmpty)

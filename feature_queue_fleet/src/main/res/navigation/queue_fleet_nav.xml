@@ -24,6 +24,18 @@
         <action
             android:id="@+id/action_queueFleetFragment_to_searchFragment"
             app:destination="@id/searchFleetFragment" />
+        <action
+            android:id="@+id/action_queueFleetFragment_to_searchQueueFragment"
+            app:destination="@id/searchQueueFragment">
+            <argument
+                android:name="subLocation"
+                android:defaultValue="0L"
+                app:argType="long"/>
+            <argument
+                android:name="currentQueue"
+                android:defaultValue=""
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
@@ -34,12 +46,34 @@
             android:name="subLocation"
             android:defaultValue="0L"
             app:argType="long" />
+        <argument
+            android:name="isSearchQueue"
+            android:defaultValue="false"
+            app:argType="boolean"/>
     </fragment>
 
     <fragment
         android:id="@+id/searchFleetFragment"
         android:name="id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetFragment"
         android:label="@string/search_fleet" />
+
+    <fragment
+        android:id="@+id/searchQueueFragment"
+        android:name="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetFragment"
+        android:label="@string/search_ritase" >
+        <argument
+            android:name="subLocation"
+            android:defaultValue="0L"
+            app:argType="long" />
+        <argument
+            android:name="currentQueue"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="isSearchQueue"
+            android:defaultValue="true"
+            app:argType="boolean"/>
+    </fragment>
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
 

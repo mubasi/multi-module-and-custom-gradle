@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -43,13 +42,9 @@ class SearchFleetViewModel : ViewModel() {
         }
     }
 
-    // TODO ("Implementasi dibawah masih bersifat mock, belum benar2 melakukan hit ke be")
     fun departFleet(fleetItem: FleetItem) {
         viewModelScope.launch {
-            _fleetItems.remove(fleetItem)
-            _searchState.emit(SearchFleetState.UpdateFleetItems(_fleetItems))
-            delay(500)
-            _searchState.emit(SearchFleetState.SuccessDepartFleet)
+            _searchState.emit(SearchFleetState.RequestDepartFleetItem(fleetItem))
         }
     }
 }

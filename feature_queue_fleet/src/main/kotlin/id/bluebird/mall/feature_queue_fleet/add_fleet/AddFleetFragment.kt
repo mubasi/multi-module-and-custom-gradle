@@ -25,6 +25,8 @@ class AddFleetFragment : Fragment() {
     companion object {
         const val REQUEST_ADD = "requestAdd"
         const val RESULT = "resultAdd"
+        const val REQUEST_SELECT = "requestSelectQueue"
+        const val RESULT_SELECT = "resultSelect"
     }
 
     private val _args: AddFleetFragmentArgs by navArgs()
@@ -48,8 +50,9 @@ class AddFleetFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             state = AddFleetState.OnProgressGetList
             vm = _vm
+            isSearchQueue = _args.isSearchQueue
         }
-        _vm.init(_args.subLocation)
+        _vm.init(_args.subLocation, _args.isSearchQueue)
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 _vm.addFleetState.collectLatest {
@@ -71,10 +74,21 @@ class AddFleetFragment : Fragment() {
                             )
                                 .show()
                         }
+                        is AddFleetState.QueueSearchError -> {
+                            DialogUtils.showErrorDialog(
+                                requireContext(),
+                                getString(R.string.search_flett_error_title),
+                                getString(R.string.search_queue_error_message)
+                            )
+                                .show()
+                        }
                         AddFleetState.GetListEmpty -> {
                             _addFleetAdapter.submitList(ArrayList())
                         }
                         is AddFleetState.GetListSuccess -> {
+                            _addFleetAdapter.submitList(it.list)
+                        }
+                        is AddFleetState.SuccessGetQueue -> {
                             _addFleetAdapter.submitList(it.list)
                         }
                         is AddFleetState.UpdateSelectPosition -> updateAdapterPosition(
@@ -87,6 +101,12 @@ class AddFleetFragment : Fragment() {
                             setFragmentResult(RESULT, bundle)
                             findNavController().popBackStack()
                         }
+                        is AddFleetState.FinishSelectQueue -> {
+                            val bundle = Bundle()
+                            bundle.putString(RESULT_SELECT, it.number)
+                            setFragmentResult(REQUEST_SELECT, bundle)
+                            findNavController().popBackStack()
+                        }
                         else -> {
                             // do nothing
                         }
@@ -95,7 +115,8 @@ class AddFleetFragment : Fragment() {
             }
         }
         initRecyclerview()
-        _vm.searchFleet()
+        if (!_args.isSearchQueue)
+            _vm.searchFleet()
     }
 
 

@@ -24,4 +24,9 @@ interface QueueReceiptRepository {
         fleetNumber: String,
     ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
 
+    fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
+
+    fun getCurrentQueue(locationId: Long): Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse>
+
+    fun searchWaitingQueue(queueNumber: String, locationId: Long, subLocationId: Long): Flow<QueuePangkalanOuterClass.ResponseSearchQueue>
 }

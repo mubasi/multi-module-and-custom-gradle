@@ -1,6 +1,10 @@
 package id.bluebird.mall.feature_queue_fleet
 
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
@@ -10,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
+import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
@@ -27,8 +32,9 @@ object DataBinding {
     fun Button.buttonClick(value: FleetItem, viewModel: ViewModel?) {
         viewModel?.let {
             this.setOnClickListener {
-                if (viewModel is SearchFleetViewModel) {
-                    viewModel.departFleet(value)
+                when(viewModel) {
+                    is SearchFleetViewModel -> viewModel.departFleet(value)
+                    is QueueFleetViewModel -> viewModel.requestDepart(value)
                 }
             }
         }
@@ -88,5 +94,27 @@ object DataBinding {
             )
         )
         button.setBackgroundResource(R.drawable.bg_button_disable)
+    }
+
+    @JvmStatic
+    @BindingAdapter("mainText", "coloredText", "toColor")
+    fun setColoredText(textView: TextView, text: String, coloredText: String, color: Int) {
+        textView.text = setDifferentColor(text, coloredText, color)
+    }
+
+    private fun setDifferentColor(text: String, key: String, color: Int): Spannable {
+        val spannableString = SpannableStringBuilder(text)
+        if (!text.contains(key, true))
+            return spannableString
+
+        val startPos = text.indexOf(key)
+        spannableString.setSpan(
+            ForegroundColorSpan(color),
+            startPos,
+            startPos.plus(key.length),
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
+        return spannableString
     }
 }

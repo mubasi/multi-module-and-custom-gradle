@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain_fleet"))
     implementation(project(":domain_user"))
+    implementation(project(":domain_passenger"))
     implementation(Kotlin.coroutines_android)
     implementation(UiMaterial.swipe)
 
