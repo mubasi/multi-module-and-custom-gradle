@@ -19,6 +19,13 @@ sealed class SkipQueueState {
     data class Success(val skipQueueResult: SkipQueueResult) : SkipQueueState()
 }
 
+sealed class ListQueueWaitingState {
+    data class Success(val listQueueResult: ListQueueResult) : ListQueueWaitingState()
+}
+
+sealed class ListQueueSkippedState {
+    data class Success(val listQueueResult: ListQueueResult) : ListQueueSkippedState()
+}
 sealed class WaitingQueueState<out T> {
     data class Success<out T>(val waitingQueue: List<Queue>) : WaitingQueueState<T>()
     object EmptyResult: WaitingQueueState<Nothing>()
