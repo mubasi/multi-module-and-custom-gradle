@@ -128,7 +128,6 @@ class DialogQueueReceiptViewModel(
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
-
                     _dialogQueueReceiptState.emit(
                         DialogQueueReceiptState.FailedTakeQueue(
                             message = cause.message ?: QueueTicketViewModel.ERROR_MESSAGE_UNKNOWN
@@ -158,8 +157,6 @@ class DialogQueueReceiptViewModel(
                 }
         }
     }
-
-
 
     fun cancelDialog() {
         viewModelScope.launch {
