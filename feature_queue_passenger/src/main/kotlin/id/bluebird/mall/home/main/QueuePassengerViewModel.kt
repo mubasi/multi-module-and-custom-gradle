@@ -11,8 +11,12 @@ import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
 import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
 import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
+import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
+import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
 import id.bluebird.mall.domain_pasenger.SkipQueueState
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
+import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
+import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
 import id.bluebird.mall.domain_pasenger.domain.cases.SkipQueue

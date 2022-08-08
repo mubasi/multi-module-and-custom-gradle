@@ -11,8 +11,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.snackbar.Snackbar
-import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
@@ -68,6 +66,7 @@ class QueuePassengerFragment : Fragment() {
                                 binding.showData = true
                                 binding.successCurrentQueue = true
                                 setupFirst()
+                                getListQueue()
                             }
                             is QueuePassengerState.FailedCurrentQueue -> {
                                 binding.showData = true
@@ -178,11 +177,23 @@ class QueuePassengerFragment : Fragment() {
         val tab0: TabLayout.Tab? = binding.tabLayout.getTabAt(0)
 
         val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
-        tab0?.text = getString(R.string.tab_waiting_text) + " ($countWaiting)"
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        tab0?.text = "Menunggu ($countWaiting)"
         val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
         binding.recyclerView.adapter = adapter
+
+        if(countWaiting > 0L) {
+            binding.successListQueue = true
+        }
+    }
+
+    private fun setupSkipped() {
+        val tab1: TabLayout.Tab? = binding.tabLayout.getTabAt(1)
+        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
+        tab1?.text = "Tertunda ($countSkipped)"
+
+        if(countSkipped > 0L) {
+            binding.successListQueue = true
+        }
     }
 
     private fun setupTabLayout() {
