@@ -1,9 +1,6 @@
 package id.bluebird.mall.domain_pasenger
 
-import id.bluebird.mall.domain_pasenger.model.CurrentQueueResult
-import id.bluebird.mall.domain_pasenger.model.QueueResult
-import id.bluebird.mall.domain_pasenger.model.SkipQueueResult
-import id.bluebird.mall.domain_pasenger.model.TakeQueueResult
+import id.bluebird.mall.domain_pasenger.model.*
 
 
 sealed class GetQueueReceiptState {
@@ -20,4 +17,9 @@ sealed class GetCurrentQueueState {
 
 sealed class SkipQueueState {
     data class Success(val skipQueueResult: SkipQueueResult) : SkipQueueState()
+}
+
+sealed class WaitingQueueState<out T> {
+    data class Success<out T>(val waitingQueue: List<Queue>) : WaitingQueueState<T>()
+    object EmptyResult: WaitingQueueState<Nothing>()
 }

@@ -5,6 +5,7 @@ import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
 import id.bluebird.mall.domain_pasenger.domain.cases.GetCurrentQueue
 import id.bluebird.mall.domain_pasenger.model.CurrentQueue
+import id.bluebird.mall.domain_pasenger.model.CurrentQueueResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,8 +19,8 @@ class GetCurrentQueueCase(private val queueReceiptRepository: QueueReceiptReposi
                 .flowOn(Dispatchers.IO)
                 .singleOrNull() ?: throw NullPointerException()
 
-            val result = CurrentQueue(
-                id = response.id.toString(),
+            val result = CurrentQueueResult(
+                id = response.id,
                 number = response.number,
                 createdAt = response.createdAt
             )

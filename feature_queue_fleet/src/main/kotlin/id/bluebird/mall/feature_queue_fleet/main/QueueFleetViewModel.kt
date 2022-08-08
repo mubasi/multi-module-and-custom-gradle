@@ -22,6 +22,7 @@ import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.model.UserInfo
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -167,6 +168,15 @@ class QueueFleetViewModel(
                                     isWithPassenger
                                 )
                             )
+
+                            delay(100)
+                            mCountCache.stock -= 1
+                            if (mCountCache.stock < 0)
+                                mCountCache.stock = 0
+                            if (isWithPassenger)
+                                mCountCache.ritase += 1
+
+                            counterLiveData.postValue(mCountCache)
                         }
                     }
                 }
@@ -174,12 +184,6 @@ class QueueFleetViewModel(
     }
 
     fun removeFleet(fleetNumber: String) {
-        mCountCache.stock -= 1
-        if (mCountCache.stock < 0)
-            mCountCache.stock = 0
-
-        counterLiveData.postValue(mCountCache)
-
         val fleetIndex = _fleetItems.indexOfFirst { it.name == fleetNumber }
         if (fleetIndex < 0)
             return
@@ -202,7 +206,7 @@ class QueueFleetViewModel(
                             queue = ""
                         }.collect {
                             when (it) {
-                                is GetCurrentQueueState.Success -> queue = it.currentQueue.number
+                                is GetCurrentQueueState.Success -> queue = it.currentQueueResult.number
                             }
                         }
                 } else {

@@ -150,11 +150,12 @@ class QueueFleetFragment : Fragment() {
                                 removeFleet(it.fleetNumber)
                             }
                             is QueueFleetState.FailedDepart -> {
-                                DialogUtils.showErrorDialog(
-                                    requireContext(),
-                                    getString(R.string.failed_depart_title),
-                                    getString(R.string.failed_depart_description)
-                                )
+                                val string = SpannableStringBuilder()
+                                    .bold { getString(R.string.fleet) }
+                                    .append(" ")
+                                    .append(getString(R.string.failed_depart_description))
+
+                                DialogUtils.showSnackbar(view, string, R.color.warning_0)
                             }
                             else -> {
                                 // do nothing

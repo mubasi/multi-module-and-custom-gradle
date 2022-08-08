@@ -73,6 +73,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         setToggle()
                     }
+                    R.id.searchQueueFragment -> {
+                        navigateBackWithArrow(R.id.searchQueueFragment)
+                    }
                     else -> {
                         toolbar.visibility = View.VISIBLE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
