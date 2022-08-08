@@ -84,6 +84,7 @@ object AppModule {
         single<SkipQueue> { SkipQueueCases(get()) }
         single<GetWaitingQueue> {GetWaitingQueueCases(get())}
         single<GetCurrentQueue> {GetCurrentQueueCase(get())}
+        single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}
     }
 
     private val repository = module {

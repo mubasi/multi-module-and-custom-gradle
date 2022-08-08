@@ -31,5 +31,6 @@
     <string name="fleet_depart_without_passenger">berangkat tanpa penumpang</string>
     <string name="search_queue_error_message">Gagal melakukan pencarian ticket antrian</string>
     <string name="failed_depart_title">Gagal Memberangkatkan Armada</string>
-    <string name="failed_depart_description">Gagal Memberangkatkan Armada, harap coba beberapa saat lagi</string>
+    <string name="failed_depart_description"> gagal diberangkatkan. Silakan coba lagi</string>
+    <string name="fleet">Armada</string>
 </resources>
