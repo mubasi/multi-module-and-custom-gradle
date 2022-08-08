@@ -64,7 +64,7 @@ class LoginFragment : BaseFragment() {
                 }
                 LoginState.Success -> {
                     NavigationNav.navigate(
-                        NavigationSealed.Home(
+                        NavigationSealed.QueueFleet(
                             destination = R.id.loginFragment,
                             frag = this
                         )
@@ -88,6 +88,4 @@ class LoginFragment : BaseFragment() {
         intent.data = Uri.parse("tel:08120812")
         context?.startActivity(intent)
     }
-
-
 }
