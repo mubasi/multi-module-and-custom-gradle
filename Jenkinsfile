@@ -55,47 +55,62 @@ pipeline {
         //         }
         //     }
         // }
-        stage('Build') {
+
+       stage('Build and Deploy Bucket') {
             environment {
-                ALPHA = "${env.VERSION_PREFIX}-echo${env.BUILD_NUMBER}"
+                VERSION_PREFIX = '1.0'
                 NAMESPACE="mall-officer"
             }
-            steps {
-                script {
-                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME.startsWith('release/')) {
+            stages {
+                stage('Deploy Multi-Stage') {
+                    when {
+                        branch 'multi-stage'
+                    }
+                    environment {
+                        ALPHA   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
+                    }
+                    steps {
                         sh 'chmod +x build.sh'
                         sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
-                    else if (env.BRANCH_NAME == 'develop' || env.BRANCH_NAME == 'testing')  {
+                }
+                stage('Deploy to development') {
+                    when {
+                        branch 'develop'
+                    }
+                    environment {
+                        ALPHA   = "${env.VERSION_PREFIX}-alpha${env.BUILD_NUMBER}"
+                    }
+                    steps {
                         sh 'chmod +x build.sh'
                         sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
                     }
-                    else if (env.BRANCH_NAME == 'staging') {
+                }
+                stage('Deploy to staging') {
+                    when {
+                        branch 'staging'
+                    }
+                    environment {
+                        ALPHA   = "${env.VERSION_PREFIX}-beta${env.BUILD_NUMBER}"
+                    }
+                    steps {
                         sh 'chmod +x build.sh'
                         sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
-                    }
-                    else if (env.BRANCH_NAME == 'test-sonar-qube') {
-                        sh 'chmod +x build.sh'
-                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
-                    }
-                    else if (env.BRANCH_NAME == 'multi-stage') {
-                        sh 'chmod +x build.sh'
-                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
-                    }
-                    else {
-                        sh 'exit'
                     }
                 }
             }
         }
+
     }
 
     post {
         success {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT",
-            factDefinitions: [[name: "release", template: "<a href=\"https://storage.cloud.google.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/release/${env.APPLICATION_NAME}-v${env.VERSION_MAJOR}.${env.VERSION_MINOR}.${env.VERSION_PATCH}.apk\">Dowload Release</a>"],
+            factDefinitions: [[name: "debug",   template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/debug/app-stage-debug.apk\">Dowload Debug</a>"],
+                              [name: "release", template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/release/app-stage-release-unsigned.apk\">Dowload Release</a>"],
                               [name: "messages", template: "${env.COMMIT_MESSAGE}"]]
         }
+
         failure {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT"
         }

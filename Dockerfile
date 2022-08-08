@@ -22,6 +22,6 @@ RUN mkdir -p /usr/local/gcloud \
 ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
 WORKDIR /app
 COPY . .
-RUN ANDROID_HOME=${ANDROID_HOME} ./gradlew clean assembleRelease -PBUILD_NUMBER=${BUILD_NUMBER}
 RUN gcloud auth activate-service-account --key-file service-account.json
-RUN gsutil -m cp -r app/build/outputs/apk/prod/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${BRANCH_NAME}/${BUILD_NUMBER}/
+RUN ANDROID_HOME=${ANDROID_HOME} ./gradlew clean assembleStage -PBUILD_NUMBER=${BUILD_NUMBER}
+RUN gsutil cp -r app/build/outputs/apk/stage/* gs://$BUCKET/$DEPLOY_BUILD_DATE/${BRANCH_NAME}/${BUILD_NUMBER}/
