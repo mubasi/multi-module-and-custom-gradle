@@ -13,4 +13,9 @@ sealed class QueuePassengerState {
     object SuccessCurrentQueue : QueuePassengerState()
     data class FailedCurrentQueue(val message: String) : QueuePassengerState()
 
+
+    object ProsesListQueue : QueuePassengerState()
+    object SuccessListQueue : QueuePassengerState()
+    data class FailedListQueue(val message: String) : QueuePassengerState()
+
 }

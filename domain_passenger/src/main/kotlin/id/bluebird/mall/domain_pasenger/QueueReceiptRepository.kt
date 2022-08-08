@@ -14,7 +14,6 @@ interface QueueReceiptRepository {
         fleetNumber: String,
     ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
 
-
     fun takeQueue (
         queueId: Long,
         queueType: Long,
@@ -33,6 +32,11 @@ interface QueueReceiptRepository {
         locationId: Long,
         subLocationId: Long,
     ) : Flow<QueuePangkalanOuterClass.ResponseSkipCurrentQueue>
+
+    fun listQueueWaiting (
+        locationId: Long,
+    ) : Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
+
 
     fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
 

@@ -9,7 +9,7 @@ import proto.QueuePangkalanOuterClass
 class QueueReceiptRepositoryimpl(
     private val queuePangkalanGrpc: QueuePangkalanGrpc.QueuePangkalanBlockingStub = QueuePangkalanGrpc.newBlockingStub(
         OkHttpChannel.channel
-    )
+    ),
 ) : QueueReceiptRepository {
     override fun getQueue(
         queueId: Long,
@@ -57,7 +57,7 @@ class QueueReceiptRepositoryimpl(
             emit(result)
         }
 
-    override fun getCurrentQueue(locationId: Long): 
+    override fun getCurrentQueue(locationId: Long):
             Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse> =
         flow {
             val request = QueuePangkalanOuterClass.GetCurrentQueueRequest.newBuilder()
@@ -66,7 +66,7 @@ class QueueReceiptRepositoryimpl(
                 }.build()
             val result = queuePangkalanGrpc.getCurrentQueue(request)
             emit(result)
-    }
+        }
 
     override fun skipQueue(
         queueId: Long,
@@ -83,6 +83,16 @@ class QueueReceiptRepositoryimpl(
 
             val result = queuePangkalanGrpc.skipCurrentQueue(request)
             emit(result)
+        }
+
+    override fun listQueueWaiting(locationId: Long):
+            Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> = flow {
+        val request = QueuePangkalanOuterClass.RequestGetWaitingQueue.newBuilder()
+            .apply {
+                this.locationId = locationId
+            }.build()
+        val result = queuePangkalanGrpc.getWaitingQueue(request)
+        emit(result)
     }
 
     override fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> =

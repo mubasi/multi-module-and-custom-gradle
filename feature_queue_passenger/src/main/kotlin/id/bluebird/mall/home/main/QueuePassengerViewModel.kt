@@ -8,13 +8,14 @@ import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
+import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
 import id.bluebird.mall.domain_pasenger.SkipQueueState
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
+import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
 import id.bluebird.mall.domain_pasenger.domain.cases.SkipQueue
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptState
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
-import id.bluebird.mall.home.model.CurrentQueueCache
-import id.bluebird.mall.home.model.UserInfo
+import id.bluebird.mall.home.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +25,8 @@ import kotlinx.coroutines.launch
 
 class QueuePassengerViewModel(
     private val getUserId : GetUserId,
-    private val currentQueue: CurrentQueue
+    private val currentQueue: CurrentQueue,
+    private val listQueueWaiting: ListQueueWaiting
 ) : ViewModel() {
 
     companion object {
@@ -38,6 +40,7 @@ class QueuePassengerViewModel(
     var currentQueueCache : CurrentQueueCache = CurrentQueueCache()
     val currentQueueNumber: MutableLiveData<String> = MutableLiveData("...")
     var mUserInfo: UserInfo = UserInfo()
+    var listQueueWaitingCache : ListQueueResultCache = ListQueueResultCache(queue = ArrayList<QueueReceiptCache>())
 
     fun init() {
         getUserById()
@@ -75,7 +78,6 @@ class QueuePassengerViewModel(
         }
     }
 
-
     fun getCurrentQueue() {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesCurrentQueue)
@@ -102,6 +104,51 @@ class QueuePassengerViewModel(
                                 currentQueueNumber.value = result.number
                                 _queuePassengerState.emit(
                                     QueuePassengerState.SuccessCurrentQueue
+                                )
+                            }
+                        }
+                        else -> {
+                            //else
+                        }
+                    }
+                }
+        }
+    }
+
+    fun getListQueue() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesListQueue)
+            listQueueWaiting.invoke(
+                locationId = mUserInfo.locationId
+            )
+                .flowOn(Dispatchers.Main)
+                .catch { cause ->
+                    _queuePassengerState.emit(
+                        QueuePassengerState.FailedListQueue(
+                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
+                }
+                .collect {
+                    when(it) {
+                        is ListQueueWaitingState.Success -> {
+                            it.listQueueResult.let { result ->
+                                val listQueue = ArrayList<QueueReceiptCache>()
+                                result.queue.forEach { item ->
+                                    listQueue.add(
+                                        QueueReceiptCache(
+                                            queueId = item.id,
+                                            queueNumber = item.number
+                                        )
+                                    )
+                                }
+
+                                listQueueWaitingCache = ListQueueResultCache(
+                                    count = result.count,
+                                    queue = listQueue
+                                )
+                                _queuePassengerState.emit(
+                                    QueuePassengerState.SuccessListQueue
                                 )
                             }
                         }

@@ -13,6 +13,10 @@
     <string name="now_queue_text">Antrian sekarang</string>
     <string name="move_to_create_queue">Geser untuk buat no. antrian</string>
     <string name="message_ticket">Pastikan bukti antrian difoto oleh pemesan dan ditunjukan ke driver</string>
+    <string name="tab_waiting_text">Menunggu</string>
+    <string name="tab_delayed_text">Tertunda</string>
+    <string name="queue_not_found">Antrian tidak tersedia</string>
+
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
