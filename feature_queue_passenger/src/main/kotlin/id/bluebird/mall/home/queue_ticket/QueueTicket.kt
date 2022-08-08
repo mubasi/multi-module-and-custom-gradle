@@ -89,7 +89,7 @@ class QueueTicket : BaseFragment() {
         } catch (ignored: ParseException) {
         }
 
-        val dfOutput = SimpleDateFormat("hh:mm", Locale.getDefault())
+        val dfOutput = SimpleDateFormat("HH:mm", Locale.getDefault())
         val str :String = dfOutput.format(convertedDate)
         binding.timeOrder.text = str
     }

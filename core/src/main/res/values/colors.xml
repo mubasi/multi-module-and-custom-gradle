@@ -13,6 +13,7 @@
     <color name="primary_color_second">#669ED4</color>
     <color name="primary_color_third">#E6EFF8</color>
     <color name="error_color">#BE321E</color>
+    <color name="error_color_second">#FF753F</color>
     <color name="error_color_third">#F8EAE8</color>
     <color name="rating_color">#C89B00</color>
     <color name="gray_disable">#888888</color>

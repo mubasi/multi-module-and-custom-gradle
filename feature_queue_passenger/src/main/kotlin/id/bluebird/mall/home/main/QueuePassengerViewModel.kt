@@ -1,17 +1,123 @@
 package id.bluebird.mall.home.main
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
+import id.bluebird.mall.domain.user.GetUserByIdState
+import id.bluebird.mall.domain.user.domain.intercator.GetUserId
+import id.bluebird.mall.domain.user.model.CreateUserResult
+import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
+import id.bluebird.mall.domain_pasenger.SkipQueueState
+import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
+import id.bluebird.mall.domain_pasenger.domain.cases.SkipQueue
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptState
+import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
+import id.bluebird.mall.home.model.CurrentQueueCache
+import id.bluebird.mall.home.model.UserInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-class QueuePassengerViewModel : ViewModel() {
+class QueuePassengerViewModel(
+    private val getUserId : GetUserId,
+    private val currentQueue: CurrentQueue
+) : ViewModel() {
+
+    companion object {
+        const val ERROR_MESSAGE_UNKNOWN = "Unknown"
+    }
 
     private val _queuePassengerState: MutableSharedFlow<QueuePassengerState> =
         MutableSharedFlow()
     val queuePassengerState = _queuePassengerState.asSharedFlow()
+    val titleLocation: MutableLiveData<String> = MutableLiveData("...")
+    var currentQueueCache : CurrentQueueCache = CurrentQueueCache()
+    val currentQueueNumber: MutableLiveData<String> = MutableLiveData("...")
+    var mUserInfo: UserInfo = UserInfo()
+
+    fun init() {
+        getUserById()
+    }
+
+    private fun getUserById() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesGetUser)
+            getUserId.invoke(null)
+                .flowOn(Dispatchers.Main)
+                .catch { cause ->
+                    _queuePassengerState.emit(
+                        QueuePassengerState.FailedGetUser(
+                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
+                }
+                .collect {
+                    when (it) {
+                        is GetUserByIdState.Success -> {
+                            mUserInfo = UserInfo(it.result.id)
+                            mUserInfo.locationId = it.result.locationId
+                            mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            createTitleLocation(it.result)
+                            _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun createTitleLocation(it: CreateUserResult){
+        with(it) {
+            titleLocation.value = "$locationName $subLocationName".getLastSync()
+        }
+    }
+
+
+    fun getCurrentQueue() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesCurrentQueue)
+            currentQueue.invoke(
+                locationId = mUserInfo.locationId
+            )
+                .flowOn(Dispatchers.Main)
+                .catch { cause ->
+                    _queuePassengerState.emit(
+                        QueuePassengerState.FailedCurrentQueue(
+                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
+                }
+                .collect {
+                    when(it) {
+                        is GetCurrentQueueState.Success -> {
+                            it.currentQueueResult.let { result ->
+                                currentQueueCache = CurrentQueueCache(
+                                    result.id,
+                                    result.number,
+                                    result.createdAt
+                                )
+                                currentQueueNumber.value = result.number
+                                _queuePassengerState.emit(
+                                    QueuePassengerState.SuccessCurrentQueue
+                                )
+                            }
+                        }
+                        else -> {
+                            //else
+                        }
+                    }
+                }
+        }
+    }
+
+    fun prosesSkipQueue(){
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesSkipQueue)
+        }
+    }
 
     fun prosesQueue() {
         viewModelScope.launch {

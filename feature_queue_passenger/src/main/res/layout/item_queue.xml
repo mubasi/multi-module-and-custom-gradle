@@ -10,13 +10,6 @@
         <variable
             name="item"
             type="id.bluebird.mall.home.model.QueueCache" />
-
-<!--        <variable-->
-<!--            name="fragmentType"-->
-<!--            type="id.bluebird.mall.home.queue_tab.FragmentType" />-->
-
-<!--        <import type="id.bluebird.mall.home.queue_tab.FragmentType" />-->
-
         <import type="android.view.View" />
     </data>
 

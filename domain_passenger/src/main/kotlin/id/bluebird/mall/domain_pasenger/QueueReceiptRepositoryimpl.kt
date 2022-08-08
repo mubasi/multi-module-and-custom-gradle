@@ -57,44 +57,31 @@ class QueueReceiptRepositoryimpl(
             emit(result)
         }
 
-    override fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> =
-        flow {
-            val request = QueuePangkalanOuterClass.RequestGetWaitingQueue.newBuilder()
-                .apply {
-                    this.locationId = locationId
-                }.build()
-
-            val result = queuePangkalanGrpc.getWaitingQueue(request)
-            emit(result)
-        }
-
-    override fun getCurrentQueue(locationId: Long): Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse> =
+    override fun getCurrentQueue(locationId: Long): 
+            Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse> =
         flow {
             val request = QueuePangkalanOuterClass.GetCurrentQueueRequest.newBuilder()
                 .apply {
                     this.locationId = locationId
                 }.build()
-
             val result = queuePangkalanGrpc.getCurrentQueue(request)
             emit(result)
-        }
+    }
 
-    override fun searchWaitingQueue(
-        queueNumber: String,
+    override fun skipQueue(
+        queueId: Long,
         locationId: Long,
-        subLocationId: Long
-    ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue> =
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.ResponseSkipCurrentQueue> =
         flow {
-            val request = QueuePangkalanOuterClass.RequestSearchQueue.newBuilder()
+            val request = QueuePangkalanOuterClass.RequestSkipCurrentQueue.newBuilder()
                 .apply {
-                    this.queueNumber = queueNumber
+                    this.queueId = queueId
                     this.locationId = locationId
                     this.subLocationId = subLocationId
-                    this.queueType = QueuePangkalanOuterClass.QueueType.SEARCH_WAITING_QUEUE
-                }
-                .build()
+                }.build()
 
-            val result = queuePangkalanGrpc.searchQueue(request)
+            val result = queuePangkalanGrpc.skipCurrentQueue(request)
             emit(result)
-        }
+    }
 }

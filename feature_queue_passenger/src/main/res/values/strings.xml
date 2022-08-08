@@ -9,6 +9,8 @@
     <string name="sum_queue_text">Jumlah\nantrian</string>
     <string name="time_order_text">Waktu\npemesanan</string>
     <string name="ok_text">OK</string>
+    <string name="skip_text">Lewati</string>
+    <string name="now_queue_text">Antrian sekarang</string>
     <string name="move_to_create_queue">Geser untuk buat no. antrian</string>
     <string name="message_ticket">Pastikan bukti antrian difoto oleh pemesan dan ditunjukan ke driver</string>
 

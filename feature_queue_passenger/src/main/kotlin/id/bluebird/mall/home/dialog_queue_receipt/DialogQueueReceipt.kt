@@ -38,7 +38,6 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
     }
 
     private lateinit var binding: DialogQueueReceiptBinding
-    private lateinit var mBinding: FragmentQueuePassengerBinding
     private val _dialogQueueReceiptViewModel: DialogQueueReceiptViewModel by viewModel()
 
     override fun onCreateView(
@@ -87,7 +86,7 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
                             }
                             is DialogQueueReceiptState.FailedTakeQueue -> {
                                 val noAntrian : String = queueNumber.value.toString();
-                                showSnackbar(Html.fromHtml("<b>No. antrian $noAntrian</b> gagal ditambahkan",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("<b>$noAntrian</b> gagal ditambahkan",1), R.color.error_color)
                                 dialog?.dismiss()
                                 binding.slideProses.visibility = View.VISIBLE
                                 binding.textQueue.visibility = View.VISIBLE
