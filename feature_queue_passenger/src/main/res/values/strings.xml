@@ -18,6 +18,9 @@
     <string name="queue_not_found">Antrian tidak tersedia</string>
     <string name="recovery_text">Pulihkan</string>
     <string name="delete_text">Hapus</string>
+    <string name="desc_dialog_skipped_text">
+        No antrian ini akan masuk kembali ke antrian sekarang
+    </string>
 
 
 
