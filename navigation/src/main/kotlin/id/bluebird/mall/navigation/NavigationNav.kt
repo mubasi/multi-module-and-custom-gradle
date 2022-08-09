@@ -19,7 +19,6 @@ object NavigationNav {
 
     private fun getNavigateUri(navigationSealed: NavigationSealed): Uri {
         val target = when (navigationSealed) {
-            is NavigationSealed.Home -> "home"
             is NavigationSealed.Login -> "login"
             is NavigationSealed.Splash -> "splash"
             is NavigationSealed.QueueFleet -> "queue_fleet"
