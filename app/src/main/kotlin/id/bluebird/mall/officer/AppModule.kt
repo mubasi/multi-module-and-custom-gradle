@@ -19,7 +19,6 @@ import id.bluebird.mall.domain_pasenger.domain.cases.*
 import id.bluebird.mall.domain_pasenger.domain.interactor.*
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
-import id.bluebird.mall.feature_queue_fleet.depart_fleet.DepartFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogViewModel
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
@@ -49,9 +48,8 @@ object AppModule {
         viewModel { SearchFleetViewModel() }
         viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
         viewModel { QueueTicketViewModel(get()) }
-        viewModel { QueuePassengerViewModel(get(), get()) }
+        viewModel { QueuePassengerViewModel(get(), get(), get()) }
         viewModel { DialogSkipQueueViewModel(get()) }
-        viewModel { DepartFleetViewModel() }
     }
 
     private val userCases = module {
@@ -70,7 +68,6 @@ object AppModule {
         single<SearchFleet> { SearchFleetUseCases(get()) }
         single<AddFleet> { AddFleetUseCases(get()) }
         single<GetListFleet> { GetListFleetUseCases(get()) }
-        single<DepartFleet> { DepartFleetUseCases(get()) }
     }
 
     private val locationCases = module {
@@ -82,6 +79,7 @@ object AppModule {
         single<TakeQueue> { TakeQueueCases(get()) }
         single<CurrentQueue> { CurrentQueueCases(get()) }
         single<SkipQueue> { SkipQueueCases(get()) }
+        single<ListQueueWaiting> { ListQueueWaitingCases(get()) }
         single<GetWaitingQueue> {GetWaitingQueueCases(get())}
         single<GetCurrentQueue> {GetCurrentQueueCase(get())}
         single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}

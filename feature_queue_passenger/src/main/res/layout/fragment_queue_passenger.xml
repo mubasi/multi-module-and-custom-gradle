@@ -10,6 +10,9 @@
             name="successCurrentQueue"
             type="boolean" />
         <variable
+            name="successListQueue"
+            type="boolean" />
+        <variable
             name="vm"
             type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
         <import type="android.view.View"/>
@@ -161,6 +164,37 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/tebing_menunggu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tab_waiting_text" />
+
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tab_delayed_text" />
+                </com.google.android.material.tabs.TabLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="30dp"
+                    bindVisibility="@{(!successListQueue)}"
+                    android:text="@string/queue_not_found"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    bindVisibility="@{successListQueue}"/>
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

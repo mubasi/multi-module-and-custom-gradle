@@ -9,12 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.snackbar.Snackbar
 import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+
 
 class QueuePassengerFragment : Fragment() {
 
@@ -37,8 +40,10 @@ class QueuePassengerFragment : Fragment() {
 
         binding.showData = false
         binding.successCurrentQueue = false
+        binding.successListQueue = false
 
         _queuePassengerViewModel.init()
+        setupTabLayout()
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -58,10 +63,23 @@ class QueuePassengerFragment : Fragment() {
                             QueuePassengerState.SuccessCurrentQueue -> {
                                 binding.showData = true
                                 binding.successCurrentQueue = true
+                                getListQueue()
                             }
                             is QueuePassengerState.FailedCurrentQueue -> {
                                 binding.showData = true
                                 binding.successCurrentQueue = false
+                            }
+                            QueuePassengerState.ProsesListQueue -> {
+                                binding.showData = false
+                                binding.successListQueue = false
+                            }
+                            QueuePassengerState.SuccessListQueue -> {
+                                binding.showData = true
+                                binding.successListQueue = true
+                                if(listQueueWaitingCache.count == 0L) {
+                                    binding.successListQueue = false
+                                }
+                                setupListQueue()
                             }
                             QueuePassengerState.ProsesSkipQueue -> {
                                 val bundle = Bundle()
@@ -74,10 +92,43 @@ class QueuePassengerFragment : Fragment() {
                                 dialogSkipQueue.arguments = bundle
                                 dialogSkipQueue.show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
                             }
+                            else -> {
+                                //do noting
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun setupListQueue() {
+
+        val tab0: TabLayout.Tab? = binding.tabLayout.getTabAt(0)
+
+        val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
+        tab0?.text = getString(R.string.tab_waiting_text) + " ($countWaiting)"
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
+        binding.recyclerView.adapter = adapter
+    }
+
+
+    private fun setupTabLayout() {
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Write code to handle tab reselect
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Write code to handle tab reselect
+            }
+        })
     }
 }
