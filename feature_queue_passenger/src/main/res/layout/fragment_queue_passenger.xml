@@ -16,12 +16,6 @@
             name="successListQueueSkipped"
             type="boolean" />
         <variable
-            name="successListQueue"
-            type="boolean" />
-        <variable
-            name="successListQueueSkipped"
-            type="boolean" />
-        <variable
             name="vm"
             type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
         <import type="android.view.View" />

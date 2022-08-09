@@ -1,5 +1,6 @@
 package id.bluebird.mall.home.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
@@ -17,7 +17,6 @@ import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
-
 
 
 class QueuePassengerFragment : Fragment() {
@@ -29,11 +28,12 @@ class QueuePassengerFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_queue_passenger, container, false)
         return binding.root
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -154,16 +154,6 @@ class QueuePassengerFragment : Fragment() {
         }
     }
 
-    private fun setupSkipped() {
-        val tab1: TabLayout.Tab? = binding.tabLayout.getTabAt(1)
-        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
-        tab1?.text = "Tertunda ($countSkipped)"
-
-        if(countSkipped > 0L) {
-            binding.successListQueue = true
-        }
-    }
-
     private fun setListQueue(position: Int) {
         binding.successListQueue = false
         if(position == 0) {
@@ -172,17 +162,6 @@ class QueuePassengerFragment : Fragment() {
             setupSkipped()
             val adapter = CustomAdapterSkipped(_queuePassengerViewModel.listQueueSkippedCache.queue)
             binding.recyclerView.adapter = adapter
-        }
-    }
-        val tab0: TabLayout.Tab? = binding.tabLayout.getTabAt(0)
-
-        val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
-        tab0?.text = "Menunggu ($countWaiting)"
-        val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
-        binding.recyclerView.adapter = adapter
-
-        if(countWaiting > 0L) {
-            binding.successListQueue = true
         }
     }
 

@@ -41,18 +41,12 @@ object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
         viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
-        viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
         viewModel { UserManagementViewModel(get(), get(), get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
         viewModel { LogoutDialogViewModel(get()) }
         viewModel { AddFleetViewModel(get(), get(), get()) }
         viewModel { SearchFleetViewModel() }
-        viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
-        viewModel { QueueTicketViewModel(get()) }
-        viewModel { QueuePassengerViewModel(get(), get(), get(), get()) }
-        viewModel { DialogSkipQueueViewModel(get()) }
-        viewModel { DepartFleetViewModel() }
         viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
         viewModel { QueueTicketViewModel(get()) }
         viewModel { QueuePassengerViewModel(get(), get(), get(), get()) }
@@ -76,6 +70,7 @@ object AppModule {
         single<SearchFleet> { SearchFleetUseCases(get()) }
         single<AddFleet> { AddFleetUseCases(get()) }
         single<GetListFleet> { GetListFleetUseCases(get()) }
+        single<DepartFleet> { DepartFleetUseCases(get()) }
     }
 
     private val locationCases = module {
@@ -89,7 +84,6 @@ object AppModule {
         single<SkipQueue> { SkipQueueCases(get()) }
         single<ListQueueSkipped> { ListQueueSkippedCases(get()) }
         single<ListQueueWaiting> { ListQueueWaitingCases(get()) }
-        single<ListQueueSkipped> { ListQueueSkippedCases(get()) }
         single<GetWaitingQueue> {GetWaitingQueueCases(get())}
         single<GetCurrentQueue> {GetCurrentQueueCase(get())}
         single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}

@@ -1,6 +1,5 @@
 package id.bluebird.mall.home.main
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,17 +10,9 @@ import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
 import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
 import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
-import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
-import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
-import id.bluebird.mall.domain_pasenger.SkipQueueState
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
-import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
-import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
-import id.bluebird.mall.domain_pasenger.domain.cases.SkipQueue
-import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptState
-import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.mall.home.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
