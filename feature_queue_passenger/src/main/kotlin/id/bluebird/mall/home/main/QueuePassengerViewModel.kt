@@ -1,5 +1,6 @@
 package id.bluebird.mall.home.main
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,11 @@ import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
+import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
 import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
 import id.bluebird.mall.domain_pasenger.SkipQueueState
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
+import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
 import id.bluebird.mall.domain_pasenger.domain.cases.SkipQueue
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptState
@@ -26,7 +29,8 @@ import kotlinx.coroutines.launch
 class QueuePassengerViewModel(
     private val getUserId : GetUserId,
     private val currentQueue: CurrentQueue,
-    private val listQueueWaiting: ListQueueWaiting
+    private val listQueueWaiting: ListQueueWaiting,
+    private val listQueueSkipped: ListQueueSkipped,
 ) : ViewModel() {
 
     companion object {
@@ -40,7 +44,8 @@ class QueuePassengerViewModel(
     var currentQueueCache : CurrentQueueCache = CurrentQueueCache()
     val currentQueueNumber: MutableLiveData<String> = MutableLiveData("...")
     var mUserInfo: UserInfo = UserInfo()
-    var listQueueWaitingCache : ListQueueResultCache = ListQueueResultCache(queue = ArrayList<QueueReceiptCache>())
+    var listQueueWaitingCache : ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList<QueueReceiptCache>())
+    var listQueueSkippedCache : ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList<QueueReceiptCache>())
 
     fun init() {
         getUserById()
@@ -142,13 +147,56 @@ class QueuePassengerViewModel(
                                         )
                                     )
                                 }
-
                                 listQueueWaitingCache = ListQueueResultCache(
                                     count = result.count,
                                     queue = listQueue
                                 )
                                 _queuePassengerState.emit(
                                     QueuePassengerState.SuccessListQueue
+                                )
+                            }
+                        }
+                        else -> {
+                            //else
+                        }
+                    }
+                }
+        }
+    }
+
+    fun getListQueueSkipped() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesListQueueSkipped)
+            listQueueSkipped.invoke(
+                locationId = mUserInfo.locationId
+            )
+                .flowOn(Dispatchers.Main)
+                .catch { cause ->
+                    _queuePassengerState.emit(
+                        QueuePassengerState.FailedListQueueSkipped(
+                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
+                }
+                .collect {
+                    when(it) {
+                        is ListQueueSkippedState.Success -> {
+                            it.listQueueResult.let { result ->
+                                val listQueue = ArrayList<QueueReceiptCache>()
+                                result.queue.forEach { item ->
+                                    listQueue.add(
+                                        QueueReceiptCache(
+                                            queueId = item.id,
+                                            queueNumber = item.number
+                                        )
+                                    )
+                                }
+                                listQueueSkippedCache = ListQueueResultCache(
+                                    count = result.count,
+                                    queue = listQueue
+                                )
+                                _queuePassengerState.emit(
+                                    QueuePassengerState.SuccessListQueueSkipped
                                 )
                             }
                         }

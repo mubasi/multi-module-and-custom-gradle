@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="showData"
@@ -13,9 +13,12 @@
             name="successListQueue"
             type="boolean" />
         <variable
+            name="successListQueueSkipped"
+            type="boolean" />
+        <variable
             name="vm"
             type="id.bluebird.mall.home.main.QueuePassengerViewModel" />
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,7 +28,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,31 +60,30 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
                     android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="10dp"
                     android:text="@string/now_queue_text"
                     android:textColor="@color/black"
                     android:textSize="16dp"
                     android:textStyle="bold" />
-
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="5dp"
-                    app:strokeColor="@color/grey_background"
                     android:visibility="@{!successCurrentQueue ? View.VISIBLE : View.GONE}"
+                    app:strokeColor="@color/grey_background"
                     app:strokeWidth="1dp">
 
                     <TextView
-                        android:layout_marginVertical="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
                         android:gravity="center_horizontal"
                         android:text="Antrian sekarang tidak tersedia"
-                        android:textColor="@color/error_color"/>
-                    
+                        android:textColor="@color/error_color" />
+
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -88,8 +91,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="5dp"
-                    app:strokeColor="@color/grey_background"
                     android:visibility="@{successCurrentQueue ? View.VISIBLE : View.GONE}"
+                    app:strokeColor="@color/grey_background"
                     app:strokeWidth="1dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -99,11 +102,11 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
                             android:layout_marginHorizontal="10dp"
                             android:layout_marginVertical="5dp"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent">
+                            android:orientation="vertical"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -124,18 +127,40 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             android:orientation="horizontal"
-                            android:layout_marginRight="10dp"
                             android:paddingVertical="10dp">
+
                             <androidx.cardview.widget.CardView
                                 android:layout_width="45dp"
                                 android:layout_height="45dp"
-                                app:cardCornerRadius="50dp"
-                                android:backgroundTint="@color/grey_line"
                                 android:layout_margin="5dp"
-                                android:layout_marginHorizontal="5dp">
+                                android:layout_marginHorizontal="5dp"
+                                android:backgroundTint="@color/grey_line"
+                                app:cardCornerRadius="50dp">
+
+                                <androidx.appcompat.widget.AppCompatImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_announcement_disable" />
+                            </androidx.cardview.widget.CardView>
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="wrap_content" />
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:layout_margin="5dp"
+                                android:layout_marginHorizontal="5dp"
+                                android:backgroundTint="@color/error_color_third"
+                                android:onClick="@{()->vm.prosesSkipQueue()}"
+                                app:cardCornerRadius="50dp">
+
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -193,10 +218,11 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    tools:itemCount="20"
+                    tools:listitem="@layout/item_list_queue"
                     android:scrollbars="none"
                     bindVisibility="@{successListQueue}"/>
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
 
         <LinearLayout

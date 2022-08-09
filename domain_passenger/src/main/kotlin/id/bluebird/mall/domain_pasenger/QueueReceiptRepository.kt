@@ -37,6 +37,9 @@ interface QueueReceiptRepository {
         locationId: Long,
     ) : Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
 
+    fun listQueueSkipped (
+        locationId: Long,
+    ) : Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue>
 
     fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
 

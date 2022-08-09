@@ -95,33 +95,24 @@ class QueueReceiptRepositoryimpl(
         emit(result)
     }
 
-    override fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> =
-        flow {
-            val request = QueuePangkalanOuterClass.RequestGetWaitingQueue.newBuilder()
-                .apply {
-                    this.locationId = locationId
-                }.build()
+    override fun listQueueSkipped(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue> = flow {
+        val request = QueuePangkalanOuterClass.RequestGetSkippedQueue.newBuilder()
+            .apply {
+                this.locationId = locationId
+            }.build()
+        val result = queuePangkalanGrpc.getSkippedQueue(request)
+        emit(result)
+    }
 
-            val result = queuePangkalanGrpc.getWaitingQueue(request)
-            emit(result)
-        }
+    override fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> {
+        TODO("Not yet implemented")
+    }
 
     override fun searchWaitingQueue(
         queueNumber: String,
         locationId: Long,
-        subLocationId: Long
-    ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue> =
-        flow {
-            val request = QueuePangkalanOuterClass.RequestSearchQueue.newBuilder()
-                .apply {
-                    this.queueNumber = queueNumber
-                    this.locationId = locationId
-                    this.subLocationId = subLocationId
-                    this.queueType = QueuePangkalanOuterClass.QueueType.SEARCH_WAITING_QUEUE
-                }
-                .build()
-
-            val result = queuePangkalanGrpc.searchQueue(request)
-            emit(result)
-        }
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue> {
+        TODO("Not yet implemented")
+    }
 }
