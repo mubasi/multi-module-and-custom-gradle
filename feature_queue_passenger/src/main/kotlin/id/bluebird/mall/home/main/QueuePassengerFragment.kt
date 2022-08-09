@@ -66,7 +66,6 @@ class QueuePassengerFragment : Fragment() {
                                 binding.showData = true
                                 binding.successCurrentQueue = true
                                 setupFirst()
-                                getListQueue()
                             }
                             is QueuePassengerState.FailedCurrentQueue -> {
                                 binding.showData = true
@@ -104,10 +103,6 @@ class QueuePassengerFragment : Fragment() {
                             QueuePassengerState.SuccessListQueue -> {
                                 binding.showData = true
                                 binding.successListQueue = true
-                                if(listQueueWaitingCache.count == 0L) {
-                                    binding.successListQueue = false
-                                }
-                                setupListQueue()
                             }
                             QueuePassengerState.ProsesSkipQueue -> {
                                 val bundle = Bundle()
@@ -139,7 +134,6 @@ class QueuePassengerFragment : Fragment() {
         _queuePassengerViewModel.getListQueueSkipped()
         val selectedPosition = binding.tabLayout.selectedTabPosition
         setListQueue(selectedPosition)
-        binding.successListQueue = false
     }
 
     private fun setupWaiting() {

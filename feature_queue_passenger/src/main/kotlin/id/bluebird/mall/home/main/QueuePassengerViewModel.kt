@@ -134,6 +134,7 @@ class QueuePassengerViewModel(
                         is ListQueueWaitingState.Success -> {
                             it.listQueueResult.let { result ->
                                 val listQueue = ArrayList<QueueReceiptCache>()
+                                result.queue.removeAt(0)
                                 result.queue.forEach { item ->
                                     listQueue.add(
                                         QueueReceiptCache(
@@ -143,7 +144,7 @@ class QueuePassengerViewModel(
                                     )
                                 }
                                 listQueueWaitingCache = ListQueueResultCache(
-                                    count = result.count,
+                                    count = result.count - 1,
                                     queue = listQueue
                                 )
                                 _queuePassengerState.emit(
