@@ -11,11 +11,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.snackbar.Snackbar
+import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+
 
 
 class QueuePassengerFragment : Fragment() {
@@ -94,6 +98,18 @@ class QueuePassengerFragment : Fragment() {
                                 setupSkipped()
                                 binding.showData = true
                             }
+                            QueuePassengerState.ProsesListQueue -> {
+                                binding.showData = false
+                                binding.successListQueue = false
+                            }
+                            QueuePassengerState.SuccessListQueue -> {
+                                binding.showData = true
+                                binding.successListQueue = true
+                                if(listQueueWaitingCache.count == 0L) {
+                                    binding.successListQueue = false
+                                }
+                                setupListQueue()
+                            }
                             QueuePassengerState.ProsesSkipQueue -> {
                                 val bundle = Bundle()
                                 bundle.putLong("queue_id", currentQueueCache.id)
@@ -158,6 +174,15 @@ class QueuePassengerFragment : Fragment() {
             val adapter = CustomAdapterSkipped(_queuePassengerViewModel.listQueueSkippedCache.queue)
             binding.recyclerView.adapter = adapter
         }
+    }
+        val tab0: TabLayout.Tab? = binding.tabLayout.getTabAt(0)
+
+        val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
+        tab0?.text = getString(R.string.tab_waiting_text) + " ($countWaiting)"
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
+        binding.recyclerView.adapter = adapter
     }
 
     private fun setupTabLayout() {
