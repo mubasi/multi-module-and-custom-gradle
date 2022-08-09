@@ -25,6 +25,7 @@ import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogView
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
+import id.bluebird.mall.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueViewModel
 import id.bluebird.mall.home.main.QueuePassengerViewModel
@@ -52,6 +53,7 @@ object AppModule {
         viewModel { QueuePassengerViewModel(get(), get(), get(), get()) }
         viewModel { DialogSkipQueueViewModel(get()) }
         viewModel { DepartFleetViewModel() }
+        viewModel { DialogDeleteSkippedViewModel(get()) }
     }
 
     private val userCases = module {
@@ -87,6 +89,7 @@ object AppModule {
         single<GetWaitingQueue> {GetWaitingQueueCases(get())}
         single<GetCurrentQueue> {GetCurrentQueueCase(get())}
         single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}
+        single<DeleteSkipped> {DeleteSkippedCases(get())}
     }
 
     private val repository = module {

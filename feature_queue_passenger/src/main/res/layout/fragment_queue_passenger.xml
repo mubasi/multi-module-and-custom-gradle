@@ -201,6 +201,7 @@
                     tools:itemCount="20"
                     tools:listitem="@layout/item_list_queue"
                     android:scrollbars="none"
+                    android:layout_marginTop="20dp"
                     bindVisibility="@{successListQueue}"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

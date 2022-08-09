@@ -30,3 +30,7 @@ sealed class WaitingQueueState<out T> {
     data class Success<out T>(val waitingQueue: List<Queue>) : WaitingQueueState<T>()
     object EmptyResult: WaitingQueueState<Nothing>()
 }
+
+sealed class DeleteSkippedState {
+    data class Success(val queueResult: QueueResult) : DeleteSkippedState()
+}

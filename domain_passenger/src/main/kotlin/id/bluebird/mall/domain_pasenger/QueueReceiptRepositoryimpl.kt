@@ -131,4 +131,27 @@ class QueueReceiptRepositoryimpl(
         val result = queuePangkalanGrpc.searchQueue(request)
         emit(result)
     }
+
+    override fun deleteSkippedQueue(
+        queueId: Long,
+        queueType: Long,
+        locationId: Long,
+        queueNumber: String,
+        subLocationId: Long,
+        fleetNumber: String,
+    ): Flow<QueuePangkalanOuterClass.ResponseQueues> =
+        flow {
+            val request = QueuePangkalanOuterClass.RequestQueues.newBuilder()
+                .apply {
+                    this.queueId = queueId
+                    this.queueType = QueuePangkalanOuterClass.QueueType.DELETE_SKIPPED_QUEUE
+                    this.locationId = locationId
+                    this.queueNumber = queueNumber
+                    this.subLocationId = subLocationId
+                    this.fleetNumber = fleetNumber
+                }.build()
+
+            val result = queuePangkalanGrpc.queues(request)
+            emit(result)
+        }
 }
