@@ -34,3 +34,7 @@ sealed class WaitingQueueState<out T> {
 sealed class DeleteSkippedState {
     data class Success(val queueResult: QueueResult) : DeleteSkippedState()
 }
+
+sealed class RestoreSkippedState {
+    data class Success(val queueResult: QueueResult) : RestoreSkippedState()
+}

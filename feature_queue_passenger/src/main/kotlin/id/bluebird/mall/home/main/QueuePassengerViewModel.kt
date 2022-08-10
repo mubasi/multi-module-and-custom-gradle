@@ -223,4 +223,10 @@ class QueuePassengerViewModel(
         }
     }
 
+    fun prosesRestoreQueue(queueReceiptCache: QueueReceiptCache){
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesRestoreQueueSkipped(queueReceiptCache))
+        }
+    }
+
 }

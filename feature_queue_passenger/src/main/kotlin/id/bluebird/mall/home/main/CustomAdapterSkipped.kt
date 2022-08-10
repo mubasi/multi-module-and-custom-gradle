@@ -25,6 +25,10 @@ class CustomAdapterSkipped(
                 binding.buttonDeleteSkipped.setOnClickListener {
                     queuePassengerViewModel.prosesDeleteQueue(mList[position])
                 }
+
+                binding.buttonRestoreSkipped.setOnClickListener {
+                    queuePassengerViewModel.prosesRestoreQueue(mList[position])
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ sealed class QueuePassengerState {
     data class FailedListQueueSkipped(val message: String) : QueuePassengerState()
 
     data class ProsesDeleteQueueSkipped(val queueReceiptCache: QueueReceiptCache) : QueuePassengerState()
+    data class ProsesRestoreQueueSkipped(val queueReceiptCache: QueueReceiptCache) : QueuePassengerState()
     object SuccessDeleteQueueSkipped : QueuePassengerState()
     data class FailedDeleteQueueSkipped(val message: String) : QueuePassengerState()
 

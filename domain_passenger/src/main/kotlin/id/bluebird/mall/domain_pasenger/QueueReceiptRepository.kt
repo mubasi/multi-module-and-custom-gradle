@@ -57,4 +57,14 @@ interface QueueReceiptRepository {
         subLocationId: Long,
         fleetNumber: String,
     ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+
+
+    fun restoreSkippedQueue (
+        queueId: Long,
+        queueType: Long,
+        locationId: Long,
+        queueNumber: String,
+        subLocationId: Long,
+        fleetNumber: String,
+    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
 }

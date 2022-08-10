@@ -19,6 +19,7 @@ import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.mall.home.dialog_delete_skipped.DialogDeleteSkipped
+import id.bluebird.mall.home.dialog_restore_skipped.DialogRestoreSkipped
 
 
 class QueuePassengerFragment : Fragment() {
@@ -125,6 +126,15 @@ class QueuePassengerFragment : Fragment() {
                                     locationId = mUserInfo.locationId,
                                     subLocationId = mUserInfo.subLocationId
                                 ).show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
+                            }
+                            is QueuePassengerState.ProsesRestoreQueueSkipped -> {
+                                val currentData = it.queueReceiptCache
+                                DialogRestoreSkipped(
+                                    number = currentData.queueNumber,
+                                    queueId = currentData.queueId,
+                                    locationId = mUserInfo.locationId,
+                                    subLocationId = mUserInfo.subLocationId
+                                ).show(requireActivity().supportFragmentManager, DialogRestoreSkipped.TAG)
                             }
                             else -> {
                                 //do noting
