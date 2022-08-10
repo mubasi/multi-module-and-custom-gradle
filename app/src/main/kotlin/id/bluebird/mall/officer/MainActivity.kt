@@ -72,20 +72,25 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         navigateBackWithArrow(R.id.searchQueueFragment)
                     }
                     R.id.monitoringFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        setToggle()
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                        toolbarVisibility()
                     }
                     else -> {
-                        toolbar.visibility = View.VISIBLE
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        setToggle()
+                      toolbarVisibility()
                     }
                 }
             }
         }
 
         mBinding.navView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun toolbarVisibility(){
+        with(mBinding) {
+            toolbar.visibility = View.VISIBLE
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            setToggle()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
