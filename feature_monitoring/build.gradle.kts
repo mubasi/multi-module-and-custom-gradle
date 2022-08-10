@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":navigation"))
     implementation(project(":domain_fleet"))
+    implementation(project(":domain_location"))
 
     implementation(Kotlin.coroutines_android)
     implementation(OtherLib.tableView)

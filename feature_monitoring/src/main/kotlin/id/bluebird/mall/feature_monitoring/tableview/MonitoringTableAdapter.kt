@@ -9,6 +9,7 @@ import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import id.bluebird.mall.feature_monitoring.R
 import id.bluebird.mall.feature_monitoring.databinding.TableCellLayoutBinding
 import id.bluebird.mall.feature_monitoring.databinding.TableHeaderCellLayoutBinding
+import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
 import id.bluebird.mall.feature_monitoring.model.MonitoringCell
 import id.bluebird.mall.feature_monitoring.model.MonitoringColumnHeader
 import id.bluebird.mall.feature_monitoring.model.MonitoringModel
@@ -18,7 +19,7 @@ import id.bluebird.mall.feature_monitoring.tableview.holder.CellViewHolder
 import id.bluebird.mall.feature_monitoring.tableview.holder.ColumnHeaderViewHolder
 import id.bluebird.mall.feature_monitoring.tableview.holder.RowHeaderViewHolder
 
-class MonitoringTableAdapter: AbstractTableAdapter<MonitoringColumnHeader, MonitoringRowHeader, MonitoringCell>() {
+class MonitoringTableAdapter(private val viewModel: MonitoringViewModel): AbstractTableAdapter<MonitoringColumnHeader, MonitoringRowHeader, MonitoringCell>() {
     private val helper = MonitoringTableHelper()
 
     override fun onCreateCellViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
@@ -40,7 +41,7 @@ class MonitoringTableAdapter: AbstractTableAdapter<MonitoringColumnHeader, Monit
         rowPosition: Int
     ) {
        when(holder) {
-           is CellBufferViewHolder -> cellItemModel?.let { holder.bind(it) }
+           is CellBufferViewHolder -> cellItemModel?.let { holder.bind(it, viewModel) }
            is CellViewHolder -> cellItemModel?.let { holder.bind(it) }
        }
     }

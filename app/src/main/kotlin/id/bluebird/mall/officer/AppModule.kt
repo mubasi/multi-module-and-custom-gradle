@@ -12,11 +12,14 @@ import id.bluebird.mall.domain_fleet.domain.interactor.*
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
+import id.bluebird.mall.domain_location.domain.cases.UpdateBufferCases
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
+import id.bluebird.mall.domain_location.domain.interactor.UpdateBuffer
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepositoryimpl
 import id.bluebird.mall.domain_pasenger.domain.cases.*
 import id.bluebird.mall.domain_pasenger.domain.interactor.*
+import id.bluebird.mall.feature_monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
@@ -58,6 +61,7 @@ object AppModule {
         viewModel { DialogDeleteSkippedViewModel(get()) }
         viewModel { DialogRestoreSkippedViewModel(get()) }
         viewModel { MonitoringViewModel(get()) }
+        viewModel { EditBufferViewModel(get()) }
     }
 
     private val userCases = module {
@@ -82,6 +86,7 @@ object AppModule {
 
     private val locationCases = module {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
+        single<UpdateBuffer> { UpdateBufferCases(get()) }
     }
 
     private val passengerCases = module {
