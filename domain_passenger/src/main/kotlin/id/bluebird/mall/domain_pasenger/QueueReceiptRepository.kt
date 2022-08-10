@@ -48,4 +48,13 @@ interface QueueReceiptRepository {
         locationId: Long,
         subLocationId: Long
     ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue>
+
+    fun deleteSkippedQueue (
+        queueId: Long,
+        queueType: Long,
+        locationId: Long,
+        queueNumber: String,
+        subLocationId: Long,
+        fleetNumber: String,
+    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
 }

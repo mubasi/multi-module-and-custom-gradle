@@ -16,6 +16,8 @@
     <string name="tab_waiting_text">Menunggu (0)</string>
     <string name="tab_delayed_text">Tertunda (0)</string>
     <string name="queue_not_found">Antrian tidak tersedia</string>
+    <string name="recovery_text">Pulihkan</string>
+    <string name="delete_text">Hapus</string>
 
 
 

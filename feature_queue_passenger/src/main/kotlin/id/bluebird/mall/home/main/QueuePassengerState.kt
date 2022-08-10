@@ -1,5 +1,5 @@
 package id.bluebird.mall.home.main
-
+import id.bluebird.mall.home.model.QueueReceiptCache
 
 sealed class QueuePassengerState {
     object ProsesQueue : QueuePassengerState()
@@ -20,5 +20,9 @@ sealed class QueuePassengerState {
     object ProsesListQueueSkipped : QueuePassengerState()
     object SuccessListQueueSkipped : QueuePassengerState()
     data class FailedListQueueSkipped(val message: String) : QueuePassengerState()
+
+    data class ProsesDeleteQueueSkipped(val queueReceiptCache: QueueReceiptCache) : QueuePassengerState()
+    object SuccessDeleteQueueSkipped : QueuePassengerState()
+    data class FailedDeleteQueueSkipped(val message: String) : QueuePassengerState()
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -17,6 +18,7 @@ import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceipt
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
+import id.bluebird.mall.home.dialog_delete_skipped.DialogDeleteSkipped
 
 
 class QueuePassengerFragment : Fragment() {
@@ -115,6 +117,15 @@ class QueuePassengerFragment : Fragment() {
                                 dialogSkipQueue.arguments = bundle
                                 dialogSkipQueue.show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
                             }
+                            is QueuePassengerState.ProsesDeleteQueueSkipped -> {
+                                val currentData = it.queueReceiptCache
+                                DialogDeleteSkipped(
+                                    number = currentData.queueNumber,
+                                    queueId = currentData.queueId,
+                                    locationId = mUserInfo.locationId,
+                                    subLocationId = mUserInfo.subLocationId
+                                ).show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
+                            }
                             else -> {
                                 //do noting
                             }
@@ -154,7 +165,7 @@ class QueuePassengerFragment : Fragment() {
             setupWaiting()
         } else if(position == 1) {
             setupSkipped()
-            val adapter = CustomAdapterSkipped(_queuePassengerViewModel.listQueueSkippedCache.queue)
+            val adapter = CustomAdapterSkipped(_queuePassengerViewModel.listQueueSkippedCache.queue, _queuePassengerViewModel)
             binding.recyclerView.adapter = adapter
         }
     }

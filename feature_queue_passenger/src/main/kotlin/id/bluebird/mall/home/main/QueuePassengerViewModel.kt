@@ -216,4 +216,10 @@ class QueuePassengerViewModel(
         }
     }
 
+    fun prosesDeleteQueue(queueReceiptCache: QueueReceiptCache){
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesDeleteQueueSkipped(queueReceiptCache))
+        }
+    }
+
 }
