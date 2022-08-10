@@ -81,6 +81,9 @@ class CreateUserViewModel(
     fun getUser() {
         viewModelScope.launch {
             getUserId.invoke(mUserId)
+                .catch { cause ->
+                 actionSealed.postValue(CreateUserState.OnError(cause))
+                }
                 .collect {
                     when (it) {
                         is GetUserByIdState.Success -> {
@@ -173,6 +176,9 @@ class CreateUserViewModel(
                             subLocations.add(subLocationCache)
                         }
                     }
+                    else -> {
+                        // do nothing
+                    }
                 }
 
             }
@@ -225,6 +231,9 @@ class CreateUserViewModel(
                                     mUserId < 1
                                 )
                             )
+                        }
+                        else -> {
+                            // do nothing
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
@@ -72,7 +73,7 @@ class QueueFleetViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetUser)
-            getUserId.invoke(null)
+            getUserId.invoke(UserUtils.getUserId())
                 .catch { cause ->
                     _queueFleetState.emit(
                         QueueFleetState.FailedGetUser(

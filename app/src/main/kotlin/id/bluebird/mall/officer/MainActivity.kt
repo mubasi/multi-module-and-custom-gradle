@@ -14,7 +14,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
-import id.bluebird.mall.core.utils.hawk.AuthUtils
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
 import id.bluebird.mall.officer.extensions.backArrowButton
 import id.bluebird.mall.officer.extensions.setToolbarAddFleetFragment
@@ -62,21 +61,6 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     }
                     R.id.searchFleetFragment -> {
                         navigateBackWithArrow(R.id.searchFleetFragment)
-                    }
-                    R.id.queuePassengerFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        setToggle()
-                    }
-                    R.id.queuePassengerFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        setToggle()
-                    }
-                    R.id.queuePassengerFragment -> {
-                        toolbar.visibility = View.VISIBLE
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                        setToggle()
                     }
                     R.id.searchQueueFragment -> {
                         navigateBackWithArrow(R.id.searchQueueFragment)

@@ -4,5 +4,5 @@ import id.bluebird.mall.domain.user.GetUserByIdState
 import kotlinx.coroutines.flow.Flow
 
 interface GetUserId {
-    operator fun invoke(userId: Long?): Flow<GetUserByIdState>
+    operator fun invoke(userId: Long): Flow<GetUserByIdState>
 }

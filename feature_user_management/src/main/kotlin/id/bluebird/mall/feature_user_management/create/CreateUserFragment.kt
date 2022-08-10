@@ -17,7 +17,7 @@ import id.bluebird.mall.feature_user_management.create.model.RoleCache
 import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.databinding.FragmentCreateUserBinding
 import id.bluebird.mall.feature_user_management.databinding.ItemChipsLocationBinding
-import id.bluebird.mall.feature_user_management.utils.DialogUtil
+import id.bluebird.mall.core.utils.DialogUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateUserFragment : Fragment() {
@@ -98,14 +98,14 @@ class CreateUserFragment : Fragment() {
                         addSubLocation()
                     }
                     is CreateUserState.InvalidField -> {
-                        DialogUtil.showErrorDialog(
+                        DialogUtils.showErrorDialog(
                             requireContext(),
                             null,
                             ""
                         )
                     }
                     is CreateUserState.OnError -> {
-                        DialogUtil.showErrorDialog(
+                        DialogUtils.showErrorDialog(
                             requireContext(),
                             null,
                             it.err.message ?: ""
