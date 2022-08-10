@@ -201,4 +201,5 @@ object OtherLib {
     val json by lazy { "org.json:json:20220320" }
     val turbin by lazy { "app.cash.turbine:turbine:0.7.0" }
     val slidetoact by lazy { "com.ncorti:slidetoact:0.9.0" }
+    val tableView by lazy { "com.evrencoskun.library:tableview:0.8.9.4" }
 }

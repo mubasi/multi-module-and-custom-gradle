@@ -20,4 +20,7 @@ sealed class NavigationSealed(
 
     data class QueuePassenger(val destination: Int? = null, val frag: Fragment) :
         NavigationSealed(action = destination, fragment = frag)
+
+    data class Monitoring(val destination: Int? = null, val frag: Fragment):
+        NavigationSealed(action = destination, fragment = frag)
 }

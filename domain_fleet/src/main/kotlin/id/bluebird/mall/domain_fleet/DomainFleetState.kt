@@ -3,6 +3,7 @@ package id.bluebird.mall.domain_fleet
 import id.bluebird.mall.domain_fleet.model.CountResult
 import id.bluebird.mall.domain_fleet.model.FleetDepartResult
 import id.bluebird.mall.domain_fleet.model.FleetItemResult
+import id.bluebird.mall.domain_fleet.model.MonitoringResult
 
 sealed class GetCountState {
     data class Success(val countResult: CountResult) : GetCountState()
@@ -30,4 +31,9 @@ sealed class GetListFleetState {
 
 sealed class DepartFleetState {
     data class Success(val fleetDepartResult: FleetDepartResult): DepartFleetState()
+}
+
+sealed class MonitoringResultState {
+    data class Error(val exception: Exception): MonitoringResultState()
+    data class Success(val data: List<MonitoringResult>): MonitoringResultState()
 }

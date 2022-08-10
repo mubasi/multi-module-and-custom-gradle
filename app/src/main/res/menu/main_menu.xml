@@ -11,7 +11,7 @@
             android:icon="@drawable/ic_passenger_queue"
             android:title="@string/queue_passenger" />
         <item
-            android:id="@+id/action_monitoring"
+            android:id="@+id/monitoring_nav"
             android:icon="@drawable/ic_pemantauan"
             android:title="@string/monitor" />
         <item

@@ -3,6 +3,7 @@ plugins {
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
     kotlin(Plugins.parcelize)
+    id(Plugins.gms)
     jacoco
     id(Plugins.sonarqube)
 }
@@ -111,6 +112,7 @@ dependencies {
     implementation(project(":domain_passenger"))
     implementation(project(":domain_location"))
     implementation(project(":navigation"))
+    implementation(project(":feature_monitoring"))
 
     testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)

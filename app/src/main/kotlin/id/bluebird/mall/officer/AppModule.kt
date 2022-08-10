@@ -17,6 +17,7 @@ import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepositoryimpl
 import id.bluebird.mall.domain_pasenger.domain.cases.*
 import id.bluebird.mall.domain_pasenger.domain.interactor.*
+import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
 import id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.mall.feature_queue_fleet.depart_fleet.DepartFleetViewModel
@@ -54,6 +55,7 @@ object AppModule {
         viewModel { DialogSkipQueueViewModel(get()) }
         viewModel { DepartFleetViewModel() }
         viewModel { DialogDeleteSkippedViewModel(get()) }
+        viewModel { MonitoringViewModel(get()) }
     }
 
     private val userCases = module {
@@ -73,6 +75,7 @@ object AppModule {
         single<AddFleet> { AddFleetUseCases(get()) }
         single<GetListFleet> { GetListFleetUseCases(get()) }
         single<DepartFleet> { DepartFleetUseCases(get()) }
+        single<Monitoring> { MonitoringUseCases() }
     }
 
     private val locationCases = module {
