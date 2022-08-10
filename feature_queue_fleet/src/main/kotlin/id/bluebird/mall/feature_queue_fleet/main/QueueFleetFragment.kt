@@ -151,7 +151,7 @@ class QueueFleetFragment : Fragment() {
                             }
                             is QueueFleetState.FailedDepart -> {
                                 val string = SpannableStringBuilder()
-                                    .bold { getString(R.string.fleet) }
+                                    .bold { append(getString(R.string.fleet)) }
                                     .append(" ")
                                     .append(getString(R.string.failed_depart_description))
 
