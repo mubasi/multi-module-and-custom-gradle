@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
@@ -49,12 +50,12 @@ class QueuePassengerViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesGetUser)
-            getUserId.invoke(null)
+            getUserId.invoke(UserUtils.getUserId())
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _queuePassengerState.emit(
                         QueuePassengerState.FailedGetUser(
-                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
                         )
                     )
                 }
@@ -88,7 +89,7 @@ class QueuePassengerViewModel(
                 .catch { cause ->
                     _queuePassengerState.emit(
                         QueuePassengerState.FailedCurrentQueue(
-                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
                         )
                     )
                 }
@@ -125,7 +126,7 @@ class QueuePassengerViewModel(
                 .catch { cause ->
                     _queuePassengerState.emit(
                         QueuePassengerState.FailedListQueue(
-                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
                         )
                     )
                 }
@@ -170,7 +171,7 @@ class QueuePassengerViewModel(
                 .catch { cause ->
                     _queuePassengerState.emit(
                         QueuePassengerState.FailedListQueueSkipped(
-                            message = cause.message ?: QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
                         )
                     )
                 }

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain_pasenger.GetQueueReceiptState
@@ -48,7 +49,7 @@ class DialogQueueReceiptViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _dialogQueueReceiptState.emit(DialogQueueReceiptState.ProgressGetUser)
-            getUserId.invoke(null)
+            getUserId.invoke(UserUtils.getUserId())
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _dialogQueueReceiptState.emit(

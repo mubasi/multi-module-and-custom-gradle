@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import id.bluebird.mall.core.utils.DialogUtils
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.create.CreateUserFragment
 import id.bluebird.mall.feature_user_management.utils.DialogUtil
@@ -32,6 +33,11 @@ class UserListFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_user_setting, container, false)
         mContainer = container
         return mBinding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mUserSettingVM.setIdle()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +85,7 @@ class UserListFragment : Fragment() {
 
                     }
                     is UserSettingSealed.GetUserOnError -> {
-                        DialogUtil.showErrorDialog(
+                        DialogUtils.showErrorDialog(
                             requireContext(),
                             getString(R.string.get_users_failed),
                             "error"

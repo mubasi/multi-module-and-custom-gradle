@@ -69,7 +69,7 @@ android {
         create("stage") {
             dimension = "env"
             versionNameSuffix = " Staging"
-            applicationIdSuffix = ".staging"
+            applicationIdSuffix = ".stage"
             manifestPlaceholders["appName"] = Version.appNameStaging
         }
         create("develop") {
