@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.util.Log
 import android.view.*
+import androidx.core.text.bold
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -14,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import id.bluebird.mall.core.utils.DialogUtils
 import id.bluebird.mall.feature_monitoring.R
 import id.bluebird.mall.feature_monitoring.databinding.MonitoringFragmentBinding
+import id.bluebird.mall.feature_monitoring.edit_buffer.EditBufferDialog
 import id.bluebird.mall.feature_monitoring.tableview.MonitoringTableAdapter
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -61,6 +63,37 @@ class MonitoringFragment: Fragment() {
                         is MonitoringState.OnSuccessGetList -> {
                             tableAdapter.setItem(it.data)
                         }
+                        is MonitoringState.RequestEditBuffer -> {
+                            it.item?.let { model ->
+                                EditBufferDialog(
+                                    model,
+                                    monitoringViewModel::onDialogSaveResult
+                                )
+                                    .show(childFragmentManager, EditBufferDialog.TAG)
+                            }
+                        }
+                        is MonitoringState.OnSuccessSaveBuffer -> {
+                            val message = SpannableStringBuilder()
+                                .bold { append("Jumlah Buffer") }
+                                .append(" ")
+                                .append("Berhasil diubah")
+                            DialogUtils.showSnackbar(
+                                view,
+                                message,
+                                R.color.success_0
+                            )
+                        }
+                        is MonitoringState.OnFailedSaveBuffer -> {
+                            val message = SpannableStringBuilder()
+                                .bold { append("Jumlah Buffer") }
+                                .append(" ")
+                                .append("Gagal diubah. Silahkan coba lagi")
+                            DialogUtils.showSnackbar(
+                                view,
+                                message,
+                                R.color.warning_0
+                            )
+                        }
                     }
                 }
             }
@@ -90,7 +123,7 @@ class MonitoringFragment: Fragment() {
     }
 
     private fun initTable() {
-        tableAdapter = MonitoringTableAdapter()
+        tableAdapter = MonitoringTableAdapter(monitoringViewModel)
         mBinding.tableView.apply {
             setAdapter(tableAdapter)
         }

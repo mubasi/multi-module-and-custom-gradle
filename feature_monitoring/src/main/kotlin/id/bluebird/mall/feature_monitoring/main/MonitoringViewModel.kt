@@ -57,4 +57,22 @@ class MonitoringViewModel(
     fun toggleNotificationVisibility() {
         notificationVisibility.postValue(!(notificationVisibility.value ?: true))
     }
+
+    fun onDialogSaveResult(isSuccess: Boolean, failedMessage: String?) {
+        viewModelScope.launch {
+            if (isSuccess)
+                _monitoringState.emit(MonitoringState.OnSuccessSaveBuffer)
+            else
+                _monitoringState.emit(MonitoringState.OnFailedSaveBuffer(failedMessage ?: "Failed"))
+        }
+    }
+
+    fun editBuffer(model: MonitoringModel?) {
+        if (model == null)
+            return
+
+        viewModelScope.launch {
+            _monitoringState.emit(MonitoringState.RequestEditBuffer(model))
+        }
+    }
 }

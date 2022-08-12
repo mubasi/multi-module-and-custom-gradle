@@ -5,13 +5,18 @@ import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import id.bluebird.mall.feature_monitoring.R
 import id.bluebird.mall.feature_monitoring.databinding.TableCellLayoutBinding
 import id.bluebird.mall.feature_monitoring.databinding.TableCellLayoutBufferBinding
+import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
 import id.bluebird.mall.feature_monitoring.model.MonitoringCell
+import id.bluebird.mall.feature_monitoring.model.MonitoringModel
 
 class CellBufferViewHolder(private val binding: TableCellLayoutBufferBinding): AbstractViewHolder(binding.root) {
 
-    fun bind(item: MonitoringCell) {
+    fun bind(item: MonitoringCell, viewModel: MonitoringViewModel) {
         with(binding){
+            vm = viewModel
             value = item.data
+            if (item.obj is MonitoringModel)
+                model = item.obj
             isColored = item.rowIndex % 2 != 0
         }
     }

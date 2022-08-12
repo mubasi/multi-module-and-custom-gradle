@@ -53,15 +53,14 @@ class MonitoringTableHelper {
 
         result.forEachIndexed { index, value ->
             val model = list[index]
-            val rowId = model.subLocationId
             value.clear()
-            value.add(MonitoringCell(model.fleetCount.toString(), rowId, index, 1))
-            value.add(MonitoringCell(model.queueCount.toString(), rowId, index, 2))
-            value.add(MonitoringCell(model.totalRitase.toString(), rowId, index, 2))
-            value.add(MonitoringCell(model.totalFleetCount.toString(), rowId, index, 2))
-            value.add(MonitoringCell(model.totalQueueCount.toString(), rowId, index, 2))
-            value.add(MonitoringCell(model.fleetRequest.toString(), rowId, index, 3))
-            value.add(MonitoringCell(model.buffer.toString(), rowId, index, 4))
+            value.add(MonitoringCell(model.fleetCount.toString(), model, index, 1))
+            value.add(MonitoringCell(model.queueCount.toString(), model, index, 2))
+            value.add(MonitoringCell(model.totalRitase.toString(), model, index, 2))
+            value.add(MonitoringCell(model.totalFleetCount.toString(), model, index, 2))
+            value.add(MonitoringCell(model.totalQueueCount.toString(), model, index, 2))
+            value.add(MonitoringCell(model.fleetRequest.toString(), model, index, 3))
+            value.add(MonitoringCell(model.buffer.toString(), model, index, 4))
         }
 
         return result

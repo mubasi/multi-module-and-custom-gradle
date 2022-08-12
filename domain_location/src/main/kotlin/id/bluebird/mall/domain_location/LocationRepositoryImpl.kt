@@ -22,4 +22,17 @@ class LocationRepositoryImpl(
             emit(response)
 
         }
+
+    override fun updateBuffer(subLocationId: Long, value: Long): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer> =
+        flow {
+            val request = LocationPangkalanOuterClass.RequestUpdateBuffer.newBuilder()
+                .apply {
+                    this.subLocationId = subLocationId
+                    this.value = value
+                }
+                .build()
+
+            val response = locationGrpc.updateBufferSubLocation(request)
+            emit(response)
+        }
 }

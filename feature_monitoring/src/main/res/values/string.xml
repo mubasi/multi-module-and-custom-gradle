@@ -3,4 +3,6 @@
     <string name="monitoring_title">Pemantauan</string>
     <string name="monitoring_hint">Geser kesamping untuk informasi lainnya</string>
     <string name="rotate_screen">Rotate Screen</string>
+    <string name="set_buffer_amount">Atur jumlah buffer</string>
+    <string name="save">Simpan</string>
 </resources>

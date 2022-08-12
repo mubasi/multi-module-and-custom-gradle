@@ -1,6 +1,6 @@
-syntax = "proto3";
+syntax="proto3";
 package proto;
-option go_package = "./;proto";
+option go_package="./;proto";
 
 import "google/protobuf/empty.proto";
 
@@ -17,107 +17,127 @@ service LocationPangkalan {
     rpc CreateSubLocation (CreateSubLocationRequest) returns (CreateSubLocationResponse);
     rpc GetSubLocationById (GetSubLocationByIdRequest) returns (GetSubLocationByIdResponse);
     rpc GetSubLocationByLocation (GetSubLocationByLocationReq) returns (GetSubLocationByLocationResp);
+    rpc GetSubLocations(google.protobuf.Empty) returns (GetSubLocationsResponse);
+    rpc UpdateBufferSubLocation(RequestUpdateBuffer) returns (ResponseUpdateBuffer);
+    rpc GetBuffers(google.protobuf.Empty) returns (ResponseGetBuffers);
 }
 
+// GetSubLocationsResponse...
+message GetSubLocationsItem {
+	int64  location_id = 1;
+	string location_name = 2;
+	string sub_location_name = 3;
+	int64  sub_location_id = 4;
+	string area_code = 5;
+	string prefix = 6;
+}
+message GetSubLocationsResponse {
+	repeated GetSubLocationsItem sub_locations = 1;
+}
 // mst_sub_location
 message GetSubLocationByIdRequest {
-  int64 id = 1;
+    int64 id=1;
 }
 
 message GetSubLocationByIdResponse {
-  int64  id = 1;
-  string sub_location_name = 2;
-  int64  location_id = 3;
-  int64  pengendapan_location_id = 4;
-  int64  location_type_id = 5;
-  int32  has_queue_system = 6;
-  int32  has_pengendapan = 7;
-  int32  ble = 8;
-  int32  geo_fence = 9;
-  int32  is_active = 10;
-  string created_at = 11;
-  string modified_at = 12;
-  int64  created_by = 13;
-  int64  modified_by = 14;
-  CreateLocationTypeRequest LocationType = 15;
+    int64  id=1;
+    string sub_location_name =2;
+    int64  location_id=3;
+    int64  pengendapan_location_id=4;
+    int64  location_type_id =5;
+    int32  has_queue_system=6;
+    int32  has_pengendapan=7;
+    int32  ble=8;
+    int32  geo_fence=9;
+    int32  is_active=10;
+    string created_at=11;
+    string modified_at=12;
+    int64  created_by=13;
+    int64  modified_by=14;
+    CreateLocationTypeRequest LocationType=15;
+    string prefix = 16;
+    int64  buffer = 17;
+    string qr_code = 18;
 }
 
 message CreateSubLocationRequest {
-  int64  id = 1;
-  string sub_location_name = 2;
-  int64  location_id = 3;
-  int64  pengendapan_location_id = 4;
-  int64  location_type_id = 5;
-  int32  has_queue_system = 6;
-  int32  has_pengendapan = 7;
-  int32  ble = 8;
-  int32  geo_fence = 9;
-  int32  is_active = 10;
-  string created_at = 11;
-  string modified_at = 12;
-  int64  created_by = 13;
-  int64  modified_by = 14;
+    int64  id=1;
+    string sub_location_name =2;
+    int64  location_id=3;
+    int64  pengendapan_location_id=4;
+    int64  location_type_id =5;
+    int32  has_queue_system=6;
+    int32  has_pengendapan=7;
+    int32  ble=8;
+    int32  geo_fence=9;
+    int32  is_active=10;
+    string created_at=11;
+    string modified_at=12;
+    int64  created_by=13;
+    int64  modified_by=14;
+    string prefix = 15;
+    int64  buffer = 16;
 }
 
 message CreateSubLocationResponse {
-  int64 id = 1;
+    int64 id=1;
 }
 
 // mst_location...
 message GetLocationByIdRequest {
-  int64 location_id = 1;
+    int64 location_id=1;
 }
 
 message GetLocationByIdResponse {
-  CreateLocationRequest location = 1;
+    CreateLocationRequest location=1; 
 }
 
 message GetLocationsResponse {
-  repeated CreateLocationRequest list_locations = 1;
+    repeated CreateLocationRequest list_locations =1;
 }
 
 message CreateLocationRequest {
-  int64  id = 1;
-  string location_name = 2;
-  int32  is_active = 3;
-  string created_at = 4;
-  string modified_at = 5;
-  int64  created_by = 6;
-  int64  modified_by = 7;
-  string code_area = 8;
+    int64  id=1;
+    string location_name=2;
+    int32  is_active=3;
+    string created_at=4;
+    string modified_at=5;
+    int64  created_by=6;
+    int64  modified_by=7;
+    string code_area = 8;
 }
 
 message CreateLocationResponse {
-  int64 id = 1;
-  string location_name = 2;
-  string created_at = 3;
-  string modified_at = 5;
-  string code_area = 6;
+    int64 id=1;
+    string location_name=2;
+    string created_at=3;
+    string modified_at=5;
+    string code_area = 6;
 }
 
 //  mst_location_type
 message GetLocationTypeByIdRequest {
-  int64 id = 1;
+    int64 id=1;
 }
 
 message GetLocationTypeByIdResponse {
-  CreateLocationTypeRequest location_type = 1;
+    CreateLocationTypeRequest location_type=1;
 }
 
 message CreateLocationTypeRequest {
-  int64   id = 1;
-  string  location_type_name = 2;
-  int64   created_by = 3;
-  int64   modified_by = 4;
-  string created_at = 5;
-  string  modified_at = 6;
-  int32   is_deposition = 7;
+    int64   id=1;
+    string  location_type_name=2;
+    int64   created_by=3;
+    int64   modified_by=4;
+    string created_at=5;
+    string  modified_at=6;
+    int32   is_deposition=7;
 }
 
 message CreateLocationTypeResponse {
-  int64   id = 1;
-  string  location_type_name = 2;
-  int32   is_deposition = 3;
+    int64   id=1;
+    string  location_type_name=2;
+    int32   is_deposition=3;
 }
 
 message GetLocationTypeResponse {
@@ -129,14 +149,31 @@ message GetSubLocationByLocationReq {
     int64 location_id = 1;
 }
 message SubLocationItems {
-  int64  sub_location_id = 1;
-  string sub_location_name = 2;
-  string sub_location_type = 3;
-  bool is_deposistion = 4;
+    int64  sub_location_id=1;
+    string sub_location_name=2;
+    string sub_location_type=3;
+    bool   is_deposistion = 4;
+    string prefix = 5;
 }
 message GetSubLocationByLocationResp {
-  int64 location_id = 1;
-  string location_name = 2;
-  repeated SubLocationItems sub_location_list = 3;
-  string code_are = 4;
+    int64   location_id=1;
+    string  location_name=2;
+    repeated SubLocationItems sub_location_list = 3;
+    string  code_are = 4;
+}
+
+message RequestUpdateBuffer {
+    int64 sub_location_id = 1;
+    int64 value = 2;
+}
+message ResponseUpdateBuffer {
+    string message = 1;
+}
+
+message BufferItem {
+    int64 sub_location_id = 1;
+    int64 value = 2;
+}
+message ResponseGetBuffers {
+    repeated BufferItem sub_location_buffer = 1;
 }

@@ -7,7 +7,7 @@ import com.evrencoskun.tableview.sort.ISortableModel
 @Keep
 open class MonitoringCell(
     val data: String,
-    val rowId: Any,
+    val obj: Any,
     val rowIndex: Int,
     val columnIndex: Int,
 ): ISortableModel, IFilterableModel {
