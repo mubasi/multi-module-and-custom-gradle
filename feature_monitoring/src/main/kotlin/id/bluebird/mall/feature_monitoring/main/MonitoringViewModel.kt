@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain_fleet.MonitoringResultState
 import id.bluebird.mall.domain_fleet.domain.cases.Monitoring
 import id.bluebird.mall.feature_monitoring.model.MonitoringModel
@@ -19,6 +20,12 @@ class MonitoringViewModel(
     private val _monitoringState: MutableSharedFlow<MonitoringState> = MutableSharedFlow()
     val monitoringState = _monitoringState.asSharedFlow()
     val notificationVisibility = MutableLiveData(true)
+    private val isPrivilegedUser: Boolean by lazy {
+        when(UserUtils.getPrivilege()) {
+            UserUtils.SVP, UserUtils.OFFICER -> false
+            else -> true
+        }
+    }
 
     fun init() {
         viewModelScope.launch {
@@ -42,7 +49,8 @@ class MonitoringViewModel(
                                     totalQueueCount = result.totalQueuePassenger,
                                     totalRitase = result.totalRitase,
                                     fleetRequest = result.request,
-                                    buffer = result.buffer
+                                    buffer = result.buffer,
+                                    editableBuffer = isPrivilegedUser
                                 )
                             }
                             _monitoringState.emit(MonitoringState.OnSuccessGetList(data))
@@ -68,7 +76,7 @@ class MonitoringViewModel(
     }
 
     fun editBuffer(model: MonitoringModel?) {
-        if (model == null)
+        if (model == null || !isPrivilegedUser)
             return
 
         viewModelScope.launch {

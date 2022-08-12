@@ -10,4 +10,5 @@ data class MonitoringModel(
     val totalRitase: Int,
     val fleetRequest: Int,
     val buffer: Int,
+    val editableBuffer: Boolean
 )

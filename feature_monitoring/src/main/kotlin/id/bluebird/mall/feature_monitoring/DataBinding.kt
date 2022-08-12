@@ -1,13 +1,8 @@
 package id.bluebird.mall.feature_monitoring
 
-import android.view.View
-import android.widget.Button
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.ViewModel
 import id.bluebird.mall.feature_monitoring.edit_buffer.EditBufferViewModel
-import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
-import id.bluebird.mall.feature_monitoring.model.MonitoringModel
 
 object DataBinding {
     @JvmStatic
