@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="UbuntuRegularGraySubtitle">
+        <item name="fontFamily">@font/ubuntu_regular</item>
+        <item name="color">@color/gray_subtitle</item>
+    </style>
+    <style name="UbuntuRegularGrayDisable">
+        <item name="fontFamily">@font/ubuntu_regular</item>
+        <item name="color">@color/gray_disable</item>
+    </style>
+    <style name="ButtonSubmitState">
+        <item name="android:background">@drawable/bg_search_button_state</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="fontFamily">@font/ubuntu_bold</item>
+        <item name="android:textColor">@color/button_search_text_color_state</item>
+    </style>
+</resources>

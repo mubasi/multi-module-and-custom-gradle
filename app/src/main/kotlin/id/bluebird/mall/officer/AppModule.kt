@@ -11,8 +11,10 @@ import id.bluebird.mall.domain_fleet.domain.cases.*
 import id.bluebird.mall.domain_fleet.domain.interactor.*
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
+import id.bluebird.mall.domain_location.domain.cases.GetLocationsCases
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.cases.UpdateBufferCases
+import id.bluebird.mall.domain_location.domain.interactor.GetLocations
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.mall.domain_location.domain.interactor.UpdateBuffer
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
@@ -29,6 +31,7 @@ import id.bluebird.mall.feature_queue_fleet.request_fleet.RequestFleetDialogView
 import id.bluebird.mall.feature_queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.mall.feature_user_management.create.CreateUserViewModel
 import id.bluebird.mall.feature_user_management.list.UserManagementViewModel
+import id.bluebird.mall.feature_user_management.search_location.SearchLocationViewModel
 import id.bluebird.mall.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.mall.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
@@ -62,6 +65,7 @@ object AppModule {
         viewModel { DialogRestoreSkippedViewModel(get()) }
         viewModel { MonitoringViewModel(get()) }
         viewModel { EditBufferViewModel(get()) }
+        viewModel { SearchLocationViewModel(get()) }
     }
 
     private val userCases = module {
@@ -87,6 +91,7 @@ object AppModule {
     private val locationCases = module {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
         single<UpdateBuffer> { UpdateBufferCases(get()) }
+        single<GetLocations> { GetLocationsCases(get()) }
     }
 
     private val passengerCases = module {

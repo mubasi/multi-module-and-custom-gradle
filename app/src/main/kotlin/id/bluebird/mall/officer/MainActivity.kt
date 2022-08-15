@@ -75,6 +75,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                         toolbarVisibility()
                     }
+                    R.id.searchLocationFragment -> {
+                        navigateBackWithArrow(R.id.searchLocationFragment)
+                    }
                     else -> {
                       toolbarVisibility()
                     }

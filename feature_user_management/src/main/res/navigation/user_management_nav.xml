@@ -25,5 +25,12 @@
             android:name="userId"
             android:defaultValue="-1L"
             app:argType="long" />
+        <action
+            android:id="@+id/action_createUserFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="id.bluebird.mall.feature_user_management.search_location.SearchLocationFragment"
+        android:label="@string/select_location"/>
 </navigation>
