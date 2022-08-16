@@ -8,16 +8,14 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.chip.Chip
-import id.bluebird.mall.core.utils.hawk.UserUtils
+import id.bluebird.mall.core.utils.DialogUtils
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.create.model.RoleCache
-import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.databinding.FragmentCreateUserBinding
-import id.bluebird.mall.feature_user_management.databinding.ItemChipsLocationBinding
-import id.bluebird.mall.core.utils.DialogUtils
+import id.bluebird.mall.feature_user_management.search_location.SearchLocationFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateUserFragment : Fragment() {
@@ -48,7 +46,6 @@ class CreateUserFragment : Fragment() {
         mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.createUserVM = createUserViewModel
         createUserViewModel.initUser(_args.userId)
-        setListener()
         observer()
         createUserViewModel.getUser()
     }
@@ -64,18 +61,10 @@ class CreateUserFragment : Fragment() {
                 usernameTextHandler(it)
             }
             subLocationLiveData.observe(viewLifecycleOwner) {
-                createChipsLocation(it)
+
             }
             roleLiveData.observe(viewLifecycleOwner) {
                 createSpinnerAdapter(it)
-            }
-            subLocationSingleSelection.observe(viewLifecycleOwner) {
-                if (!it) {
-                    val chipGroup = mBinding.cpgLocationUser
-                    for (i in 0 until chipGroup.childCount) {
-                        chipGroup.getChildAt(i).isClickable = true
-                    }
-                }
             }
         }
         actionSealedObserver()
@@ -121,6 +110,9 @@ class CreateUserFragment : Fragment() {
                         setFragmentResult(REQUEST_KEY, bundle)
                         findNavController().popBackStack()
                     }
+                    is CreateUserState.RequestSearchLocation -> {
+                        navigateToSearchLocation()
+                    }
                     else -> {
                         // do nothing
                     }
@@ -138,20 +130,6 @@ class CreateUserFragment : Fragment() {
         }
     }
 
-    private fun setListener() {
-        val chipGroup = mBinding.cpgLocationUser
-        chipGroup.setOnCheckedChangeListener { _, _ ->
-            val chip = chipGroup.getChildAt(chipGroup.checkedChipId) as Chip?
-            if (chip != null) {
-                for (i in 0 until chipGroup.childCount) {
-                    chipGroup.getChildAt(i).isClickable = true
-                }
-                createUserViewModel.locationAssignment(chip.tag, true)
-                chip.isClickable = false
-            }
-        }
-    }
-
     private fun createSpinnerAdapter(roleCaches: List<RoleCache>) {
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, roleCaches)
@@ -159,29 +137,11 @@ class CreateUserFragment : Fragment() {
         mBinding.spnUserSetting.adapter = adapter
     }
 
-    private fun createChipsLocation(subLocationCaches: List<SubLocationCache>) {
-        if (mBinding.cpgLocationUser.childCount > 0) {
-            mBinding.cpgLocationUser.removeAllViews()
+    private fun navigateToSearchLocation() {
+        val destination = CreateUserFragmentDirections.actionCreateUserFragmentToSearchLocationFragment()
+        findNavController().navigate(destination)
+        setFragmentResultListener(SearchLocationFragment.REQUEST_KEY) { _, bundle ->
+            createUserViewModel.setSelectedLocation(bundle.getParcelable(SearchLocationFragment.RESULT_KEY))
         }
-        for (i in subLocationCaches.indices) {
-            val element = subLocationCaches[i]
-            val inflater = LayoutInflater.from(requireContext())
-            val binding = DataBindingUtil.inflate<ItemChipsLocationBinding>(
-                inflater,
-                R.layout.item_chips_location,
-                mBinding.cpgLocationUser,
-                false
-            )
-            binding.lifecycleOwner = viewLifecycleOwner
-            binding.subLocationCache = element
-            binding.fleetTypeId = UserUtils.getFleetTypeId()
-            binding.chipsItemLocation.isChecked = element.isSelected
-            binding.chipsItemLocation.id = i
-            binding.chipsItemLocation.setOnCheckedChangeListener { _, isChecked ->
-                createUserViewModel.locationAssignment(element.id, isChecked)
-            }
-            mBinding.cpgLocationUser.addView(binding.root)
-        }
-        mBinding.cpgLocationUser.invalidate()
     }
 }

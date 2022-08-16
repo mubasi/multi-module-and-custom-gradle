@@ -1,5 +1,6 @@
 package id.bluebird.mall.domain_location
 
+import com.google.protobuf.Empty
 import id.bluebird.mall.core.utils.OkHttpChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -33,6 +34,14 @@ class LocationRepositoryImpl(
                 .build()
 
             val response = locationGrpc.updateBufferSubLocation(request)
+            emit(response)
+        }
+
+    override fun getLocations(): Flow<LocationPangkalanOuterClass.GetLocationsResponse> =
+        flow {
+            val request = Empty.newBuilder().build()
+            val response = locationGrpc.getLocations(request)
+
             emit(response)
         }
 }

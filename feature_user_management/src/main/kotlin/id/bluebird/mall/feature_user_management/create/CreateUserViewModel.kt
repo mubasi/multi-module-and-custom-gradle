@@ -15,6 +15,7 @@ import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocati
 import id.bluebird.mall.feature_user_management.create.model.LocationAssignment
 import id.bluebird.mall.feature_user_management.create.model.RoleCache
 import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
+import id.bluebird.mall.feature_user_management.search_location.model.Location
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
@@ -44,6 +45,7 @@ class CreateUserViewModel(
     val roleLiveData: MutableLiveData<List<RoleCache>> = MutableLiveData()
     val userRolePosition: MutableLiveData<Int> = MutableLiveData(-1)
     var isCreateNewUser: MutableLiveData<Boolean> = MutableLiveData(false)
+    val selectedLocation: MutableLiveData<String> = MutableLiveData("")
 
     private var mLocationId: Long = -1
     private var mRoleId: Long = -1
@@ -51,6 +53,7 @@ class CreateUserViewModel(
     private val roles: MutableList<RoleCache> = ArrayList()
     private var mUserId: Long = -1
     private val locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
+    private var location: Location? = null
     private val coroutineException = CoroutineExceptionHandler { _, e ->
         getInformationOnException(e)
     }
@@ -280,5 +283,14 @@ class CreateUserViewModel(
             }
             countSubAssignLocation.value = locationAssignmentsUser.size
         }
+    }
+
+    fun moveToSearchLocation() {
+        actionSealed.value = CreateUserState.RequestSearchLocation
+    }
+
+    fun setSelectedLocation(location: Location?) {
+        this.location = location
+        selectedLocation.value = this.location?.name ?: ""
     }
 }

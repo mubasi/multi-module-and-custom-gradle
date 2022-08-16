@@ -5,4 +5,6 @@
     <color name="active_color">#009078</color>
     <color name="title_create_user_font_color">#444444</color>
     <color name="subFontColor">#888888</color>
+    <color name="danger_1">#982818</color>
+    <color name="primary_0">#005EB8</color>
 </resources>

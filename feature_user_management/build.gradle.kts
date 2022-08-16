@@ -3,6 +3,7 @@ plugins {
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
     id(Plugins.safeargs)
+    kotlin(Plugins.parcelize)
 }
 
 android {

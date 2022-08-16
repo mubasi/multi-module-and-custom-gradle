@@ -314,40 +314,39 @@
                     android:layout_marginTop="24dp"
                     android:fontFamily="@font/ubuntu_bold"
                     android:lineHeight="21sp"
-                    android:text="@string/location_assignment"
+                    android:text="@string/location"
                     android:textColor="@color/title_create_user_font_color"
                     android:textSize="14sp"
-                    android:visibility="@{createUserVM.subLocationSingleSelection? View.VISIBLE: View.GONE, default=gone}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_role_error" />
 
+<!--                android:visibility="@{createUserVM.subLocationSingleSelection? View.VISIBLE: View.GONE, default=gone}"-->
                 <LinearLayout
-                    android:id="@+id/ll_chip_group"
+                    android:id="@+id/ll_location_select"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="@{createUserVM.subLocationSingleSelection? View.VISIBLE: View.GONE, default=gone}"
                     app:layout_constraintBottom_toTopOf="@id/ll_submit_create_user"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_title_location_create_user">
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/cpg_location_user"
+                    <androidx.appcompat.widget.AppCompatEditText
+                        style="@style/UbuntuRegularGraySubtitle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.GetSubLocation ? View.GONE : View.VISIBLE, default=visible}"
-                        app:selectionRequired="true"
-                        app:singleSelection="@{createUserVM.subLocationSingleSelection}" />
-
-                    <ProgressBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:indeterminateTint="@color/primary_color"
-                        android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.GetSubLocation ? View.VISIBLE : View.GONE, default=gone}" />
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:hint="@string/select_location"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:text="@{createUserVM.selectedLocation}"
+                        android:onClick="@{() -> createUserVM.moveToSearchLocation()}"
+                        android:background="@drawable/bg_editext_login_enable"
+                        android:drawableEnd="@drawable/ic_chevron_right"/>
 
                 </LinearLayout>
 
@@ -361,7 +360,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_chip_group">
+                    app:layout_constraintTop_toBottomOf="@id/ll_location_select">
 
                     <ProgressBar
                         android:id="@+id/pb_submit"

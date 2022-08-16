@@ -2,6 +2,7 @@ package id.bluebird.mall.domain_location
 
 sealed class LocationDomainState<out T : Any> {
     data class Success<out T : Any>(val value: T) : LocationDomainState<T>()
+    object Empty: LocationDomainState<Nothing>()
 }
 
 sealed interface LocationErrorState {

@@ -27,6 +27,7 @@
     <color name="grey_line">#DEDEDE</color>
 
     // font
+    <color name="gray_tile">#222222</color>
     <color name="gray_subtitle">#444444</color>
     <color name="text_alert_color">#721E12</color>
 </resources>
