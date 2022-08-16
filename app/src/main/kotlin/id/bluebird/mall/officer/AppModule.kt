@@ -58,7 +58,7 @@ object AppModule {
         viewModel { SearchFleetViewModel() }
         viewModel { DialogQueueReceiptViewModel(get(), get(), get()) }
         viewModel { QueueTicketViewModel(get()) }
-        viewModel { QueuePassengerViewModel(get(), get(), get(), get()) }
+        viewModel { QueuePassengerViewModel(get(), get(), get(), get(), get()) }
         viewModel { DialogSkipQueueViewModel(get()) }
         viewModel { DepartFleetViewModel() }
         viewModel { DialogDeleteSkippedViewModel(get()) }
@@ -106,6 +106,7 @@ object AppModule {
         single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}
         single<DeleteSkipped> {DeleteSkippedCases(get())}
         single<RestoreSkipped> {RestoreSkippedCases(get())}
+        single<CounterBar> {CounterBarCases(get())}
     }
 
     private val repository = module {

@@ -67,4 +67,8 @@ interface QueueReceiptRepository {
         subLocationId: Long,
         fleetNumber: String,
     ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+
+    fun counterBar (
+        locationId: Long,
+    ) : Flow<QueuePangkalanOuterClass.responseGetCountQueue>
 }

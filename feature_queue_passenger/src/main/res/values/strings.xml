@@ -21,6 +21,9 @@
     <string name="desc_dialog_skipped_text">
         No antrian ini akan masuk kembali ke antrian sekarang
     </string>
+    <string name="antrian_text">Antrian</string>
+    <string name="finish_text">Selesai</string>
+    <string name="tertunda_text">Tetunda</string>
 
 
 

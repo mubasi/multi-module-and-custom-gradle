@@ -26,4 +26,8 @@ sealed class QueuePassengerState {
     object SuccessDeleteQueueSkipped : QueuePassengerState()
     data class FailedDeleteQueueSkipped(val message: String) : QueuePassengerState()
 
+    object ProsesCounterBar : QueuePassengerState()
+    object SuccessCounterBar : QueuePassengerState()
+    data class FailedCounterBar(val message: String) : QueuePassengerState()
+
 }

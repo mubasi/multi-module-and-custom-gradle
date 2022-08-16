@@ -57,6 +57,14 @@
                     android:background="@color/grey_background"
                     android:padding="16dp" />
 
+                <include
+                    android:id="@+id/layout_counter_bar"
+                    layout="@layout/counter_bar"
+                    vm="@{vm}"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_margin="16dp"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

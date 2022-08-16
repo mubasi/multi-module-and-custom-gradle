@@ -1,5 +1,6 @@
 package id.bluebird.mall.home.main
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,11 @@ import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
 import id.bluebird.mall.domain.user.model.CreateUserResult
+import id.bluebird.mall.domain_pasenger.CounterBarState
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
 import id.bluebird.mall.domain_pasenger.ListQueueSkippedState
 import id.bluebird.mall.domain_pasenger.ListQueueWaitingState
+import id.bluebird.mall.domain_pasenger.domain.cases.CounterBar
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
@@ -27,6 +30,7 @@ class QueuePassengerViewModel(
     private val currentQueue: CurrentQueue,
     private val listQueueWaiting: ListQueueWaiting,
     private val listQueueSkipped: ListQueueSkipped,
+    private val counterBar: CounterBar,
 ) : ViewModel() {
 
     companion object {
@@ -38,6 +42,7 @@ class QueuePassengerViewModel(
     val queuePassengerState = _queuePassengerState.asSharedFlow()
     val titleLocation: MutableLiveData<String> = MutableLiveData("...")
     var currentQueueCache : CurrentQueueCache = CurrentQueueCache()
+    var currentCounterBar : MutableLiveData<CounterBarCache> = MutableLiveData()
     val currentQueueNumber: MutableLiveData<String> = MutableLiveData("...")
     var mUserInfo: UserInfo = UserInfo()
     var listQueueWaitingCache : ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList<QueueReceiptCache>())
@@ -226,6 +231,45 @@ class QueuePassengerViewModel(
     fun prosesRestoreQueue(queueReceiptCache: QueueReceiptCache){
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesRestoreQueueSkipped(queueReceiptCache))
+        }
+    }
+
+
+    fun getCounterBar() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesCounterBar)
+            counterBar.invoke(
+                locationId = mUserInfo.locationId
+            )
+                .flowOn(Dispatchers.Main)
+                .catch { cause ->
+                    _queuePassengerState.emit(
+                        QueuePassengerState.FailedCounterBar(
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
+                }
+                .collect {
+                    when(it) {
+                        is CounterBarState.Success -> {
+                            it.counterBarResult.let { result ->
+                                currentCounterBar.value = CounterBarCache(
+                                    result.locationId,
+                                    result.ongoing,
+                                    result.skipped,
+                                    result.ritese,
+                                    result.modifiedAt
+                                )
+                                _queuePassengerState.emit(
+                                    QueuePassengerState.SuccessCounterBar
+                                )
+                            }
+                        }
+                        else -> {
+                            //else
+                        }
+                    }
+                }
         }
     }
 

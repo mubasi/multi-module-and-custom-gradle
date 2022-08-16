@@ -177,4 +177,15 @@ class QueueReceiptRepositoryimpl(
             val result = queuePangkalanGrpc.queues(request)
             emit(result)
         }
+
+    override fun counterBar(locationId: Long):
+            Flow<QueuePangkalanOuterClass.responseGetCountQueue> = flow {
+        val request = QueuePangkalanOuterClass.RequestGetCountQueue.newBuilder()
+            .apply {
+                this.locationId = locationId
+            }.build()
+
+        val result = queuePangkalanGrpc.getCountQueue(request)
+        emit(result)
+    }
 }
