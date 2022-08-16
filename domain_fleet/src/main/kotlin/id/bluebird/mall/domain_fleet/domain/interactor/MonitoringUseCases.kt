@@ -44,7 +44,6 @@ class MonitoringUseCases : Monitoring {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("Base", error.message)
                 this@callbackFlow.trySendBlocking(MonitoringResultState.Error(error.toException()))
             }
         }

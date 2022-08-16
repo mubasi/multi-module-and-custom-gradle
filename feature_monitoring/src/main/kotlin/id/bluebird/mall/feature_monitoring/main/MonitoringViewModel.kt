@@ -54,7 +54,6 @@ class MonitoringViewModel(
                                 )
                             }
                             _monitoringState.emit(MonitoringState.OnSuccessGetList(data))
-                            Log.d("MonitoringVM", "data: ${it.data}")
                         }
                     }
                 }

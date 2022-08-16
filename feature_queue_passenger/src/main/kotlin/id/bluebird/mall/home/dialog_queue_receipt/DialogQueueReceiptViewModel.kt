@@ -129,7 +129,6 @@ class DialogQueueReceiptViewModel(
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
-                    Log.e("requestQueue", cause.message.toString())
                     _dialogQueueReceiptState.emit(
                         DialogQueueReceiptState.FailedTakeQueue(
                             message = cause.message ?: QueueTicketViewModel.ERROR_MESSAGE_UNKNOWN
