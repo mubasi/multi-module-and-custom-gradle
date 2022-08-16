@@ -8,5 +8,5 @@ object Version {
     val appNameDev by lazy { "$appName (Dev)" }
 
     val versionName by lazy { "1.0.1" }
-    val versionCode by lazy { 8 }
+    val versionCode by lazy { 9 }
 }

@@ -38,3 +38,7 @@ sealed class DeleteSkippedState {
 sealed class RestoreSkippedState {
     data class Success(val queueResult: QueueResult) : RestoreSkippedState()
 }
+
+sealed class CounterBarState {
+    data class Success(val counterBarResult: CounterBarResult) : CounterBarState()
+}

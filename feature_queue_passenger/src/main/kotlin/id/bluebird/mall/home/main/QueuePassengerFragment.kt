@@ -63,6 +63,7 @@ class QueuePassengerFragment : Fragment() {
                             }
                             QueuePassengerState.SuccessGetUser -> {
                                 binding.showData = false
+                                getCounterBar()
                                 getCurrentQueue()
                             }
                             QueuePassengerState.SuccessCurrentQueue -> {
