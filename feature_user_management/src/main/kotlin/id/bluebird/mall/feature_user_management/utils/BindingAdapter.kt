@@ -12,15 +12,23 @@ import id.bluebird.mall.feature_user_management.search_location.model.Location
 
 object BindingAdapter {
     @JvmStatic
-    @BindingAdapter("roleLiveDataSize", "isRoleSelected", "countSubAssignLocation")
+    @BindingAdapter(
+        "roleLiveDataSize",
+        "isRoleSelected",
+        "countSubAssignLocation",
+        "name",
+        "username"
+    )
     fun setButtonCreateUser(
         appCompatButton: AppCompatButton,
         roleLiveDataSize: Boolean?,
         isRoleSelected: Boolean?,
-        countSubAssignLocation: Boolean?
+        countSubAssignLocation: Boolean?,
+        name: String?,
+        username: String?
     ) {
         with(appCompatButton) {
-            if (roleLiveDataSize == true && isRoleSelected == true && countSubAssignLocation == true) {
+            if (roleLiveDataSize == true && isRoleSelected == true && countSubAssignLocation == true && !name.isNullOrBlank() && !username.isNullOrBlank()) {
                 this.setBackgroundResource(
                     R.drawable.bg_confirm_meter_button
                 )

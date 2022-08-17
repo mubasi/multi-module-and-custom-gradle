@@ -11,9 +11,11 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import id.bluebird.mall.core.extensions.hideSoftKeyboard
 import id.bluebird.mall.core.utils.DialogUtils
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.create.model.RoleCache
+import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.databinding.FragmentCreateUserBinding
 import id.bluebird.mall.feature_user_management.search_location.SearchLocationFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -47,7 +49,6 @@ class CreateUserFragment : Fragment() {
         mBinding.createUserVM = createUserViewModel
         createUserViewModel.initUser(_args.userId)
         observer()
-        createUserViewModel.getUser()
     }
 
     private fun observer() {
@@ -57,11 +58,16 @@ class CreateUserFragment : Fragment() {
                     mBinding.spnUserSetting.setSelection(it)
                 }
             }
+            subLocationPosition.observe(viewLifecycleOwner) {
+                if (mBinding.spinnerSubLocation.childCount > 0) {
+                    mBinding.spinnerSubLocation.setSelection(it)
+                }
+            }
             userName.observe(viewLifecycleOwner) {
                 usernameTextHandler(it)
             }
             subLocationLiveData.observe(viewLifecycleOwner) {
-
+                createSpinnerSubLocation(it)
             }
             roleLiveData.observe(viewLifecycleOwner) {
                 createSpinnerAdapter(it)
@@ -74,6 +80,9 @@ class CreateUserFragment : Fragment() {
         with(createUserViewModel) {
             actionSealed.observe(viewLifecycleOwner) {
                 when (it) {
+                    CreateUserState.Initialize -> {
+                        createUserViewModel.getUser()
+                    }
                     CreateUserState.OnBack -> {
                         findNavController().popBackStack(
                             destinationId = R.id.createUserFragment,
@@ -82,9 +91,9 @@ class CreateUserFragment : Fragment() {
                         )
                     }
                     is CreateUserState.GetInformationOnError -> TODO()
-                    CreateUserState.GetInformationSuccess -> {
+                    is CreateUserState.GetInformationSuccess -> {
                         assignRole()
-                        addSubLocation()
+                        assignLocation()
                     }
                     is CreateUserState.InvalidField -> {
                         DialogUtils.showErrorDialog(
@@ -113,6 +122,12 @@ class CreateUserFragment : Fragment() {
                     is CreateUserState.RequestSearchLocation -> {
                         navigateToSearchLocation()
                     }
+                    is CreateUserState.LocationSelected -> {
+                        setupSubLocation()
+                    }
+                    is CreateUserState.AssignSubLocationFromData -> {
+                        setupSubLocation()
+                    }
                     else -> {
                         // do nothing
                     }
@@ -135,6 +150,18 @@ class CreateUserFragment : Fragment() {
             ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, roleCaches)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mBinding.spnUserSetting.adapter = adapter
+    }
+
+    private fun createSpinnerSubLocation(subLocationCache: List<SubLocationCache>) {
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, subLocationCache)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mBinding.spinnerSubLocation.adapter = adapter
+    }
+
+    override fun onPause() {
+        super.onPause()
+        createUserViewModel.toIdle()
     }
 
     private fun navigateToSearchLocation() {
