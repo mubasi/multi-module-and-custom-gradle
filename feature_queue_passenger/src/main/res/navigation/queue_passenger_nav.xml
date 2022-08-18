@@ -14,5 +14,9 @@
         android:name="id.bluebird.mall.home.queue_ticket.QueueTicket"
         android:label="@string/queue_ticket_text">
     </fragment>
+    <fragment
+        android:id="@+id/searchFleetFragment"
+        android:name="id.bluebird.mall.home.queue_search.QueueSearchFragment"
+        android:label="@string/label_queue_search" />
     <deepLink app:uri="android-app://id.bluebird.mall/queue_passenger" />
 </navigation>

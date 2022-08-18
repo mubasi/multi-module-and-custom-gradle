@@ -188,4 +188,21 @@ class QueueReceiptRepositoryimpl(
         val result = queuePangkalanGrpc.getCountQueue(request)
         emit(result)
     }
+
+    override fun searchQueue(
+        queueNumber: String,
+        locationId: Long,
+        subLocationId: Long,
+        typeQueue: QueuePangkalanOuterClass.QueueType
+    ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue> = flow {
+        val request = QueuePangkalanOuterClass.RequestSearchQueue.newBuilder()
+            .apply {
+                this.queueNumber = queueNumber;
+                this.locationId = locationId;
+                this.subLocationId = subLocationId
+                this.queueType = typeQueue
+            }.build()
+        val result = queuePangkalanGrpc.searchQueue(request)
+        emit(result)
+    }
 }

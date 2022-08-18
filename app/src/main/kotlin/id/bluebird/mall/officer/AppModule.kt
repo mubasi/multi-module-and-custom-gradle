@@ -37,6 +37,7 @@ import id.bluebird.mall.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.mall.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
 import id.bluebird.mall.home.dialog_skip_queue.DialogSkipQueueViewModel
 import id.bluebird.mall.home.main.QueuePassengerViewModel
+import id.bluebird.mall.home.queue_search.QueueSearchViewModel
 import id.bluebird.mall.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.mall.login.LoginViewModel
 import id.bluebird.mall.officer.logout.LogoutDialogViewModel
@@ -66,6 +67,7 @@ object AppModule {
         viewModel { MonitoringViewModel(get()) }
         viewModel { EditBufferViewModel(get()) }
         viewModel { SearchLocationViewModel(get()) }
+        viewModel { QueueSearchViewModel(get()) }
     }
 
     private val userCases = module {
@@ -107,6 +109,7 @@ object AppModule {
         single<DeleteSkipped> {DeleteSkippedCases(get())}
         single<RestoreSkipped> {RestoreSkippedCases(get())}
         single<CounterBar> {CounterBarCases(get())}
+        single<SearchQueue> {SearchQueueCases(get())}
     }
 
     private val repository = module {
