@@ -42,3 +42,7 @@ sealed class RestoreSkippedState {
 sealed class CounterBarState {
     data class Success(val counterBarResult: CounterBarResult) : CounterBarState()
 }
+
+sealed class SearchQueueState {
+    data class Success(val searchQueueResult: SearchQueueResult) : SearchQueueState()
+}

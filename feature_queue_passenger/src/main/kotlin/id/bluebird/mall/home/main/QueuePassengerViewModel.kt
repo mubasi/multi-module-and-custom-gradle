@@ -273,4 +273,10 @@ class QueuePassengerViewModel(
         }
     }
 
+    fun searchQueue() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.SearchQueue(locationId = mUserInfo.locationId, subLocationId = mUserInfo.subLocationId))
+        }
+    }
+
 }

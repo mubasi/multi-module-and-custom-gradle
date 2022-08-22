@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import id.bluebird.mall.home.R
 import id.bluebird.mall.home.databinding.FragmentQueuePassengerBinding
@@ -26,6 +27,7 @@ class QueuePassengerFragment : Fragment() {
 
     private lateinit var binding : FragmentQueuePassengerBinding
     private val _queuePassengerViewModel : QueuePassengerViewModel by viewModel()
+    private var positionType : Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -137,8 +139,12 @@ class QueuePassengerFragment : Fragment() {
                                     subLocationId = mUserInfo.subLocationId
                                 ).show(requireActivity().supportFragmentManager, DialogRestoreSkipped.TAG)
                             }
-                            else -> {
-                                //do noting
+                            is QueuePassengerState.SearchQueue -> {
+                                val bundle = Bundle()
+                                bundle.putLong("locationId", it.locationId)
+                                bundle.putLong("subLocationId", it.subLocationId)
+                                bundle.putInt("type", positionType)
+                                findNavController().navigate(R.id.searchFleetFragment, bundle)
                             }
                         }
                     }
@@ -170,7 +176,8 @@ class QueuePassengerFragment : Fragment() {
         }
     }
 
-    private fun setListQueue(position: Int) {
+    fun setListQueue(position: Int) {
+        positionType = position
         binding.successListQueue = false
         if(position == 0) {
             setupWaiting()

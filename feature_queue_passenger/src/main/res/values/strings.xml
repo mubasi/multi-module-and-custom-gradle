@@ -15,7 +15,7 @@
     <string name="message_ticket">Pastikan bukti antrian difoto oleh pemesan dan ditunjukan ke driver</string>
     <string name="tab_waiting_text">Menunggu (0)</string>
     <string name="tab_delayed_text">Tertunda (0)</string>
-    <string name="queue_not_found">Antrian tidak tersedia</string>
+    <string name="queue_not_found_message">Belum ada antrian \n untuk saat ini</string>
     <string name="recovery_text">Pulihkan</string>
     <string name="delete_text">Hapus</string>
     <string name="desc_dialog_skipped_text">
@@ -24,7 +24,11 @@
     <string name="antrian_text">Antrian</string>
     <string name="finish_text">Selesai</string>
     <string name="tertunda_text">Tetunda</string>
-
+    <string name="hint_queue_search">Cari no. antrian</string>
+    <string name="label_queue_search">Cari antrian</string>
+    <string name="search_queue_message">Masukkan no antrian minimal 3 karakter</string>
+    <string name="search_no_queue">No antrian tidak tersedia</string>
+    <string name="error_current_queue_message">Antrian sekarang tidak tersedia</string>
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
