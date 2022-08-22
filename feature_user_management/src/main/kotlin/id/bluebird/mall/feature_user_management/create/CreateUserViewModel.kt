@@ -29,7 +29,6 @@ class CreateUserViewModel(
 
     companion object {
         private const val OFFICER_ROLE_ID = 5L
-        private const val SPV_ROLE_ID = 6L
         private const val DEFAULT_ROLE_NAME = "Pilih Role"
         private const val DEFAULT_SUB_LOCATION_NAME = "Pilih sub-lokasi"
     }
@@ -156,8 +155,7 @@ class CreateUserViewModel(
         for (i in 0 until roles.size) {
             val role = roles[i]
             if (role.id == mRoleId) {
-//                subLocationSingleSelection.value = role.id == OFFICER_ROLE_ID
-                shouldShowLocation.value = role.id == OFFICER_ROLE_ID || role.id == SPV_ROLE_ID
+                shouldShowLocation.value = role.id == OFFICER_ROLE_ID
                 userRolePosition.postValue(i)
                 break
             }
@@ -292,8 +290,7 @@ class CreateUserViewModel(
 
         if (roleCache.id != mRoleId) {
             mRoleId = roleCache.id
-//            subLocationSingleSelection.value = roleCache.id == 5.toLong()
-            shouldShowLocation.value = roleCache.id == OFFICER_ROLE_ID || roleCache.id == SPV_ROLE_ID
+            shouldShowLocation.value = roleCache.id == OFFICER_ROLE_ID
             if (roleCache.id != 5.toLong()) {
                 selectedAllSubLocation()
             } else {
@@ -340,6 +337,6 @@ class CreateUserViewModel(
         mLocationId = location?.id ?: -1
         viewModelScope.launch { getUserLocationAssignment() }
         addSubLocation()
-        shouldShowSubLocation.value = mLocationId > 0 && (mRoleId == OFFICER_ROLE_ID || mRoleId == SPV_ROLE_ID)
+        shouldShowSubLocation.value = mLocationId > 0 && (mRoleId == OFFICER_ROLE_ID)
     }
 }
