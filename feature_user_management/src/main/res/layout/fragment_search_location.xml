@@ -51,6 +51,8 @@
                 android:fontFamily="@font/ubuntu_regular"
                 android:maxLength="7"
                 android:paddingStart="8dp"
+                android:gravity="center_vertical"
+                android:hint="@string/search_location"
                 android:text="@={vm.searchKey}"
                 android:textSize="16sp" />
 
@@ -82,7 +84,7 @@
             android:layout_height="0dp"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/submitFleetFragment"
+            app:layout_constraintBottom_toTopOf="@id/submitLocationFragment"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/errSearchLocation">
@@ -104,7 +106,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/submitFleetFragment"
+            android:id="@+id/submitLocationFragment"
             style="@style/ButtonSubmitState"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
