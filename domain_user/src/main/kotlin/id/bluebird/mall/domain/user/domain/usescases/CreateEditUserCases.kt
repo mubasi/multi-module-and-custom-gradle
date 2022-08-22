@@ -22,7 +22,7 @@ class CreateEditUserCases(private val userRepository: UserRepository) : CreateEd
             val result = userRepository.createUser(
                 model.copy(
                     id = 0,
-                    locationId = UserUtils.getLocationId()
+                    locationId = if (model.locationId > 0) model.locationId else UserUtils.getLocationId()
                 )
             )
                 .flowOn(Dispatchers.IO)

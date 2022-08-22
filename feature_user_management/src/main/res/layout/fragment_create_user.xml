@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:indeterminateTint="@color/primary_color"
-                android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.OnGetDataProcess || createUserVM.actionSealed instanceof CreateUserState.GetInformationSuccess? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.OnGetDataProcess || createUserVM.actionSealed instanceof CreateUserState.GetInformationSuccess ? View.VISIBLE : View.GONE, default=gone}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.OnGetDataProcess &amp;&amp; !(createUserVM.actionSealed instanceof CreateUserState.GetInformationSuccess) ? View.GONE : View.VISIBLE, default=visible}"
+                android:visibility="@{createUserVM.actionSealed instanceof CreateUserState.OnGetDataProcess &amp;&amp; !(createUserVM.actionSealed instanceof CreateUserState.GetInformationSuccess) ? View.INVISIBLE : View.VISIBLE, default=visible}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -292,6 +292,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginTop="4dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="12dp"
                         android:onItemSelected="@{(parent,view,pos,id)->createUserVM.onSelectedItem(pos)}" />
 
                 </LinearLayout>
@@ -317,18 +319,17 @@
                     android:text="@string/location"
                     android:textColor="@color/title_create_user_font_color"
                     android:textSize="14sp"
+                    app:show="@{createUserVM.shouldShowLocation}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_role_error" />
 
-<!--                android:visibility="@{createUserVM.subLocationSingleSelection? View.VISIBLE: View.GONE, default=gone}"-->
                 <LinearLayout
                     android:id="@+id/ll_location_select"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@id/ll_submit_create_user"
+                    app:show="@{createUserVM.shouldShowLocation}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_title_location_create_user">
@@ -339,16 +340,73 @@
                         android:layout_height="48dp"
                         android:gravity="center_vertical"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
+                        android:paddingEnd="12dp"
                         android:hint="@string/select_location"
                         android:cursorVisible="false"
                         android:focusable="false"
+                        android:background="@{createUserVM.selectedLocation.empty ? @drawable/bg_search_user_setting : @drawable/bg_editext_login_enable}"
                         android:text="@{createUserVM.selectedLocation}"
                         android:onClick="@{() -> createUserVM.moveToSearchLocation()}"
-                        android:background="@drawable/bg_editext_login_enable"
                         android:drawableEnd="@drawable/ic_chevron_right"/>
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location_not_selected"
+                        android:textColor="@android:color/holo_red_dark"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/ll_role_user_setting"
+                        app:show="@{createUserVM.selectedLocation.empty}" />
+
                 </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_title_sublocation_create_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:lineHeight="21sp"
+                    android:text="@string/sub_location"
+                    android:textColor="@color/title_create_user_font_color"
+                    android:textSize="14sp"
+                    app:show="@{createUserVM.shouldShowSubLocation}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_location_select" />
+
+                <LinearLayout
+                    android:id="@+id/ll_sublocation_select"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:show="@{createUserVM.shouldShowSubLocation}"
+                    android:background="@{createUserVM.isSubLocationSelected() ? @drawable/bg_editext_login_enable : @drawable/bg_search_user_setting}"
+                    app:layout_constraintBottom_toTopOf="@id/ll_submit_create_user"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_sublocation_create_user">
+
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/spinner_sub_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="12dp"
+                        android:onItemSelected="@{(parent,view,pos,id) -> createUserVM.onSelectedSubLocation(pos)}"/>
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sub_location_not_selected"
+                    android:textColor="@android:color/holo_red_dark"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_sublocation_select"
+                    app:show="@{!createUserVM.isSubLocationSelected &amp;&amp; createUserVM.shouldShowSubLocation}" />
 
                 <LinearLayout
                     android:id="@+id/ll_submit_create_user"
@@ -360,7 +418,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_location_select">
+                    app:layout_constraintTop_toBottomOf="@id/ll_sublocation_select">
 
                     <ProgressBar
                         android:id="@+id/pb_submit"
@@ -392,6 +450,8 @@
                             countSubAssignLocation="@{createUserVM.countSubAssignLocation >0}"
                             isRoleSelected="@{createUserVM.isRoleSelected()}"
                             roleLiveDataSize="@{createUserVM.roleLiveData.size() > 0}"
+                            name="@{createUserVM.name}"
+                            username="@{createUserVM.userName}"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"

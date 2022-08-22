@@ -1,8 +1,6 @@
 package id.bluebird.mall.feature_user_management.create
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.UserDomainState
 import id.bluebird.mall.domain.user.domain.intercator.CreateEditUser
@@ -18,6 +16,7 @@ import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.search_location.model.Location
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -31,13 +30,14 @@ class CreateUserViewModel(
     companion object {
         private const val OFFICER_ROLE_ID = 5L
         private const val DEFAULT_ROLE_NAME = "Pilih Role"
+        private const val DEFAULT_SUB_LOCATION_NAME = "Pilih sub-lokasi"
     }
 
     val name: MutableLiveData<String> = MutableLiveData()
     val userName: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
     val oldPassword: MutableLiveData<String> = MutableLiveData()
-    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData()
+    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData(CreateUserState.Initialize)
     val countSubAssignLocation: MutableLiveData<Int> = MutableLiveData(0)
     var isRoleSelected: MutableLiveData<Boolean> = MutableLiveData()
     val subLocationSingleSelection: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -46,11 +46,17 @@ class CreateUserViewModel(
     val userRolePosition: MutableLiveData<Int> = MutableLiveData(-1)
     var isCreateNewUser: MutableLiveData<Boolean> = MutableLiveData(false)
     val selectedLocation: MutableLiveData<String> = MutableLiveData("")
+    val shouldShowLocation: MutableLiveData<Boolean> = MutableLiveData(false)
+    val shouldShowSubLocation: MutableLiveData<Boolean> = MutableLiveData(false)
+    val subLocationPosition: MutableLiveData<Int> = MutableLiveData(-1)
+    val isSubLocationSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private var mLocationId: Long = -1
     private var mRoleId: Long = -1
     private val subLocations: MutableList<SubLocationCache> = ArrayList()
     private val roles: MutableList<RoleCache> = ArrayList()
+    private var rolePosition: Int = 0
+    private var subLocationIndex: Int = 0
     private var mUserId: Long = -1
     private val locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
     private var location: Location? = null
@@ -60,7 +66,6 @@ class CreateUserViewModel(
 
     fun initUser(userId: Long?) {
         mUserId = userId ?: -1
-        actionSealed.value = null
         isCreateNewUser.postValue(mUserId < 1)
     }
 
@@ -76,12 +81,19 @@ class CreateUserViewModel(
             if (it == null) {
                 subLocationLiveData.postValue(subLocations)
                 roleLiveData.postValue(roles)
-                actionSealed.postValue(CreateUserState.GetInformationSuccess)
+                viewModelScope.launch {
+                    delay(500)
+                    actionSealed.postValue(CreateUserState.GetInformationSuccess)
+                }
             }
         }
     }
 
     fun getUser() {
+        if (actionSealed.value is CreateUserState.Idle) {
+            assignRole()
+            return
+        }
         viewModelScope.launch {
             getUserId.invoke(mUserId)
                 .catch { cause ->
@@ -105,6 +117,8 @@ class CreateUserViewModel(
         mRoleId = value?.roleId ?: -1
         isRoleSelected.postValue(value != null)
         value?.let {
+            if (mLocationId > 0)
+                location = Location(mLocationId, it.locationName)
             assignSubLocation(value.subLocationsId)
         }
         actionSealed.postValue(CreateUserState.GetUserStateSuccess)
@@ -121,26 +135,39 @@ class CreateUserViewModel(
         countSubAssignLocation.postValue(locationAssignmentsUser.size)
     }
 
-    fun addSubLocation() {
-        actionSealed.value = CreateUserState.GetSubLocation
+    private fun addSubLocation() {
         subLocations.forEach {
             if (locationAssignmentsUser[it.id] != null) {
-                it.isSelected = true
+                it.isSelected = false
+                if (actionSealed.value is CreateUserState.AssignSubLocationFromData) {
+                    it.isSelected = true
+                }
             }
         }
         subLocationLiveData.value = subLocations
-        actionSealed.value = null
+        subLocations.indexOfFirst { it.isSelected }.let {
+            if (it > 0)
+                subLocationIndex = it
+        }
     }
 
     fun assignRole() {
         for (i in 0 until roles.size) {
             val role = roles[i]
             if (role.id == mRoleId) {
-                subLocationSingleSelection.value = role.id == OFFICER_ROLE_ID
+                shouldShowLocation.value = role.id == OFFICER_ROLE_ID
                 userRolePosition.postValue(i)
                 break
             }
         }
+    }
+
+    fun assignLocation() {
+        location?.let {
+            selectedLocation.value = it.name
+            shouldShowSubLocation.value = selectedLocation.value?.isNotBlank() == true
+        }
+        actionSealed.value = CreateUserState.AssignSubLocationFromData
     }
 
     private suspend fun getUserRole() {
@@ -173,6 +200,8 @@ class CreateUserViewModel(
                     is LocationDomainState.Success -> {
                         subLocations.clear()
                         val item = it.value
+                        subLocations.add(SubLocationCache(-1, -1, DEFAULT_SUB_LOCATION_NAME))
+                        isSubLocationSelected.value = false
                         item.forEach { subLocation ->
                             val subLocationCache =
                                 SubLocationCache(subLocation.id, mLocationId, subLocation.name)
@@ -191,31 +220,6 @@ class CreateUserViewModel(
         subLocationLiveData.postValue(ArrayList())
         roleLiveData.postValue(ArrayList())
         actionSealed.postValue(CreateUserState.GetInformationOnError(it))
-    }
-
-    fun locationAssignment(objects: Any, isAdd: Boolean) {
-        if (isAdd) {
-            addLocation(objects)
-        } else {
-            locationAssignmentsUser.remove(objects.toString().toLong())
-        }
-        countSubAssignLocation.value = locationAssignmentsUser.size
-    }
-
-    private fun addLocation(objects: Any) {
-        if (subLocationSingleSelection.value == true) {
-            locationAssignmentsUser.clear()
-        }
-        for (i in 0 until subLocations.size) {
-            val value = subLocations[i]
-            if (value.id == objects.toString().toLong()) {
-                val locationAssignment = LocationAssignment(
-                    value.locationId, value.id
-                )
-                locationAssignmentsUser[value.id] = locationAssignment
-                break
-            }
-        }
     }
 
     fun saveUser() {
@@ -262,7 +266,8 @@ class CreateUserViewModel(
 
     private fun selectedAllSubLocation() {
         subLocations.forEach {
-            locationAssignmentsUser[it.id] = LocationAssignment(it.locationId, it.id)
+            if (it.id > 0)
+                locationAssignmentsUser[it.id] = LocationAssignment(it.locationId, it.id)
         }
     }
 
@@ -271,14 +276,26 @@ class CreateUserViewModel(
     }
 
     fun onSelectedItem(position: Int) {
+        if (actionSealed.value is CreateUserState.Idle){
+            actionSealed.value = null
+            userRolePosition.postValue(rolePosition)
+            return
+        }
         val roleCache = roles[position]
         isRoleSelected.value = roleCache.id > 0
+        rolePosition = position
+
+        if (actionSealed.value is CreateUserState.OnGetDataProcess)
+            return
+
         if (roleCache.id != mRoleId) {
             mRoleId = roleCache.id
-            subLocationSingleSelection.value = roleCache.id == 5.toLong()
+            shouldShowLocation.value = roleCache.id == OFFICER_ROLE_ID
             if (roleCache.id != 5.toLong()) {
                 selectedAllSubLocation()
             } else {
+                selectedLocation.value = ""
+                location = null
                 locationAssignmentsUser.clear()
             }
             countSubAssignLocation.value = locationAssignmentsUser.size
@@ -286,11 +303,40 @@ class CreateUserViewModel(
     }
 
     fun moveToSearchLocation() {
-        actionSealed.value = CreateUserState.RequestSearchLocation
+        actionSealed.value = CreateUserState.RequestSearchLocation(mRoleId)
     }
 
     fun setSelectedLocation(location: Location?) {
         this.location = location
         selectedLocation.value = this.location?.name ?: ""
+        actionSealed.postValue(CreateUserState.LocationSelected(location))
+    }
+
+    fun onSelectedSubLocation(position: Int) {
+        if (actionSealed.value is CreateUserState.AssignSubLocationFromData || actionSealed.value is CreateUserState.Idle) {
+            actionSealed.value = null
+            subLocationPosition.value = subLocationIndex
+            return
+        }
+
+        val subLocation = subLocations[position]
+        subLocationIndex = position
+        isSubLocationSelected.value = subLocation.id > 0
+        if (isSubLocationSelected.value == true)
+            assignSubLocation(listOf(subLocation.id))
+    }
+
+    fun toIdle() {
+        actionSealed.value = CreateUserState.Idle
+    }
+
+    fun setupSubLocation() {
+        if (location == null || mLocationId != this.location?.id) {
+            assignSubLocation(arrayListOf())
+        }
+        mLocationId = location?.id ?: -1
+        viewModelScope.launch { getUserLocationAssignment() }
+        addSubLocation()
+        shouldShowSubLocation.value = mLocationId > 0 && (mRoleId == OFFICER_ROLE_ID)
     }
 }

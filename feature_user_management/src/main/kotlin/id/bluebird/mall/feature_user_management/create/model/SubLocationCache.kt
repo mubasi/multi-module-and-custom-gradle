@@ -8,4 +8,6 @@ data class SubLocationCache(
     val locationId: Long,
     val name: String,
     var isSelected: Boolean = false
-)
+) {
+    override fun toString(): String = name
+}
