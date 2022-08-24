@@ -7,17 +7,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
+import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
 import id.bluebird.mall.officer.extensions.backArrowButton
 import id.bluebird.mall.officer.extensions.setToolbarAddFleetFragment
@@ -125,9 +128,10 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.queueFleetFragment,
                     R.id.queuePassengerFragment,
                     R.id.monitoring_nav,
-                    R.id.userListFragment
+                    R.id.user_management_nav
                 ), mBinding.drawerLayout
             )
+            mBinding.navView.menu.findItem(R.id.user_management_nav).setVisible(UserUtils.getPrivilege() == UserUtils.OFFICER)
     }
 
 
