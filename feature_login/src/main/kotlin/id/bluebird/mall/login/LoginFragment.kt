@@ -63,6 +63,7 @@ class LoginFragment : BaseFragment() {
                     intentToDial()
                 }
                 LoginState.Success -> {
+                    requireActivity().recreate()
                     NavigationNav.navigate(
                         NavigationSealed.QueueFleet(
                             destination = R.id.loginFragment,
