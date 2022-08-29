@@ -56,6 +56,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         navController.setGraph(R.navigation.main_nav)
         navController.addOnDestinationChangedListener { _, destination, args ->
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            mBinding.navView.menu.findItem(R.id.user_management_nav).isVisible = UserUtils.getPrivilege() != UserUtils.OFFICER
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -131,7 +132,6 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.user_management_nav
                 ), mBinding.drawerLayout
             )
-            mBinding.navView.menu.findItem(R.id.user_management_nav).setVisible(UserUtils.getPrivilege() == UserUtils.OFFICER)
     }
 
 
