@@ -37,4 +37,5 @@
     <string name="select_sub_location">Pilih Sub-Lokasi</string>
     <string name="search_location">Cari Lokasi</string>
     <string name="sub_location_not_selected">Pilih Sub-Lokasi</string>
+    <string name="force_logout">Force Logout</string>
 </resources>

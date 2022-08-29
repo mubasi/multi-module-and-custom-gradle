@@ -15,6 +15,10 @@
                 android:name="userId"
                 android:defaultValue="-1L"
                 app:argType="long" />
+            <argument
+                android:name="uuid"
+                android:defaultValue=""
+                app:argType="string" />
         </action>
     </fragment>
     <fragment
@@ -25,6 +29,10 @@
             android:name="userId"
             android:defaultValue="-1L"
             app:argType="long" />
+        <argument
+            android:name="uuid"
+            android:defaultValue=""
+            app:argType="string" />
         <action
             android:id="@+id/action_createUserFragment_to_searchLocationFragment"
             app:destination="@id/searchLocationFragment"/>

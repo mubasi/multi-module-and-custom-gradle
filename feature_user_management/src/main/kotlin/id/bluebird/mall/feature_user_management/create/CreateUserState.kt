@@ -12,6 +12,7 @@ sealed class CreateUserState {
     object GetUserStateSuccess : CreateUserState()
     object OnSaveProgress : CreateUserState()
     object GetSubLocation : CreateUserState()
+    object OnSuccessForceLogoutUser: CreateUserState()
     object AssignSubLocationFromData : CreateUserState()
     data class RequestSearchLocation(val role: Long) : CreateUserState()
     data class InvalidField(val err: UserErr) : CreateUserState()
@@ -20,4 +21,8 @@ sealed class CreateUserState {
     data class OnError(val err: Throwable) : CreateUserState()
     data class GetInformationOnError(val err: Throwable) : CreateUserState()
     data class LocationSelected(val location: Location?): CreateUserState()
+    data class DeleteUser(val name: String): CreateUserState()
+    data class OnSuccessDeleteUser(val name: String): CreateUserState()
+    data class ForceLogout(val name: String): CreateUserState()
+    data class OnSuccessForceLogout(val name: String): CreateUserState()
 }

@@ -14,9 +14,13 @@ import id.bluebird.mall.core.utils.DialogUtils
 import id.bluebird.mall.feature_user_management.R
 import id.bluebird.mall.feature_user_management.create.CreateUserFragment
 import id.bluebird.mall.feature_user_management.utils.DialogUtil
+import id.bluebird.mall.feature_user_management.utils.ModifyUserAction
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UserListFragment : Fragment() {
+    companion object {
+        private const val EMPTY_STRING = ""
+    }
     private val mUserSettingVM: UserManagementViewModel by viewModel()
     private lateinit var mBinding: id.bluebird.mall.feature_user_management.databinding.FragmentUserSettingBinding
     private var mContainer: ViewGroup? = null
@@ -51,36 +55,20 @@ class UserListFragment : Fragment() {
         with(mUserSettingVM) {
             userSettingSealed.observe(viewLifecycleOwner) {
                 when (it) {
-                    is UserSettingSealed.Delete -> DialogUtil.actionDialogUser(
-                        requireContext(),
-                        context?.getString(R.string.delete_user),
-                        context?.getString(R.string.delete_user_message)!!,
-                        it.userSettingCache.userName
-                    ) {
-                        delete(it.userSettingCache)
-                    }
-                    is UserSettingSealed.ForceLogout -> DialogUtil.actionDialogUser(
-                        requireContext(),
-                        context?.getString(R.string.non_active_user),
-                        context?.getString(R.string.non_active_user_message)!!,
-                        it.userSettingCache.userName
-                    ) {
-                        forceLogout(it.userSettingCache)
-                    }
                     is UserSettingSealed.CreateUser -> {
-                        gotoCreateUser(null)
+                        gotoCreateUser(null, EMPTY_STRING)
                     }
                     is UserSettingSealed.EditUser -> {
-                        gotoCreateUser(it.userSettingCache.id)
+                        gotoCreateUser(it.userSettingCache.id, it.userSettingCache.uuid)
                     }
                     is UserSettingSealed.DeleteSuccess -> {
                         val message =
-                            "${it.userSettingCache.userName} ${getString(R.string.delete_user_success)}"
+                            "${it.name} ${getString(R.string.delete_user_success)}"
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                     }
                     is UserSettingSealed.ForceSuccess -> {
                         val message =
-                            "${it.userSettingCache.userName} ${getString(R.string.force_logout_user_success)}"
+                            "${it.name} ${getString(R.string.force_logout_user_success)}"
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
                     }
@@ -114,17 +102,18 @@ class UserListFragment : Fragment() {
         }
     }
 
-    private fun gotoCreateUser(id: Long?) {
+    private fun gotoCreateUser(id: Long?, uuid: String) {
         val destination =
             UserListFragmentDirections.actionUserListFragmentToCreateUserFragment().apply {
                 userId = id ?: 0
+                this.uuid = uuid
             }
         findNavController().navigate(destination)
         setFragmentResultListener(CreateUserFragment.REQUEST_KEY) { _, bundle ->
             bundle.let {
                 mUserSettingVM.result(
-                    it.getString(CreateUserFragment.NAME_PARAM, ""),
-                    it.getBoolean(CreateUserFragment.ACTION_PARAM)
+                    it.getString(CreateUserFragment.NAME_PARAM, EMPTY_STRING),
+                    it.getParcelable(CreateUserFragment.ACTION_PARAM) ?: ModifyUserAction.Nothing
                 )
             }
         }

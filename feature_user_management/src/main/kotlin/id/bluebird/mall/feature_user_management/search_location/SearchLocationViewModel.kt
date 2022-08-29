@@ -14,12 +14,16 @@ class SearchLocationViewModel(
     private val getLocations: GetLocations
 ) : ViewModel() {
 
+    companion object {
+        private const val EMPTY_STRING = ""
+    }
+
     private val _searchLocationState: MutableSharedFlow<SearchLocationState> = MutableSharedFlow()
     val searchState: SharedFlow<SearchLocationState> = _searchLocationState.asSharedFlow()
     private var locations: List<Location> = listOf()
     private var _newSelectedPosition = -1
     private var _lastSelectedPosition = -1
-    var searchKey = MutableLiveData("")
+    var searchKey = MutableLiveData(EMPTY_STRING)
     val selectedLocation = MutableLiveData<Location?>(null)
 
     fun init() {
@@ -58,11 +62,11 @@ class SearchLocationViewModel(
     }
 
     fun clearFilter() {
-        searchKey.value = ""
+        searchKey.value = EMPTY_STRING
         filter()
     }
 
-    private fun getSearchKeyword(): String = searchKey.value ?: ""
+    private fun getSearchKeyword(): String = searchKey.value ?: EMPTY_STRING
 
     fun updateSelectedItem(item: Location, position: Int) {
         selectedLocation.value = item

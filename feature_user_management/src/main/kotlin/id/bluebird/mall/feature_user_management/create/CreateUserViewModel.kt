@@ -3,9 +3,7 @@ package id.bluebird.mall.feature_user_management.create
 import androidx.lifecycle.*
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.UserDomainState
-import id.bluebird.mall.domain.user.domain.intercator.CreateEditUser
-import id.bluebird.mall.domain.user.domain.intercator.GetRoles
-import id.bluebird.mall.domain.user.domain.intercator.GetUserId
+import id.bluebird.mall.domain.user.domain.intercator.*
 import id.bluebird.mall.domain.user.model.CreateUserParam
 import id.bluebird.mall.domain.user.model.CreateUserResult
 import id.bluebird.mall.domain_location.LocationDomainState
@@ -24,13 +22,16 @@ class CreateUserViewModel(
     private val createEditUser: CreateEditUser,
     private val getRoles: GetRoles,
     private val getUserId: GetUserId,
-    private val getSubLocationByLocationId: GetSubLocationByLocationId
+    private val getSubLocationByLocationId: GetSubLocationByLocationId,
+    private val deleteUser: DeleteUser,
+    private val forceLogout: ForceLogout,
 ) : ViewModel() {
 
     companion object {
         private const val OFFICER_ROLE_ID = 5L
         private const val DEFAULT_ROLE_NAME = "Pilih Role"
         private const val DEFAULT_SUB_LOCATION_NAME = "Pilih sub-lokasi"
+        private const val EMPTY_STRING = ""
     }
 
     val name: MutableLiveData<String> = MutableLiveData()
@@ -45,7 +46,7 @@ class CreateUserViewModel(
     val roleLiveData: MutableLiveData<List<RoleCache>> = MutableLiveData()
     val userRolePosition: MutableLiveData<Int> = MutableLiveData(-1)
     var isCreateNewUser: MutableLiveData<Boolean> = MutableLiveData(false)
-    val selectedLocation: MutableLiveData<String> = MutableLiveData("")
+    val selectedLocation: MutableLiveData<String> = MutableLiveData(EMPTY_STRING)
     val shouldShowLocation: MutableLiveData<Boolean> = MutableLiveData(false)
     val shouldShowSubLocation: MutableLiveData<Boolean> = MutableLiveData(false)
     val subLocationPosition: MutableLiveData<Int> = MutableLiveData(-1)
@@ -60,12 +61,14 @@ class CreateUserViewModel(
     private var mUserId: Long = -1
     private val locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
     private var location: Location? = null
+    private var mUUID: String = EMPTY_STRING
     private val coroutineException = CoroutineExceptionHandler { _, e ->
         getInformationOnException(e)
     }
 
-    fun initUser(userId: Long?) {
+    fun initUser(userId: Long?, uuid: String?) {
         mUserId = userId ?: -1
+        mUUID = uuid ?: EMPTY_STRING
         isCreateNewUser.postValue(mUserId < 1)
     }
 
@@ -111,8 +114,8 @@ class CreateUserViewModel(
 
     private fun assignUserToField(value: CreateUserResult?) {
         mUserId = value?.id ?: -1
-        name.postValue(value?.name ?: "")
-        userName.postValue(value?.username ?: "")
+        name.postValue(value?.name ?: EMPTY_STRING)
+        userName.postValue(value?.username ?: EMPTY_STRING)
         mLocationId = value?.locationId ?: -1
         mRoleId = value?.roleId ?: -1
         isRoleSelected.postValue(value != null)
@@ -256,7 +259,7 @@ class CreateUserViewModel(
             name = name.value,
             username = name.value,
             newPassword = password.value,
-            password = oldPassword.value ?: "",
+            password = oldPassword.value ?: EMPTY_STRING,
             locationId = locationAssignmentsUser.values.first().locationId,
             roleId = mRoleId,
             subLocationsId = list,
@@ -294,7 +297,7 @@ class CreateUserViewModel(
             if (roleCache.id != 5.toLong()) {
                 selectedAllSubLocation()
             } else {
-                selectedLocation.value = ""
+                selectedLocation.value = EMPTY_STRING
                 location = null
                 locationAssignmentsUser.clear()
             }
@@ -308,7 +311,7 @@ class CreateUserViewModel(
 
     fun setSelectedLocation(location: Location?) {
         this.location = location
-        selectedLocation.value = this.location?.name ?: ""
+        selectedLocation.value = this.location?.name ?: EMPTY_STRING
         actionSealed.postValue(CreateUserState.LocationSelected(location))
     }
 
@@ -338,5 +341,55 @@ class CreateUserViewModel(
         viewModelScope.launch { getUserLocationAssignment() }
         addSubLocation()
         shouldShowSubLocation.value = mLocationId > 0 && (mRoleId == OFFICER_ROLE_ID)
+    }
+
+    fun requestDelete() {
+        viewModelScope.launch {
+            actionSealed.postValue(CreateUserState.DeleteUser(userName.value ?: EMPTY_STRING))
+        }
+    }
+
+    fun delete() {
+        if (mUUID.isBlank()) {
+            viewModelScope.launch {
+                actionSealed.postValue(CreateUserState.OnError(Throwable("No UUID")))
+            }
+            return
+        }
+        viewModelScope.launch {
+            actionSealed.postValue(CreateUserState.OnGetDataProcess)
+            deleteUser.invoke(mUUID)
+                .catch { cause: Throwable ->
+                    actionSealed.postValue(CreateUserState.OnError(cause))
+                }
+                .collect {
+                    actionSealed.postValue(CreateUserState.OnSuccessDeleteUser(userName.value.toString()))
+                }
+        }
+    }
+
+    fun requestForceLogout() {
+        viewModelScope.launch {
+            actionSealed.postValue(CreateUserState.ForceLogout(userName.value ?: EMPTY_STRING))
+        }
+    }
+
+    fun forceLogout() {
+        if (mUUID.isBlank()) {
+            viewModelScope.launch {
+                actionSealed.postValue(CreateUserState.OnError(Throwable("No UUID")))
+            }
+            return
+        }
+        viewModelScope.launch {
+            actionSealed.postValue(CreateUserState.OnGetDataProcess)
+            forceLogout.invoke(mUUID)
+                .catch { cause: Throwable ->
+                    actionSealed.postValue(CreateUserState.OnError(cause))
+                }
+                .collect {
+                    actionSealed.postValue(CreateUserState.OnSuccessForceLogout(userName.value ?: EMPTY_STRING))
+                }
+        }
     }
 }
