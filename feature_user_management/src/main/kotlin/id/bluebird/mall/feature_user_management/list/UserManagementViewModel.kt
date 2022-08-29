@@ -5,19 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.utils.hawk.UserUtils
-import id.bluebird.mall.domain.user.domain.intercator.DeleteUser
-import id.bluebird.mall.domain.user.domain.intercator.ForceLogout
 import id.bluebird.mall.domain.user.domain.intercator.SearchUser
+import id.bluebird.mall.feature_user_management.utils.ModifyUserAction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class UserManagementViewModel(
-    private val deleteUser: DeleteUser,
     private val searchUser: SearchUser,
-    private val forceLogout: ForceLogout
 ) : ViewModel() {
+    companion object {
+        private const val EMPTY_STRING = ""
+    }
     val counter: MutableLiveData<Int> = MutableLiveData()
     val userSettingSealed: MutableLiveData<UserSettingSealed> = MutableLiveData()
     val privilege: MutableLiveData<String> = MutableLiveData()
@@ -53,7 +53,7 @@ class UserManagementViewModel(
     fun searchUser() {
         viewModelScope.launch {
             userSettingSealed.postValue(UserSettingSealed.OnGetUserListProgress)
-            searchUser("")
+            searchUser(EMPTY_STRING)
         }
     }
 
@@ -83,58 +83,15 @@ class UserManagementViewModel(
             }
     }
 
-    fun delete(userSettingCache: UserSettingCache) {
-        viewModelScope.launch {
-            userSettingSealed.postValue(UserSettingSealed.OnGetUserListProgress)
-            deleteUser.invoke(userSettingCache.uuid)
-                .catch { cause: Throwable ->
-                    userSettingSealed.postValue(UserSettingSealed.GetUserOnError(cause))
-                }
-                .collect {
-                    userSettingSealed.postValue(UserSettingSealed.DeleteSuccess(userSettingCache))
-                    delay(200)
-                    updateUserList(userSettingCache, true)
-                }
-        }
-    }
-
-    fun forceLogout(userSettingCache: UserSettingCache) {
-        viewModelScope.launch {
-            userSettingSealed.postValue(UserSettingSealed.OnGetUserListProgress)
-            forceLogout.invoke(userSettingCache.uuid)
-                .catch { cause: Throwable ->
-                    userSettingSealed.postValue(UserSettingSealed.GetUserOnError(cause))
-                }
-                .collect {
-                    userSettingSealed.postValue(UserSettingSealed.ForceSuccess(userSettingCache))
-                    updateUserList(userSettingCache, false)
-                }
-        }
-    }
-
-    private fun updateUserList(userSettingCache: UserSettingCache, isRemove: Boolean) {
-        for (i in 0 until userSettings.size) {
-            val temp = userSettings[i]
-            if (temp.id == userSettingCache.id) {
-                if (isRemove) {
-                    userSettings.removeAt(i)
-                } else {
-                    temp.status = false
-                }
-                userSettingSealed.postValue(UserSettingSealed.GetUsers(userSettings))
-                counter.postValue(userSettings.size)
-                break
-            }
-        }
-    }
-
-    fun result(name: String, isActionCreate: Boolean) {
+    fun result(name: String, action: ModifyUserAction) {
         viewModelScope.launch {
             delay(300)
-            if (isActionCreate) {
-                userSettingSealed.postValue(UserSettingSealed.CreateUserSuccess(name))
-            } else {
-                userSettingSealed.postValue(UserSettingSealed.EditUserSuccess(name))
+            when (action) {
+                is ModifyUserAction.Create -> userSettingSealed.postValue(UserSettingSealed.CreateUserSuccess(name))
+                is ModifyUserAction.Edit -> userSettingSealed.postValue(UserSettingSealed.EditUserSuccess(name))
+                is ModifyUserAction.Delete -> userSettingSealed.postValue(UserSettingSealed.DeleteSuccess(name))
+                is ModifyUserAction.ForceLogout -> userSettingSealed.postValue(UserSettingSealed.ForceSuccess(name))
+                else -> {}
             }
         }
     }
@@ -148,14 +105,9 @@ class UserManagementViewModel(
     }
 
     fun onEditUser(userSettingCache: UserSettingCache) {
-        userSettingSealed.value = UserSettingSealed.EditUser(userSettingCache)
-    }
-
-    fun onDeleteUser(userSettingCache: UserSettingCache) {
-        userSettingSealed.value = UserSettingSealed.Delete(userSettingCache)
-    }
-
-    fun onForceLogoutUser(userSettingCache: UserSettingCache) {
-        userSettingSealed.value = UserSettingSealed.ForceLogout(userSettingCache)
+        when (privilege.value) {
+            UserUtils.SUPER, UserUtils.ADMIN -> userSettingSealed.value = UserSettingSealed.EditUser(userSettingCache)
+            else -> {}
+        }
     }
 }

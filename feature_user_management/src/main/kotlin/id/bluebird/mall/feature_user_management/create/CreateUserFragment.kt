@@ -1,9 +1,7 @@
 package id.bluebird.mall.feature_user_management.create
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -18,6 +16,8 @@ import id.bluebird.mall.feature_user_management.create.model.RoleCache
 import id.bluebird.mall.feature_user_management.create.model.SubLocationCache
 import id.bluebird.mall.feature_user_management.databinding.FragmentCreateUserBinding
 import id.bluebird.mall.feature_user_management.search_location.SearchLocationFragment
+import id.bluebird.mall.feature_user_management.utils.DialogUtil
+import id.bluebird.mall.feature_user_management.utils.ModifyUserAction
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreateUserFragment : Fragment() {
@@ -26,6 +26,7 @@ class CreateUserFragment : Fragment() {
         const val NAME_PARAM = "name"
         const val ACTION_PARAM = "action"
         const val REQUEST_KEY = "requestKey"
+        const val DELETE_REQ = "deleteRequest"
     }
 
     private val createUserViewModel: CreateUserViewModel by viewModel()
@@ -47,7 +48,10 @@ class CreateUserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.createUserVM = createUserViewModel
-        createUserViewModel.initUser(_args.userId)
+        createUserViewModel.initUser(_args.userId, _args.uuid)
+        if (_args.userId > 0) {
+            setHasOptionsMenu(true)
+        }
         observer()
     }
 
@@ -115,7 +119,10 @@ class CreateUserFragment : Fragment() {
                     is CreateUserState.OnSuccess -> {
                         val bundle = Bundle()
                         bundle.putString(NAME_PARAM, it.name)
-                        bundle.putBoolean(ACTION_PARAM, it.isCreateUser)
+                        bundle.putParcelable(
+                            ACTION_PARAM,
+                            if (it.isCreateUser) ModifyUserAction.Create else ModifyUserAction.Edit
+                        )
                         setFragmentResult(REQUEST_KEY, bundle)
                         findNavController().popBackStack()
                     }
@@ -128,12 +135,64 @@ class CreateUserFragment : Fragment() {
                     is CreateUserState.AssignSubLocationFromData -> {
                         setupSubLocation()
                     }
+                    is CreateUserState.DeleteUser -> {
+                        DialogUtil.actionDialogUser(
+                            requireContext(),
+                            getString(R.string.delete_user),
+                            getString(R.string.delete_user_message),
+                            it.name
+                        ) {
+                            delete()
+                        }
+                    }
+                    is CreateUserState.OnSuccessDeleteUser -> {
+                        val bundle = Bundle()
+                        bundle.putString(NAME_PARAM, it.name)
+                        bundle.putParcelable(ACTION_PARAM, ModifyUserAction.Delete)
+                        setFragmentResult(REQUEST_KEY, bundle)
+                        findNavController().popBackStack()
+                    }
+                    is CreateUserState.ForceLogout -> {
+                        DialogUtil.actionDialogUser(
+                            requireContext(),
+                            getString(R.string.non_active_user),
+                            getString(R.string.non_active_user_message),
+                            it.name
+                        ) {
+                            forceLogout()
+                        }
+                    }
+                    is CreateUserState.OnSuccessForceLogout -> {
+                        val bundle = Bundle()
+                        bundle.putString(NAME_PARAM, it.name)
+                        bundle.putParcelable(ACTION_PARAM, ModifyUserAction.ForceLogout)
+                        setFragmentResult(REQUEST_KEY, bundle)
+                        findNavController().popBackStack()
+                    }
                     else -> {
                         // do nothing
                     }
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.delete_user -> {
+                createUserViewModel.requestDelete()
+                true
+            }
+            R.id.force_logout -> {
+                createUserViewModel.requestForceLogout()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.manage_user_action, menu)
     }
 
     private fun usernameTextHandler(it: String) {

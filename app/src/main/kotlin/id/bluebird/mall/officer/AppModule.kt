@@ -51,8 +51,8 @@ object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
         viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
-        viewModel { UserManagementViewModel(get(), get(), get()) }
-        viewModel { CreateUserViewModel(get(), get(), get(), get()) }
+        viewModel { UserManagementViewModel(get()) }
+        viewModel { CreateUserViewModel(get(), get(), get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
         viewModel { LogoutDialogViewModel(get()) }
         viewModel { AddFleetViewModel(get(), get(), get()) }
