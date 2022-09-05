@@ -148,6 +148,11 @@ dependencies {
 
     api(Grpc.okhttp)
 
+    implementation(platform(Firebase.bom))
+    api(Firebase.core)
+    api(Firebase.auth_ktx)
+    api(Firebase.crash_ktx)
+    api(Firebase.analytics_ktx)
 
     testApi(Junit5.jupiter)
     testApi(Junit5.suite)

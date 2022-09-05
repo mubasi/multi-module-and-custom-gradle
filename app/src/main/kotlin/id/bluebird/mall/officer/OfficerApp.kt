@@ -1,6 +1,7 @@
 package id.bluebird.mall.officer
 
 import android.app.Application
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import id.bluebird.mall.core.utils.OkHttpChannel
 import id.bluebird.mall.officer.AppModule.initDependencyInjection
@@ -8,6 +9,7 @@ import id.bluebird.mall.officer.AppModule.initDependencyInjection
 class OfficerApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        FirebaseAnalytics.getInstance(this)
         initDependencyInjection(this)
         OkHttpChannel.initChannel(tokenExpiredCallback = tokenExpiredCallback)
         Hawk.init(this).build()
