@@ -16,6 +16,8 @@ buildscript {
         classpath(MainGradle.protobuf)
         classpath(MainGradle.safe_args)
         classpath(MainGradle.google_service)
+        classpath(MainGradle.firebase)
+        classpath(MainGradle.firebase_analytics)
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }

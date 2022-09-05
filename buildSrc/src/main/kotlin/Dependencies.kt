@@ -1,7 +1,7 @@
 const val kotlin_version = "1.6.10"
 
 object MainGradle {
-    val gradle by lazy { "com.android.tools.build:gradle:7.0.0" }
+    val gradle by lazy { "com.android.tools.build:gradle:7.0.4" }
     val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.18" }
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
     val google_service by lazy { "com.google.gms:google-services:4.3.3" }
@@ -138,7 +138,7 @@ object Firebase {
     private const val firebase_version = "19.0.0"
     val bom by lazy { "com.google.firebase:firebase-bom:29.0.3" }
     val core by lazy { "com.google.firebase:firebase-core" }
-    val crash_ktx by lazy { "com.google.firebase:firebase-crashlytics-ktx" }
+    val crash_ktx by lazy { "com.google.firebase:firebase-crashlytics-ktx:2.9.1" }
     val analytics_ktx by lazy { "com.google.firebase:firebase-analytics-ktx" }
     val auth_ktx by lazy { "com.google.firebase:firebase-auth-ktx" }
     val database_ktx by lazy { "com.google.firebase:firebase-database-ktx" }

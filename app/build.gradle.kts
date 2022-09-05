@@ -3,6 +3,7 @@ plugins {
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
     kotlin(Plugins.parcelize)
+    id(Plugins.crashlytics)
     id(Plugins.gms)
     jacoco
     id(Plugins.sonarqube)
@@ -120,8 +121,7 @@ dependencies {
     testImplementation(Mockk.mockk)
     testImplementation(Junit.junit)
     testImplementation(Kotlin.coroutines_test)
-    testRuntimeOnly(Junit5.vintage_engine)
-}
+    testRuntimeOnly(Junit5.vintage_engine)}
 
 sonarqube {
     properties {
