@@ -105,6 +105,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":feature_queue_passenger"))
     implementation(project(":feature_queue_fleet"))
+    implementation(project(":feature:select_location"))
     implementation(project(":feature_login"))
     implementation(project(":feature_splash"))
     implementation(project(":feature_user_management"))

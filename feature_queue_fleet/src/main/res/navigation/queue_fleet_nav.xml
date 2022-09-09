@@ -8,11 +8,21 @@
         android:id="@+id/queueFleetFragment"
         android:name="id.bluebird.mall.feature_queue_fleet.main.QueueFleetFragment"
         android:label="@string/fleet_title">
+        <argument
+            android:name="locationId"
+            android:defaultValue="-1L"
+            app:argType="long"
+            app:nullable="false" />
+        <argument
+            android:name="subLocationId"
+            android:defaultValue="-1L"
+            app:argType="long"
+            app:nullable="false" />
         <action
             android:id="@+id/action_queueFleetFragment_to_addFleetFragment"
             app:destination="@id/addFleetFragment">
             <argument
-                android:name="subLocation"
+                android:name="subLocationId"
                 android:defaultValue="0L"
                 app:argType="long" />
             <argument
@@ -30,7 +40,7 @@
             <argument
                 android:name="subLocation"
                 android:defaultValue="0L"
-                app:argType="long"/>
+                app:argType="long" />
             <argument
                 android:name="currentQueue"
                 android:defaultValue=""
@@ -49,7 +59,7 @@
         <argument
             android:name="isSearchQueue"
             android:defaultValue="false"
-            app:argType="boolean"/>
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -60,7 +70,7 @@
     <fragment
         android:id="@+id/searchQueueFragment"
         android:name="id.bluebird.mall.feature_queue_fleet.add_fleet.AddFleetFragment"
-        android:label="@string/search_ritase" >
+        android:label="@string/search_ritase">
         <argument
             android:name="subLocation"
             android:defaultValue="0L"
@@ -72,10 +82,11 @@
         <argument
             android:name="isSearchQueue"
             android:defaultValue="true"
-            app:argType="boolean"/>
+            app:argType="boolean" />
     </fragment>
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
 
+<!--    <include app:graph="@navigation/select_location_nav" />-->
 
 </navigation>

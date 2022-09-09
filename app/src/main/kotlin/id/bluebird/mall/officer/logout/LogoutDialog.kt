@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.bluebird.mall.core.utils.hawk.AuthUtils
+import id.bluebird.mall.feature.select_location.LocationNavigationTemporary
 import id.bluebird.mall.login.LoginFragment
 import id.bluebird.mall.navigation.NavigationNav
 import id.bluebird.mall.navigation.NavigationSealed
@@ -75,6 +76,7 @@ class LogoutDialog : BottomSheetDialogFragment() {
                         }
                         LogoutDialogState.ProsesDialog -> {
                             dialog?.dismiss()
+                            LocationNavigationTemporary.removeTempData()
                             AuthUtils.logout()
                             NavigationNav.navigate(
                                 NavigationSealed.Login(

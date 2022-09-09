@@ -12,6 +12,12 @@ class LocationRepositoryImpl(
         OkHttpChannel.channel
     )
 ) : LocationRepository {
+    override fun getSubLocations(): Flow<LocationPangkalanOuterClass.GetSubLocationsResponse> =
+        flow {
+            val response = locationGrpc.getSubLocations(Empty.getDefaultInstance())
+            emit(response)
+        }
+
     override fun getSubLocationByLocationId(locationId: Long): Flow<LocationPangkalanOuterClass.GetSubLocationByLocationResp> =
         flow {
             val request = LocationPangkalanOuterClass.GetSubLocationByLocationReq.newBuilder()
@@ -24,7 +30,10 @@ class LocationRepositoryImpl(
 
         }
 
-    override fun updateBuffer(subLocationId: Long, value: Long): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer> =
+    override fun updateBuffer(
+        subLocationId: Long,
+        value: Long
+    ): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer> =
         flow {
             val request = LocationPangkalanOuterClass.RequestUpdateBuffer.newBuilder()
                 .apply {

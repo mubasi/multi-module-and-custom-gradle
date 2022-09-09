@@ -5,7 +5,7 @@
     <string name="request">Permintaan</string>
     <string name="eng_request">Request</string>
     <string name="ritase">Ritase</string>
-    <string name="fleet_title">Antrian armada</string>
+    <string name="fleet_title">Antrian Armada</string>
     <string name="add_fleet">Tambah armada</string>
     <string name="search_fleet">Cari taxi</string>
     <string name="message_add_fleet">Masukkan no. lambung armada untuk menambah armada secara manual.</string>

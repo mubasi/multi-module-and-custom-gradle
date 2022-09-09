@@ -63,6 +63,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":feature:select_location"))
     implementation(project(":domain_passenger"))
     implementation(project(":domain_user"))
     implementation(project(":navigation"))

@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import id.bluebird.mall.feature_user_management.R
 
-fun Toolbar.setToolbarAddFleetFragment(
+fun Toolbar.setToolbarBackArrow(
     actionBar: ActionBar?
 ) {
 

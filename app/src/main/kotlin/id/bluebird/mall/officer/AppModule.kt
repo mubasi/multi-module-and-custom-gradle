@@ -12,15 +12,18 @@ import id.bluebird.mall.domain_fleet.domain.interactor.*
 import id.bluebird.mall.domain_location.LocationRepository
 import id.bluebird.mall.domain_location.LocationRepositoryImpl
 import id.bluebird.mall.domain_location.domain.cases.GetLocationsCases
+import id.bluebird.mall.domain_location.domain.cases.GetLocationsWithSubUseCases
 import id.bluebird.mall.domain_location.domain.cases.GetSubLocationByLocationIdCases
 import id.bluebird.mall.domain_location.domain.cases.UpdateBufferCases
 import id.bluebird.mall.domain_location.domain.interactor.GetLocations
+import id.bluebird.mall.domain_location.domain.interactor.GetLocationsWithSub
 import id.bluebird.mall.domain_location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.mall.domain_location.domain.interactor.UpdateBuffer
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepository
 import id.bluebird.mall.domain_pasenger.QueueReceiptRepositoryimpl
 import id.bluebird.mall.domain_pasenger.domain.cases.*
 import id.bluebird.mall.domain_pasenger.domain.interactor.*
+import id.bluebird.mall.feature.select_location.SelectLocationViewModel
 import id.bluebird.mall.feature_monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.mall.feature_monitoring.main.MonitoringViewModel
 import id.bluebird.mall.feature_queue_fleet.adapter.FleetsAdapter
@@ -68,6 +71,7 @@ object AppModule {
         viewModel { EditBufferViewModel(get()) }
         viewModel { SearchLocationViewModel(get()) }
         viewModel { QueueSearchViewModel(get()) }
+        viewModel { SelectLocationViewModel(get()) }
     }
 
     private val userCases = module {
@@ -94,6 +98,7 @@ object AppModule {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
         single<UpdateBuffer> { UpdateBufferCases(get()) }
         single<GetLocations> { GetLocationsCases(get()) }
+        single<GetLocationsWithSub> { GetLocationsWithSubUseCases(get()) }
     }
 
     private val passengerCases = module {
@@ -103,13 +108,13 @@ object AppModule {
         single<SkipQueue> { SkipQueueCases(get()) }
         single<ListQueueSkipped> { ListQueueSkippedCases(get()) }
         single<ListQueueWaiting> { ListQueueWaitingCases(get()) }
-        single<GetWaitingQueue> {GetWaitingQueueCases(get())}
-        single<GetCurrentQueue> {GetCurrentQueueCase(get())}
-        single<SearchWaitingQueue> {SearchWaitingQueueCases(get())}
-        single<DeleteSkipped> {DeleteSkippedCases(get())}
-        single<RestoreSkipped> {RestoreSkippedCases(get())}
-        single<CounterBar> {CounterBarCases(get())}
-        single<SearchQueue> {SearchQueueCases(get())}
+        single<GetWaitingQueue> { GetWaitingQueueCases(get()) }
+        single<GetCurrentQueue> { GetCurrentQueueCase(get()) }
+        single<SearchWaitingQueue> { SearchWaitingQueueCases(get()) }
+        single<DeleteSkipped> { DeleteSkippedCases(get()) }
+        single<RestoreSkipped> { RestoreSkippedCases(get()) }
+        single<CounterBar> { CounterBarCases(get()) }
+        single<SearchQueue> { SearchQueueCases(get()) }
     }
 
     private val repository = module {
