@@ -21,6 +21,13 @@ sealed class NavigationSealed(
     data class QueuePassenger(val destination: Int? = null, val frag: Fragment) :
         NavigationSealed(action = destination, fragment = frag)
 
-    data class Monitoring(val destination: Int? = null, val frag: Fragment):
+    data class Monitoring(val destination: Int? = null, val frag: Fragment) :
+        NavigationSealed(action = destination, fragment = frag)
+
+    data class SelectLocation(
+        val destination: Int? = null,
+        val frag: Fragment,
+        val isMenuFleet: Boolean = false
+    ) :
         NavigationSealed(action = destination, fragment = frag)
 }

@@ -1,11 +1,9 @@
 package id.bluebird.mall.home.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -21,24 +19,26 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.mall.home.dialog_delete_skipped.DialogDeleteSkipped
 import id.bluebird.mall.home.dialog_restore_skipped.DialogRestoreSkipped
+import id.bluebird.mall.navigation.NavigationNav
+import id.bluebird.mall.navigation.NavigationSealed
 
 
 class QueuePassengerFragment : Fragment() {
 
-    private lateinit var binding : FragmentQueuePassengerBinding
-    private val _queuePassengerViewModel : QueuePassengerViewModel by viewModel()
-    private var positionType : Int = 0
+    private lateinit var binding: FragmentQueuePassengerBinding
+    private val _queuePassengerViewModel: QueuePassengerViewModel by viewModel()
+    private var positionType: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_queue_passenger, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_queue_passenger, container, false)
         return binding.root
     }
 
-    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -48,20 +48,37 @@ class QueuePassengerFragment : Fragment() {
         binding.successCurrentQueue = false
         binding.successListQueue = false
 
-        _queuePassengerViewModel.init()
         setupTabLayout()
         setupListQueue()
+        observer()
+        _queuePassengerViewModel.init()
 
+
+    }
+
+    private fun observer() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 with(_queuePassengerViewModel) {
                     queuePassengerState.collect {
-                        when(it) {
+                        when (it) {
+                            QueuePassengerState.ToSelectLocation -> {
+                                NavigationNav.navigate(
+                                    NavigationSealed.SelectLocation(
+                                        destination = null,
+                                        frag = this@QueuePassengerFragment,
+                                        isMenuFleet = false
+                                    )
+                                )
+                            }
                             QueuePassengerState.ProsesGetUser -> {
                                 binding.showData = false
                             }
                             QueuePassengerState.ProsesQueue -> {
-                                DialogQueueReceipt().show(childFragmentManager, DialogQueueReceipt.TAG)
+                                DialogQueueReceipt().show(
+                                    childFragmentManager,
+                                    DialogQueueReceipt.TAG
+                                )
                             }
                             QueuePassengerState.SuccessGetUser -> {
                                 binding.showData = false
@@ -102,14 +119,6 @@ class QueuePassengerFragment : Fragment() {
                                 setupSkipped()
                                 binding.showData = true
                             }
-                            QueuePassengerState.ProsesListQueue -> {
-                                binding.showData = false
-                                binding.successListQueue = false
-                            }
-                            QueuePassengerState.SuccessListQueue -> {
-                                binding.showData = true
-                                binding.successListQueue = true
-                            }
                             QueuePassengerState.ProsesSkipQueue -> {
                                 val bundle = Bundle()
                                 bundle.putLong("queue_id", currentQueueCache.id)
@@ -119,7 +128,10 @@ class QueuePassengerFragment : Fragment() {
 
                                 val dialogSkipQueue = DialogSkipQueueFragment()
                                 dialogSkipQueue.arguments = bundle
-                                dialogSkipQueue.show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
+                                dialogSkipQueue.show(
+                                    requireActivity().supportFragmentManager,
+                                    DialogSkipQueueFragment.TAG
+                                )
                             }
                             is QueuePassengerState.ProsesDeleteQueueSkipped -> {
                                 val currentData = it.queueReceiptCache
@@ -128,7 +140,10 @@ class QueuePassengerFragment : Fragment() {
                                     queueId = currentData.queueId,
                                     locationId = mUserInfo.locationId,
                                     subLocationId = mUserInfo.subLocationId
-                                ).show(requireActivity().supportFragmentManager, DialogSkipQueueFragment.TAG)
+                                ).show(
+                                    requireActivity().supportFragmentManager,
+                                    DialogSkipQueueFragment.TAG
+                                )
                             }
                             is QueuePassengerState.ProsesRestoreQueueSkipped -> {
                                 val currentData = it.queueReceiptCache
@@ -137,7 +152,10 @@ class QueuePassengerFragment : Fragment() {
                                     queueId = currentData.queueId,
                                     locationId = mUserInfo.locationId,
                                     subLocationId = mUserInfo.subLocationId
-                                ).show(requireActivity().supportFragmentManager, DialogRestoreSkipped.TAG)
+                                ).show(
+                                    requireActivity().supportFragmentManager,
+                                    DialogRestoreSkipped.TAG
+                                )
                             }
                             is QueuePassengerState.SearchQueue -> {
                                 val bundle = Bundle()
@@ -145,6 +163,9 @@ class QueuePassengerFragment : Fragment() {
                                 bundle.putLong("subLocationId", it.subLocationId)
                                 bundle.putInt("type", positionType)
                                 findNavController().navigate(R.id.searchFleetFragment, bundle)
+                            }
+                            else -> {
+                                // do nothing
                             }
                         }
                     }
@@ -171,7 +192,7 @@ class QueuePassengerFragment : Fragment() {
         val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
         binding.recyclerView.adapter = adapter
 
-        if(countWaiting > 0L) {
+        if (countWaiting > 0L) {
             binding.successListQueue = true
         }
     }
@@ -179,11 +200,14 @@ class QueuePassengerFragment : Fragment() {
     fun setListQueue(position: Int) {
         positionType = position
         binding.successListQueue = false
-        if(position == 0) {
+        if (position == 0) {
             setupWaiting()
-        } else if(position == 1) {
+        } else if (position == 1) {
             setupSkipped()
-            val adapter = CustomAdapterSkipped(_queuePassengerViewModel.listQueueSkippedCache.queue, _queuePassengerViewModel)
+            val adapter = CustomAdapterSkipped(
+                _queuePassengerViewModel.listQueueSkippedCache.queue,
+                _queuePassengerViewModel
+            )
             binding.recyclerView.adapter = adapter
         }
     }
@@ -193,7 +217,7 @@ class QueuePassengerFragment : Fragment() {
         val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
         tab1?.text = "Tertunda ($countSkipped)"
 
-        if(countSkipped > 0L) {
+        if (countSkipped > 0L) {
             binding.successListQueue = true
         }
     }

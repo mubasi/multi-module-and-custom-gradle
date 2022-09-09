@@ -2,9 +2,7 @@ package id.bluebird.mall.officer
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
@@ -21,9 +19,10 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
 import id.bluebird.mall.core.utils.hawk.UserUtils
+import id.bluebird.mall.feature.select_location.SelectNavigationVariable
 import id.bluebird.mall.officer.databinding.ActivityMainBinding
 import id.bluebird.mall.officer.extensions.backArrowButton
-import id.bluebird.mall.officer.extensions.setToolbarAddFleetFragment
+import id.bluebird.mall.officer.extensions.setToolbarBackArrow
 import id.bluebird.mall.officer.extensions.setToolbarCreateUserFragment
 import id.bluebird.mall.officer.logout.LogoutDialog
 
@@ -54,9 +53,16 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         setupActionBarWithNavController(navController, appBarConfiguration)
         NavigationUI.setupWithNavController(mBinding.navView, navController)
         navController.setGraph(R.navigation.main_nav)
+        navController()
+
+        mBinding.navView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun navController() {
         navController.addOnDestinationChangedListener { _, destination, args ->
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            mBinding.navView.menu.findItem(R.id.user_management_nav).isVisible = UserUtils.getPrivilege() != UserUtils.OFFICER
+            mBinding.navView.menu.findItem(R.id.user_management_nav).isVisible =
+                UserUtils.isUserOfficer().not()
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -75,24 +81,45 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.searchQueueFragment -> {
                         navigateBackWithArrow(R.id.searchQueueFragment)
                     }
+                    R.id.queueFleetFragment -> {
+                        setQueueToolbar(R.id.queueFleetFragment)
+                    }
+                    R.id.queuePassengerFragment -> {
+                        setQueueToolbar(R.id.queuePassengerFragment)
+                    }
                     R.id.monitoringFragment -> {
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                        toolbarVisibility()
                     }
                     R.id.searchLocationFragment -> {
                         navigateBackWithArrow(R.id.searchLocationFragment)
                     }
+                    R.id.selectLocationFragment -> {
+                        setToolbarTittleForLocationFragment(args)
+                    }
                     else -> {
-                      toolbarVisibility()
+                        toolbarVisibility()
                     }
                 }
             }
         }
-
-        mBinding.navView.setNavigationItemSelectedListener(this)
     }
 
-    private fun toolbarVisibility(){
+    private fun setQueueToolbar(id:Int){
+        if (UserUtils.isUserOfficer().not()) {
+            navigateBackWithArrow(id = id)
+        } else {
+            toolbarVisibility()
+        }
+    }
+
+    private fun setToolbarTittleForLocationFragment(args: Bundle?) {
+        val isMenu = args?.getBoolean(SelectNavigationVariable.IS_MENU)
+        mBinding.toolbar.title =
+            if (isMenu == true) getString(R.string.fleet_title) else getString(R.string.queue_passenger)
+        toolbarVisibility()
+    }
+
+    private fun toolbarVisibility() {
         with(mBinding) {
             toolbar.visibility = View.VISIBLE
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
@@ -126,7 +153,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(
-                    R.id.queueFleetFragment,
+                    R.id.searchLocationFragment,
                     R.id.queuePassengerFragment,
                     R.id.monitoring_nav,
                     R.id.user_management_nav
@@ -176,7 +203,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private fun navigateBackWithArrow(id: Int) {
         with(mBinding) {
             hideDrawerMenu()
-            toolbar.setToolbarAddFleetFragment(
+            toolbar.setToolbarBackArrow(
                 actionBar = supportActionBar
             )
             toolbar.backArrowButton(
@@ -187,11 +214,12 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.action_logout -> {
                 drawer()
                 LogoutDialog().show(supportFragmentManager, LogoutDialog.TAG)
-            } else -> {
+            }
+            else -> {
                 NavigationUI.onNavDestinationSelected(item, navController)
                 drawer()
             }

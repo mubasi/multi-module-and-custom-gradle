@@ -2,6 +2,9 @@ package id.bluebird.mall.home.main
 import id.bluebird.mall.home.model.QueueReceiptCache
 
 sealed class QueuePassengerState {
+    object ProgressHolder:QueuePassengerState()
+    object ToSelectLocation:QueuePassengerState()
+
     object ProsesQueue : QueuePassengerState()
     object ProsesSkipQueue : QueuePassengerState()
 

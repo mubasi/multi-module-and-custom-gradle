@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
+import id.bluebird.mall.core.extensions.isUserOfficer
 import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
@@ -18,6 +19,7 @@ import id.bluebird.mall.domain_fleet.domain.cases.GetCount
 import id.bluebird.mall.domain_fleet.domain.cases.GetListFleet
 import id.bluebird.mall.domain_pasenger.GetCurrentQueueState
 import id.bluebird.mall.domain_pasenger.domain.cases.GetCurrentQueue
+import id.bluebird.mall.feature.select_location.LocationNavigationTemporary
 import id.bluebird.mall.feature_queue_fleet.model.CountCache
 import id.bluebird.mall.feature_queue_fleet.model.FleetItem
 import id.bluebird.mall.feature_queue_fleet.model.UserInfo
@@ -67,7 +69,24 @@ class QueueFleetViewModel(
     }
 
     fun init() {
-        getUserById()
+        if (LocationNavigationTemporary.isLocationNavAvailable()
+                .not() && UserUtils.isUserOfficer().not()
+        ) {
+            viewModelScope.launch {
+                _queueFleetState.emit(QueueFleetState.ProgressHolder)
+                delay(400)
+                _queueFleetState.emit(QueueFleetState.ToSelectLocation)
+            }
+        } else {
+            getUserById()
+        }
+    }
+
+    fun initLocation(locationId: Long, subLocationId: Long) {
+        if (locationId > 0 && subLocationId > 0) {
+            mUserInfo.subLocationId = subLocationId
+            mUserInfo.locationId = locationId
+        }
     }
 
     private fun getUserById() {
@@ -96,9 +115,16 @@ class QueueFleetViewModel(
         }
     }
 
-    private fun createTitleLocation(it:CreateUserResult){
+    private fun createTitleLocation(it: CreateUserResult) {
         with(it) {
-            titleLocation.value = "$locationName $subLocationName".getLastSync()
+            titleLocation.value = if (roleId.isUserOfficer()) {
+                "$locationName $subLocationName".getLastSync()
+            } else {
+                val location = LocationNavigationTemporary.getLocationNav()
+                location?.let {
+                    "${it.locationName} ${it.subLocationName}".getLastSync()
+                }
+            }
         }
     }
 
@@ -158,7 +184,11 @@ class QueueFleetViewModel(
             )
                 .flowOn(Dispatchers.Main)
                 .catch { error ->
-                    _queueFleetState.emit(QueueFleetState.FailedDepart(error.message ?: ERROR_MESSAGE_UNKNOWN))
+                    _queueFleetState.emit(
+                        QueueFleetState.FailedDepart(
+                            error.message ?: ERROR_MESSAGE_UNKNOWN
+                        )
+                    )
                 }
                 .collectLatest {
                     when (it) {
@@ -198,7 +228,7 @@ class QueueFleetViewModel(
     fun showRecordRitase(fleetItem: FleetItem, queueId: String?) {
         viewModelScope.launch {
             var queue = queueId ?: ""
-            with(queueId){
+            with(queueId) {
                 if (isNullOrBlank()) {
                     getCurrentQueue
                         .invoke()
@@ -207,14 +237,21 @@ class QueueFleetViewModel(
                             queue = ""
                         }.collect {
                             when (it) {
-                                is GetCurrentQueueState.Success -> queue = it.currentQueueResult.number
+                                is GetCurrentQueueState.Success -> queue =
+                                    it.currentQueueResult.number
                             }
                         }
                 } else {
                     this
                 }
             }
-            _queueFleetState.emit(QueueFleetState.RecordRitaseToDepart(fleetItem, mUserInfo.subLocationId, queue))
+            _queueFleetState.emit(
+                QueueFleetState.RecordRitaseToDepart(
+                    fleetItem,
+                    mUserInfo.subLocationId,
+                    queue
+                )
+            )
         }
     }
 
@@ -266,7 +303,14 @@ class QueueFleetViewModel(
 
     fun showSearchQueue(fleetItem: FleetItem, currentQueueId: String) {
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.SearchQueueToDepart(fleetItem, mUserInfo.locationId, mUserInfo.subLocationId, currentQueueId))
+            _queueFleetState.emit(
+                QueueFleetState.SearchQueueToDepart(
+                    fleetItem,
+                    mUserInfo.locationId,
+                    mUserInfo.subLocationId,
+                    currentQueueId
+                )
+            )
         }
     }
 

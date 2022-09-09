@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="id.bluebird.mall.feature.select_location.SelectLocationViewModel" />
+
+        <variable
+            name="pos"
+            type="Integer" />
+
+        <variable
+            name="location"
+            type="id.bluebird.mall.feature.select_location.model.LocationModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> vm.expandOrCollapseParent(location, pos)}">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="12dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="@{location.name}"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toStartOf="@id/imv_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imv_arrow"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_arrow_next"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_title_location"
+            app:layout_constraintTop_toTopOf="@id/tv_title_location" />
+
+        <View
+            android:id="@+id/line_view"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/gray_line"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_location" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -70,8 +70,11 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":feature:select_location"))
     implementation(project(":domain_fleet"))
+    implementation(project(":navigation"))
     implementation(project(":domain_user"))
+    implementation(project(":domain_location"))
     implementation(project(":domain_passenger"))
     implementation(Kotlin.coroutines_android)
     implementation(UiMaterial.swipe)

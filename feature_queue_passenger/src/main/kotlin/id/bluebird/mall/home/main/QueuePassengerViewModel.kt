@@ -1,10 +1,10 @@
 package id.bluebird.mall.home.main
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.mall.core.extensions.StringExtensions.getLastSync
+import id.bluebird.mall.core.extensions.isUserOfficer
 import id.bluebird.mall.core.utils.hawk.UserUtils
 import id.bluebird.mall.domain.user.GetUserByIdState
 import id.bluebird.mall.domain.user.domain.intercator.GetUserId
@@ -17,8 +17,10 @@ import id.bluebird.mall.domain_pasenger.domain.cases.CounterBar
 import id.bluebird.mall.domain_pasenger.domain.cases.CurrentQueue
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueSkipped
 import id.bluebird.mall.domain_pasenger.domain.cases.ListQueueWaiting
+import id.bluebird.mall.feature.select_location.LocationNavigationTemporary
 import id.bluebird.mall.home.model.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -26,7 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class QueuePassengerViewModel(
-    private val getUserId : GetUserId,
+    private val getUserId: GetUserId,
     private val currentQueue: CurrentQueue,
     private val listQueueWaiting: ListQueueWaiting,
     private val listQueueSkipped: ListQueueSkipped,
@@ -41,15 +43,25 @@ class QueuePassengerViewModel(
         MutableSharedFlow()
     val queuePassengerState = _queuePassengerState.asSharedFlow()
     val titleLocation: MutableLiveData<String> = MutableLiveData("...")
-    var currentQueueCache : CurrentQueueCache = CurrentQueueCache()
-    var currentCounterBar : MutableLiveData<CounterBarCache> = MutableLiveData()
+    var currentQueueCache: CurrentQueueCache = CurrentQueueCache()
+    var currentCounterBar: MutableLiveData<CounterBarCache> = MutableLiveData()
     val currentQueueNumber: MutableLiveData<String> = MutableLiveData("...")
     var mUserInfo: UserInfo = UserInfo()
-    var listQueueWaitingCache : ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList<QueueReceiptCache>())
-    var listQueueSkippedCache : ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList<QueueReceiptCache>())
+    var listQueueWaitingCache: ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList())
+    var listQueueSkippedCache: ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList())
 
     fun init() {
-        getUserById()
+        if (LocationNavigationTemporary.isLocationNavAvailable()
+                .not() && UserUtils.isUserOfficer().not()
+        ) {
+            viewModelScope.launch {
+                _queuePassengerState.emit(QueuePassengerState.ProgressHolder)
+                delay(400)
+                _queuePassengerState.emit(QueuePassengerState.ToSelectLocation)
+            }
+        } else {
+            getUserById()
+        }
     }
 
     private fun getUserById() {
@@ -78,9 +90,16 @@ class QueuePassengerViewModel(
         }
     }
 
-    private fun createTitleLocation(it: CreateUserResult){
+    private fun createTitleLocation(it: CreateUserResult) {
         with(it) {
-            titleLocation.value = "$locationName $subLocationName".getLastSync()
+            titleLocation.value = if (roleId.isUserOfficer()) {
+                "$locationName $subLocationName".getLastSync()
+            } else {
+                val location = LocationNavigationTemporary.getLocationNav()
+                location?.let {
+                    "${it.locationName} ${it.subLocationName}".getLastSync()
+                }
+            }
         }
     }
 
@@ -99,7 +118,7 @@ class QueuePassengerViewModel(
                     )
                 }
                 .collect {
-                    when(it) {
+                    when (it) {
                         is GetCurrentQueueState.Success -> {
                             it.currentQueueResult.let { result ->
                                 currentQueueCache = CurrentQueueCache(
@@ -136,7 +155,7 @@ class QueuePassengerViewModel(
                     )
                 }
                 .collect {
-                    when(it) {
+                    when (it) {
                         is ListQueueWaitingState.Success -> {
                             it.listQueueResult.let { result ->
                                 val listQueue = ArrayList<QueueReceiptCache>()
@@ -181,7 +200,7 @@ class QueuePassengerViewModel(
                     )
                 }
                 .collect {
-                    when(it) {
+                    when (it) {
                         is ListQueueSkippedState.Success -> {
                             it.listQueueResult.let { result ->
                                 val listQueue = ArrayList<QueueReceiptCache>()
@@ -210,7 +229,7 @@ class QueuePassengerViewModel(
         }
     }
 
-    fun prosesSkipQueue(){
+    fun prosesSkipQueue() {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesSkipQueue)
         }
@@ -222,15 +241,19 @@ class QueuePassengerViewModel(
         }
     }
 
-    fun prosesDeleteQueue(queueReceiptCache: QueueReceiptCache){
+    fun prosesDeleteQueue(queueReceiptCache: QueueReceiptCache) {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesDeleteQueueSkipped(queueReceiptCache))
         }
     }
 
-    fun prosesRestoreQueue(queueReceiptCache: QueueReceiptCache){
+    fun prosesRestoreQueue(queueReceiptCache: QueueReceiptCache) {
         viewModelScope.launch {
-            _queuePassengerState.emit(QueuePassengerState.ProsesRestoreQueueSkipped(queueReceiptCache))
+            _queuePassengerState.emit(
+                QueuePassengerState.ProsesRestoreQueueSkipped(
+                    queueReceiptCache
+                )
+            )
         }
     }
 
@@ -250,7 +273,7 @@ class QueuePassengerViewModel(
                     )
                 }
                 .collect {
-                    when(it) {
+                    when (it) {
                         is CounterBarState.Success -> {
                             it.counterBarResult.let { result ->
                                 currentCounterBar.value = CounterBarCache(
@@ -275,7 +298,12 @@ class QueuePassengerViewModel(
 
     fun searchQueue() {
         viewModelScope.launch {
-            _queuePassengerState.emit(QueuePassengerState.SearchQueue(locationId = mUserInfo.locationId, subLocationId = mUserInfo.subLocationId))
+            _queuePassengerState.emit(
+                QueuePassengerState.SearchQueue(
+                    locationId = mUserInfo.locationId,
+                    subLocationId = mUserInfo.subLocationId
+                )
+            )
         }
     }
 

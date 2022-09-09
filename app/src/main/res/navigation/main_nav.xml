@@ -10,4 +10,5 @@
     <include app:graph="@navigation/queue_fleet_nav" />
     <include app:graph="@navigation/user_management_nav" />
     <include app:graph="@navigation/monitoring_nav" />
+    <include app:graph="@navigation/select_location_nav" />
 </navigation>
