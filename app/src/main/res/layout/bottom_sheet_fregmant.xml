@@ -3,7 +3,7 @@
     <data>
         <variable
             name="logoutViewModel"
-            type="id.bluebird.mall.officer.logout.LogoutDialogViewModel" />
+            type="id.bluebird.vsm.pangkalan.logout.LogoutDialogViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
