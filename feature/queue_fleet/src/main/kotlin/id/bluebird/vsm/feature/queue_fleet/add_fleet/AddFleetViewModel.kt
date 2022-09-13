@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.queue_fleet.add_fleet
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,21 @@ class AddFleetViewModel(
     private var _subLocation: Long = -1
     private var _isSearchQueue: Boolean = false
 
+    @VisibleForTesting
+    fun setParams(temp: String) {
+        param.value = temp
+    }
+
+    @VisibleForTesting
+    fun setSubLocation(temp: Long) {
+        _subLocation = temp
+    }
+
+    @VisibleForTesting
+    fun setIsSearchQueue(temp: Boolean ) {
+        _isSearchQueue = temp
+    }
+
     fun init(subLocationId: Long, isSearchQueue: Boolean) {
         _isSearchQueue = isSearchQueue
         _subLocation = subLocationId
@@ -44,7 +60,7 @@ class AddFleetViewModel(
         }
     }
 
-    private fun searchQueue() {
+    fun searchQueue() {
         viewModelScope.launch {
             resetValue()
             _addFleetState.emit(AddFleetState.GetListEmpty)

@@ -63,6 +63,18 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain:user"))
     implementation(project(":domain:location"))
+    implementation(Kotlin.coroutines_android)
+    implementation(UiMaterial.swipe)
+
+    compileOnly(Kotlin.javax_annotation)
+
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testImplementation(OtherLib.turbin)
+    testImplementation(Mockk.mockk)
+    testImplementation(Junit.junit)
+    testImplementation(Kotlin.coroutines_test)
+    testRuntimeOnly(Junit5.vintage_engine)
 
     testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)
