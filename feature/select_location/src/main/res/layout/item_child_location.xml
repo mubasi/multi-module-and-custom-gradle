@@ -6,11 +6,11 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.feature.select_location.SelectLocationViewModel" />
+            type="id.bluebird.vsm.feature.select_location.SelectLocationViewModel" />
 
         <variable
             name="subLocation"
-            type="id.bluebird.mall.feature.select_location.model.SubLocation" />
+            type="id.bluebird.vsm.feature.select_location.model.SubLocation" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -73,8 +73,8 @@ android {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":domain_user"))
-    implementation(project(":domain_location"))
+    implementation(project(":domain:user"))
+    implementation(project(":domain:location"))
     implementation(project(":navigation"))
 
     testImplementation(Junit5.jupiter)

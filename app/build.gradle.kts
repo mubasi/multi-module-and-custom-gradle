@@ -21,7 +21,7 @@ apply {
 android {
     compileSdk = Version.compileSdk
     defaultConfig {
-        applicationId = "id.bluebird.mall.officer"
+        applicationId = "id.bluebird.vsm.pangkalan"
         minSdk = Version.minSdk
         targetSdk = Version.targetSdk
         versionCode = Version.versionCode
@@ -57,8 +57,8 @@ android {
         }
     }
     sourceSets.getByName("test") {
-        kotlin.srcDir(project(":feature_queue_fleet").file("src/test/kotlin"))
-        kotlin.srcDir(project(":domain_fleet").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:queue_fleet").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")
@@ -103,18 +103,18 @@ android {
 }
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature_queue_passenger"))
-    implementation(project(":feature_queue_fleet"))
+    implementation(project(":feature:queue_passenger"))
+    implementation(project(":feature:queue_fleet"))
     implementation(project(":feature:select_location"))
-    implementation(project(":feature_login"))
-    implementation(project(":feature_splash"))
-    implementation(project(":feature_user_management"))
-    implementation(project(":domain_user"))
-    implementation(project(":domain_fleet"))
-    implementation(project(":domain_passenger"))
-    implementation(project(":domain_location"))
+    implementation(project(":feature:login"))
+    implementation(project(":feature:splash"))
+    implementation(project(":feature:user_management"))
+    implementation(project(":domain:user"))
+    implementation(project(":domain:fleet"))
+    implementation(project(":domain:passenger"))
+    implementation(project(":domain:location"))
     implementation(project(":navigation"))
-    implementation(project(":feature_monitoring"))
+    implementation(project(":feature:monitoring"))
 
     testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)

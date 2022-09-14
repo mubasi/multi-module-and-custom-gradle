@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="fleetTypeId"
+            type="Long" />
+
+        <variable
+            name="subLocationCache"
+            type="id.bluebird.vsm.feature.user_management.create.model.SubLocationCache" />
+    </data>
+
+    <com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/chips_item_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:checked="@{subLocationCache.selected}"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:tag="@{subLocationCache.id}"
+        android:text="@{subLocationCache.name}"
+        android:textColor="@color/primary_color"
+        app:checkedIcon="@drawable/ic_baseline_check"
+        app:checkedIconTint="@color/primary_color"
+        app:chipBackgroundColor="@color/white"
+        app:chipStrokeColor="@color/primary_color"
+        app:chipStrokeWidth="1dp" />
+</layout>

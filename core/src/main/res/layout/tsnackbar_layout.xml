@@ -15,7 +15,7 @@
 -->
 <view xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Widget.Design.Snackbar"
-    class="id.bluebird.mall.core.utils.top_snack.TSnackbar$SnackbarLayout"
+    class="id.bluebird.vsm.core.utils.top_snack.TSnackbar$SnackbarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/thirty_two_dp"

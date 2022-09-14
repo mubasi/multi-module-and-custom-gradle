@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="id.bluebird.mall.feature.select_location.SelectLocationViewModel" />
+            type="id.bluebird.vsm.feature.select_location.SelectLocationViewModel" />
 
         <variable
             name="pos"
@@ -14,7 +14,7 @@
 
         <variable
             name="location"
-            type="id.bluebird.mall.feature.select_location.model.LocationModel" />
+            type="id.bluebird.vsm.feature.select_location.model.LocationModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
