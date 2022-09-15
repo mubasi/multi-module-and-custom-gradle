@@ -5,5 +5,5 @@ import id.bluebird.vsm.domain.passenger.model.Queue
 import kotlinx.coroutines.flow.Flow
 
 interface GetWaitingQueue {
-    operator fun invoke(locationId: Long): Flow<WaitingQueueState<List<Queue>>>
+    operator fun invoke(locationId: Long): Flow<WaitingQueueState>
 }
