@@ -1,5 +1,6 @@
 package id.bluebird.vsm.domain.user
 
+import com.google.firebase.auth.FirebaseAuth
 import com.google.protobuf.Empty
 import id.bluebird.vsm.core.utils.DateUtils.getDateRfc399
 import id.bluebird.vsm.core.utils.OkHttpChannel
@@ -38,6 +39,7 @@ class UserRepositoryImpl(
             this.uuid = uuid
         }.build()
         val response = userGrpc.forceLogout(request)
+        FirebaseAuth.getInstance().signOut()
         emit(response)
     }
 

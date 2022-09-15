@@ -1,6 +1,8 @@
 package id.bluebird.vsm.pangkalan
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.MenuItem
@@ -25,6 +27,14 @@ import id.bluebird.vsm.pangkalan.extensions.setToolbarCreateUserFragment
 import id.bluebird.vsm.pangkalan.logout.LogoutDialog
 
 internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    companion object {
+        fun startNewIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            return intent
+        }
+    }
 
     private lateinit var mNavController: androidx.navigation.NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
