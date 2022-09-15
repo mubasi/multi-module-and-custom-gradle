@@ -15,6 +15,10 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -55,5 +59,13 @@ dependencies {
     implementation(Firebase.auth_ktx)
 
     compileOnly(Kotlin.javax_annotation)
+
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testImplementation(OtherLib.turbin)
+    testImplementation(Mockk.mockk)
+    testImplementation(Junit.junit)
+    testImplementation(Kotlin.coroutines_test)
+    testRuntimeOnly(Junit5.vintage_engine)
 
 }
