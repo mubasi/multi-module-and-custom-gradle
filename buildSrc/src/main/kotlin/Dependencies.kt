@@ -64,7 +64,7 @@ object Grpc {
         return "$gen_artifact$silicon"
     }
 
-    fun getJavaLite(silicon: String):String{
+    fun getJavaLite(silicon: String): String {
         return "$get_javalite_arifact$silicon"
     }
 
@@ -202,4 +202,6 @@ object OtherLib {
     val turbin by lazy { "app.cash.turbine:turbine:0.7.0" }
     val slidetoact by lazy { "com.ncorti:slidetoact:0.9.0" }
     val tableView by lazy { "com.evrencoskun.library:tableview:0.8.9.4" }
+    val cameraToText by lazy { "com.google.android.gms:play-services-mlkit-text-recognition:18.0.2" }
+    val cameraView by lazy { "com.otaliastudios:cameraview:1.6.0" }
 }

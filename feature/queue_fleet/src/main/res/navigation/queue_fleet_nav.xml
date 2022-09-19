@@ -60,12 +60,26 @@
             android:name="isSearchQueue"
             android:defaultValue="false"
             app:argType="boolean" />
+
+        <action
+            android:id="@+id/action_queueFleetFragment_to_addByCamera"
+            app:destination="@id/addByCameraFragment">
+            <argument
+                android:name="currentQueue"
+                android:defaultValue=""
+                app:argType="string" />
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/searchFleetFragment"
         android:name="id.bluebird.vsm.feature.queue_fleet.search_fleet.SearchFleetFragment"
         android:label="@string/search_fleet" />
+
+    <fragment
+        android:id="@+id/addByCameraFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraFragment"
+        android:label="@string/scan_number_side_title" />
 
     <fragment
         android:id="@+id/searchQueueFragment"

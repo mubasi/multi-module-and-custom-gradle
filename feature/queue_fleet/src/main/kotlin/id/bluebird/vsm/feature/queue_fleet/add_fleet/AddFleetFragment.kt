@@ -1,12 +1,19 @@
 package id.bluebird.vsm.feature.queue_fleet.add_fleet
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -16,10 +23,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.extensions.checkIfIntegerIsGtThanZero
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.queue_fleet.R
+import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraFragment
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.adapter.AddFleetAdapter
 import id.bluebird.vsm.feature.queue_fleet.databinding.AddFleetFragmentBinding
+import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetFragmentDirections
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import android.app.Activity
+import androidx.activity.result.contract.ActivityResultContracts
 
 class AddFleetFragment : Fragment() {
     companion object {
@@ -27,6 +38,10 @@ class AddFleetFragment : Fragment() {
         const val RESULT = "resultAdd"
         const val REQUEST_SELECT = "requestSelectQueue"
         const val RESULT_SELECT = "resultSelect"
+        var PERMISSIONS = arrayOf(
+            android.Manifest.permission.CAMERA,
+        )
+
     }
 
     private val _args: AddFleetFragmentArgs by navArgs()
@@ -39,7 +54,7 @@ class AddFleetFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _mBinding = DataBindingUtil.inflate(inflater, R.layout.add_fleet_fragment, container, false)
         return _mBinding.root
@@ -115,10 +130,10 @@ class AddFleetFragment : Fragment() {
             }
         }
         initRecyclerview()
+        addByCamera()
         if (!_args.isSearchQueue)
             _vm.searchFleet()
     }
-
 
     private fun updateAdapterPosition(lastPosition: Int, newPosition: Int) {
         try {
@@ -141,4 +156,39 @@ class AddFleetFragment : Fragment() {
         _mBinding.listItemFleetFragment.layoutManager = LinearLayoutManager(requireContext())
         _mBinding.listItemFleetFragment.adapter = _addFleetAdapter
     }
+
+    private fun addByCamera() {
+        _mBinding.addByCamera.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.CAMERA
+                )
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                permReqLauncher.launch(PERMISSIONS)
+            } else {
+                navAddByCamera()
+            }
+        }
+    }
+
+    private fun navAddByCamera() {
+        val destination = AddFleetFragmentDirections.actionQueueFleetFragmentToAddByCamera()
+        findNavController().navigate(destination)
+        setFragmentResultListener(AddByCameraFragment.RESULT) { _, bundle ->
+            var temp = bundle.getString(AddByCameraFragment.RESULT_ADD)
+            var lambungNumber = temp.toString().replace("\\s".toRegex(), "")
+            _vm.resultScan(lambungNumber)
+        }
+    }
+
+    private val permReqLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val granted = permissions.entries.all {
+                it.value
+            }
+            if (granted) {
+                navAddByCamera()
+            }
+        }
 }

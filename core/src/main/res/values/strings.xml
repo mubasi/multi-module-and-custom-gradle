@@ -45,4 +45,8 @@
     <string name="queue_not_found">Antrian tidak ditemukan</string>
     <string name="close">Tutup</string>
     <string name="back">Kembali</string>
+    <string name="take_picture">Ambil Gambar</string>
+    <string name="repeat_take_picture">Ambil Ulang Gambar</string>
+    <string name="msg_not_get_picture">Silahkan ambil ulang gambar</string>
+    <string name="msg_not_get_picture_title">Tidak dapat mengambil nomor lambung</string>
 </resources>
