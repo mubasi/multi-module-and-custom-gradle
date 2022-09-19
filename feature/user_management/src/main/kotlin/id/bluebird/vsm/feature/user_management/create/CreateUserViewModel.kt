@@ -15,6 +15,9 @@ import id.bluebird.vsm.feature.user_management.search_location.model.Location
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -53,13 +56,13 @@ class CreateUserViewModel(
     val isSubLocationSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
     private var mLocationId: Long = -1
-    private var mRoleId: Long = -1
+    var mRoleId: Long = -1
     private val subLocations: MutableList<SubLocationCache> = ArrayList()
     private val roles: MutableList<RoleCache> = ArrayList()
     private var rolePosition: Int = 0
     private var subLocationIndex: Int = 0
     private var mUserId: Long = -1
-    private val locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
+    var locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
     private var location: Location? = null
     private var mUUID: String = EMPTY_STRING
     private val coroutineException = CoroutineExceptionHandler { _, e ->
@@ -391,5 +394,9 @@ class CreateUserViewModel(
                     actionSealed.postValue(CreateUserState.OnSuccessForceLogout(userName.value ?: EMPTY_STRING))
                 }
         }
+    }
+
+    fun addData(first: Int, second: Int) : Int {
+        return first + second
     }
 }

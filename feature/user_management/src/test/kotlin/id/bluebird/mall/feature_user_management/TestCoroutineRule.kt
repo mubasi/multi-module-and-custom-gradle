@@ -1,4 +1,4 @@
-package id.bluebird.vsm.feature.queue_fleet
+package id.bluebird.mall.feature_user_management
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 
 @ExperimentalCoroutinesApi
-internal class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
+class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
     AfterEachCallback {
 
     override fun beforeEach(context: ExtensionContext?) {

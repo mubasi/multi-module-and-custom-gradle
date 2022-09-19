@@ -14,6 +14,8 @@ class DepartFleetViewModel: ViewModel() {
     private val _departWithPassenger: MutableLiveData<Boolean> = MutableLiveData(true)
     private lateinit var _fleetItem: FleetItem
 
+
+
     fun setDepartStatus(withPassenger: Boolean) {
         _departWithPassenger.postValue(withPassenger)
     }
