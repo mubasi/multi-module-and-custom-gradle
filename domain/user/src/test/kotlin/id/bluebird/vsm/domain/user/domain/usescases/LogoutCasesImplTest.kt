@@ -1,13 +1,12 @@
 package id.bluebird.vsm.domain.user.domain.usescases
 
 import app.cash.turbine.test
+import com.google.firebase.auth.FirebaseAuth
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.user.UserDomainState
 import id.bluebird.vsm.domain.user.UserRepository
 import id.bluebird.vsm.domain.user.model.CreateUserParam
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,6 +26,7 @@ internal class LogoutCasesImplTest {
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
+        mockkStatic(FirebaseAuth::class)
         logoutCasesImpl = LogoutCasesImpl(userRepository)
     }
 
@@ -35,10 +35,11 @@ internal class LogoutCasesImplTest {
     fun `logoutUserCasesTest, isSuccess`() = runTest {
         //given
         val uuid = "abc"
-        val result = Throwable()
+        val result = true
 
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
+        justRun { FirebaseAuth.getInstance().signOut() }
         every { userRepository.forceLogout(uuid) } returns flow {
             emit(
                 UserOuterClass.ForceLogoutResponse.newBuilder()
@@ -57,5 +58,4 @@ internal class LogoutCasesImplTest {
             awaitComplete()
         }
     }
-
 }

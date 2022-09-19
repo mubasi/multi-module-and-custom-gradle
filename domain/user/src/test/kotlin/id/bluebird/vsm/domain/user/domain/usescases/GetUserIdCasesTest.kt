@@ -1,13 +1,10 @@
 package id.bluebird.vsm.domain.user.domain.usescases
 
 import app.cash.turbine.test
-import com.orhanobut.hawk.Hawk
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.UserRepository
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -25,43 +22,40 @@ internal class GetUserIdCasesTest {
 
     @BeforeEach
     fun setup() {
-        mockkStatic(Hawk::class)
         getUserIdCases = GetUserIdCases(userRepository)
     }
 
     @Test
     fun `getUserIdCasesTest, isUserId more than 0 `() = runTest {
-        //given
-
-        var userAssignmentList = mutableListOf<UserOuterClass.userAssignmentItem>()
+        // Mock
+        val list: MutableList<UserOuterClass.userAssignmentItem> = mutableListOf()
         for (i in 1..2) {
             val userAssignment = UserOuterClass.userAssignmentItem.newBuilder()
                 .apply {
                     idUser = 1
                     this.locationId = 1
                     this.subLocation = i.toLong()
+                    this.locationName = "$i"
+                    this.subLocationName = "$i"
                 }
                 .build()
-            userAssignmentList.add(userAssignment)
+            list.add(userAssignment)
         }
-
-        // Mock
-        every { Hawk.get<Long>(any()) } returns 1L
-        every { userRepository.getUserById(1) } returns flow {
-            emit(
-                UserOuterClass.GetUserByIdResponse.newBuilder()
-                    .apply {
-                        name = "aa"
-                        username = "bb"
-                        userId = 1
-                        userRole = 1
-                        email = "cc"
-                        createdAt = "dd"
-                        createdBy = "ee"
-                        userAssignmentList = userAssignmentList
-                    }
-                    .build()
-            )
+        every { userRepository.getUserById(any()) } returns flow {
+            val temp = UserOuterClass.GetUserByIdResponse.newBuilder()
+                .apply {
+                    name = "aa"
+                    username = "bb"
+                    userId = 1
+                    userRole = 1
+                    email = "cc"
+                    createdAt = "dd"
+                    createdBy = "ee"
+                }
+            list.forEach {
+                temp.addUserAssignment(it)
+            }
+            emit(temp.build())
         }
 
         // Execute
