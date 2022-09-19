@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.singleOrNull
 
 class GetWaitingQueueCases(private val queueReceiptRepository: QueueReceiptRepository): GetWaitingQueue {
-    override fun invoke(locationId: Long): Flow<WaitingQueueState<List<Queue>>> = flow {
+    override fun invoke(locationId: Long): Flow<WaitingQueueState> = flow {
         val response = queueReceiptRepository.getWaitingQueue(locationId)
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()

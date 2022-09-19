@@ -59,6 +59,8 @@ android {
     sourceSets.getByName("test") {
         kotlin.srcDir(project(":feature:queue_fleet").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain:passenger").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain:user").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")

@@ -15,4 +15,4 @@ import org.junit.platform.suite.api.Suite
     SearchUserCasesTest::class
 )
 @ExperimentalCoroutinesApi
-class RunSuiteTestUser
+class RunSuiteDomainUser

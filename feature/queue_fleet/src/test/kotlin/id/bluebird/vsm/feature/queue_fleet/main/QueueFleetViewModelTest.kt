@@ -7,10 +7,12 @@ import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
 import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.fleet.GetCountState
 import id.bluebird.vsm.domain.fleet.GetListFleetState
+import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.GetCount
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.CountResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
+import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
@@ -42,12 +44,14 @@ internal class QueueFleetViewModelTest {
     private val _getCount: GetCount = mockk()
     private val _getUserId: GetUserId = mockk()
     private val _getFleetList: GetListFleet = mockk()
+    private val _departFleet: DepartFleet = mockk()
+    private val _getCurrentQueue: GetCurrentQueue = mockk()
     private val _events = mutableListOf<QueueFleetState>()
 
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
-        _vm = QueueFleetViewModel(_getCount, _getUserId, _getFleetList)
+        _vm = QueueFleetViewModel(_getCount, _getUserId, _getFleetList, _departFleet, _getCurrentQueue)
     }
 
     @AfterEach
@@ -59,7 +63,7 @@ internal class QueueFleetViewModelTest {
     fun `initUserId, given userId is null, QueueFleetState is GetUserInfoSuccess`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(null) } returns flow {
+        every { _getUserId.invoke(any()) } returns flow {
             emit(
                 GetUserByIdState.Success(
                     CreateUserResult(
@@ -96,7 +100,7 @@ internal class QueueFleetViewModelTest {
     fun `initUserId, given userId is notnull, QueueFleetState is GetUserInfoSuccess`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(null) } returns flow {
+        every { _getUserId.invoke(any()) } returns flow {
             emit(
                 GetUserByIdState.Success(
                     CreateUserResult(
@@ -131,7 +135,7 @@ internal class QueueFleetViewModelTest {
     @Test
     fun `initUserId, given userId is notnull, QueueFleetState is FailedGetUser`() = runTest {
         // Mock
-        every { _getUserId.invoke(null) } returns flow {
+        every { _getUserId.invoke(any()) } returns flow {
             throw NullPointerException(ERROR)
         }
 

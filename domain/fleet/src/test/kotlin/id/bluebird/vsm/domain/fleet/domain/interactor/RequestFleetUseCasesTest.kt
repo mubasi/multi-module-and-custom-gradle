@@ -17,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import proto.AssignmentPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class RequestFleetUseCasesTest {

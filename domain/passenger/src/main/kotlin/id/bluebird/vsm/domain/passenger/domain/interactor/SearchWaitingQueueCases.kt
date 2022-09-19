@@ -15,7 +15,7 @@ class SearchWaitingQueueCases(private val queueReceiptRepository: QueueReceiptRe
     override fun invoke(
         queueNumber: String,
         subLocationId: Long
-    ): Flow<WaitingQueueState<List<Queue>>> = flow {
+    ): Flow<WaitingQueueState> = flow {
         val response = queueReceiptRepository
             .searchWaitingQueue(queueNumber, UserUtils.getLocationId(), subLocationId)
             .flowOn(Dispatchers.IO)
