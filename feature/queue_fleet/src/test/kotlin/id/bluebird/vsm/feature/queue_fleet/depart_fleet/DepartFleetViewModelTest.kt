@@ -1,13 +1,9 @@
-package id.bluebird.mall.feature_queue_fleet.depart_fleet
+package id.bluebird.vsm.feature.queue_fleet.depart_fleet
 
 import com.orhanobut.hawk.Hawk
-import id.bluebird.mall.feature_queue_fleet.TestCoroutineRule
-import id.bluebird.mall.feature_queue_fleet.main.QueueFleetViewModel
+import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runCurrent
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,19 +11,19 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(TestCoroutineRule::class)
-class DepartFleetViewModel {
+internal class DepartFleetViewModelTest {
 
     companion object {
         private const val ERROR = "error"
     }
 
-    private lateinit var _vm : DepartFleetViewModel
+    private lateinit var _vm : DepartFleetViewModelTest
     private val _events = mutableListOf<DepartFleetState>()
 
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
-        _vm = DepartFleetViewModel()
+        _vm = DepartFleetViewModelTest()
     }
 
     @AfterEach

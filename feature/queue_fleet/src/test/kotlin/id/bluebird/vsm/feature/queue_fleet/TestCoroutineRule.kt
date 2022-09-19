@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 
 @ExperimentalCoroutinesApi
-class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
+internal class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
     AfterEachCallback {
 
     override fun beforeEach(context: ExtensionContext?) {

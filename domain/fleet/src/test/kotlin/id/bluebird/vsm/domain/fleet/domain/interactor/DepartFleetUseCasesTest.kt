@@ -1,12 +1,10 @@
-package id.bluebird.mall.domain_fleet.domain.interactor
+package id.bluebird.vsm.domain.fleet.domain.interactor
 
 import app.cash.turbine.test
 import com.orhanobut.hawk.Hawk
-import id.bluebird.mall.domain_fleet.AddFleetState
-import id.bluebird.mall.domain_fleet.DepartFleetState
-import id.bluebird.mall.domain_fleet.FleetRepository
-import id.bluebird.mall.domain_fleet.model.FleetDepartResult
-import id.bluebird.mall.domain_fleet.model.FleetItemResult
+import id.bluebird.vsm.domain.fleet.DepartFleetState
+import id.bluebird.vsm.domain.fleet.FleetRepository
+import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import proto.AssignmentPangkalanOuterClass

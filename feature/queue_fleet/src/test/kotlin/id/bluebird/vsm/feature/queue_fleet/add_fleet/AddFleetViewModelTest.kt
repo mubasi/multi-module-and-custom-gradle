@@ -1,14 +1,15 @@
-package id.bluebird.mall.feature_queue_fleet.add_fleet
+package id.bluebird.vsm.feature.queue_fleet.add_fleet
 
 import com.orhanobut.hawk.Hawk
-import id.bluebird.mall.domain_fleet.domain.cases.AddFleet
-import id.bluebird.mall.domain_fleet.domain.cases.SearchFleet
-import id.bluebird.mall.domain_fleet.model.FleetItemResult
-import id.bluebird.mall.domain_pasenger.domain.cases.SearchWaitingQueue
-import id.bluebird.mall.domain_pasenger.model.Queue
-import id.bluebird.mall.feature_queue_fleet.TestCoroutineRule
-import id.bluebird.mall.feature_queue_fleet.model.FleetItem
-import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
+import id.bluebird.vsm.domain.fleet.SearchFleetState
+import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
+import id.bluebird.vsm.domain.fleet.domain.cases.SearchFleet
+import id.bluebird.vsm.domain.fleet.model.FleetItemResult
+import id.bluebird.vsm.domain.passenger.WaitingQueueState
+import id.bluebird.vsm.domain.passenger.domain.cases.SearchWaitingQueue
+import id.bluebird.vsm.domain.passenger.model.Queue
+import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
+import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -182,7 +183,7 @@ internal class AddFleetViewModelTest {
             1)
         } returns flow {
             emit(
-                id.bluebird.mall.domain_fleet.AddFleetState.Success(
+                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
                     FleetItemResult(
                         1,
                         "aa",

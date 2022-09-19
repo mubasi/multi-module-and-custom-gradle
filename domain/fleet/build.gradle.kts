@@ -57,7 +57,6 @@ dependencies {
     implementation(Kotlin.coroutines_android)
     implementation(platform(Firebase.bom))
     implementation(Firebase.database_ktx)
-    testImplementation("org.junit.jupiter:junit-jupiter")
 
     compileOnly(Kotlin.javax_annotation)
 
