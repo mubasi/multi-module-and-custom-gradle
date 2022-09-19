@@ -47,4 +47,5 @@
     <string name="fleet_queue">Antrian armada</string>
     <string name="monitor">Pemantauan</string>
     <string name="user_setting">Pengaturan pengguna</string>
+    <string name="session_invalid_message">Session Invalid</string>
 </resources>
