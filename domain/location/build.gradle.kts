@@ -15,6 +15,10 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -54,4 +58,11 @@ dependencies {
     implementation(Kotlin.coroutines_android)
 
     compileOnly(Kotlin.javax_annotation)
+
+    testImplementation(Junit5.jupiter)
+    testImplementation(Junit5.suite)
+    testImplementation(Junit.junit)
+    testImplementation(Mockk.mockk)
+    testImplementation(Kotlin.coroutines_test)
+    testImplementation(OtherLib.turbin)
 }
