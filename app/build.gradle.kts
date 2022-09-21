@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.*
+
 plugins {
     id(Plugins.application)
     kotlin(Plugins.android)
@@ -16,6 +19,12 @@ jacoco {
 
 apply {
     from("../jacoco.gradle.kts")
+}
+
+val keyProperties = Properties()
+val keyPropertiesFile = rootProject.file("local.properties")
+if (keyPropertiesFile.exists()) {
+    keyProperties.load(FileInputStream(keyPropertiesFile))
 }
 
 android {
@@ -37,6 +46,16 @@ android {
         useJUnitPlatform()
     }
 
+    signingConfigs {
+        create("pangkalan") {
+            keyAlias = keyProperties["keyAlias"] as String
+            keyPassword = keyProperties["keyPassword"] as String
+            storeFile = keyProperties["storeFile"]?.let { file(it) }
+            storePassword = keyProperties["keyPassword"] as String
+        }
+    }
+
+
     buildTypes {
         /** keystore(jsk) disimpan di Digital Outlet sharepoints folder "Keys"*/
         getByName("release") {
@@ -48,6 +67,8 @@ android {
                     "proguard-android-optimize.txt"
                 )
             )
+            signingConfig = signingConfigs.getByName("pangkalan")
+
         }
         getByName("debug") {
             isMinifyEnabled = false
@@ -58,7 +79,6 @@ android {
     }
     sourceSets.getByName("test") {
         kotlin.srcDir(project(":feature:queue_fleet").file("src/test/kotlin"))
-        kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:passenger").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:user").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
@@ -126,7 +146,8 @@ dependencies {
     testImplementation(Mockk.mockk)
     testImplementation(Junit.junit)
     testImplementation(Kotlin.coroutines_test)
-    testRuntimeOnly(Junit5.vintage_engine)}
+    testRuntimeOnly(Junit5.vintage_engine)
+}
 
 sonarqube {
     properties {
