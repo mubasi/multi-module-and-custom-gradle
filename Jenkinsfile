@@ -8,7 +8,7 @@ def commitMessage() {
 pipeline {
     agent {
         node {
-            label 'slave-00'
+            label 'slave-01'
             customWorkspace "workspace/${env.BRANCH_NAME}/src/git.bluebird.id/outlet-mall_officer"
         }
     }
@@ -32,21 +32,33 @@ pipeline {
                 sh 'printenv'
             }
         }
-        stage('Prepare') {
+
+stage('Prepare') {
             steps {
-                withCredentials([file(credentialsId: 'fa022f45-5480-435e-9c46-67e24a57e285', variable: 'gs'),
+                script{
+                    writeFile file: 'release-note.txt', text: "${env.COMMIT_MESSAGE}"
+                        sh 'ls -l release-note.txt'
+                }    
+                withCredentials([file(credentialsId: '73872cb6-5e1c-41e0-8b84-a630aa3580f4', variable: 'gs'),
                                  file(credentialsId: 'de65673a-ed5c-4533-b89a-fe6991c538ac', variable: 'jks'),
+                                 file(credentialsId: '4b4e913a-1ad9-4d50-8f79-1b4b142e2ba5', variable: 'fb'),
                                  file(credentialsId: 'f2ef7e87-c2c1-425c-9e4c-1aef88e58434', variable: 'local'),
                                  file(credentialsId: '3521ab7f-3916-4e56-a41e-c0dedd2e98e9', variable: 'sa')]) {
+                sh "cp $gs google-services.json"
                 sh "cp $jks officer.jks"
+                sh "cp $fb firebase.json"
                 sh "cp $local local.properties"
                 sh "cp $sa service-account.json"
-                sh "chmod 644 officer.jks local.properties service-account.json && cat local.properties"
+                sh "chmod 644 google-services.json officer.jks firebase.json local.properties service-account.json && cat local.properties"
+                sh 'cat release-note.txt' 
                 sh "gcloud auth activate-service-account --key-file service-account.json"
+                sh "cp google-services.json ./app/"
                 sh "chmod +x gradlew"
+
                 }
             }
         }
+
         // stage('Test Report and Code Review') {
         //     steps {
         //         withCredentials([string(credentialsId: '04398f9c-36e4-4161-b6b2-9098e7c26ad9', variable: 'TOKEN')]) {
@@ -64,26 +76,17 @@ pipeline {
             stages {
                 stage('Deploy Multi-Stage') {
                     when {
-                        branch 'multi-stage'
+                        branch 'multi-stage-2'
                     }
                     environment {
-                        ALPHA   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
+                        MULTI   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
+                        APP_ID  = "1:178128345896:android:42053fd72334ad42738e1d"
+                        GROUPS  = "bluebirdgroup"
                     }
                     steps {
+                        sh 'git submodule update --init --recursive'
                         sh 'chmod +x build.sh'
-                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
-                    }
-                }
-                stage('Deploy to development') {
-                    when {
-                        branch 'develop'
-                    }
-                    environment {
-                        ALPHA   = "${env.VERSION_PREFIX}-alpha${env.BUILD_NUMBER}"
-                    }
-                    steps {
-                        sh 'chmod +x build.sh'
-                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
+                        sh './build.sh $MULTI $ANDROID_HOME $APP_ID $GROUPS $BUILD_NUMBER'
                     }
                 }
                 stage('Deploy to staging') {
@@ -92,10 +95,13 @@ pipeline {
                     }
                     environment {
                         ALPHA   = "${env.VERSION_PREFIX}-beta${env.BUILD_NUMBER}"
+                        APP_ID  = "1:178128345896:android:42053fd72334ad42738e1d"
+                        GROUPS  = "bluebirdgroup"
                     }
                     steps {
+                        sh 'git submodule update --init --recursive'
                         sh 'chmod +x build.sh'
-                        sh "./build.sh $ALPHA $BUCKET $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $DEPLOY_BUILD_DATE"
+                        sh './build.sh $ALPHA $ANDROID_HOME $APP_ID $GROUPS $BUILD_NUMBER'
                     }
                 }
             }
@@ -106,13 +112,22 @@ pipeline {
     post {
         success {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT",
-            factDefinitions: [[name: "debug",   template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/debug/app-stage-debug.apk\">Dowload Debug</a>"],
-                              [name: "release", template: "<a href=\"https://storage.googleapis.com/$BUCKET/$DEPLOY_BUILD_DATE/${env.BRANCH_NAME}/${env.BUILD_NUMBER}/release/app-stage-release-unsigned.apk\">Dowload Release</a>"],
-                              [name: "messages", template: "${env.COMMIT_MESSAGE}"]]
+            factDefinitions: [[name: "messages", template: "${env.COMMIT_MESSAGE}"]]
         }
-
         failure {
             office365ConnectorSend webhookUrl: "$TEAMS_MICROSOFT"
+        }
+        cleanup {
+            /* clean up our workspace */
+            deleteDir()
+            /* clean up tmp directory */
+            dir("${workspace}@tmp") {
+                deleteDir()
+            }
+            /* clean up script directory */
+            dir("${workspace}@script") {
+                deleteDir()
+            }
         }
     }
 }
