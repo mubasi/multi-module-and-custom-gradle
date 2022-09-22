@@ -9,6 +9,6 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-docker build --no-cache -t asia.gcr.io/$NAMESPACE/$SERVICE:$1 --build-arg BUCKET=$2 --build-arg BRANCH_NAME=$3 --build-arg BUILD_NUMBER=$4 --build-arg ANDROID_HOME=$5 --build-arg DEPLOY_BUILD_DATE=$6 .
+docker build --no-cache -t asia.gcr.io/$NAMESPACE/$SERVICE:$1 --build-arg ANDROID_HOME=$2 --build-arg APP_ID=$3 --build-arg GROUPS=$4 --build-arg BUILD_NUMBER=$4 .
 # docker push asia.gcr.io/$NAMESPACE/$SERVICE:$1
 docker rmi asia.gcr.io/$NAMESPACE/$SERVICE:$1
