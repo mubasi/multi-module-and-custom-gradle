@@ -81,7 +81,7 @@ stage('Prepare') {
                     environment {
                         MULTI   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
                         APP_ID  = "1:178128345896:android:42053fd72334ad42738e1d"
-                        GROUPS  = "bluebirdgroup"
+                        GROUPS  = "qa-da"
                     }
                     steps {
                         sh 'git submodule update --init --recursive'
@@ -96,7 +96,7 @@ stage('Prepare') {
                     environment {
                         ALPHA   = "${env.VERSION_PREFIX}-beta${env.BUILD_NUMBER}"
                         APP_ID  = "1:178128345896:android:42053fd72334ad42738e1d"
-                        GROUPS  = "bluebirdgroup"
+                        GROUPS  = "qa-da"
                     }
                     steps {
                         sh 'git submodule update --init --recursive'
