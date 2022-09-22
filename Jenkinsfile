@@ -41,7 +41,7 @@ stage('Prepare') {
                 }    
                 withCredentials([file(credentialsId: '73872cb6-5e1c-41e0-8b84-a630aa3580f4', variable: 'gs'),
                                  file(credentialsId: 'de65673a-ed5c-4533-b89a-fe6991c538ac', variable: 'jks'),
-                                 file(credentialsId: '4b4e913a-1ad9-4d50-8f79-1b4b142e2ba5', variable: 'fb'),
+                                 file(credentialsId: '045c04a5-4ae8-476b-bf38-c2f03ddc9b8a', variable: 'fb'),
                                  file(credentialsId: 'f2ef7e87-c2c1-425c-9e4c-1aef88e58434', variable: 'local'),
                                  file(credentialsId: '3521ab7f-3916-4e56-a41e-c0dedd2e98e9', variable: 'sa')]) {
                 sh "cp $gs google-services.json"
