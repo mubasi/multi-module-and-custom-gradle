@@ -74,9 +74,9 @@ stage('Prepare') {
                 NAMESPACE="mall-officer"
             }
             stages {
-                stage('Deploy Multi-Stage') {
+                stage('Deploy Develop') {
                     when {
-                        branch 'multi-stage-2'
+                        branch 'develop'
                     }
                     environment {
                         MULTI   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
