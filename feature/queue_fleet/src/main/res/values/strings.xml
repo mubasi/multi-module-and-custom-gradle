@@ -33,4 +33,8 @@
     <string name="failed_depart_title">Gagal Memberangkatkan Armada</string>
     <string name="failed_depart_description"> gagal diberangkatkan. Silakan coba lagi</string>
     <string name="fleet">Armada</string>
+    <string name="add_fleet_desc">Masukkan no. lambung armada untuk menambah armada secara manual.</string>
+    <string name="scan_number_side_title">Scan nomor lambung</string>
+    <string name="side_text_desc">Silahkan arahkan kamera ke nomor lambung</string>
+    <string name="side_text">Nomor Lambung</string>
 </resources>

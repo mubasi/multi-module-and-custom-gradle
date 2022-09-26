@@ -69,6 +69,7 @@
                 android:visibility="gone" />
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/add_by_camera"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"

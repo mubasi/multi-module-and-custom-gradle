@@ -83,6 +83,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.addFleetFragment -> {
                         navigateBackWithArrow(R.id.addFleetFragment)
                     }
+                    R.id.addByCameraFragment -> {
+                        navigateBackWithArrow(R.id.addByCameraFragment)
+                    }
                     R.id.searchFleetFragment -> {
                         navigateBackWithArrow(R.id.searchFleetFragment)
                     }

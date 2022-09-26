@@ -78,6 +78,8 @@ dependencies {
     implementation(project(":domain:passenger"))
     implementation(Kotlin.coroutines_android)
     implementation(UiMaterial.swipe)
+    implementation(OtherLib.cameraToText)
+    implementation(OtherLib.cameraView)
 
     compileOnly(Kotlin.javax_annotation)
 

@@ -173,4 +173,10 @@ class AddFleetViewModel(
             this.value = ""
         }
     }
+
+    fun resultScan(number: String) {
+        param.value = number
+        searchFleet()
+        updateSelectedFleetNumber(number, 0)
+    }
 }

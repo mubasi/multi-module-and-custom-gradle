@@ -43,6 +43,7 @@ import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
+import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
 import id.bluebird.vsm.pangkalan.logout.LogoutDialogViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -72,6 +73,7 @@ object AppModule {
         viewModel { SearchLocationViewModel(get()) }
         viewModel { QueueSearchViewModel(get()) }
         viewModel { SelectLocationViewModel(get()) }
+        viewModel { AddByCameraViewModel() }
     }
 
     private val userCases = module {

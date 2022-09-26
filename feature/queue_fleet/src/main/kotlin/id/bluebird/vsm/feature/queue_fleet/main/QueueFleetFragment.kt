@@ -2,6 +2,7 @@ package id.bluebird.vsm.feature.queue_fleet.main
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +43,7 @@ class QueueFleetFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         mBinding = DataBindingUtil.inflate(
             inflater,
@@ -209,7 +210,7 @@ class QueueFleetFragment : Fragment() {
     private fun navigateToSearchQueue(
         fleetItem: FleetItem,
         subLocationId: Long,
-        currentQueueId: String
+        currentQueueId: String,
     ) {
         val destination =
             QueueFleetFragmentDirections.actionQueueFleetFragmentToSearchQueueFragment()
