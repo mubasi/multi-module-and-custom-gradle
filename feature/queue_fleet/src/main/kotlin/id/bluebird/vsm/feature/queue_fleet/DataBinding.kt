@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
@@ -116,5 +117,14 @@ object DataBinding {
         )
 
         return spannableString
+    }
+
+    @JvmStatic
+    @BindingAdapter("app:setOnRefresh")
+    fun setOnRefresh(view: SwipeRefreshLayout, runnable: (() -> Unit)?) {
+        view.setOnRefreshListener{
+            runnable?.invoke()
+            view.isRefreshing = false
+        }
     }
 }
