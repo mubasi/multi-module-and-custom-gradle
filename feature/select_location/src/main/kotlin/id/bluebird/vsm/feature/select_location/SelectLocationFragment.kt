@@ -45,6 +45,7 @@ class SelectLocationFragment : Fragment() {
             this.lifecycleOwner = viewLifecycleOwner
         }
         initRcv()
+        initRefreshLayout()
         launch()
         _vm.init(arguments?.getBoolean("isMenu", false) ?: false)
     }
@@ -56,9 +57,13 @@ class SelectLocationFragment : Fragment() {
                     when (it) {
                         is SelectLocationState.GetLocationSuccess -> {
                             _adapterSelectLocation.submitList(it.locationModes)
+                            _mBinding.swipeRefreshLayout.isRefreshing = false
                         }
                         is SelectLocationState.OnItemClick -> {
                             _adapterSelectLocation.expandOrCollapseParent(it.position)
+                        }
+                        is SelectLocationState.OnError -> {
+                            _mBinding.swipeRefreshLayout.isRefreshing = false
                         }
                         is SelectLocationState.ToAssign -> {
                             NavigationNav.navigate(
@@ -82,6 +87,12 @@ class SelectLocationFragment : Fragment() {
         with(_mBinding) {
             rcvSelectLocationFragment.layoutManager = LinearLayoutManager(requireContext())
             rcvSelectLocationFragment.adapter = _adapterSelectLocation
+        }
+    }
+
+    private fun initRefreshLayout() {
+        _mBinding.swipeRefreshLayout.setOnRefreshListener {
+            _vm.init(arguments?.getBoolean("isMenu", false) ?: false)
         }
     }
 }

@@ -23,7 +23,7 @@
     </string>
     <string name="antrian_text">Antrian</string>
     <string name="finish_text">Selesai</string>
-    <string name="tertunda_text">Tetunda</string>
+    <string name="tertunda_text">Tertunda</string>
     <string name="hint_queue_search">Cari no. antrian</string>
     <string name="label_queue_search">Cari antrian</string>
     <string name="search_queue_message">Masukkan no antrian minimal 3 karakter</string>
