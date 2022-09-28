@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.home.main
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -49,6 +50,10 @@ class QueuePassengerViewModel(
     var mUserInfo: UserInfo = UserInfo()
     var listQueueWaitingCache: ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList())
     var listQueueSkippedCache: ListQueueResultCache = ListQueueResultCache(0, queue = ArrayList())
+    private var _waitingQueueCount: MutableLiveData<CharSequence> = MutableLiveData("0")
+    val waitingQueueCount: LiveData<CharSequence> = _waitingQueueCount
+    private var _skippedQueueCount: MutableLiveData<CharSequence> = MutableLiveData("0")
+    val skippedQueueCount: LiveData<CharSequence> = _skippedQueueCount
 
     fun init() {
         if (LocationNavigationTemporary.isLocationNavAvailable()
@@ -172,6 +177,7 @@ class QueuePassengerViewModel(
                                     count = result.count - 1,
                                     queue = listQueue
                                 )
+                                _waitingQueueCount.value = listQueueWaitingCache.count.toString()
                                 _queuePassengerState.emit(
                                     QueuePassengerState.SuccessListQueue
                                 )
@@ -216,6 +222,7 @@ class QueuePassengerViewModel(
                                     count = result.count,
                                     queue = listQueue
                                 )
+                                _skippedQueueCount.value = listQueueSkippedCache.count.toString()
                                 _queuePassengerState.emit(
                                     QueuePassengerState.SuccessListQueueSkipped
                                 )
