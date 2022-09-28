@@ -50,6 +50,7 @@ class QueuePassengerFragment : Fragment() {
 
         setupTabLayout()
         setupListQueue()
+        setupSwipeRefresh()
         observer()
         _queuePassengerViewModel.init()
 
@@ -73,6 +74,7 @@ class QueuePassengerFragment : Fragment() {
                             }
                             QueuePassengerState.ProsesGetUser -> {
                                 binding.showData = false
+                                binding.swipeRefreshLayout.isRefreshing = false
                             }
                             QueuePassengerState.ProsesQueue -> {
                                 DialogQueueReceipt().show(
@@ -82,6 +84,7 @@ class QueuePassengerFragment : Fragment() {
                             }
                             QueuePassengerState.SuccessGetUser -> {
                                 binding.showData = false
+                                binding.swipeRefreshLayout.isRefreshing = false
                                 getCounterBar()
                                 getCurrentQueue()
                             }
@@ -97,26 +100,28 @@ class QueuePassengerFragment : Fragment() {
                             }
                             QueuePassengerState.ProsesListQueue -> {
                                 binding.showData = false
+                                binding.swipeRefreshLayout.isRefreshing = false
                             }
                             is QueuePassengerState.FailedListQueue -> {
-                                setupWaiting()
+                                setListQueue(binding.tabLayout.selectedTabPosition)
                                 binding.showData = true
                                 binding.successListQueue = false
                             }
                             QueuePassengerState.SuccessListQueue -> {
-                                setupWaiting()
+                                setListQueue(binding.tabLayout.selectedTabPosition)
                                 binding.showData = true
                             }
                             QueuePassengerState.ProsesListQueueSkipped -> {
                                 binding.showData = false
+                                binding.swipeRefreshLayout.isRefreshing = false
                             }
                             is QueuePassengerState.FailedListQueueSkipped -> {
-                                setupSkipped()
+                                setListQueue(binding.tabLayout.selectedTabPosition)
                                 binding.showData = true
                                 binding.successListQueue = false
                             }
                             QueuePassengerState.SuccessListQueueSkipped -> {
-                                setupSkipped()
+                                setListQueue(binding.tabLayout.selectedTabPosition)
                                 binding.showData = true
                             }
                             QueuePassengerState.ProsesSkipQueue -> {
@@ -172,6 +177,14 @@ class QueuePassengerFragment : Fragment() {
                 }
             }
         }
+
+        _queuePassengerViewModel.waitingQueueCount.observe(viewLifecycleOwner) {
+            binding.tabLayout.getTabAt(0)?.text = requireContext().getString(R.string.tab_waiting_format, it)
+        }
+
+        _queuePassengerViewModel.skippedQueueCount.observe(viewLifecycleOwner) {
+            binding.tabLayout.getTabAt(1)?.text = requireContext().getString(R.string.tab_delayed_format, it)
+        }
     }
 
     private fun setupListQueue() {
@@ -186,9 +199,7 @@ class QueuePassengerFragment : Fragment() {
     }
 
     private fun setupWaiting() {
-        val tab0: TabLayout.Tab? = binding.tabLayout.getTabAt(0)
         val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
-        tab0?.text = "Menunggu ($countWaiting)"
         val adapter = CustomAdapter(_queuePassengerViewModel.listQueueWaitingCache.queue)
         binding.recyclerView.adapter = adapter
 
@@ -204,21 +215,24 @@ class QueuePassengerFragment : Fragment() {
             setupWaiting()
         } else if (position == 1) {
             setupSkipped()
-            val adapter = CustomAdapterSkipped(
-                _queuePassengerViewModel.listQueueSkippedCache.queue,
-                _queuePassengerViewModel
-            )
-            binding.recyclerView.adapter = adapter
         }
     }
 
     private fun setupSkipped() {
-        val tab1: TabLayout.Tab? = binding.tabLayout.getTabAt(1)
-        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
-        tab1?.text = "Tertunda ($countSkipped)"
+        val adapter = CustomAdapterSkipped(
+            _queuePassengerViewModel.listQueueSkippedCache.queue,
+            _queuePassengerViewModel
+        )
+        binding.recyclerView.adapter = adapter
 
-        if (countSkipped > 0L) {
-            binding.successListQueue = true
+        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
+        binding.successListQueue = countSkipped > 0
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            _queuePassengerViewModel.init()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
