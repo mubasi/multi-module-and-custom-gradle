@@ -204,4 +204,5 @@ object OtherLib {
     val tableView by lazy { "com.evrencoskun.library:tableview:0.8.9.4" }
     val cameraToText by lazy { "com.google.android.gms:play-services-mlkit-text-recognition:18.0.2" }
     val cameraView by lazy { "com.otaliastudios:cameraview:1.6.0" }
+    val flexBox by lazy { "com.google.android.flexbox:flexbox:3.0.0" }
 }

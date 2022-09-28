@@ -80,6 +80,7 @@ dependencies {
     implementation(UiMaterial.swipe)
     implementation(OtherLib.cameraToText)
     implementation(OtherLib.cameraView)
+    implementation(OtherLib.flexBox)
 
     compileOnly(Kotlin.javax_annotation)
 

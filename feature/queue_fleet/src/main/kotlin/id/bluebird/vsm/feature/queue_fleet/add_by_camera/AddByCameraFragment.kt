@@ -117,8 +117,10 @@ class AddByCameraFragment : Fragment() {
     private fun setTakePicture() {
         binding.cameraView.visibility = View.VISIBLE
         binding.imageView.visibility = View.GONE
+        binding.btnRefresh.visibility = View.GONE
         binding.buttonTakePicture.visibility = View.VISIBLE
         binding.addDialogActionButton.visibility = View.GONE
+        binding.textViewResult.text = ""
     }
 
     private fun configureCamera() {
@@ -133,11 +135,12 @@ class AddByCameraFragment : Fragment() {
                         .addOnSuccessListener { visionText ->
                             binding.cameraView.visibility = View.GONE
                             binding.imageView.visibility = View.VISIBLE
+                            binding.btnRefresh.visibility = View.VISIBLE
                             binding.addDialogActionButton.visibility = View.VISIBLE
                             binding.buttonTakePicture.visibility = View.GONE
                             binding.imageView.scaleType = CENTER_CROP
-                            if(visionText.text.isEmpty()) {
-                                setIsNoGetNumber(getString(R.string.msg_not_get_picture))
+                            if(visionText.text.isEmpty() || visionText.text.length > 8) {
+                                setIsNotGetNumber(getString(R.string.msg_not_get_picture))
                             } else {
                                 binding.btnProsesAction.visibility = View.VISIBLE
                                 binding.btnRepeatPictureAction.visibility = View.GONE
@@ -146,7 +149,7 @@ class AddByCameraFragment : Fragment() {
                             }
                         }
                         .addOnFailureListener { e ->
-                            setIsNoGetNumber(e.message.toString())
+                            setIsNotGetNumber(e.message.toString())
                         }
                     super.onPictureTaken(jpeg)
                 }
@@ -155,9 +158,12 @@ class AddByCameraFragment : Fragment() {
         binding.buttonTakePicture.setOnClickListener {
             binding.cameraView.captureSnapshot()
         }
+        binding.btnRefresh.setOnClickListener {
+            showCameraView()
+        }
     }
 
-    fun setIsNoGetNumber(message: String) {
+    fun setIsNotGetNumber(message: String) {
         binding.btnProsesAction.visibility = View.GONE
         binding.btnRepeatPictureAction.visibility = View.VISIBLE
         DialogUtils.showErrorDialog(requireContext(), getString(R.string.msg_not_get_picture_title), message)
