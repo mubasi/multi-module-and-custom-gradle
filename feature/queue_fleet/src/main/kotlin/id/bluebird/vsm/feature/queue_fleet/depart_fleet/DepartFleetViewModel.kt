@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.queue_fleet.depart_fleet
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,9 +12,19 @@ import kotlinx.coroutines.launch
 class DepartFleetViewModel: ViewModel() {
     private val _departFleetState = MutableSharedFlow<DepartFleetState>()
     val sharedDepartFleetState = _departFleetState.asSharedFlow()
-    private val _departWithPassenger: MutableLiveData<Boolean> = MutableLiveData(true)
+    private var _departWithPassenger: MutableLiveData<Boolean> = MutableLiveData(true)
     private lateinit var _fleetItem: FleetItem
 
+
+    @VisibleForTesting
+    fun setStatusDepart(temp : Boolean) {
+        _departWithPassenger.value = temp
+    }
+
+    @VisibleForTesting
+    fun setFleetItem(temp : FleetItem) {
+        _fleetItem = temp
+    }
 
 
     fun setDepartStatus(withPassenger: Boolean) {

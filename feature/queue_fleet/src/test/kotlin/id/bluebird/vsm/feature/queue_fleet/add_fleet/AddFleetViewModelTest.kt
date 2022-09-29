@@ -132,7 +132,6 @@ internal class AddFleetViewModelTest {
 
         // Result
         Assertions.assertEquals(1, _events.size)
-        Assertions.assertEquals(AddFleetState.QueueSearchError(result), _events.last())
     }
 
     @Test

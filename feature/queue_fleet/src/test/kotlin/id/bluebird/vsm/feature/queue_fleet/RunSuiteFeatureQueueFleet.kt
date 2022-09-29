@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.queue_fleet
 
+import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModelTest
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModelTest
 import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModelTest
 import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModelTest
@@ -15,7 +16,8 @@ import org.junit.platform.suite.api.Suite
     DepartFleetViewModelTest::class,
     QueueFleetViewModelTest::class,
     RequestFleetDialogViewModelTest::class,
-    SearchFleetViewModelTest::class
+    SearchFleetViewModelTest::class,
+    AddByCameraViewModelTest::class
 )
 
 @ExperimentalCoroutinesApi

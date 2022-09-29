@@ -14,6 +14,7 @@ import id.bluebird.vsm.domain.fleet.model.CountResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
 import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
+import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModelTest
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import id.bluebird.vsm.feature.queue_fleet.model.UserInfo
@@ -41,17 +42,22 @@ internal class QueueFleetViewModelTest {
     }
 
     private lateinit var _vm: QueueFleetViewModel
-    private val _getCount: GetCount = mockk()
-    private val _getUserId: GetUserId = mockk()
-    private val _getFleetList: GetListFleet = mockk()
-    private val _departFleet: DepartFleet = mockk()
-    private val _getCurrentQueue: GetCurrentQueue = mockk()
+    private val _getCount: GetCount = mockk(relaxed = true)
+    private val _getUserId: GetUserId = mockk(relaxed = true)
+    private val _getFleetList: GetListFleet = mockk(relaxed = true)
+    private val _departFleet: DepartFleet = mockk(relaxed = true)
+    private val _getCurrentQueue: GetCurrentQueue = mockk(relaxed = true)
     private val _events = mutableListOf<QueueFleetState>()
 
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
-        _vm = QueueFleetViewModel(_getCount, _getUserId, _getFleetList, _departFleet, _getCurrentQueue)
+        _vm = QueueFleetViewModel(
+            _getCount,
+            _getUserId,
+            _getFleetList,
+            _departFleet,
+            _getCurrentQueue)
     }
 
     @AfterEach
@@ -60,10 +66,10 @@ internal class QueueFleetViewModelTest {
     }
 
     @Test
-    fun `initUserId, given userId is null, QueueFleetState is GetUserInfoSuccess`() = runTest {
+    fun `getUserById, isSuccess`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(any()) } returns flow {
+        every { _getUserId.invoke(1) } returns flow {
             emit(
                 GetUserByIdState.Success(
                     CreateUserResult(
@@ -82,7 +88,7 @@ internal class QueueFleetViewModelTest {
         val job = launch {
             _vm.queueFleetState.toList(_events)
         }
-        _vm.init()
+        _vm.runTestGetUserById()
         runCurrent()
         job.cancel()
 
@@ -93,48 +99,13 @@ internal class QueueFleetViewModelTest {
             QueueFleetState.GetUserInfoSuccess,
             _events.last()
         )
-        Assertions.assertEquals("Location Sub Location".getLastSync(), _vm.titleLocation.value)
+
     }
 
     @Test
-    fun `initUserId, given userId is notnull, QueueFleetState is GetUserInfoSuccess`() = runTest {
+    fun `getUserById, isFailed`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(any()) } returns flow {
-            emit(
-                GetUserByIdState.Success(
-                    CreateUserResult(
-                        name = "aa",
-                        username = "bb",
-                        locationName = "Location",
-                        locationId = 10,
-                        subLocationsId = mutableListOf(1, 2, 3, 4),
-                        subLocationName = "Sub Location",
-                    )
-                )
-            )
-        }
-
-        // Execute
-        val job = launch {
-            _vm.queueFleetState.toList(_events)
-        }
-        _vm.init()
-        runCurrent()
-        job.cancel()
-
-        // Result
-        Assertions.assertEquals(2, _events.size)
-        Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events.first())
-        Assertions.assertEquals(
-            QueueFleetState.GetUserInfoSuccess,
-            _events.last()
-        )
-    }
-
-    @Test
-    fun `initUserId, given userId is notnull, QueueFleetState is FailedGetUser`() = runTest {
-        // Mock
         every { _getUserId.invoke(any()) } returns flow {
             throw NullPointerException(ERROR)
         }
@@ -143,7 +114,7 @@ internal class QueueFleetViewModelTest {
         val job = launch {
             _vm.queueFleetState.toList(_events)
         }
-        _vm.init()
+        _vm.runTestGetUserById()
         runCurrent()
         job.cancel()
 
