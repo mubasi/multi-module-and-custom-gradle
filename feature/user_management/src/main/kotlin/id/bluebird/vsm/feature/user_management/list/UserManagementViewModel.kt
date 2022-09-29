@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.user_management.list
 
 import android.text.Editable
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,9 +22,23 @@ class UserManagementViewModel(
     val counter: MutableLiveData<Int> = MutableLiveData()
     val userSettingSealed: MutableLiveData<UserSettingSealed> = MutableLiveData()
     val privilege: MutableLiveData<String> = MutableLiveData()
-    private val userSettings: MutableList<UserSettingCache> = ArrayList()
+    private var userSettings: MutableList<UserSettingCache> = ArrayList()
     private var searchJob: Job? = null
     private var loginUserId: Long? = -1
+
+
+    @VisibleForTesting
+    fun getUsers(tempUserSetting: MutableList<UserSettingCache>) {
+         userSettings = tempUserSetting
+    }
+
+    @VisibleForTesting
+    fun resultGetUsers(): MutableList<UserSettingCache> {
+        return userSettings
+    }
+
+    @VisibleForTesting
+    fun searchJob() = searchJob
 
     fun init() {
         val temp = UserUtils.getPrivilege()

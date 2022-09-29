@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.user_management.search_location
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,11 @@ class SearchLocationViewModel(
     private var _lastSelectedPosition = -1
     var searchKey = MutableLiveData(EMPTY_STRING)
     val selectedLocation = MutableLiveData<Location?>(null)
+
+    @VisibleForTesting
+    fun setLocation(dataList: List<Location>) {
+        locations = dataList
+    }
 
     fun init() {
         viewModelScope.launch {
