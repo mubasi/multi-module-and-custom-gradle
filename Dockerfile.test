@@ -11,7 +11,6 @@ COPY . .
 RUN java -version
 RUN ANDROID_HOME=${ANDROID_HOME} ./gradlew clean jacocoTestReport
 RUN envsubst '${BRANCH_NAME},${BUILD_NUMBER}' < sonar-project.properties > sonar.properties
-RUN ls -all && pwd
 
 FROM sonarsource/sonar-scanner-cli
 ARG TOKEN=898434342df7834234
