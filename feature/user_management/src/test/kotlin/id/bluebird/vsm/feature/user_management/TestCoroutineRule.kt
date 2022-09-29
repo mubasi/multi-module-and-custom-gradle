@@ -5,18 +5,21 @@ import androidx.arch.core.executor.TaskExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.extension.AfterEachCallback
 import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 
 @ExperimentalCoroutinesApi
-class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachCallback,
-    AfterEachCallback {
+class TestCoroutineRule : Extension, BeforeEachCallback, AfterEachCallback {
+
+    val testCoroutineDispatcher = TestCoroutineDispatcher()
 
     override fun beforeEach(context: ExtensionContext?) {
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(testCoroutineDispatcher)
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
             override fun executeOnDiskIO(runnable: Runnable) {
                 runnable.run()
@@ -33,7 +36,7 @@ class TestCoroutineRule : org.junit.jupiter.api.extension.Extension, BeforeEachC
     }
 
     override fun afterEach(context: ExtensionContext?) {
-        Dispatchers.resetMain()
+        testCoroutineDispatcher.cleanupTestCoroutines()
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
 }

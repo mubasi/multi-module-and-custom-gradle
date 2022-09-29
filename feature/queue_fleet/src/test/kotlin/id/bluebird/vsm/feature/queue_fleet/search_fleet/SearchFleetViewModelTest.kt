@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(TestCoroutineRule::class)
 internal class SearchFleetViewModelTest {
 
-    private val _events: MutableList<SearchFleetState> = mutableListOf()
+    private val _events = mutableListOf<SearchFleetState>()
     private lateinit var _vm: SearchFleetViewModel
 
     @BeforeEach
@@ -111,8 +111,8 @@ internal class SearchFleetViewModelTest {
     fun `departFleet, given fleetItems, result UpdateFleetItems with list 10 and SuccessDepartFleet `() =
         runTest {
             // Pre
-            val temp: MutableList<FleetItem> = mutableListOf()
-            val fleetItemSample = FleetItem(id = 100)
+            val temp = ArrayList<FleetItem>()
+            val fleetItemSample = FleetItem(id = 1, name = "aa", "2022-01-01")
             for (i in 1..10L) {
                 temp.add(FleetItem(id = i, name = "$i"))
             }

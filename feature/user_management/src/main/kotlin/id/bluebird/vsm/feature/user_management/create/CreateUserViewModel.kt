@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.user_management.create
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.UserDomainState
@@ -41,7 +42,7 @@ class CreateUserViewModel(
     val userName: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
     val oldPassword: MutableLiveData<String> = MutableLiveData()
-    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData(CreateUserState.Initialize)
+    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData()
     val countSubAssignLocation: MutableLiveData<Int> = MutableLiveData(0)
     var isRoleSelected: MutableLiveData<Boolean> = MutableLiveData()
     val subLocationSingleSelection: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -67,6 +68,36 @@ class CreateUserViewModel(
     private var mUUID: String = EMPTY_STRING
     private val coroutineException = CoroutineExceptionHandler { _, e ->
         getInformationOnException(e)
+    }
+
+    @VisibleForTesting
+    fun setLocationAssignments(list: List<LocationAssignment>) {
+        locationAssignmentsUser.putAll(list.associateBy { it.subLocationId })
+    }
+
+    @VisibleForTesting
+    fun setInitUser(userId: Long?, uuid: String?) {
+        initUser(userId, uuid)
+    }
+
+    @VisibleForTesting
+    fun valMuserId(): Long {
+        return mUserId
+    }
+
+    @VisibleForTesting
+    fun setLocation(tempLocation: Location) {
+        location = tempLocation
+    }
+
+    @VisibleForTesting
+    fun setCreateParam(): CreateUserParam {
+        return createParam()
+    }
+
+    @VisibleForTesting
+    fun setUUID(uuid: String?) {
+        mUUID = uuid ?: EMPTY_STRING
     }
 
     fun initUser(userId: Long?, uuid: String?) {
