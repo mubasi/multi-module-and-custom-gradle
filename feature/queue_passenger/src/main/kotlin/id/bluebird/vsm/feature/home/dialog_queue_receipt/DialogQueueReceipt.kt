@@ -78,7 +78,7 @@ class DialogQueueReceipt :  BottomSheetDialogFragment() {
                                 dialog?.dismiss()
                             }
                             is DialogQueueReceiptState.FailedTakeQueue -> {
-                                val noAntrian : String = queueNumber.value.toString();
+                                val noAntrian : String = getString(R.string.queue_number_text_parameterized,  queueNumber.value.toString())
                                 showSnackbar(Html.fromHtml("<b>$noAntrian</b> gagal ditambahkan",1), R.color.error_color)
                                 dialog?.dismiss()
                                 binding.slideProses.visibility = View.VISIBLE

@@ -24,6 +24,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+
     buildFeatures {
         dataBinding = true
     }
@@ -68,4 +72,12 @@ dependencies {
     implementation(project(":domain:user"))
     implementation(project(":navigation"))
     implementation(OtherLib.slidetoact)
+
+    testImplementation(Junit5.suite)
+    testImplementation(Junit5.jupiter)
+    testImplementation(Kotlin.coroutines_test)
+    testImplementation(Junit.core)
+    testImplementation(Junit.junit)
+    testImplementation(Mockk.mockk)
+    testImplementation(OtherLib.turbin)
 }
