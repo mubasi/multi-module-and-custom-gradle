@@ -85,6 +85,7 @@ dependencies {
     testImplementation(Mockk.agent_jvm)
 
     testImplementation(Junit.junit)
+    testImplementation(Junit.core)
     testImplementation(Kotlin.coroutines_test)
     androidTestImplementation(Junit.android_junit)
 

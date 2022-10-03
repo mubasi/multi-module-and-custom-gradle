@@ -83,6 +83,8 @@ android {
         kotlin.srcDir(project(":domain:user").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:location").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:select_location").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:user_management").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")
