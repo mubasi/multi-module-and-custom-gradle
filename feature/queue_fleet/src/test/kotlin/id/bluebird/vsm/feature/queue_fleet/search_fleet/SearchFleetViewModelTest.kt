@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.queue_fleet.search_fleet
 
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
+import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetState
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -129,11 +130,7 @@ internal class SearchFleetViewModelTest {
             job.cancel()
 
             // Result
-            Assertions.assertEquals(2, _events.size)
-            Assertions.assertEquals(
-                10,
-                (_events.first() as SearchFleetState.UpdateFleetItems).list.size
-            )
-            assert(_events.last() is SearchFleetState.SuccessDepartFleet)
+            Assertions.assertEquals(1, _events.size)
+            Assertions.assertEquals(SearchFleetState.RequestDepartFleetItem(fleetItemSample), _events.first())
         }
 }

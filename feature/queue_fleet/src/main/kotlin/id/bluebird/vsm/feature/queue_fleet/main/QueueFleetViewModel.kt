@@ -68,6 +68,11 @@ class QueueFleetViewModel(
         _fleetItems.addAll(list)
     }
 
+    @VisibleForTesting
+    fun runTestGetUserById() {
+        getUserById()
+    }
+
     fun init() {
         if (LocationNavigationTemporary.isLocationNavAvailable()
                 .not() && UserUtils.isUserOfficer().not()
