@@ -3,7 +3,7 @@ object Version {
     val compileSdk by lazy { 32 }
     val targetSdk by lazy { 32 }
 
-    val appName by lazy { "Officer App" }
+    val appName by lazy { "VSM Pangkalan" }
     val appNameStaging by lazy { "$appName (Staging)" }
     val appNameDev by lazy { "$appName (Dev)" }
 
