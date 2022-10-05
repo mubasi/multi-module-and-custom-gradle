@@ -60,7 +60,7 @@ class SelectLocationFragment : Fragment() {
                             _mBinding.swipeRefreshLayout.isRefreshing = false
                         }
                         is SelectLocationState.OnItemClick -> {
-                            _adapterSelectLocation.expandOrCollapseParent(it.position)
+                            _adapterSelectLocation.expandOrCollapseParent(it.locationModel.id)
                         }
                         is SelectLocationState.OnError -> {
                             _mBinding.swipeRefreshLayout.isRefreshing = false

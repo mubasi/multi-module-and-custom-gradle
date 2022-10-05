@@ -49,8 +49,9 @@ class AdapterSelectLocation(private val _vm: SelectLocationViewModel) :
 
     override fun getItemViewType(position: Int): Int = data[position].type
 
-    fun expandOrCollapseParent(position: Int) {
-        val parent = data[position]
+    fun expandOrCollapseParent(id: Long) {
+        val parent = data.firstOrNull { it.id == id } ?: return
+        val position = data.indexOf(parent)
         if (parent.isExpanded) {
             collapseParent(position)
         } else {
