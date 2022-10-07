@@ -85,6 +85,7 @@ android {
         kotlin.srcDir(project(":domain:location").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:select_location").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:user_management").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:queue_passenger").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")
@@ -147,6 +148,7 @@ dependencies {
     testImplementation(OtherLib.turbin)
     testImplementation(Mockk.mockk)
     testImplementation(Junit.junit)
+    testImplementation(Junit.core)
     testImplementation(Kotlin.coroutines_test)
     testRuntimeOnly(Junit5.vintage_engine)
 }

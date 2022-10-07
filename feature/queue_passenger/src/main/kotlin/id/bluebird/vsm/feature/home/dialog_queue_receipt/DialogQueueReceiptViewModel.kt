@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.home.dialog_queue_receipt
 
 import android.text.Html
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,6 +41,14 @@ class DialogQueueReceiptViewModel(
     val queueNumber: MutableLiveData<String> = MutableLiveData("")
 
     private lateinit var mUserInfo: UserInfo
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    val userInfo get() = mUserInfo
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setUserInfo(userInfo: UserInfo) {
+        mUserInfo = userInfo
+    }
 
     fun init() {
         getUserById()
@@ -100,8 +109,7 @@ class DialogQueueReceiptViewModel(
                                     result.queue.id,
                                     result.queue.number,
                                 )
-                                val number = Html.fromHtml("No. antrian <font color=#005eb8>${result.queue.number}</font>",1)
-                                queueNumber.value = "$number"
+                                queueNumber.value = result.queue.number
                                 _dialogQueueReceiptState.emit(
                                     DialogQueueReceiptState.GetQueueSuccess
                                 )

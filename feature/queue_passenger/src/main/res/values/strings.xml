@@ -5,6 +5,7 @@
     <string name="queue_ticket_text">Antrian Tiket</string>
     <string name="make_queue_text">Antrian berhasil dibuat</string>
     <string name="queue_number_text">No. Antrian</string>
+    <string name="queue_number_text_parameterized">No. Antrian %s</string>
     <string name="current_queue_text">Antrian saat\nini</string>
     <string name="sum_queue_text">Jumlah\nantrian</string>
     <string name="time_order_text">Waktu\npemesanan</string>

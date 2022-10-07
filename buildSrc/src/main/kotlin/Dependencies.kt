@@ -175,7 +175,7 @@ object Junit {
     val android_junit by lazy { "androidx.test.ext:junit:1.1.2" }
     val espresso_core by lazy { "androidx.test.espresso:espresso-core:3.3.0" }
     val coroutines by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2" }
-    val core by lazy { "androidx.arch.core:core-testing:2.1.0" }
+    val core by lazy { "androidx.arch.core:core-testing:2.1.0@aar" }
 }
 
 object Junit5 {

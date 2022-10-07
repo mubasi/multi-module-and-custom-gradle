@@ -2,6 +2,7 @@ import id.bluebird.vsm.domain.fleet.domain.interactor.RunSuiteDomainFleet
 import id.bluebird.vsm.domain.location.domain.cases.RunSuiteDomainLocation
 import id.bluebird.vsm.domain.passenger.domain.interactor.RunSuiteDomainPassenger
 import id.bluebird.vsm.domain.user.domain.usescases.RunSuiteDomainUser
+import id.bluebird.vsm.feature.home.RunSuiteFeatureQueuePassenger
 import id.bluebird.vsm.feature.queue_fleet.RunSuiteFeatureQueueFleet
 import id.bluebird.vsm.feature.user_management.RunSuiteFeatureUser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +16,8 @@ import org.junit.platform.suite.api.Suite
     RunSuiteDomainFleet::class,
     RunSuiteDomainLocation::class,
     RunSuiteFeatureQueueFleet::class,
-    RunSuiteFeatureUser::class
+    RunSuiteFeatureUser::class,
+    RunSuiteFeatureQueuePassenger::class
 )
 @ExperimentalCoroutinesApi
 class RunSuiteTest
