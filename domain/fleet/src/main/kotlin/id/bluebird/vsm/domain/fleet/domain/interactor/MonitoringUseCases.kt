@@ -53,7 +53,7 @@ class MonitoringUseCases : Monitoring {
     }
 
     private fun initRef(baseReference: DatabaseReference) {
-        _ref = if (BuildConfig.FLAVOR == "stage") {
+        _ref = if (id.bluebird.vsm.domain.fleet.BuildConfig.FLAVOR == "stage") {
             baseReference.child(STAGING).child(MONITORING)
         } else {
             baseReference.child(MONITORING)
