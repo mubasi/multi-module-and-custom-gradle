@@ -44,6 +44,7 @@ class MonitoringFragment: Fragment() {
         initTable()
         monitoringViewModel.init()
 
+
         monitoringViewModel.notificationVisibility.observe(viewLifecycleOwner) {
             mBinding.isNotificationVisible = it
         }
@@ -122,6 +123,7 @@ class MonitoringFragment: Fragment() {
 
     private fun initTable() {
         tableAdapter = MonitoringTableAdapter(monitoringViewModel)
+        tableAdapter.setHeaderLabel(requireContext().resources.getStringArray(R.array.column_header).toList())
         mBinding.tableView.apply {
             setAdapter(tableAdapter)
         }

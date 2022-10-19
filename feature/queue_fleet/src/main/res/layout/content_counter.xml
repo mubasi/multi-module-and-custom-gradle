@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/ubuntu_bold"
-                android:text="@{!vm.isPerimeter() ? @string/eng_request : @string/request}"
+                android:text="@string/request"
                 android:textColor="@color/warning_0"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@id/tv_demand_count_perimeter"

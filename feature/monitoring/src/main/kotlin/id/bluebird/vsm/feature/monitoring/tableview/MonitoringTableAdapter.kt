@@ -28,6 +28,10 @@ class MonitoringTableAdapter(private val viewModel: MonitoringViewModel): Abstra
         }
     }
 
+    fun setHeaderLabel(list: List<String>) {
+        helper.setHeaderLabels(list)
+    }
+
     fun setItem(data: List<MonitoringModel>) {
         helper.generateListForTable(data)
         setAllItems(helper.columnHeaderList, helper.rowHeaderList, helper.cellList)
@@ -76,7 +80,7 @@ class MonitoringTableAdapter(private val viewModel: MonitoringViewModel): Abstra
 
     override fun onCreateCornerView(parent: ViewGroup): View {
         val binding: TableHeaderCellLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.table_header_cell_layout, parent, false)
-        binding.value = "Lokasi"
+        binding.value = parent.context.getString(R.string.login)
         return binding.root
     }
 
