@@ -49,4 +49,14 @@
     <string name="repeat_take_picture">Ambil Ulang Gambar</string>
     <string name="msg_not_get_picture">Silahkan ambil ulang gambar</string>
     <string name="msg_not_get_picture_title">Tidak dapat mengambil nomor lambung</string>
+    <string name="lokasi">Lokasi</string>
+    <string-array name="column_header">
+        <item>Antrian Armada</item>
+        <item>Antrian Penumpang</item>
+        <item>Total Ritase</item>
+        <item>Total Antrian Armada</item>
+        <item>Total Antrian Penumpang</item>
+        <item>Permintaan Armada</item>
+        <item>Pengendapan</item>
+    </string-array>
 </resources>

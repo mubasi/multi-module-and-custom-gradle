@@ -15,6 +15,7 @@ class MonitoringTableHelper {
     private var _columnHeaderList = listOf<MonitoringColumnHeader>()
     private var _rowHeaderList = listOf<MonitoringRowHeader>()
     private var _cellList = listOf<List<MonitoringCell>>()
+    private var headerLabels = listOf<String>()
 
     val columnHeaderList: List<MonitoringColumnHeader> get() = _columnHeaderList
     val rowHeaderList: List<MonitoringRowHeader> get() = _rowHeaderList
@@ -38,15 +39,13 @@ class MonitoringTableHelper {
      * */
 
     private fun createColumnHeaderList(): List<MonitoringColumnHeader> =
-        listOf(
-            MonitoringColumnHeader("Antrian Armada"),
-            MonitoringColumnHeader("Antrian Penumpang"),
-            MonitoringColumnHeader("Total Ritase"),
-            MonitoringColumnHeader("Total Antrian Armada"),
-            MonitoringColumnHeader("Total Antrian Penumpang"),
-            MonitoringColumnHeader("Request Armada"),
-            MonitoringColumnHeader("Buffer"),
-        )
+        headerLabels.map {
+            MonitoringColumnHeader(it)
+        }
+
+    fun setHeaderLabels(list: List<String>) {
+        this.headerLabels = list
+    }
 
     private fun createCells(list: List<MonitoringModel>): List<List<MonitoringCell>> {
         val result: MutableList<MutableList<MonitoringCell>> = MutableList(list.size) { mutableListOf() }
