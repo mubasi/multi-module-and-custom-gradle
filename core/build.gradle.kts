@@ -62,7 +62,7 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "${keyProperties["server_base_url_production"]}"
+                value = "${keyProperties["base_url"]}"
             )
             buildConfigField(
                 type = "String",
@@ -76,7 +76,7 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "${keyProperties["server_base_url_staging"]}"
+                value = "\"stg${keyProperties["base_url"]}\""
             )
             buildConfigField(
                 type = "String",
@@ -89,7 +89,7 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "${keyProperties["server_base_url_dev"]}"
+                value = "\"dev${keyProperties["base_url"]}\""
             )
             buildConfigField(
                 type = "String",
