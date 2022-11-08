@@ -60,7 +60,7 @@ android {
         /** keystore(jsk) disimpan di Digital Outlet sharepoints folder "Keys"*/
         getByName("release") {
             isMinifyEnabled = true
-            isDebuggable = false
+            isDebuggable = true
             isShrinkResources = true
             proguardFile(
                 getDefaultProguardFile(
