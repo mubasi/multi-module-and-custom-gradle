@@ -2,12 +2,14 @@ package id.bluebird.vsm.feature.queue_fleet.main
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.util.Log
+import android.text.Spanned
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.text.bold
-import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -17,7 +19,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import id.bluebird.vsm.core.utils.DialogUtils
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import id.bluebird.vsm.feature.queue_fleet.R
 import id.bluebird.vsm.feature.queue_fleet.adapter.FleetsAdapter
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetFragment
@@ -173,7 +176,7 @@ class QueueFleetFragment : Fragment() {
                                     .append(" ")
                                     .append(getString(R.string.failed_depart_description))
 
-                                DialogUtils.showSnackbar(view, string, R.color.warning_0)
+                                showSnackbar(string, R.color.warning_0)
                             }
                             else -> {
                                 // do nothing
@@ -193,9 +196,20 @@ class QueueFleetFragment : Fragment() {
                 if (isWithPassenger) getString(R.string.fleet_depart_with_passenger)
                 else getString(R.string.fleet_depart_without_passenger)
             )
-        DialogUtils.showSnackbar(requireView(), string, R.color.success_0)
-
+        showSnackbar(string, R.color.success_0)
         _mQueueFleetViewModel.removeFleet(fleetNumber)
+    }
+
+    fun showSnackbar(message: Spanned, color: Int){
+        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
+        val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
+
+        layoutParams.gravity = Gravity.TOP
+        layoutParams.setMargins(-10,160,-10,0)
+        snackbar.view.layoutParams = layoutParams
+        snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
+        snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))
+        snackbar.show()
     }
 
     private fun navigateToSearchFleet() {
