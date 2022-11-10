@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -48,12 +49,13 @@ class QueuePassengerFragment : Fragment() {
         binding.successCurrentQueue = false
         binding.successListQueue = false
 
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+
         setupTabLayout()
         setupListQueue()
         setupSwipeRefresh()
         observer()
         _queuePassengerViewModel.init()
-
 
     }
 
