@@ -98,6 +98,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.queuePassengerFragment -> {
                         setQueueToolbar(R.id.queuePassengerFragment)
                     }
+                    R.id.queueTicket -> {
+                        navigateBackWithArrow(R.id.queueTicket)
+                    }
                     R.id.monitoringFragment -> {
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                     }

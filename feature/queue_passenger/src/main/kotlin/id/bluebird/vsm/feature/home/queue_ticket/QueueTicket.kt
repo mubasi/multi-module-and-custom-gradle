@@ -69,7 +69,7 @@ class QueueTicket : BaseFragment() {
                     with(_queueTicketViewModel) {
                         when(it) {
                             QueueTicketState.ProsesTicket -> {
-                                findNavController().navigate(R.id.queuePassengerFragment)
+                                findNavController().popBackStack()
                             }
                             else -> {
                                 //do nothing
