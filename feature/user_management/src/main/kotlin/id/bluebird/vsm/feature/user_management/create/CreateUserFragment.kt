@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.user_management.create
 
 import android.os.Bundle
+import android.text.Html
 import android.view.*
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
@@ -9,7 +10,6 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.user_management.R
 import id.bluebird.vsm.feature.user_management.create.model.RoleCache
 import id.bluebird.vsm.feature.user_management.create.model.SubLocationCache
@@ -99,18 +99,12 @@ class CreateUserFragment : Fragment() {
                         assignLocation()
                     }
                     is CreateUserState.InvalidField -> {
-                        DialogUtils.showErrorDialog(
-                            requireContext(),
-                            null,
-                            ""
-                        )
+                        var currentView = requireActivity().window.decorView.rootView
+                        DialogUtil.showSnackbar(currentView, Html.fromHtml("",1), R.color.error_color)
                     }
                     is CreateUserState.OnError -> {
-                        DialogUtils.showErrorDialog(
-                            requireContext(),
-                            null,
-                            it.err.message ?: ""
-                        )
+                        var currentView = requireActivity().window.decorView.rootView
+                        DialogUtil.showSnackbar(currentView, Html.fromHtml("",1), R.color.error_color)
                     }
                     is CreateUserState.GetUserStateSuccess -> {
                         getInformation()

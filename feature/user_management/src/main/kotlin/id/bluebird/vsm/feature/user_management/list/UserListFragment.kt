@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.user_management.list
 
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.user_management.R
 import id.bluebird.vsm.feature.user_management.create.CreateUserFragment
+import id.bluebird.vsm.feature.user_management.utils.DialogUtil
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -72,11 +73,8 @@ class UserListFragment : Fragment() {
 
                     }
                     is UserSettingSealed.GetUserOnError -> {
-                        DialogUtils.showErrorDialog(
-                            requireContext(),
-                            getString(R.string.get_users_failed),
-                            "error"
-                        )
+                        val msg = getString(R.string.get_users_failed)
+                        DialogUtil.showSnackbar(view, Html.fromHtml("$msg",1), R.color.error_color)
                     }
                     is UserSettingSealed.GetUsers -> {
                         mAdapterUserSetting.addNewSetData(it.list)

@@ -16,9 +16,6 @@ import id.bluebird.vsm.feature.user_management.search_location.model.Location
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -42,7 +39,7 @@ class CreateUserViewModel(
     val userName: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
     val oldPassword: MutableLiveData<String> = MutableLiveData()
-    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData()
+    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData(CreateUserState.Initialize)
     val countSubAssignLocation: MutableLiveData<Int> = MutableLiveData(0)
     var isRoleSelected: MutableLiveData<Boolean> = MutableLiveData()
     val subLocationSingleSelection: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -208,23 +205,23 @@ class CreateUserViewModel(
     }
 
     private suspend fun getUserRole() {
-        getRoles.invoke()
-            .catch { cause: Throwable ->
-                actionSealed.postValue(CreateUserState.OnError(cause))
-            }
-            .collect {
-                roles.clear()
-                val items = it
-                if (mRoleId < 1) {
-                    roles.add(RoleCache(-1, DEFAULT_ROLE_NAME))
+            getRoles.invoke()
+                .catch { cause: Throwable ->
+                    actionSealed.postValue(CreateUserState.OnError(cause))
                 }
-                if (items.isNotEmpty()) {
-                    items.forEach { role ->
-                        val roleCache = RoleCache(role.id, role.name)
-                        roles.add(roleCache)
+                .collect {
+                    roles.clear()
+                    val items = it
+                    if (mRoleId < 1) {
+                        roles.add(RoleCache(-1, DEFAULT_ROLE_NAME))
+                    }
+                    if (items.isNotEmpty()) {
+                        items.forEach { role ->
+                            val roleCache = RoleCache(role.id, role.name)
+                            roles.add(roleCache)
+                        }
                     }
                 }
-            }
     }
 
     private suspend fun getUserLocationAssignment() {
@@ -264,7 +261,13 @@ class CreateUserViewModel(
             actionSealed.postValue(CreateUserState.OnSaveProgress)
             createEditUser.invoke(createParam())
                 .catch { cause ->
-                    actionSealed.postValue(CreateUserState.OnError(cause))
+                    var tempTrawable = Throwable(message = "Silahkan lengkapi form yang tersedia")
+
+                    if(cause.message != null) {
+                        tempTrawable = cause
+                    }
+
+                    actionSealed.postValue(CreateUserState.OnError(tempTrawable))
                 }
                 .collect {
                     when (it) {
@@ -291,7 +294,7 @@ class CreateUserViewModel(
         }
         return CreateUserParam(
             name = name.value,
-            username = name.value,
+            username = userName.value,
             newPassword = password.value,
             password = oldPassword.value ?: EMPTY_STRING,
             locationId = locationAssignmentsUser.values.first().locationId,
@@ -328,7 +331,8 @@ class CreateUserViewModel(
         if (roleCache.id != mRoleId) {
             mRoleId = roleCache.id
             shouldShowLocation.value = roleCache.id == OFFICER_ROLE_ID
-            if (roleCache.id != 5.toLong()) {
+            shouldShowSubLocation.value = roleCache.id == OFFICER_ROLE_ID
+            if (roleCache.id != OFFICER_ROLE_ID) {
                 selectedAllSubLocation()
             } else {
                 selectedLocation.value = EMPTY_STRING
