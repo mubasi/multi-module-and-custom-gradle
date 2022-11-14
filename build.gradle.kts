@@ -9,16 +9,16 @@ buildscript {
 
     }
     dependencies {
-        classpath(MainGradle.kotlin)
-        classpath(MainGradle.gradle)
-        classpath(MainGradle.jacoco_gradle)
-        classpath(MainGradle.sonarqube_gradle)
-        classpath(MainGradle.protobuf)
-        classpath(MainGradle.safe_args)
-        classpath(MainGradle.google_service)
-        classpath(MainGradle.firebase)
-        classpath(MainGradle.firebase_analytics)
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+//        classpath(MainGradle.kotlin)
+//        classpath(MainGradle.gradle)
+//        classpath(MainGradle.jacoco_gradle)
+//        classpath(MainGradle.sonarqube_gradle)
+//        classpath(MainGradle.protobuf)
+//        classpath(MainGradle.safe_args)
+//        classpath(MainGradle.google_service)
+//        classpath(MainGradle.firebase)
+//        classpath(MainGradle.firebase_analytics)
+//        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
     }
 }
 

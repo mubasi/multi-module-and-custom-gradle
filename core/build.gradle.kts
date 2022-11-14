@@ -4,8 +4,7 @@ import java.util.*
 
 plugins {
     id(Plugins.library)
-    kotlin(Plugins.android)
-    kotlin(Plugins.kapt)
+    id("project-plugins")
     id(Plugins.protobuf)
 }
 
@@ -17,22 +16,14 @@ if (keyPropertiesFile.exists()) {
 val protobuf_platform = keyProperties.getProperty("protobuf_platform", "")
 
 android {
-    compileSdk = Version.compileSdk
 
     defaultConfig {
-        minSdk = Version.minSdk
-        targetSdk = Version.targetSdk
         multiDexEnabled = true
         buildConfigField(
             type = "String",
             name = "VERSION_NAME",
             value = "\"${Version.versionName}\""
         )
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
     }
 
     sourceSets.getByName("main") {
@@ -41,24 +32,8 @@ android {
         }
     }
 
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        debug {
-            isMinifyEnabled = false
-        }
-    }
-
-    flavorDimensions.add("env")
-
     productFlavors {
-        register("prod") {
+        getByName("prod") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -69,10 +44,8 @@ android {
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_production"]}"
             )
-            dimension = "env"
         }
-        register("stage") {
-            dimension = "env"
+        getByName("stage") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -84,8 +57,7 @@ android {
                 value = "${keyProperties["firebase_url_secondary_staging"]}"
             )
         }
-        register("develop") {
-            dimension = "env"
+        getByName("develop") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -97,17 +69,6 @@ android {
                 value = "${keyProperties["firebase_url_secondary_dev"]}"
             )
         }
-    }
-
-    buildFeatures { dataBinding = true }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
 
