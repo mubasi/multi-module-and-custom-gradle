@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/monitoringFragment"
-        android:name="id.bluebird.vsm.feature.monitoring.main.MonitoringFragment"
+        android:name="id.bluebird.vsm.feature.monitoring.main.FragmentMonitoring"
         android:label="@string/monitoring_title">
 
     </fragment>

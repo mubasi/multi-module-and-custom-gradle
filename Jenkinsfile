@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-stage('Prepare') {
+        stage('Prepare') {
             steps {
                 script{
                     writeFile file: 'release-note.txt', text: "${env.COMMIT_MESSAGE}"
@@ -59,14 +59,14 @@ stage('Prepare') {
             }
         }
 
-        // stage('Test Report and Code Review') {
-        //     steps {
-        //         withCredentials([string(credentialsId: '04398f9c-36e4-4161-b6b2-9098e7c26ad9', variable: 'TOKEN')]) {
-        //             sh 'chmod +x testing.sh'
-        //             sh './testing.sh $TESTING $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $TOKEN'
-        //         }
-        //     }
-        // }
+        stage('Test Report and Code Review') {
+            steps {
+                withCredentials([string(credentialsId: '04398f9c-36e4-4161-b6b2-9098e7c26ad9', variable: 'TOKEN')]) {
+                    sh 'chmod +x testing.sh'
+                    sh './testing.sh $TESTING $BRANCH_NAME $BUILD_NUMBER $ANDROID_HOME $TOKEN'
+                }
+            }
+        }
 
        stage('Build and Deploy Bucket') {
             environment {

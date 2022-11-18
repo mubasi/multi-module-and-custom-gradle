@@ -6,17 +6,17 @@
 
     <fragment
         android:id="@+id/queuePassengerFragment"
-        android:name="id.bluebird.vsm.feature.home.main.QueuePassengerFragment"
+        android:name="id.bluebird.vsm.feature.home.main.FragmentQueuePassenger"
         android:label="@string/queue_passenger">
     </fragment>
     <fragment
         android:id="@+id/queueTicket"
-        android:name="id.bluebird.vsm.feature.home.queue_ticket.QueueTicket"
+        android:name="id.bluebird.vsm.feature.home.queue_ticket.FragmentQueueTicket"
         android:label="@string/queue_ticket_text">
     </fragment>
     <fragment
         android:id="@+id/searchFleetFragment"
-        android:name="id.bluebird.vsm.feature.home.queue_search.QueueSearchFragment"
+        android:name="id.bluebird.vsm.feature.home.queue_search.FragmentQueueSearch"
         android:label="@string/label_queue_search" />
     <deepLink app:uri="android-app://id.bluebird.mall/queue_passenger" />
 </navigation>

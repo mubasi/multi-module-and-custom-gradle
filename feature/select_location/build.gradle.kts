@@ -9,9 +9,9 @@ plugins {
 //    reportsDir = file("$buildDir/reports")
 //}
 
-//apply {
-//    from("../jacoco.gradle.kts")
-//}
+apply {
+    from("../../jacoco.gradle.kts")
+}
 
 android {
 

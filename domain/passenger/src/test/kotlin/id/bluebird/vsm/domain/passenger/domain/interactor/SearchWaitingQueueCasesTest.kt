@@ -50,4 +50,38 @@ internal class SearchWaitingQueueCasesTest {
             awaitComplete()
         }
     }
+
+    @Test
+    fun `searchWaitingQueueCases, is Not Empty` () = runTest {
+
+        every { Hawk.get<Long>(any()) } returns 1L
+        every { queueReceiptRepository.searchWaitingQueue(
+            "aa",
+            1,
+            1
+        ) } returns flow {
+            emit(
+                QueuePangkalanOuterClass.ResponseSearchQueue.newBuilder()
+                    .addQueues(QueuePangkalanOuterClass.Queue.newBuilder().apply {
+                        id = 1
+                        number = "aa"
+                        createdAt = "bb"
+                        message = "cc"
+                        currentQueue = "dd"
+                        totalQueue = 2
+                        timeOrder = "ee"
+                        subLocationId = 3
+                    }.build())
+                    .build()
+            )
+        }
+
+        flowOf(searchWaitingQueueCases.invoke(
+            "aa",
+            1
+        )).test {
+            assert(awaitItem().single() is WaitingQueueState.Success)
+            awaitComplete()
+        }
+    }
 }

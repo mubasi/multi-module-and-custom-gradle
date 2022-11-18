@@ -28,14 +28,14 @@ class MonitoringUseCases : Monitoring {
                         it.getValue(MonitoringData::class.java) ?: throw NullPointerException()
                     MonitoringResult(
                         buffer = value.buffer,
-                        locationName = value.location_name,
-                        queueFleet = value.queue_fleet,
-                        queuePassenger = value.queue_passenger,
+                        locationName = value.locationName,
+                        queueFleet = value.queueFleet,
+                        queuePassenger = value.queuePassenger,
                         request = value.request,
-                        subLocationId = value.sub_location_id,
-                        totalQueueFleet = value.total_queue_fleet,
-                        totalQueuePassenger = value.total_queue_passenger,
-                        totalRitase = value.total_ritase
+                        subLocationId = value.subLocationId,
+                        totalQueueFleet = value.totalQueueFleet,
+                        totalQueuePassenger = value.totalQueuePassenger,
+                        totalRitase = value.totalRitase
                     )
                 }
                 this@callbackFlow.trySendBlocking(MonitoringResultState.Success(result))
@@ -53,7 +53,7 @@ class MonitoringUseCases : Monitoring {
     }
 
     private fun initRef(baseReference: DatabaseReference) {
-        _ref = if (id.bluebird.vsm.domain.fleet.BuildConfig.FLAVOR == "stage") {
+        _ref = if (BuildConfig.FLAVOR == "stage") {
             baseReference.child(STAGING).child(MONITORING)
         } else {
             baseReference.child(MONITORING)

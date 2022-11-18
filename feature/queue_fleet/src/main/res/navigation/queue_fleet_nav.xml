@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/queueFleetFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.main.QueueFleetFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.main.FragmentQueueFleet"
         android:label="@string/fleet_title">
         <argument
             android:name="locationId"
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/addFleetFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet"
         android:label="@string/add_fleet">
         <argument
             android:name="subLocation"
@@ -73,17 +73,17 @@
 
     <fragment
         android:id="@+id/searchFleetFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.search_fleet.SearchFleetFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet"
         android:label="@string/search_fleet" />
 
     <fragment
         android:id="@+id/addByCameraFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.add_by_camera.FragmentAddByCamera"
         android:label="@string/scan_number_side_title" />
 
     <fragment
         android:id="@+id/searchQueueFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetFragment"
+        android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet"
         android:label="@string/search_ritase">
         <argument
             android:name="subLocation"

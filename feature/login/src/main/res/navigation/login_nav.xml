@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="id.bluebird.vsm.feature.login.LoginFragment"
+        android:name="id.bluebird.vsm.feature.login.FragmentLogin"
         android:label="LoginFragment">
         <deepLink app:uri="android-app://id.bluebird.mall/login" />
     </fragment>

@@ -2,8 +2,6 @@ package id.bluebird.vsm.feature.home.queue_ticket
 
 import id.bluebird.vsm.domain.passenger.domain.cases.GetQueueReceipt
 import id.bluebird.vsm.feature.home.TestCoroutineRule
-import id.bluebird.vsm.feature.home.model.QueueReceiptCache
-import id.bluebird.vsm.feature.home.queue_search.QueueSearchState
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList

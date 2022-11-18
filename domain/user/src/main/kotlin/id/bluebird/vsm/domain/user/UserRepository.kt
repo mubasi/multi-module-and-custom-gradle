@@ -9,7 +9,7 @@ interface UserRepository {
     fun doLogin(loginParam: LoginParam): Flow<UserOuterClass.UserLoginResponse>
     fun forceLogout(uuid: String): Flow<UserOuterClass.ForceLogoutResponse>
     fun deleteUser(uuid: String, by: Long): Flow<UserOuterClass.DeleteUserResponse>
-    fun searchUser(param: String): Flow<UserOuterClass.SearchUserResponse>
+    fun searchUser(param: String?): Flow<UserOuterClass.SearchUserResponse>
     fun getRoles(): Flow<UserOuterClass.GetRolesResponse>
     fun createUser(model: CreateUserParam): Flow<UserOuterClass.CreateUserResponse>
     fun editUser(model: CreateUserParam): Flow<UserOuterClass.EditUserResponse>

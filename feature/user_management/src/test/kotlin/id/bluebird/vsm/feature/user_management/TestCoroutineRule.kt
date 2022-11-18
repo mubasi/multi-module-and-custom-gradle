@@ -5,7 +5,6 @@ import androidx.arch.core.executor.TaskExecutor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -14,12 +13,11 @@ import org.junit.jupiter.api.extension.Extension
 import org.junit.jupiter.api.extension.ExtensionContext
 
 @ExperimentalCoroutinesApi
-class TestCoroutineRule : Extension, BeforeEachCallback, AfterEachCallback {
-
-    val testCoroutineDispatcher = TestCoroutineDispatcher()
+internal class TestCoroutineRule : Extension, BeforeEachCallback,
+    AfterEachCallback  {
 
     override fun beforeEach(context: ExtensionContext?) {
-        Dispatchers.setMain(testCoroutineDispatcher)
+        Dispatchers.setMain(StandardTestDispatcher())
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
             override fun executeOnDiskIO(runnable: Runnable) {
                 runnable.run()
@@ -36,7 +34,8 @@ class TestCoroutineRule : Extension, BeforeEachCallback, AfterEachCallback {
     }
 
     override fun afterEach(context: ExtensionContext?) {
-        testCoroutineDispatcher.cleanupTestCoroutines()
+        Dispatchers.resetMain()
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
+
 }

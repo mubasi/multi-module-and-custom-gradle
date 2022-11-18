@@ -39,10 +39,9 @@ class CreateUserViewModel(
     val userName: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
     val oldPassword: MutableLiveData<String> = MutableLiveData()
-    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData(CreateUserState.Initialize)
+    val actionSealed: MutableLiveData<CreateUserState> = MutableLiveData()
     val countSubAssignLocation: MutableLiveData<Int> = MutableLiveData(0)
     var isRoleSelected: MutableLiveData<Boolean> = MutableLiveData()
-    val subLocationSingleSelection: MutableLiveData<Boolean> = MutableLiveData(true)
     val subLocationLiveData: MutableLiveData<List<SubLocationCache>> = MutableLiveData()
     val roleLiveData: MutableLiveData<List<RoleCache>> = MutableLiveData()
     val userRolePosition: MutableLiveData<Int> = MutableLiveData(-1)
@@ -53,14 +52,14 @@ class CreateUserViewModel(
     val subLocationPosition: MutableLiveData<Int> = MutableLiveData(-1)
     val isSubLocationSelected: MutableLiveData<Boolean> = MutableLiveData(false)
 
-    private var mLocationId: Long = -1
+    var mLocationId: Long = -1
     var mRoleId: Long = -1
     private val subLocations: MutableList<SubLocationCache> = ArrayList()
     private val roles: MutableList<RoleCache> = ArrayList()
     private var rolePosition: Int = 0
-    private var subLocationIndex: Int = 0
+    var subLocationIndex: Int = 0
     private var mUserId: Long = -1
-    var locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
+    private var locationAssignmentsUser: HashMap<Long, LocationAssignment> = HashMap()
     private var location: Location? = null
     private var mUUID: String = EMPTY_STRING
     private val coroutineException = CoroutineExceptionHandler { _, e ->
@@ -83,8 +82,34 @@ class CreateUserViewModel(
     }
 
     @VisibleForTesting
-    fun setLocation(tempLocation: Location) {
+    fun valMuuid(): String {
+        return mUUID
+    }
+
+    @VisibleForTesting
+    fun setLocation(tempLocation: Location?) {
         location = tempLocation
+    }
+
+    @VisibleForTesting
+    fun setMlocation(tempLocation: Long) {
+        mLocationId = tempLocation
+    }
+
+    @VisibleForTesting
+    fun valLocation() = location
+
+    @VisibleForTesting
+    fun valLocationAssignmentsUser() = locationAssignmentsUser
+
+    @VisibleForTesting
+    fun valRoles() : List<RoleCache> {
+        return roles
+    }
+
+    @VisibleForTesting
+    fun setValRoles(items : List<RoleCache> ) {
+        roles.addAll(items)
     }
 
     @VisibleForTesting
@@ -93,8 +118,21 @@ class CreateUserViewModel(
     }
 
     @VisibleForTesting
-    fun setUUID(uuid: String?) {
-        mUUID = uuid ?: EMPTY_STRING
+    fun getSubLocations() = subLocations
+
+    @VisibleForTesting
+    fun setSubLocations(list : List<SubLocationCache>) {
+        subLocations.addAll(list)
+    }
+
+    @VisibleForTesting
+    fun setValassignUserToField(value: CreateUserResult?) {
+        assignUserToField(value)
+    }
+
+    @VisibleForTesting
+    fun setInformationOnException(value: Throwable) {
+        getInformationOnException(value)
     }
 
     fun initUser(userId: Long?, uuid: String?) {
@@ -163,8 +201,7 @@ class CreateUserViewModel(
     ) {
         locationAssignmentsUser.clear()
         subLocationsId.forEach {
-            val locationAssignment = LocationAssignment(mLocationId, it)
-            locationAssignmentsUser[it] = locationAssignment
+            locationAssignmentsUser[it] = LocationAssignment(mLocationId, it)
         }
         countSubAssignLocation.postValue(locationAssignmentsUser.size)
     }
@@ -429,9 +466,5 @@ class CreateUserViewModel(
                     actionSealed.postValue(CreateUserState.OnSuccessForceLogout(userName.value ?: EMPTY_STRING))
                 }
         }
-    }
-
-    fun addData(first: Int, second: Int) : Int {
-        return first + second
     }
 }

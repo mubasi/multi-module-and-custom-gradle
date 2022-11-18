@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/selectLocationFragment"
-        android:name="id.bluebird.vsm.feature.select_location.SelectLocationFragment"
+        android:name="id.bluebird.vsm.feature.select_location.FragmentSelectLocation"
         android:label="SelectLocationFragment">
         <argument
             android:name="isMenuFleet"

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.api.client.util.DateTime
 import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
@@ -16,6 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AddFleetViewModel(
     private val searchFleet: SearchFleet,
@@ -45,6 +48,16 @@ class AddFleetViewModel(
     @VisibleForTesting
     fun setIsSearchQueue(temp: Boolean ) {
         _isSearchQueue = temp
+    }
+
+    @VisibleForTesting
+    fun valIsSearchQueue() : Boolean {
+        return _isSearchQueue
+    }
+
+    @VisibleForTesting
+    fun valSubLocationId() : Long {
+        return _subLocation
     }
 
     fun init(subLocationId: Long, isSearchQueue: Boolean) {
@@ -128,6 +141,12 @@ class AddFleetViewModel(
                     }
                 }
         }
+    }
+
+    fun String.convertCreateAtValue(): String {
+        val dateTime = DateTime.parseRfc3339(this)
+        val sdf = SimpleDateFormat("dd MMM yyyy '.' HH:mm", Locale("id", "ID"))
+        return sdf.format(dateTime.value)
     }
 
     fun searchFleet() {

@@ -3,7 +3,7 @@ plugins {
     id("project-plugins")
     kotlin(Plugins.parcelize)
     id(Plugins.safeargs)
-//    jacoco
+    id("jacoco")
 }
 
 //jacoco {
@@ -11,9 +11,9 @@ plugins {
 //    reportsDir = file("$buildDir/reports")
 //}
 
-//apply {
-//    from("../jacoco.gradle.kts")
-//}
+apply {
+    from("../../jacoco.gradle.kts")
+}
 
 dependencies {
     implementation(project(":core"))

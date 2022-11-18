@@ -2,6 +2,8 @@ package id.bluebird.vsm.feature.queue_fleet.main
 
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
+import id.bluebird.vsm.core.utils.hawk.UserUtils
+import id.bluebird.vsm.domain.fleet.DepartFleetState
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
 import id.bluebird.vsm.domain.user.model.CreateUserResult
@@ -11,22 +13,30 @@ import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.GetCount
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.CountResult
+import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
+import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
 import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
+import id.bluebird.vsm.domain.passenger.model.CurrentQueueResult
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
-import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModelTest
+import id.bluebird.vsm.feature.queue_fleet.getOrAwaitValue
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import id.bluebird.vsm.feature.queue_fleet.model.UserInfo
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
+import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -41,6 +51,9 @@ internal class QueueFleetViewModelTest {
         private const val ERROR = "error"
     }
 
+//    @Rule
+//    private val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     private lateinit var _vm: QueueFleetViewModel
     private val _getCount: GetCount = mockk(relaxed = true)
     private val _getUserId: GetUserId = mockk(relaxed = true)
@@ -52,16 +65,19 @@ internal class QueueFleetViewModelTest {
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
+        mockkObject(UserUtils)
+        mockkObject(LocationNavigationTemporary)
         _vm = QueueFleetViewModel(
             _getCount,
             _getUserId,
             _getFleetList,
             _departFleet,
-            _getCurrentQueue)
+            _getCurrentQueue
+        )
     }
 
     @AfterEach
-    fun resetEvent() {
+    fun tearDown() {
         _events.clear()
     }
 
@@ -392,4 +408,422 @@ internal class QueueFleetViewModelTest {
             // Result
             Assertions.assertEquals(10, _vm.counterLiveData.value!!.stock)
         }
+
+    @Test
+    fun `init, when user is not officer and LocationNav not available, emit toSelectLocation`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns false
+            val collect = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+
+            //WHEN
+            _vm.init()
+            runCurrent()
+            delay(500)
+
+            //THEN
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressHolder, _events[0])
+            Assertions.assertEquals(QueueFleetState.ToSelectLocation, _events[1])
+            collect.cancel()
+        }
+
+    @Test
+    fun `init, when user is not officer and locationNav available, emit getUserSuccess`() =
+        runTest {
+            //GIVEN
+            val userResult =
+                CreateUserResult(
+                    1L,
+                    "name",
+                    "username",
+                    1L,
+                    1L,
+                    "locationName",
+                    listOf(11L),
+                    "subLocationName"
+                )
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
+            every { UserUtils.isUserOfficer() } returns false
+            every { UserUtils.getUserId() } returns 1L
+            every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
+                1L,
+                11L,
+                "locationName",
+                "subLocationName"
+            )
+            every { _getUserId.invoke(1L) } returns flow {
+                emit(GetUserByIdState.Success(userResult))
+            }
+            val collect = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+
+            //WHEN
+            _vm.init()
+            runCurrent()
+
+            //THEN
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
+            Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
+            Assertions.assertEquals(
+                UserInfo(1L, 1L, 11L),
+                _vm.valUserInfo()
+            )
+
+            collect.cancel()
+        }
+
+    @Test
+    fun `init, when user is officer and locationNav not available, emit getUserSuccess`() =
+        runTest {
+            //GIVEN
+            val userResult =
+                CreateUserResult(
+                    1L,
+                    "name",
+                    "username",
+                    5L,
+                    1L,
+                    "locationName",
+                    listOf(11L),
+                    "subLocationName"
+                )
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { _getUserId.invoke(1L) } returns flow {
+                emit(GetUserByIdState.Success(userResult))
+            }
+            val collect = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+
+            //WHEN
+            _vm.init()
+            runCurrent()
+
+            //THEN
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
+            Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
+            Assertions.assertEquals(
+                UserInfo(1L, 1L, 11L),
+                _vm.valUserInfo()
+            )
+
+            collect.cancel()
+        }
+
+    @Test
+    fun `init, when user is officer and locationNav available, emit getUserSuccess`() = runTest {
+        //GIVEN
+        val userResult =
+            CreateUserResult(
+                1L,
+                "name",
+                "username",
+                5L,
+                1L,
+                "locationName",
+                listOf(11L),
+                "subLocationName"
+            )
+        val titleString = "locationName subLocationName".getLastSync()
+        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
+        every { UserUtils.isUserOfficer() } returns true
+        every { UserUtils.getUserId() } returns 1L
+        every { _getUserId.invoke(1L) } returns flow {
+            emit(GetUserByIdState.Success(userResult))
+        }
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+
+        //WHEN
+        _vm.init()
+        runCurrent()
+        val resultTitle = _vm.titleLocation.getOrAwaitValue()
+
+        //THEN
+        Assertions.assertEquals(2, _events.size)
+        Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
+        Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
+        Assertions.assertEquals(
+            UserInfo(1L, 1L, 11L),
+            _vm.valUserInfo()
+        )
+        Assertions.assertEquals(titleString, resultTitle)
+
+        collect.cancel()
+    }
+
+    @Test
+    fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { _getUserId.invoke(1L) } returns flow {
+                throw NullPointerException(ERROR)
+            }
+            val collect = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+
+            //WHEN
+            _vm.init()
+            runCurrent()
+
+            //THEN
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
+            Assertions.assertEquals(QueueFleetState.FailedGetUser(ERROR), _events[1])
+            Assertions.assertEquals(
+                UserInfo(),
+                _vm.valUserInfo()
+            )
+
+            collect.cancel()
+        }
+
+    @Test
+    fun initLocationTest() = runTest {
+        _vm.initLocation(1, 2)
+
+        Assertions.assertEquals(1, _vm.mUserInfo.locationId)
+        Assertions.assertEquals(2, _vm.mUserInfo.subLocationId)
+    }
+
+    @Test
+    fun `initLocationTest, when location and sublocation smaller 0`() = runTest {
+        _vm.initLocation(-1, -1)
+
+        Assertions.assertEquals(-1, _vm.mUserInfo.locationId)
+        Assertions.assertEquals(-1, _vm.mUserInfo.subLocationId)
+    }
+
+    @Test
+    fun `departFleet, when with passenger and queueIsBlank`() = runTest {
+        val withPassenger = true
+        val queueId = ""
+        val fleetItem = FleetItem(
+            id = 1,
+            name = "aa",
+            arriveAt = "bb"
+        )
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.departFleet(fleetItem, withPassenger, queueId)
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.RecordRitaseToDepart)
+        collect.cancel()
+    }
+
+    @Test
+    fun `showRecordRitase, when queueIsBlank`() = runTest {
+        val queueId = null
+        val fleetItem = FleetItem(
+            id = 1,
+            name = "aa",
+            arriveAt = "bb"
+        )
+        every { _getCurrentQueue.invoke() } returns flow {
+            emit(
+                GetCurrentQueueState.Success(
+                    CurrentQueueResult(
+                        1, "aa", "bb"
+                    )
+                )
+            )
+        }
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.showRecordRitase(fleetItem, queueId)
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.RecordRitaseToDepart)
+        collect.cancel()
+    }
+
+    @Test
+    fun `departFleet, when with passenger and queueisNotBlank is Error`() = runTest {
+        val withPassenger = false
+        val queueId = "aa"
+        val fleetItem = FleetItem(
+            id = 1,
+            name = "aa",
+            arriveAt = "bb"
+        )
+
+        every { _departFleet.invoke(any(), any(), any(), any(), any()) } returns flow {
+            throw NullPointerException(ERROR)
+        }
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.departFleet(fleetItem, withPassenger, queueId)
+        runCurrent()
+
+        Assertions.assertEquals(2, _events.size)
+        assert(_events.last() is QueueFleetState.FailedDepart)
+        collect.cancel()
+    }
+
+
+    @Test
+    fun `departFleet, when with passenger and queueisNotBlank is Success`() = runTest {
+        val withPassenger = false
+        val queueId = "aa"
+        val fleetItem = FleetItem(
+            id = 1,
+            name = "aa",
+            arriveAt = "bb"
+        )
+
+        every { _departFleet.invoke(any(), any(), any(), any(), any()) } returns flow {
+            emit(
+                DepartFleetState.Success(
+                    FleetDepartResult(
+                        taxiNo = "aa",
+                        message = "bb",
+                        stockType = "cc",
+                        stockId = "dd",
+                        createdAt = "ff"
+                    )
+                )
+            )
+        }
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.departFleet(fleetItem, withPassenger, queueId)
+        runCurrent()
+
+        Assertions.assertEquals(2, _events.size)
+        assert(_events.last() is QueueFleetState.SuccessDepartFleet)
+        collect.cancel()
+    }
+
+    @Test
+    fun removeFleetTest() = runTest {
+        val listFleet = ArrayList<FleetItem>()
+
+        listFleet.add(
+            FleetItem(
+                1, "aa", "bb"
+            )
+        )
+        _vm.setFleetItems(listFleet)
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.removeFleet("aa")
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.FleetDeparted)
+        collect.cancel()
+    }
+
+
+    @Test
+    fun `removeFleetTest, when index smaller 0`() = runTest {
+        val listFleet = ArrayList<FleetItem>()
+
+        listFleet.add(
+            FleetItem(
+                1, "aa", "bb"
+            )
+        )
+        _vm.setFleetItems(listFleet)
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.removeFleet("cc")
+        runCurrent()
+
+        Assertions.assertEquals(0, _events.size)
+        collect.cancel()
+    }
+
+    @Test
+    fun requestDepartTest() = runTest {
+        val listFleet = FleetItem(
+            1, "aa", "bb"
+        )
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.requestDepart(listFleet)
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.RequestDepartFleet)
+        collect.cancel()
+    }
+
+    @Test
+    fun addFleetTest() = runTest {
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.addFleet()
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.AddFleet)
+        collect.cancel()
+    }
+
+    @Test
+    fun showSearchQueueTest() = runTest {
+        val listFleet = FleetItem(
+            1, "aa", "bb"
+        )
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.showSearchQueue(listFleet, "cc")
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueFleetState.SearchQueueToDepart)
+        collect.cancel()
+    }
+
+    @Test
+    fun departSuccessTest() = runTest {
+        val listFleet = FleetItem(
+            1, "aa", "bb"
+        )
+        val itemList = ArrayList<FleetItem>()
+        itemList.add(listFleet)
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.departSuccess(itemList)
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(_vm.valFleetItems().size, itemList.size)
+        assert(_events.last() is QueueFleetState.GetListSuccess)
+        collect.cancel()
+    }
 }

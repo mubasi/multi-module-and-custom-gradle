@@ -3,6 +3,7 @@ package id.bluebird.vsm.domain.user.domain.usescases
 import app.cash.turbine.test
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.user.UserDomainState
+import id.bluebird.vsm.domain.user.UserErr
 import id.bluebird.vsm.domain.user.UserRepository
 import id.bluebird.vsm.domain.user.model.CreateUserParam
 import io.mockk.every
@@ -71,7 +72,6 @@ internal class CreateEditUserCasesTest {
             awaitComplete()
         }
     }
-
 
     @Test
     fun `editUser, isSuccess`() = runTest {
