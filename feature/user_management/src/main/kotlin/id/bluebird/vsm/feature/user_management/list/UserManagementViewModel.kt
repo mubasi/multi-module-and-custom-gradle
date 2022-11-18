@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.core.utils.hawk.UserUtils
+import id.bluebird.vsm.domain.user.SearchUserState
 import id.bluebird.vsm.domain.user.domain.intercator.SearchUser
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import kotlinx.coroutines.Job
@@ -24,8 +25,7 @@ class UserManagementViewModel(
     val privilege: MutableLiveData<String> = MutableLiveData()
     private var userSettings: MutableList<UserSettingCache> = ArrayList()
     private var searchJob: Job? = null
-    private var loginUserId: Long? = -1
-
+    var loginUserId: Long? = -1
 
     @VisibleForTesting
     fun getUsers(tempUserSetting: MutableList<UserSettingCache>) {
@@ -50,7 +50,6 @@ class UserManagementViewModel(
         }
         privilege.value = s
     }
-
 
     fun onSearch(editable: Editable?) {
         searchJob?.let {
@@ -78,23 +77,24 @@ class UserManagementViewModel(
                 userSettingSealed.postValue(UserSettingSealed.GetUserOnError(cause))
             }
             .collect {
-                userSettings.clear()
-                it.forEach { userSearch ->
-                    if (userSearch.id != UserUtils.getUserId()) {
-                        userSearch.apply {
-                            userSettings.add(
-                                UserSettingCache(
-                                    id = id,
-                                    userName = username,
-                                    uuid = uuid,
-                                    status = status
+                when(it) {
+                    is SearchUserState.Success -> {
+                        it.searchUserResult.searchResult.forEach { row ->
+                            if (row.id != UserUtils.getUserId()) {
+                                userSettings.add(
+                                    UserSettingCache(
+                                        id = row.id,
+                                        userName = row.username,
+                                        uuid = row.uuid,
+                                        status = row.status
+                                    )
                                 )
-                            )
+                            }
                         }
+                        userSettingSealed.postValue(UserSettingSealed.GetUsers(userSettings))
+                        counter.postValue(userSettings.size)
                     }
                 }
-                userSettingSealed.postValue(UserSettingSealed.GetUsers(userSettings))
-                counter.postValue(userSettings.size)
             }
     }
 
@@ -106,7 +106,9 @@ class UserManagementViewModel(
                 is ModifyUserAction.Edit -> userSettingSealed.postValue(UserSettingSealed.EditUserSuccess(name))
                 is ModifyUserAction.Delete -> userSettingSealed.postValue(UserSettingSealed.DeleteSuccess(name))
                 is ModifyUserAction.ForceLogout -> userSettingSealed.postValue(UserSettingSealed.ForceSuccess(name))
-                else -> {}
+                else -> {
+                    //do nothing
+                }
             }
         }
     }
@@ -122,7 +124,9 @@ class UserManagementViewModel(
     fun onEditUser(userSettingCache: UserSettingCache) {
         when (privilege.value) {
             UserUtils.SUPER, UserUtils.ADMIN -> userSettingSealed.value = UserSettingSealed.EditUser(userSettingCache)
-            else -> {}
+            else -> {
+                //do nothing
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ import id.bluebird.vsm.pangkalan.databinding.ActivityMainBinding
 import id.bluebird.vsm.pangkalan.extensions.backArrowButton
 import id.bluebird.vsm.pangkalan.extensions.setToolbarBackArrow
 import id.bluebird.vsm.pangkalan.extensions.setToolbarCreateUserFragment
-import id.bluebird.vsm.pangkalan.logout.LogoutDialog
+import id.bluebird.vsm.pangkalan.logout.FragmentLogoutDialog
 
 internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object {
@@ -231,7 +231,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         when (item.itemId) {
             R.id.action_logout -> {
                 drawer()
-                LogoutDialog().show(supportFragmentManager, LogoutDialog.TAG)
+                FragmentLogoutDialog().show(supportFragmentManager, FragmentLogoutDialog.TAG)
             }
             else -> {
                 NavigationUI.onNavDestinationSelected(item, navController)

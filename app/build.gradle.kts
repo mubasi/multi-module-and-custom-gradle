@@ -18,7 +18,7 @@ jacoco {
 }
 
 apply {
-    from("../jacoco.gradle.kts")
+    from("../jacoco_app.gradle.kts")
 }
 
 val keyProperties = Properties()

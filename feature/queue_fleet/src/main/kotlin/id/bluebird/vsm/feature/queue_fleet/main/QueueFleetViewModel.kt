@@ -49,12 +49,17 @@ class QueueFleetViewModel(
     val queueFleetState: SharedFlow<QueueFleetState> = _queueFleetState.asSharedFlow()
 
     private var mCountCache: CountCache = CountCache()
-    private lateinit var mUserInfo: UserInfo
+    var mUserInfo: UserInfo = UserInfo()
     private val _fleetItems: MutableList<FleetItem> = mutableListOf()
 
     @VisibleForTesting
     fun setUserInfo(userInfo: UserInfo) {
         mUserInfo = userInfo
+    }
+
+    @VisibleForTesting
+    fun valUserInfo() : UserInfo {
+        return mUserInfo
     }
 
     @VisibleForTesting
@@ -66,6 +71,16 @@ class QueueFleetViewModel(
     @VisibleForTesting
     fun setFleetItems(list: List<FleetItem>) {
         _fleetItems.addAll(list)
+    }
+
+    @VisibleForTesting
+    fun valFleetItems() :List<FleetItem> {
+        return _fleetItems
+    }
+
+    @VisibleForTesting
+    fun valMCountCache() : CountCache {
+        return mCountCache
     }
 
     @VisibleForTesting

@@ -72,7 +72,7 @@ class QueueSearchViewModel(
                             }
 
                             listQueue = SearchQueueCache(
-                                it.searchQueueResult.search_type,
+                                it.searchQueueResult.searchType,
                                 tempListQueue
                             )
 

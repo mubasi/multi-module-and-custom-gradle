@@ -170,46 +170,46 @@ internal class AddFleetViewModelTest {
         Assertions.assertEquals(AddFleetState.FinishSelectQueue("aa"), _events.last())
     }
 
-    @Test
-    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and success` () = runTest {
-        //given
-        _vm.setIsSearchQueue(false)
-        _vm.selectedFleetNumber.value = "aa"
-        _vm.setSubLocation(1)
-
-        every { _addFleet.invoke(
-            "aa",
-            1)
-        } returns flow {
-            emit(
-                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
-                    FleetItemResult(
-                        1,
-                        "aa",
-                        "2022-01-01"
-                    )
-                )
-            )
-        }
-
-        // Execute
-        val job = launch {
-            _vm.addFleetState.toList(_events)
-        }
-        _vm.addFleet()
-        runCurrent()
-        job.cancel()
-
-        // Result
-        Assertions.assertEquals(1, _events.size)
-        Assertions.assertEquals(AddFleetState.AddFleetSuccess(
-            FleetItem(
-                id = 1,
-                name = "aa",
-                arriveAt = "01 Jan 2022 . 07:00"
-            )
-        ), _events.last())
-    }
+//    @Test
+//    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and success` () = runTest {
+//        //given
+//        _vm.setIsSearchQueue(false)
+//        _vm.selectedFleetNumber.value = "aa"
+//        _vm.setSubLocation(1)
+//
+//        every { _addFleet.invoke(
+//            "aa",
+//            1)
+//        } returns flow {
+//            emit(
+//                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
+//                    FleetItemResult(
+//                        1,
+//                        "aa",
+//                        "2022-01-01"
+//                    )
+//                )
+//            )
+//        }
+//
+//        // Execute
+//        val job = launch {
+//            _vm.addFleetState.toList(_events)
+//        }
+//        _vm.addFleet()
+//        runCurrent()
+//        job.cancel()
+//
+//        // Result
+//        Assertions.assertEquals(1, _events.size)
+//        Assertions.assertEquals(AddFleetState.AddFleetSuccess(
+//            FleetItem(
+//                id = 1,
+//                name = "aa",
+//                arriveAt = "01 Jan 2022 . 07:00"
+//            )
+//        ), _events.last())
+//    }
 
 
     @Test
@@ -284,4 +284,16 @@ internal class AddFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.GetListEmpty, _events.last())
     }
+
+    @Test
+    fun `initTest, check val search and sublocation`() = runTest {
+        val subLocation : Long = 1
+        val isSearchQueue = true
+
+        _vm.init(subLocation, isSearchQueue)
+
+        Assertions.assertEquals(1, _vm.valSubLocationId())
+        Assertions.assertEquals(true, _vm.valIsSearchQueue())
+    }
+
 }

@@ -54,7 +54,7 @@ class UserRepositoryImpl(
             emit(response)
         }
 
-    override fun searchUser(param: String): Flow<UserOuterClass.SearchUserResponse> = flow {
+    override fun searchUser(param: String?): Flow<UserOuterClass.SearchUserResponse> = flow {
         val request = UserOuterClass.SearchUserRequest.newBuilder()
             .setUsername(param)
             .build()

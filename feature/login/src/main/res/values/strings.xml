@@ -5,4 +5,6 @@
     <string name="unknown_title">Tidak dikenal</string>
     <string name="unknown_message">Maaf kesalahan tidak dikenal</string>
     <string name="title_logo">Selamat datang di VSM Pangkalan</string>
+    <string name="password_cannot_empty">Password tidak boleh kosong</string>
+    <string name="username_cannot_empty">Username tidak boleh kosong</string>
 </resources>

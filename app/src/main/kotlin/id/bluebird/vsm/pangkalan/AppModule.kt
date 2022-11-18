@@ -20,13 +20,13 @@ import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
 import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.vsm.domain.location.domain.interactor.UpdateBuffer
 import id.bluebird.vsm.domain.passenger.QueueReceiptRepository
-import id.bluebird.vsm.domain.passenger.QueueReceiptRepositoryimpl
+import id.bluebird.vsm.domain.passenger.QueueReceiptRepositoryImpl
 import id.bluebird.vsm.domain.passenger.domain.cases.*
 import id.bluebird.vsm.domain.passenger.domain.interactor.*
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
-import id.bluebird.vsm.feature.queue_fleet.adapter.FleetsAdapter
+import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModel
@@ -123,11 +123,11 @@ object AppModule {
         single<UserRepository> { UserRepositoryImpl() }
         single<LocationRepository> { LocationRepositoryImpl() }
         single<FleetRepository> { FleetRepositoryImpl() }
-        single<QueueReceiptRepository> { QueueReceiptRepositoryimpl() }
+        single<QueueReceiptRepository> { QueueReceiptRepositoryImpl() }
     }
 
     private val adapter = module {
-        single { FleetsAdapter() }
+        single { AdapterFleets() }
     }
 
     lateinit var koin: Koin

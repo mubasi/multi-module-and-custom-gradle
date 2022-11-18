@@ -3,14 +3,21 @@ package id.bluebird.vsm.feature.user_management.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.core.utils.hawk.UserUtils
+import id.bluebird.vsm.domain.user.SearchUserState
 import id.bluebird.vsm.domain.user.domain.intercator.SearchUser
+import id.bluebird.vsm.domain.user.model.SearchUserResult
+import id.bluebird.vsm.domain.user.model.UserSearchParam
 import id.bluebird.vsm.feature.user_management.TestCoroutineRule
+import id.bluebird.vsm.feature.user_management.create.CreateUserState
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -29,11 +36,12 @@ internal class UserManagementViewModelTest {
 
     private lateinit var _vm: UserManagementViewModel
     private var searchUser: SearchUser = mockk(relaxed = true)
-    private lateinit var actionSealedObserver : Observer<UserSettingSealed>
+    private lateinit var actionSealedObserver: Observer<UserSettingSealed>
 
     @BeforeEach
     fun setup() {
         mockkStatic(Transformations::class)
+        mockkObject(UserUtils)
         actionSealedObserver = mockk()
         _vm = UserManagementViewModel(
             searchUser = searchUser
@@ -59,9 +67,28 @@ internal class UserManagementViewModelTest {
     }
 
     @Test
+    fun `searchUser, isFailed`() = runTest {
+
+        // Mock
+        justRun { actionSealedObserver.onChanged(any()) }
+        every { searchUser.invoke("") } returns flow {
+            throw NullPointerException()
+        }
+
+        // Execution
+        _vm.searchUser()
+
+        // Result
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.OnGetUserListProgress
+        )
+    }
+
+    @Test
     fun `searchUser, isSuccess`() = runTest {
         // Given
-        val result : MutableList<UserSettingCache> = ArrayList()
+        val result: MutableList<UserSettingCache> = ArrayList()
         for (i in 1..3) {
             result.add(
                 UserSettingCache(
@@ -99,7 +126,10 @@ internal class UserManagementViewModelTest {
         _vm.result("aa", action)
 
         // Result
-        Assertions.assertEquals(_vm.userSettingSealed.awaitValue(), UserSettingSealed.CreateUserSuccess("aa"))
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.CreateUserSuccess("aa")
+        )
         Assertions.assertNull(_vm.searchJob())
     }
 
@@ -114,7 +144,10 @@ internal class UserManagementViewModelTest {
         _vm.result("aa", action)
 
         // Result
-        Assertions.assertEquals(_vm.userSettingSealed.awaitValue(), UserSettingSealed.EditUserSuccess("aa"))
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.EditUserSuccess("aa")
+        )
         Assertions.assertNull(_vm.searchJob())
     }
 
@@ -129,7 +162,10 @@ internal class UserManagementViewModelTest {
         _vm.result("aa", action)
 
         // Result
-        Assertions.assertEquals(_vm.userSettingSealed.awaitValue(), UserSettingSealed.DeleteSuccess("aa"))
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.DeleteSuccess("aa")
+        )
         Assertions.assertNull(_vm.searchJob())
     }
 
@@ -144,7 +180,10 @@ internal class UserManagementViewModelTest {
         _vm.result("aa", action)
 
         // Result
-        Assertions.assertEquals(_vm.userSettingSealed.awaitValue(), UserSettingSealed.ForceSuccess("aa"))
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.ForceSuccess("aa")
+        )
         Assertions.assertNull(_vm.searchJob())
     }
 

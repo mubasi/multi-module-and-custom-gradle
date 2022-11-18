@@ -3,6 +3,7 @@ plugins {
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
 //    jacoco
+    id("jacoco")
 }
 
 //jacoco {
@@ -10,9 +11,9 @@ plugins {
 //    reportsDir = file("$buildDir/reports")
 //}
 
-//apply {
-//    from("../jacoco.gradle.kts")
-//}
+apply {
+    from("../../jacoco.gradle.kts")
+}
 
 android {
     compileSdk = Version.compileSdk

@@ -83,7 +83,7 @@ task("jacocoTestReport") {
                         "fileset"("dir" to "${project.buildDir}/tmp/kotlin-classes/stageDebug")
                     }
                     "sourcefiles"{
-                        "fileset"("dir" to "src/main/java")
+                        "fileset"("dir" to "src/main/kotlin")
                     }
                 }
             }

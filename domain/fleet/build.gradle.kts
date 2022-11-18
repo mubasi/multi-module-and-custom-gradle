@@ -2,8 +2,11 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    id("jacoco")
 }
-
+apply {
+    from("../../jacoco.gradle.kts")
+}
 android {
     compileSdk = Version.compileSdk
 
