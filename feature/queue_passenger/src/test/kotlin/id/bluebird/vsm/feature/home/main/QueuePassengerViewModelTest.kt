@@ -102,15 +102,15 @@ internal class QueuePassengerViewModelTest {
                 listOf(11L),
                 "subLocationName"
             )
-        val titleString = "locationName subLocationName".getLastSync()
+        val titleString = "locationName2 subLocationName2".getLastSync()
         every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
         every { UserUtils.isUserOfficer() } returns false
         every { UserUtils.getUserId() } returns 1L
         every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            1L,
-            11L,
-            "locationName",
-            "subLocationName"
+            2L,
+            12L,
+            "locationName2",
+            "subLocationName2"
         )
         every { getUserId.invoke(1L) } returns flow {
             emit(GetUserByIdState.Success(userResult))
@@ -128,7 +128,7 @@ internal class QueuePassengerViewModelTest {
         assertEquals(2, states.size)
         assertEquals(QueuePassengerState.ProsesGetUser, states[0])
         assertEquals(QueuePassengerState.SuccessGetUser, states[1])
-        assertEquals(UserInfo(1L, 1L, 11L), subjectUnderTest.mUserInfo)
+        assertEquals(UserInfo(1L, 2L, 12L), subjectUnderTest.mUserInfo)
         assertEquals(titleString, resultTitle)
 
         collect.cancel()
