@@ -5,6 +5,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.vsm.core.extensions.isUserOfficer
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
@@ -16,6 +17,7 @@ import id.bluebird.vsm.feature.home.model.QueueReceiptCache
 import id.bluebird.vsm.feature.home.model.TakeQueueCache
 import id.bluebird.vsm.feature.home.model.UserInfo
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -70,8 +72,16 @@ class DialogQueueReceiptViewModel(
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = it.result.locationId
-                            mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.locationId
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.locationId ?: it.result.locationId
+                            }
+                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.subLocationsId.first()
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.subLocationId ?: it.result.subLocationsId.first()
+                            }
                             _dialogQueueReceiptState.emit(DialogQueueReceiptState.GetUserInfoSuccess)
                         }
                     }
