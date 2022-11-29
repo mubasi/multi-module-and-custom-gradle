@@ -12,12 +12,22 @@
             type="String" />
 
         <variable
-            name="queueNumber"
-            type="String" />
+            name="locationId"
+            type="Long" />
+
+        <variable
+            name="subLocationId"
+            type="Long" />
 
         <variable
             name="vm"
             type="id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel" />
+
+        <variable
+            name="showProgress"
+            type="Boolean" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -102,11 +112,22 @@
             android:gravity="center"
             android:text="@string/depart"
             android:textAllCaps="false"
-            android:onClick="@{() -> vm.departFleet(queueNumber)}"
+            android:onClick="@{() -> vm.departFleet(locationId, subLocationId)}"
+            android:enabled="@{!showProgress}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/buttonCancelDepart"
             app:layout_constraintTop_toTopOf="@id/buttonCancelDepart" />
+
+        <ProgressBar
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:indeterminateTint="@color/white"
+            android:layout_marginStart="8dp"
+            android:visibility="@{showProgress ? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toTopOf="@id/buttonDepart"
+            app:layout_constraintBottom_toBottomOf="@id/buttonDepart"
+            app:layout_constraintStart_toStartOf="@id/buttonDepart"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

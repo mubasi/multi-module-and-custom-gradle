@@ -125,8 +125,16 @@ class QueueFleetViewModel(
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = it.result.locationId
-                            mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.locationId
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.locationId ?: it.result.locationId
+                            }
+                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.subLocationsId.first()
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.subLocationId ?: it.result.subLocationsId.first()
+                            }
                             createTitleLocation(it.result)
                             _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
                         }
@@ -189,7 +197,7 @@ class QueueFleetViewModel(
     }
 
     fun departFleet(fleetItem: FleetItem, isWithPassenger: Boolean = false, queueId: String = "") {
-        if (isWithPassenger && queueId.isBlank()) {
+        if (isWithPassenger) {
             showRecordRitase(fleetItem, queueId)
             return
         }
@@ -245,31 +253,14 @@ class QueueFleetViewModel(
         }
     }
 
-    fun showRecordRitase(fleetItem: FleetItem, queueId: String?) {
+    fun showRecordRitase(fleetItem: FleetItem, queueId: String) {
         viewModelScope.launch {
-            var queue = queueId ?: ""
-            with(queueId) {
-                if (isNullOrBlank()) {
-                    getCurrentQueue
-                        .invoke()
-                        .flowOn(Dispatchers.Main)
-                        .catch {
-                            queue = ""
-                        }.collect {
-                            when (it) {
-                                is GetCurrentQueueState.Success -> queue =
-                                    it.currentQueueResult.number
-                            }
-                        }
-                } else {
-                    this
-                }
-            }
             _queueFleetState.emit(
                 QueueFleetState.RecordRitaseToDepart(
                     fleetItem,
+                    mUserInfo.locationId,
                     mUserInfo.subLocationId,
-                    queue
+                    queueId
                 )
             )
         }
@@ -277,7 +268,13 @@ class QueueFleetViewModel(
 
     fun requestDepart(fleetItem: FleetItem) {
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.RequestDepartFleet(fleetItem))
+            _queueFleetState.emit(QueueFleetState.RequestDepartFleet(fleetItem, mUserInfo.locationId, mUserInfo.subLocationId))
+        }
+    }
+
+    fun onErrorFromDialog(throwable: Throwable) {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.FailedGetQueue(throwable))
         }
     }
 
@@ -321,13 +318,13 @@ class QueueFleetViewModel(
         }
     }
 
-    fun showSearchQueue(fleetItem: FleetItem, currentQueueId: String) {
+    fun showSearchQueue(fleetItem: FleetItem, currentQueueId: String, locationId: Long, subLocationId: Long) {
         viewModelScope.launch {
             _queueFleetState.emit(
                 QueueFleetState.SearchQueueToDepart(
                     fleetItem,
-                    mUserInfo.locationId,
-                    mUserInfo.subLocationId,
+                    locationId,
+                    subLocationId,
                     currentQueueId
                 )
             )
@@ -352,6 +349,7 @@ class QueueFleetViewModel(
                     .flowOn(Dispatchers.Main)
                     .catch { cause: Throwable ->
                         _queueFleetState.emit(QueueFleetState.FailedGetList(cause))
+                        _queueFleetState.emit(QueueFleetState.GetListEmpty)
                     }
                     .collect {
                         when (it) {

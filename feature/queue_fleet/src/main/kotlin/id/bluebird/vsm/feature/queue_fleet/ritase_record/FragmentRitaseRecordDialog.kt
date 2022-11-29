@@ -22,9 +22,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class FragmentRitaseRecordDialog(
     private val fleetItem: FleetItem,
     private val queueNumber: String,
+    private val locationId: Long,
     private val subLocationId: Long,
     private val departCallback: ((fleetItem: FleetItem, isWithPassenger: Boolean, queueNumber: String) -> Unit)?,
-    private val showQueueListCallback: ((fleetItem: FleetItem, currentQueueNumber: String) -> Unit)?
+    private val showQueueListCallback: ((fleetItem: FleetItem, currentQueueNumber: String, locationId: Long, subLocationId: Long) -> Unit)?
 ) : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "ritaseRecordTag"
@@ -52,7 +53,9 @@ class FragmentRitaseRecordDialog(
         with(mBinding) {
             lifecycleOwner = viewLifecycleOwner
             vm = _departViewModel
-            queueNumber = this@FragmentRitaseRecordDialog.queueNumber
+            queueNumber = this@RitaseRecordDialog.queueNumber
+            locationId = this@RitaseRecordDialog.locationId
+            subLocationId = this@RitaseRecordDialog.subLocationId
         }
         _departViewModel.init(fleetItem)
         dialog?.apply {
@@ -72,7 +75,7 @@ class FragmentRitaseRecordDialog(
                             dialog?.dismiss()
                         }
                         is DepartFleetState.SelectQueueToDepart -> {
-                            showQueueListCallback?.invoke(it.fleetItem, it.currentQueueId)
+                            showQueueListCallback?.invoke(it.fleetItem, it.currentQueueId, it.locationId, it.subLocationId)
                         }
                     }
                 }

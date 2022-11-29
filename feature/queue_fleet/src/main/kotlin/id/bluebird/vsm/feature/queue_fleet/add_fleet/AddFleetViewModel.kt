@@ -33,6 +33,7 @@ class AddFleetViewModel(
     private var _lastPosition: Int = -1
     private var _newPosition: Int = -1
     private var _subLocation: Long = -1
+    private var _locationId: Long = -1
     private var _isSearchQueue: Boolean = false
 
     @VisibleForTesting
@@ -60,8 +61,9 @@ class AddFleetViewModel(
         return _subLocation
     }
 
-    fun init(subLocationId: Long, isSearchQueue: Boolean) {
+    fun init(locationId: Long, subLocationId: Long, isSearchQueue: Boolean) {
         _isSearchQueue = isSearchQueue
+        _locationId = locationId
         _subLocation = subLocationId
         if (isSearchQueue) {
             searchQueue()
@@ -81,7 +83,7 @@ class AddFleetViewModel(
             _addFleetState.emit(AddFleetState.OnProgressGetList)
             delay(200)
             searchWaitingQueue
-                .invoke(param.value ?: "", _subLocation)
+                .invoke(param.value ?: "", _locationId, _subLocation)
                 .catch { e ->
                     _addFleetState.emit(AddFleetState.QueueSearchError(e))
                 }
