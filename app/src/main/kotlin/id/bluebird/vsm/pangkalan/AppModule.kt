@@ -65,7 +65,7 @@ object AppModule {
         viewModel { QueueTicketViewModel(get()) }
         viewModel { QueuePassengerViewModel(get(), get(), get(), get(), get()) }
         viewModel { DialogSkipQueueViewModel(get()) }
-        viewModel { DepartFleetViewModel() }
+        viewModel { DepartFleetViewModel(get()) }
         viewModel { DialogDeleteSkippedViewModel(get()) }
         viewModel { DialogRestoreSkippedViewModel(get()) }
         viewModel { MonitoringViewModel(get()) }

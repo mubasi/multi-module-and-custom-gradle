@@ -138,7 +138,10 @@ class FragmentQueueFleet : Fragment() {
                             is QueueFleetState.RequestDepartFleet -> {
                                 FragmentDepartFleetDialog(
                                     it.fleet,
-                                    ::departFleet
+                                    it.locationId,
+                                    it.subLocationId,
+                                    ::departFleet,
+                                    ::onErrorFromDialog
                                 )
                                     .show(
                                         childFragmentManager,
@@ -154,6 +157,7 @@ class FragmentQueueFleet : Fragment() {
                                     FragmentRitaseRecordDialog(
                                         it.fleet,
                                         it.queueId,
+                                        it.locationId,
                                         it.subLocationId,
                                         ::departFleet,
                                         ::showSearchQueue
@@ -165,7 +169,7 @@ class FragmentQueueFleet : Fragment() {
                                 }
                             }
                             is QueueFleetState.SearchQueueToDepart -> {
-                                navigateToSearchQueue(it.fleet, it.subLocationId, it.currentQueueId)
+                                navigateToSearchQueue(it.fleet, it.locationId, it.subLocationId, it.currentQueueId)
                             }
                             is QueueFleetState.SuccessDepartFleet -> {
                                 successDialogDepartFleet(it.fleetNumber, it.isWithPassenger)
@@ -175,6 +179,12 @@ class FragmentQueueFleet : Fragment() {
                                     .bold { append(getString(R.string.fleet)) }
                                     .append(" ")
                                     .append(getString(R.string.failed_depart_description))
+
+                                showSnackbar(string, R.color.warning_0)
+                            }
+                            is QueueFleetState.FailedGetQueue -> {
+                                val string = SpannableStringBuilder()
+                                    .append(it.throwable.message ?: "Gagal mendapatkan Antrian")
 
                                 showSnackbar(string, R.color.warning_0)
                             }
@@ -223,12 +233,14 @@ class FragmentQueueFleet : Fragment() {
 
     private fun navigateToSearchQueue(
         fleetItem: FleetItem,
+        locationId: Long,
         subLocationId: Long,
         currentQueueId: String,
     ) {
         val destination =
             FragmentQueueFleetDirections.actionQueueFleetFragmentToSearchQueueFragment()
                 .apply {
+                    this.location = locationId
                     this.subLocation = subLocationId
                     this.currentQueue = currentQueueId
                 }

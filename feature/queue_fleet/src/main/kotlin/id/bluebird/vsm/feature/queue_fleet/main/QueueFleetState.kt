@@ -13,6 +13,7 @@ sealed class QueueFleetState {
     object GetListEmpty : QueueFleetState()
     data class RecordRitaseToDepart(
         val fleet: FleetItem,
+        val locationId: Long,
         val subLocationId: Long,
         val queueId: String
     ) : QueueFleetState()
@@ -25,7 +26,8 @@ sealed class QueueFleetState {
     data class FailedGetCounter(val message: String) : QueueFleetState()
     data class GetListSuccess(val list: List<FleetItem>) : QueueFleetState()
     data class FailedGetList(val throwable: Throwable) : QueueFleetState()
-    data class RequestDepartFleet(val fleet: FleetItem) : QueueFleetState()
+    data class FailedGetQueue(val throwable: Throwable) : QueueFleetState()
+    data class RequestDepartFleet(val fleet: FleetItem, val locationId: Long, val subLocationId: Long) : QueueFleetState()
     data class FleetDeparted(val list: List<FleetItem>, val removedIndex: Int) : QueueFleetState()
     data class SuccessDepartFleet(val fleetNumber: String, val isWithPassenger: Boolean) :
         QueueFleetState()
