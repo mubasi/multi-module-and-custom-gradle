@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.callbackFlow
 
 class MonitoringUseCases : Monitoring {
     companion object {
+
         private const val MONITORING = "digital-outlet-monitoring"
         private const val STAGING = "staging"
+        private const val PROD = "production"
+        private const val DEV = "dev"
     }
 
     private lateinit var _ref: DatabaseReference
@@ -53,10 +56,11 @@ class MonitoringUseCases : Monitoring {
     }
 
     private fun initRef(baseReference: DatabaseReference) {
-        _ref = if (BuildConfig.FLAVOR == "stage") {
-            baseReference.child(STAGING).child(MONITORING)
-        } else {
-            baseReference.child(MONITORING)
+        val parent = when (id.bluebird.vsm.domain.fleet.BuildConfig.FLAVOR) {
+            "prod" -> PROD
+            "stage" -> STAGING
+            else -> DEV
         }
+        _ref = baseReference.child(parent).child(MONITORING)
     }
 }

@@ -80,7 +80,7 @@ class AdapterMonitoringTable(private val viewModel: MonitoringViewModel): Abstra
 
     override fun onCreateCornerView(parent: ViewGroup): View {
         val binding: TableHeaderCellLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.table_header_cell_layout, parent, false)
-        binding.value = parent.context.getString(R.string.login)
+        binding.value = parent.context.getString(R.string.location)
         return binding.root
     }
 
