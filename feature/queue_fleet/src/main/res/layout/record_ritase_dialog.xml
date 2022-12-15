@@ -17,8 +17,14 @@
             type="Long" />
 
         <variable
+            name="showProgress"
+            type="Boolean" />
+
+        <variable
             name="vm"
-            type="id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel" />
+            type="id.bluebird.vsm.feature.queue_fleet.ritase_record.RitaseRecordViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -63,6 +69,15 @@
             android:onClick="@{() -> vm.showQueueList(queueNumber, locationId, subLocationId)}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/descriptionRecordRitase">
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:indeterminateTint="@color/primary_0"
+                android:visibility="@{showProgress ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/queueName"
@@ -110,6 +125,7 @@
             android:text="@string/record_ritase_button"
             android:textAllCaps="false"
             android:enabled="@{!queueNumber.empty}"
+            android:onClick="@{() -> vm.departFleet(queueNumber)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/buttonCancelDepart"

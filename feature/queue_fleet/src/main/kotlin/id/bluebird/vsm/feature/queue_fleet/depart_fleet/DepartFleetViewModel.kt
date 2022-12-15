@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
-class DepartFleetViewModel(
-    private val currentQueue: CurrentQueue
-): ViewModel() {
+class DepartFleetViewModel: ViewModel() {
     private val _departFleetState = MutableSharedFlow<DepartFleetState>()
     val sharedDepartFleetState = _departFleetState.asSharedFlow()
     val showProgress: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -48,20 +46,16 @@ class DepartFleetViewModel(
         }
     }
 
-    fun departFleet(locationId: Long, subLocationId: Long) {
-        if (_departWithPassenger.value == true) {
-            getCurrentQueue(locationId, subLocationId)
-        } else {
-            _departWithPassenger.value?.let { withPassenger ->
-                viewModelScope.launch {
-                    _departFleetState.emit(
-                        DepartFleetState.DepartFleet(
-                            _fleetItem,
-                            withPassenger,
-                            ""
-                        )
+    fun departFleet(queueNumber: String = "") {
+        _departWithPassenger.value?.let { withPassenger ->
+            viewModelScope.launch {
+                _departFleetState.emit(
+                    DepartFleetState.DepartFleet(
+                        _fleetItem,
+                        withPassenger,
+                        queueNumber
                     )
-                }
+                )
             }
         }
     }
@@ -69,32 +63,6 @@ class DepartFleetViewModel(
     fun showQueueList(currentQueueNumber: String, locationId: Long, subLocationId: Long) {
         viewModelScope.launch {
             _departFleetState.emit(DepartFleetState.SelectQueueToDepart(_fleetItem, currentQueueNumber, locationId, subLocationId))
-        }
-    }
-
-    private fun getCurrentQueue(locationId: Long, subLocationId: Long) {
-        viewModelScope.launch {
-            _departFleetState.emit(DepartFleetState.OnProgressGetCurrentQueue)
-            currentQueue
-                .invoke(locationId)
-                .flowOn(Dispatchers.Main)
-                .catch { err ->
-                    _departFleetState.emit(DepartFleetState.OnFailed(err))
-                }
-                .collect {
-                    when (it) {
-                        is GetCurrentQueueState.Success -> {
-                            _departFleetState.emit(
-                                DepartFleetState.DepartFleet(
-                                    _fleetItem,
-                                    true,
-                                    it.currentQueueResult.number
-                                )
-                            )
-                        }
-                    }
-                }
-            showProgress.postValue(false)
         }
     }
 }

@@ -1,9 +1,12 @@
 package id.bluebird.vsm.feature.queue_fleet.depart_fleet
 
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.domain.passenger.domain.cases.CurrentQueue
+import id.bluebird.vsm.domain.passenger.domain.interactor.CurrentQueueCases
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetState
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
+import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -83,19 +86,21 @@ internal class DepartFleetViewModelTest {
         val tempFleetItem = FleetItem(
             1, "aa", "bb"
         )
+        val locationId = 1L
+        val subLocationId = 11L
         _vm.setFleetItem(tempFleetItem)
         // Execute
         val job = launch {
             _vm.sharedDepartFleetState.toList(_events)
         }
-        _vm.showQueueList(queueNumber)
+        _vm.showQueueList(queueNumber, locationId, subLocationId)
         runCurrent()
         job.cancel()
 
 
         // Result
         Assertions.assertEquals(1, _events.size)
-        Assertions.assertEquals(DepartFleetState.SelectQueueToDepart(tempFleetItem, queueNumber), _events.last())
+        Assertions.assertEquals(DepartFleetState.SelectQueueToDepart(tempFleetItem, queueNumber, locationId, subLocationId), _events.last())
     }
 
 

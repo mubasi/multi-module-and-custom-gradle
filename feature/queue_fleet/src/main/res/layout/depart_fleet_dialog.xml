@@ -112,7 +112,7 @@
             android:gravity="center"
             android:text="@string/depart"
             android:textAllCaps="false"
-            android:onClick="@{() -> vm.departFleet(locationId, subLocationId)}"
+            android:onClick='@{() -> vm.departFleet("")}'
             android:enabled="@{!showProgress}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"

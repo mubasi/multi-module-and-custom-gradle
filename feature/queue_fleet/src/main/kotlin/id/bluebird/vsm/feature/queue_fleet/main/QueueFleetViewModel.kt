@@ -197,7 +197,7 @@ class QueueFleetViewModel(
     }
 
     fun departFleet(fleetItem: FleetItem, isWithPassenger: Boolean = false, queueId: String = "") {
-        if (isWithPassenger) {
+        if (isWithPassenger && queueId.isBlank()) {
             showRecordRitase(fleetItem, queueId)
             return
         }

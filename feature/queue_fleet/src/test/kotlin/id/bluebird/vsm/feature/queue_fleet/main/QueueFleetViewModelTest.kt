@@ -371,8 +371,10 @@ internal class QueueFleetViewModelTest {
             job.cancel()
 
             // Result
-            Assertions.assertEquals(2, _events.size)
-            Assertions.assertEquals(QueueFleetState.FailedGetList(exception), _events.last())
+            Assertions.assertEquals(3, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetFleetList, _events.first())
+            Assertions.assertEquals(QueueFleetState.FailedGetList(exception), _events[1])
+            Assertions.assertEquals(QueueFleetState.GetListEmpty, _events.last())
         }
 
     @Test

@@ -6,6 +6,8 @@ sealed class DepartFleetState {
     object CancelDepart: DepartFleetState()
     object OnProgressGetCurrentQueue: DepartFleetState()
     data class OnFailed(val throwable: Throwable): DepartFleetState()
+    data class OnFailedGetCurrentQueue(val throwable: Throwable): DepartFleetState()
+    data class SuccessGetCurrentQueue(val queueId: String): DepartFleetState()
     data class SelectQueueToDepart(val fleetItem: FleetItem, val currentQueueId: String, val locationId: Long, val subLocationId: Long): DepartFleetState()
     data class DepartFleet(val fleetItem: FleetItem, val isWithPassenger: Boolean, val currentQueueNumber: String): DepartFleetState()
 }

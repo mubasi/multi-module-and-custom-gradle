@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,7 +33,7 @@ class FragmentRitaseRecordDialog(
     }
 
     private lateinit var mBinding: RecordRitaseDialogBinding
-    private val _departViewModel: DepartFleetViewModel by viewModel()
+    private val _departViewModel: RitaseRecordViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,8 +57,9 @@ class FragmentRitaseRecordDialog(
             queueNumber = this@RitaseRecordDialog.queueNumber
             locationId = this@RitaseRecordDialog.locationId
             subLocationId = this@RitaseRecordDialog.subLocationId
+            showProgress = false
         }
-        _departViewModel.init(fleetItem)
+        _departViewModel.init(fleetItem, queueNumber, locationId, subLocationId)
         dialog?.apply {
             setCancelable(false)
             setContentView(view)
@@ -77,6 +79,13 @@ class FragmentRitaseRecordDialog(
                         is DepartFleetState.SelectQueueToDepart -> {
                             showQueueListCallback?.invoke(it.fleetItem, it.currentQueueId, it.locationId, it.subLocationId)
                         }
+                        is DepartFleetState.SuccessGetCurrentQueue -> {
+                            mBinding.queueNumber = it.queueId
+                        }
+                        is DepartFleetState.OnFailedGetCurrentQueue -> {
+                            Toast.makeText(requireContext(), "${it.throwable.message}", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {}
                     }
                 }
             }
