@@ -67,14 +67,14 @@ internal class AddFleetViewModelTest {
                 "aaa",
                 1,
                 "aaa",
-                1
+                11
             )
         )
         _vm.setParams("aaa")
-        _vm.setSubLocation(1)
+        _vm.setSubLocation(11)
 
         every { _searchWaitingQueue.invoke(
-            queueNumber = "aaa", 1
+            queueNumber = "aaa", 1, 11
         )} returns flow {
             emit(
                 WaitingQueueState.Success(
@@ -110,14 +110,14 @@ internal class AddFleetViewModelTest {
                 "aaa",
                 1,
                 "aaa",
-                1
+                11
             )
         )
         _vm.setParams("aaa")
-        _vm.setSubLocation(1)
+        _vm.setSubLocation(11)
 
         every { _searchWaitingQueue.invoke(
-            queueNumber = "aaa", 1
+            queueNumber = "aaa", 1, 11
         )} returns flow {
             throw NullPointerException(ERROR)
         }

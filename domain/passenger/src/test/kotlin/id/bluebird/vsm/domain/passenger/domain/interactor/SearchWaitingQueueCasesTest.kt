@@ -44,6 +44,7 @@ internal class SearchWaitingQueueCasesTest {
 
         flowOf(searchWaitingQueueCases.invoke(
             "aa",
+            1,
             1
         )).test {
             Assertions.assertEquals(awaitItem().single(), WaitingQueueState.EmptyResult)
