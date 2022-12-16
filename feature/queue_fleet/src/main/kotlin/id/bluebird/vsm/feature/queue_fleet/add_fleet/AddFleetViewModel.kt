@@ -35,19 +35,16 @@ class AddFleetViewModel(
     private var _subLocation: Long = -1
     private var _locationId: Long = -1
     private var _isSearchQueue: Boolean = false
-
     @VisibleForTesting
     fun setParams(temp: String) {
         param.value = temp
     }
-
     @VisibleForTesting
     fun setSubLocation(temp: Long) {
         _subLocation = temp
     }
-
     @VisibleForTesting
-    fun setIsSearchQueue(temp: Boolean ) {
+    fun setIsSearchQueue(temp: Boolean) {
         _isSearchQueue = temp
     }
 
@@ -120,7 +117,11 @@ class AddFleetViewModel(
     fun addFleet() {
         if (_isSearchQueue) {
             viewModelScope.launch {
-                _addFleetState.emit(AddFleetState.FinishSelectQueue(selectedFleetNumber.value ?: ""))
+                _addFleetState.emit(
+                    AddFleetState.FinishSelectQueue(
+                        selectedFleetNumber.value ?: ""
+                    )
+                )
             }
             return
         }
