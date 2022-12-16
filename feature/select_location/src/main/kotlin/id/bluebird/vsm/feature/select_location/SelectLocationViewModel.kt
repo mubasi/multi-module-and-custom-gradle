@@ -40,22 +40,22 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
                     when (result) {
                         is GetLocationsWithSubState.Success -> {
                             _locations.clear()
-                            result.list.forEach { map ->
+                            result.list.forEach { subLocations ->
                                 val subList: MutableList<SubLocation> = mutableListOf()
-                                map.value.list.forEach { subLocationResult ->
+                                subLocations.list.forEach { subLocationResult ->
                                     subList.add(
                                         SubLocation(
                                             id = subLocationResult.id,
                                             name = subLocationResult.name,
-                                            locationId = map.value.locationId,
-                                            locationName = map.value.locationName
+                                            locationId = subLocations.locationId,
+                                            locationName = subLocations.locationName
                                         )
                                     )
                                 }
                                 _locations.add(
                                     LocationModel(
-                                        id = map.value.locationId,
-                                        name = map.value.locationName,
+                                        id = subLocations.locationId,
+                                        name = subLocations.locationName,
                                         type = LocationModel.PARENT,
                                         list = subList
                                     )

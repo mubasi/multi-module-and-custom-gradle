@@ -14,5 +14,5 @@ sealed interface LocationErrorState {
 }
 
 sealed class GetLocationsWithSubState {
-    data class Success(val list: HashMap<Long, LocationsWithSub>) : GetLocationsWithSubState()
+    data class Success(val list: List<LocationsWithSub>) : GetLocationsWithSubState()
 }

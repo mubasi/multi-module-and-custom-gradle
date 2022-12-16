@@ -13,17 +13,21 @@ import kotlinx.coroutines.flow.singleOrNull
 class SearchFleetUseCases(private val _fleetRepository: FleetRepository) : SearchFleet {
 
     override fun invoke(param: String?): Flow<SearchFleetState> = flow {
-        val response = _fleetRepository.searchFleet(param ?: "", param.getItemPerPage())
-            .flowOn(Dispatchers.IO)
-            .singleOrNull() ?: throw  NullPointerException()
-        if (response.fleetsList.isEmpty()) {
+        if (param.isNullOrEmpty()) {
             emit(SearchFleetState.EmptyResult)
         } else {
-            val result: MutableList<String> = mutableListOf()
-            response.fleetsList.forEach {
-                result.add(it.fleetNumber)
+            val response = _fleetRepository.searchFleet(param, param.getItemPerPage())
+                .flowOn(Dispatchers.IO)
+                .singleOrNull() ?: throw  NullPointerException()
+            if (response.fleetsList.isEmpty()) {
+                emit(SearchFleetState.EmptyResult)
+            } else {
+                val result: MutableList<String> = mutableListOf()
+                response.fleetsList.forEach {
+                    result.add(it.fleetNumber)
+                }
+                emit(SearchFleetState.Success(result))
             }
-            emit(SearchFleetState.Success(result))
         }
     }
 }
