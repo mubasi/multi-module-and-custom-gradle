@@ -4,6 +4,16 @@ plugins {
     kotlin(Plugins.kapt)
     id(Plugins.safeargs)
     kotlin(Plugins.parcelize)
+    id("jacoco")
+}
+
+//jacoco {
+//    toolVersion = "0.8.7"
+//    reportsDir = file("../app/build/reports")
+//}
+
+apply {
+    from("../../jacoco.gradle.kts")
 }
 
 android {
@@ -63,16 +73,11 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain:user"))
     implementation(project(":domain:location"))
-    implementation(Kotlin.coroutines_android)
-    implementation(UiMaterial.swipe)
 
-    compileOnly(Kotlin.javax_annotation)
-
-    testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)
-    testImplementation(OtherLib.turbin)
-    testImplementation(Mockk.mockk)
-    testImplementation(Junit.junit)
+    testImplementation(Junit5.jupiter)
     testImplementation(Kotlin.coroutines_test)
-    testRuntimeOnly(Junit5.vintage_engine)
+    testImplementation(Junit.core)
+    testImplementation(Junit.junit)
+    testImplementation(Mockk.mockk)
 }

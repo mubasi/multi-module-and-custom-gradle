@@ -19,6 +19,7 @@
 /.idea/.name
 /.idea/kotlinScripting.xml
 /.idea/deploymentTargetDropDown.xml
+/.scannerwork
 
 /app/src/main/res/raw/ca.pem
 /app/src/main/res/raw/client.pem

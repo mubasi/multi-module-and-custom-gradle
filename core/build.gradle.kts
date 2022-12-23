@@ -62,7 +62,7 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "${keyProperties["base_url"]}"
+                value = "\"${keyProperties["base_url"]}\""
             )
             buildConfigField(
                 type = "String",
@@ -165,16 +165,6 @@ dependencies {
     testApi(OtherLib.json)
     api(OtherLib.hawk)
 }
-
-sourceSets {
-    create("main") {
-        java {
-            srcDir("build/generated/source/proto/main/javalite")
-            srcDir("build/generated/source/proto/main/grpc")
-        }
-    }
-}
-
 
 protobuf {
     protoc {

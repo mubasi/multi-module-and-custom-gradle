@@ -18,9 +18,7 @@ class GetLocationsWithSubUseCases(
             .flowOn(Dispatchers.IO)
             .zip(locationRepository.getSubLocations()) { getLocationsResponse, getSubLocationsResponse ->
                 getLocationsResponse.listLocationsList.forEach {
-                    val item =
-                        LocationsWithSub(locationId = it.id, locationName = it.locationName)
-                    result[item.locationId] = item
+                    result[it.id] = LocationsWithSub(locationId = it.id, locationName = it.locationName)
                 }
                 getSubLocationsResponse.subLocationsList.forEach {
                     result[it.locationId]?.list?.add(

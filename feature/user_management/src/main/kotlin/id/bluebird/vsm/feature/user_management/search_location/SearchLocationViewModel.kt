@@ -52,7 +52,6 @@ class SearchLocationViewModel(
                         is LocationDomainState.Empty -> {
                             _searchLocationState.emit(SearchLocationState.EmptyList)
                         }
-                        else -> {}
                     }
                 }
         }

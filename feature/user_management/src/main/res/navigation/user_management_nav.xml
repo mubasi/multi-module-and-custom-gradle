@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/userListFragment"
-        android:name="id.bluebird.vsm.feature.user_management.list.UserListFragment"
+        android:name="id.bluebird.vsm.feature.user_management.list.FragmentUserList"
         android:label="@string/user_management_title">
         <action
             android:id="@+id/action_userListFragment_to_createUserFragment"
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/createUserFragment"
-        android:name="id.bluebird.vsm.feature.user_management.create.CreateUserFragment"
+        android:name="id.bluebird.vsm.feature.user_management.create.FragmentCreateUser"
         android:label="CreateUserFragment">
         <argument
             android:name="userId"
@@ -39,6 +39,6 @@
     </fragment>
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="id.bluebird.vsm.feature.user_management.search_location.SearchLocationFragment"
+        android:name="id.bluebird.vsm.feature.user_management.search_location.FragmentSearchLocation"
         android:label="@string/select_location"/>
 </navigation>

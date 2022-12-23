@@ -14,11 +14,12 @@ class LoginCaseImpl(private val userRepository: UserRepository) : Login {
         const val USERNAME_EMPTY = "usernameIsEmpty"
         const val PASSWORD_EMPTY = "passwordIsEmpty"
         const val ERROR_TAG = "LoginError"
+        const val EMPTY_DATA = ""
     }
 
     override fun invoke(username: String?, password: String?): Flow<Boolean> =
         callbackFlow {
-            val param = LoginParam(username = username ?: "", password = password ?: "")
+            val param = LoginParam(username ?: EMPTY_DATA, password ?: EMPTY_DATA)
             if (username.isNullOrEmpty()) {
                 throw NullPointerException(USERNAME_EMPTY)
             }
@@ -30,8 +31,7 @@ class LoginCaseImpl(private val userRepository: UserRepository) : Login {
                 trySend(it.currentUser != null)
             }
             auth.addAuthStateListener(authListener)
-            userRepository.doLogin(loginParam = param).
-            transform {
+            userRepository.doLogin(param).transform {
                 val result = it.accessToken.putAccessToken()
                 UserUtils.putUser(
                     userId = it.userId,
