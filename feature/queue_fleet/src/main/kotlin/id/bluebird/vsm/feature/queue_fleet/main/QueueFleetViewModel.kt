@@ -17,8 +17,6 @@ import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.GetCount
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
-import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
-import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
@@ -34,7 +32,6 @@ class QueueFleetViewModel(
     private val getUserId: GetUserId,
     private val _getFleet: GetListFleet,
     private val departFleet: DepartFleet,
-    private val getCurrentQueue: GetCurrentQueue,
 ) : ViewModel() {
 
     companion object {

@@ -47,7 +47,7 @@ internal class SelectLocationViewModelTest {
         val isFleetMenu = true
         every { getLocationsWithSub.invoke() } returns flow {
             emit(
-                GetLocationsWithSubState.Success(HashMap())
+                GetLocationsWithSubState.Success(listOf())
             )
         }
         val collect = launch {
@@ -68,104 +68,107 @@ internal class SelectLocationViewModelTest {
     }
 
     @Test
-    fun `init, when isFleetMenu true, result state changed to success with 1 list of 1 location with 2 subLocation`() = runTest {
-        //GIVEN
-        val isFleetMenu = true
-        val locationId = 1L
-        val locationName = "test name"
-        val subLocationIds = arrayOf(11L, 12L)
-        val subLocationName = "test subLocationName"
+    fun `init, when isFleetMenu true, result state changed to success with 1 list of 1 location with 2 subLocation`() =
+        runTest {
+            //GIVEN
+            val isFleetMenu = true
+            val locationId = 1L
+            val locationName = "test name"
+            val subLocationIds = arrayOf(11L, 12L)
+            val subLocationName = "test subLocationName"
 
-        every { getLocationsWithSub.invoke() } returns flow {
-            emit(
-                GetLocationsWithSubState.Success(
-                    hashMapOf(
-                        locationId to LocationsWithSub(
-                            locationId,
-                            locationName,
-                            MutableList(subLocationIds.size) {
-                                SubLocationResult(subLocationIds[it], subLocationName)
-                            })
+            every { getLocationsWithSub.invoke() } returns flow {
+                emit(
+                    GetLocationsWithSubState.Success(
+                        listOf(
+                            LocationsWithSub(
+                                locationId,
+                                locationName,
+                                MutableList(subLocationIds.size) {
+                                    SubLocationResult(subLocationIds[it], subLocationName)
+                                })
+                        )
                     )
                 )
+            }
+            val collect = launch {
+                subjectUnderTest.state.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init(isFleetMenu)
+            runCurrent()
+            delay(2000)
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
+            assertEquals(
+                SelectLocationState.GetLocationSuccess(
+                    listOf(
+                        LocationModel(
+                            locationId, locationName, List(subLocationIds.size) {
+                                SubLocation(
+                                    subLocationIds[it],
+                                    subLocationName,
+                                    locationId,
+                                    locationName
+                                )
+                            })
+                    )
+                ), states[1]
             )
-        }
-        val collect = launch {
-            subjectUnderTest.state.toList(states)
+
+            collect.cancel()
         }
 
-        //WHEN
-        subjectUnderTest.init(isFleetMenu)
-        runCurrent()
-        delay(2000)
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
-        assertEquals(
-            SelectLocationState.GetLocationSuccess(
-                listOf(
-                    LocationModel(
-                        locationId, locationName, List(subLocationIds.size) {
-                            SubLocation(
-                                subLocationIds[it],
-                                subLocationName,
-                                locationId,
-                                locationName
-                            )
-                        })
+    @Test
+    fun `expandOrCollapseParent, with given locationModel and position, emit onItemClick state with same given locationModel and position`() =
+        runTest {
+            //GIVEN
+            val locationId = 1L
+            val locationName = "location name"
+            val testItem = LocationModel(
+                locationId, locationName, listOf(
+                    SubLocation(11L, "subLocation name", locationId, locationName)
                 )
-            ), states[1]
-        )
-
-        collect.cancel()
-    }
-
-    @Test
-    fun `expandOrCollapseParent, with given locationModel and position, emit onItemClick state with same given locationModel and position`() = runTest {
-        //GIVEN
-        val locationId = 1L
-        val locationName = "location name"
-        val testItem = LocationModel(
-            locationId, locationName, listOf(
-                SubLocation(11L, "subLocation name", locationId, locationName)
             )
-        )
-        val testPosition = 0
-        val collect = launch {
-            subjectUnderTest.state.toList(states)
+            val testPosition = 0
+            val collect = launch {
+                subjectUnderTest.state.toList(states)
+            }
+
+            //WHen
+            subjectUnderTest.expandOrCollapseParent(testItem, testPosition)
+            runCurrent()
+
+            //THEN
+            assertEquals(1, states.size)
+            assertEquals(SelectLocationState.OnItemClick(testItem, testPosition), states[0])
+            collect.cancel()
+
         }
-
-        //WHen
-        subjectUnderTest.expandOrCollapseParent(testItem, testPosition)
-        runCurrent()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(SelectLocationState.OnItemClick(testItem, testPosition), states[0])
-        collect.cancel()
-
-    }
 
     @Test
-    fun `selectLocation, given test SubLocation, invoke updateLocationNav and set state to ToAssign`() = runTest {
-        //GIVEN
-        val isFleetMenu = false
-        val subLocation = SubLocation(11L, "subLocation name", 1L, "location name")
+    fun `selectLocation, given test SubLocation, invoke updateLocationNav and set state to ToAssign`() =
+        runTest {
+            //GIVEN
+            val isFleetMenu = false
+            val subLocation = SubLocation(11L, "subLocation name", 1L, "location name")
 
-        val collect = launch {
-            subjectUnderTest.state.toList(states)
+            val collect = launch {
+                subjectUnderTest.state.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.selectLocation(subLocation)
+            runCurrent()
+
+            //THEN
+            assertEquals(1, states.size)
+            assertEquals(SelectLocationState.ToAssign(isFleetMenu), states[0])
+            collect.cancel()
+
         }
-
-        //WHEN
-        subjectUnderTest.selectLocation(subLocation)
-        runCurrent()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(SelectLocationState.ToAssign(isFleetMenu), states[0])
-        collect.cancel()
-
-    }
 
 }

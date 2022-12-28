@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.singleOrNull
 
 class ListQueueSkippedCases(private val queueReceiptRepository: QueueReceiptRepository) :
     ListQueueSkipped {
-    override fun invoke(locationId: Long):
+    override fun invoke(locationId: Long, subLocationId: Long):
             Flow<ListQueueSkippedState> = flow {
-        val response = queueReceiptRepository.listQueueSkipped(locationId)
+        val response = queueReceiptRepository.listQueueSkipped(locationId, subLocationId)
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()
         val listSkippedQueue = ArrayList<Queue>()

@@ -5,43 +5,49 @@ import kotlinx.coroutines.flow.Flow
 
 interface QueueReceiptRepository {
 
-    fun getQueue (
+    fun getQueue(
         queueId: Long,
         queueType: Long,
         locationId: Long,
         queueNumber: String,
         subLocationId: Long,
         fleetNumber: String,
-    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+    ): Flow<QueuePangkalanOuterClass.ResponseQueues>
 
-    fun takeQueue (
+    fun takeQueue(
         queueId: Long,
         queueType: Long,
         locationId: Long,
         queueNumber: String,
         subLocationId: Long,
         fleetNumber: String,
-    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+    ): Flow<QueuePangkalanOuterClass.ResponseQueues>
 
-    fun getCurrentQueue (
-        locationId: Long
-    ) : Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse>
+    fun getCurrentQueue(
+        locationId: Long,
+        subLocationId: Long
+    ): Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse>
 
-    fun skipQueue (
+    fun skipQueue(
         queueId: Long,
         locationId: Long,
         subLocationId: Long,
-    ) : Flow<QueuePangkalanOuterClass.ResponseSkipCurrentQueue>
+    ): Flow<QueuePangkalanOuterClass.ResponseSkipCurrentQueue>
 
-    fun listQueueWaiting (
+    fun listQueueWaiting(
         locationId: Long,
-    ) : Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
 
-    fun listQueueSkipped (
+    fun listQueueSkipped(
         locationId: Long,
-    ) : Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue>
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue>
 
-    fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
+    fun getWaitingQueue(
+        locationId: Long,
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue>
 
     fun searchWaitingQueue(
         queueNumber: String,
@@ -49,33 +55,34 @@ interface QueueReceiptRepository {
         subLocationId: Long
     ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue>
 
-    fun deleteSkippedQueue (
+    fun deleteSkippedQueue(
         queueId: Long,
         queueType: Long,
         locationId: Long,
         queueNumber: String,
         subLocationId: Long,
         fleetNumber: String,
-    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+    ): Flow<QueuePangkalanOuterClass.ResponseQueues>
 
 
-    fun restoreSkippedQueue (
+    fun restoreSkippedQueue(
         queueId: Long,
         queueType: Long,
         locationId: Long,
         queueNumber: String,
         subLocationId: Long,
         fleetNumber: String,
-    ) : Flow<QueuePangkalanOuterClass.ResponseQueues>
+    ): Flow<QueuePangkalanOuterClass.ResponseQueues>
 
-    fun counterBar (
+    fun counterBar(
         locationId: Long,
-    ) : Flow<QueuePangkalanOuterClass.responseGetCountQueue>
+        subLocationId: Long,
+    ): Flow<QueuePangkalanOuterClass.responseGetCountQueue>
 
-    fun searchQueue (
+    fun searchQueue(
         queueNumber: String,
         locationId: Long,
         subLocationId: Long,
         typeQueue: QueuePangkalanOuterClass.QueueType
-    ) : Flow<QueuePangkalanOuterClass.ResponseSearchQueue>
+    ): Flow<QueuePangkalanOuterClass.ResponseSearchQueue>
 }
