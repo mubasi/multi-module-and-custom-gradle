@@ -28,6 +28,7 @@ message Queue {
 //GetCurrentQueue...
 message GetCurrentQueueRequest {
 	int64 location_id = 1;
+	int64 sub_location_id = 2;
 }
 message GetCurrentQueueResponse {
 	int64  id = 1;
@@ -50,6 +51,7 @@ message ResponseSkipCurrentQueue {
 // GetCountQueue...
 message RequestGetCountQueue {
 	int64 location_id = 1;
+	int64 sub_location_id = 2;
 }
 message responseGetCountQueue {
 	int64 location_id = 1;
@@ -62,6 +64,7 @@ message responseGetCountQueue {
 // GetSkippedQueue...
 message RequestGetSkippedQueue {
 	int64 location_id = 1;
+	int64 sub_location_id = 2;
 }
 message ResponseGetSkippedQueue {
 	int64 count = 1;
@@ -77,7 +80,6 @@ message RequestQueues {
 	int64 	  sub_location_id = 5;
 	string 	  fleet_number = 6;
 }
-
 message ResponseQueues {
 	string message = 1;
 	string queue_type = 2;
@@ -116,6 +118,7 @@ message ResponseQueueValidator {
 // RequestGetWaitingQueue...
 message RequestGetWaitingQueue {
 	int64 location_id = 1;
+	int64 sub_location_id = 2;
 }
 message ResponseGetWaitingQueue {
 	int64 count = 1;

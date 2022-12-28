@@ -34,7 +34,7 @@ internal class CounterBarCasesTest {
     fun `counterBarCaseTest, isSuccess` () = runTest {
         //mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { queueReceiptRepository.counterBar(1) } returns flow {
+        every { queueReceiptRepository.counterBar(1, 11) } returns flow {
             emit(
                 QueuePangkalanOuterClass.responseGetCountQueue.newBuilder()
                     .apply {
@@ -43,7 +43,7 @@ internal class CounterBarCasesTest {
             )
         }
 
-        flowOf(counterBarCases.invoke(1)).test {
+        flowOf(counterBarCases.invoke(1, 11)).test {
             Assertions.assertEquals(
                 awaitItem().single(),
                 CounterBarState.Success(

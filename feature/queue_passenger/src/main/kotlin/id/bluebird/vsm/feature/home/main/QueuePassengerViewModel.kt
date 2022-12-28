@@ -120,7 +120,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesCurrentQueue)
             currentQueue.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -157,7 +158,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesListQueue)
             listQueueWaiting.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -203,7 +205,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesListQueueSkipped)
             listQueueSkipped.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -277,7 +280,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesCounterBar)
             counterBar.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->

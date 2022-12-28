@@ -31,7 +31,7 @@ class RitaseRecordViewModel(
         viewModelScope.launch {
             _departFleetState.emit(DepartFleetState.OnProgressGetCurrentQueue)
             currentQueue
-                .invoke(locationId)
+                .invoke(locationId, subLocationId)
                 .flowOn(Dispatchers.Main)
                 .catch { err ->
                     _departFleetState.emit(DepartFleetState.OnFailedGetCurrentQueue(err))

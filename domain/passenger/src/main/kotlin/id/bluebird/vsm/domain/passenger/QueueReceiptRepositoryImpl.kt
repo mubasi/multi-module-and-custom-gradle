@@ -57,12 +57,13 @@ class QueueReceiptRepositoryImpl(
             emit(result)
         }
 
-    override fun getCurrentQueue(locationId: Long):
+    override fun getCurrentQueue(locationId: Long, subLocationId: Long):
             Flow<QueuePangkalanOuterClass.GetCurrentQueueResponse> =
         flow {
             val request = QueuePangkalanOuterClass.GetCurrentQueueRequest.newBuilder()
                 .apply {
                     this.locationId = locationId
+                    this.subLocationId = subLocationId
                 }.build()
             val result = queuePangkalanGrpc.getCurrentQueue(request)
             emit(result)
@@ -85,29 +86,38 @@ class QueueReceiptRepositoryImpl(
             emit(result)
         }
 
-    override fun listQueueWaiting(locationId: Long):
+    override fun listQueueWaiting(locationId: Long, subLocationId: Long):
             Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> = flow {
         val request = QueuePangkalanOuterClass.RequestGetWaitingQueue.newBuilder()
             .apply {
                 this.locationId = locationId
+                this.subLocationId = subLocationId
             }.build()
         val result = queuePangkalanGrpc.getWaitingQueue(request)
         emit(result)
     }
 
-    override fun listQueueSkipped(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue> = flow {
+    override fun listQueueSkipped(
+        locationId: Long,
+        subLocationId: Long
+    ): Flow<QueuePangkalanOuterClass.ResponseGetSkippedQueue> = flow {
         val request = QueuePangkalanOuterClass.RequestGetSkippedQueue.newBuilder()
             .apply {
                 this.locationId = locationId
+                this.subLocationId = subLocationId
             }.build()
         val result = queuePangkalanGrpc.getSkippedQueue(request)
         emit(result)
     }
 
-    override fun getWaitingQueue(locationId: Long): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> = flow {
+    override fun getWaitingQueue(
+        locationId: Long,
+        subLocationId: Long
+    ): Flow<QueuePangkalanOuterClass.ResponseGetWaitingQueue> = flow {
         val request = QueuePangkalanOuterClass.RequestGetWaitingQueue.newBuilder()
             .apply {
                 this.locationId = locationId
+                this.subLocationId = subLocationId
             }.build()
 
         val result = queuePangkalanGrpc.getWaitingQueue(request)
@@ -178,11 +188,12 @@ class QueueReceiptRepositoryImpl(
             emit(result)
         }
 
-    override fun counterBar(locationId: Long):
+    override fun counterBar(locationId: Long, subLocationId: Long):
             Flow<QueuePangkalanOuterClass.responseGetCountQueue> = flow {
         val request = QueuePangkalanOuterClass.RequestGetCountQueue.newBuilder()
             .apply {
                 this.locationId = locationId
+                this.subLocationId = subLocationId
             }.build()
 
         val result = queuePangkalanGrpc.getCountQueue(request)

@@ -1,9 +1,6 @@
 package id.bluebird.vsm.feature.queue_fleet.main
 
 import com.orhanobut.hawk.Hawk
-import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
-import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.fleet.DepartFleetState
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
 import id.bluebird.vsm.domain.user.model.CreateUserResult
@@ -15,11 +12,7 @@ import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.CountResult
 import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
-import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
-import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
-import id.bluebird.vsm.domain.passenger.model.CurrentQueueResult
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
-import id.bluebird.vsm.feature.queue_fleet.getOrAwaitValue
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import id.bluebird.vsm.feature.queue_fleet.model.UserInfo
@@ -59,7 +52,6 @@ internal class QueueFleetViewModelTest {
     private val _getUserId: GetUserId = mockk(relaxed = true)
     private val _getFleetList: GetListFleet = mockk(relaxed = true)
     private val _departFleet: DepartFleet = mockk(relaxed = true)
-    private val _getCurrentQueue: GetCurrentQueue = mockk(relaxed = true)
     private val _events = mutableListOf<QueueFleetState>()
 
     @BeforeEach
@@ -72,7 +64,6 @@ internal class QueueFleetViewModelTest {
             _getUserId,
             _getFleetList,
             _departFleet,
-            _getCurrentQueue
         )
     }
 

@@ -68,11 +68,11 @@ internal class GetLocationsWithSubUseCasesTest {
             //THEN
             assertEquals(
                 GetLocationsWithSubState.Success(
-                    HashMap(mutableMapOf(Pair(locationId, LocationsWithSub(
+                    listOf(LocationsWithSub(
                         locationId, locationName, MutableList(subLocationSize) {
                             SubLocationResult(it.toLong(), subLocationName)
                         }
-                    ))))
+                    ))
                 ), awaitItem().singleOrNull())
             awaitComplete()
         }

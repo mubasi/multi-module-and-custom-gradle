@@ -55,7 +55,7 @@ import org.koin.dsl.module
 object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
-        viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
+        viewModel { QueueFleetViewModel(get(), get(), get(), get()) }
         viewModel { UserManagementViewModel(get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
@@ -113,7 +113,6 @@ object AppModule {
         single<ListQueueSkipped> { ListQueueSkippedCases(get()) }
         single<ListQueueWaiting> { ListQueueWaitingCases(get()) }
         single<GetWaitingQueue> { GetWaitingQueueCases(get()) }
-        single<GetCurrentQueue> { GetCurrentQueueCase(get()) }
         single<SearchWaitingQueue> { SearchWaitingQueueCases(get()) }
         single<DeleteSkipped> { DeleteSkippedCases(get()) }
         single<RestoreSkipped> { RestoreSkippedCases(get()) }

@@ -13,11 +13,13 @@ import kotlinx.coroutines.flow.singleOrNull
 class CurrentQueueCases (private val queueReceiptRepository: QueueReceiptRepository) :
     CurrentQueue {
     override fun invoke(
-        locationId: Long
+        locationId: Long,
+        subLocationId: Long,
     ): Flow<GetCurrentQueueState> =
         flow {
             val response = queueReceiptRepository.getCurrentQueue(
-                locationId
+                locationId,
+                subLocationId
             )
                 .flowOn(Dispatchers.IO)
                 .singleOrNull() ?: throw NullPointerException()
