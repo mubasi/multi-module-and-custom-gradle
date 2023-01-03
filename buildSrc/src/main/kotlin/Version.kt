@@ -5,14 +5,13 @@ object Version {
 
     private val major by lazy { 1 }
     private val minor by lazy { 1 }
-    private val patch by lazy { 1 }
+    private val patch by lazy { 2 }
 
     private val versionType by lazy { "" }
 
     val appName by lazy { "VSM Pangkalan" }
     val appNameStaging by lazy { "$appName (Staging)" }
     val appNameDev by lazy { "$appName (Dev)" }
-
     val versionName by lazy { "$major.$minor.$patch$versionType" }
-    val versionCode by lazy { 11 }
+    val versionCode by lazy { 12 }
 }
