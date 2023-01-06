@@ -36,7 +36,7 @@ internal class SearchFleetUseCasesTest {
     }
 
     @Test
-    fun `searchFleet, param isNull, result fleetNumbers size 10`() = runTest {
+    fun `searchFleet, param isNull, result SearchFleetState Empty`() = runTest {
         // Mock
         every { _repository.searchFleet(any(), any()) } returns flow {
             val result = FleetOuterClass.SearchResponse.newBuilder()
@@ -55,7 +55,7 @@ internal class SearchFleetUseCasesTest {
             // Result
             Assertions.assertEquals(
                 awaitItem().single(),
-                SearchFleetState.Success(getFleetNumbers(10))
+                SearchFleetState.EmptyResult
             )
             awaitComplete()
         }
@@ -86,9 +86,8 @@ internal class SearchFleetUseCasesTest {
             awaitComplete()
         }
     }
-
     @Test
-    fun `searchFleet, param isEmpty, result fleetNumbers size 10`() = runTest {
+    fun `searchFleet, param isEmpty, result SearchFleetState Empty`() = runTest {
         // Mock
         every { _repository.searchFleet(any(), any()) } returns flow {
             val result = FleetOuterClass.SearchResponse.newBuilder()
@@ -107,7 +106,7 @@ internal class SearchFleetUseCasesTest {
             // Result
             Assertions.assertEquals(
                 awaitItem().single(),
-                SearchFleetState.Success(getFleetNumbers(10))
+                SearchFleetState.EmptyResult
             )
             awaitComplete()
         }

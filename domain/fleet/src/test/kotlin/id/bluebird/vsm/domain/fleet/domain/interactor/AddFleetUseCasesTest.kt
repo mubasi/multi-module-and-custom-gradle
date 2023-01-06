@@ -22,16 +22,14 @@ import proto.AssignmentPangkalanOuterClass
 internal class AddFleetUseCasesTest {
 
     private val repository: FleetRepository = mockk()
-    private lateinit var addFleetUseCases : AddFleetUseCases
-
+    private lateinit var addFleetUseCases: AddFleetUseCases
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
         addFleetUseCases = AddFleetUseCases(repository)
     }
-
     @Test
-    fun `AddFleetUseCases, isSuccess` () = runTest {
+    fun `AddFleetUseCases, isSuccess`() = runTest {
         every { Hawk.get<Long>(any()) } returns 1L
         every { repository.addFleet(any(), any(), any()) } returns flow {
             emit(
@@ -45,7 +43,13 @@ internal class AddFleetUseCasesTest {
             )
         }
 
-        flowOf(addFleetUseCases.invoke("aa", 1)).test {
+        flowOf(
+            addFleetUseCases.invoke(
+                fleetNumber = "aa",
+                subLocationId = 1,
+                locationId = 10
+            )
+        ).test {
             //result
             Assertions.assertEquals(
                 awaitItem().single(),

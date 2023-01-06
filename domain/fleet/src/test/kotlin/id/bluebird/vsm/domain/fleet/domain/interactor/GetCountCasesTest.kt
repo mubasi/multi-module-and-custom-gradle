@@ -23,13 +23,11 @@ internal class GetCountCasesTest {
 
     private val repository: FleetRepository = mockk()
     private lateinit var getCountCases: GetCountCases
-
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
         getCountCases = GetCountCases(repository)
     }
-
     @Test
     fun `getCount, result is successs`() = runTest {
         // Mock
@@ -44,10 +42,8 @@ internal class GetCountCasesTest {
                     }.build()
             )
         }
-
         // Execute
-        flowOf(getCountCases.invoke(1)).test {
-
+        flowOf(getCountCases.invoke(subLocationId = 1, locationId = 20)).test {
             // Result
             Assertions.assertEquals(
                 this.awaitItem().single(),

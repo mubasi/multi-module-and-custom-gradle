@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.api.client.util.DateTime
 import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.SearchFleet
 import id.bluebird.vsm.domain.passenger.WaitingQueueState
 import id.bluebird.vsm.domain.passenger.domain.cases.SearchWaitingQueue
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -126,7 +128,12 @@ class AddFleetViewModel(
             return
         }
         viewModelScope.launch {
-            addFleet.invoke(selectedFleetNumber.value ?: "", _subLocation)
+            addFleet.invoke(
+                fleetNumber = selectedFleetNumber.value ?: "",
+                subLocationId = _subLocation,
+                locationId = LocationNavigationTemporary.getLocationNav()?.locationId
+                    ?: UserUtils.getLocationId()
+            )
                 .flowOn(Dispatchers.Main)
                 .catch { cause: Throwable ->
                     _addFleetState.emit(AddFleetState.AddError(err = cause))

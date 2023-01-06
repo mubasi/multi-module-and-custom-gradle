@@ -1,6 +1,5 @@
 package id.bluebird.vsm.domain.fleet.domain.interactor
 
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.AddFleetState
 import id.bluebird.vsm.domain.fleet.FleetRepository
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
@@ -14,12 +13,13 @@ import kotlinx.coroutines.flow.singleOrNull
 class AddFleetUseCases(private val fleetRepository: FleetRepository) : AddFleet {
     override fun invoke(
         fleetNumber: String,
-        subLocationId: Long
+        subLocationId: Long,
+        locationId: Long
     ): Flow<AddFleetState> = flow {
         val response = fleetRepository.addFleet(
             fleetNumber = fleetNumber,
             subLocationId = subLocationId,
-            UserUtils.getLocationId()
+            locationId = locationId
         )
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()

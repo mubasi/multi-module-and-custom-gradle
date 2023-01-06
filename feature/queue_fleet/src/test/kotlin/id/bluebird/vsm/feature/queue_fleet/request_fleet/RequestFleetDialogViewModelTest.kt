@@ -1,10 +1,13 @@
 package id.bluebird.vsm.feature.queue_fleet.request_fleet
 
+import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.RequestState
 import id.bluebird.vsm.domain.fleet.domain.cases.RequestFleet
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
@@ -25,6 +28,7 @@ internal class RequestFleetDialogViewModelTest {
 
     @BeforeEach
     fun setup() {
+        mockkStatic(Hawk::class)
         _vm = RequestFleetDialogViewModel(_requestFleet)
     }
 
@@ -33,12 +37,11 @@ internal class RequestFleetDialogViewModelTest {
         // Given
         val events = mutableListOf<RequestFleetDialogState>()
         _vm.initSubLocationId(100)
-
         // Mock
-        every { _requestFleet.invoke(any(), any()) } returns flow {
+        every { UserUtils.getLocationId() } returns 10
+        every { _requestFleet.invoke(any(), any(), any()) } returns flow {
             emit(RequestState.Success(11))
         }
-
         // Execute
         val job = launch {
             _vm.requestFleetDialogState.toList(events)
@@ -57,12 +60,11 @@ internal class RequestFleetDialogViewModelTest {
         runTest {
             // Given
             val events = mutableListOf<RequestFleetDialogState>()
-
             // Mock
-            every { _requestFleet.invoke(any(), any()) } returns flow {
+            every { UserUtils.getLocationId() } returns 10
+            every { _requestFleet.invoke(any(), any(), any()) } returns flow {
                 emit(RequestState.CountInvalid)
             }
-
             // Execute
             val job = launch {
                 _vm.requestFleetDialogState.toList(events)
@@ -85,12 +87,11 @@ internal class RequestFleetDialogViewModelTest {
             // Given
             val events = mutableListOf<RequestFleetDialogState>()
             _vm.initSubLocationId(-1)
-
             // Mock
-            every { _requestFleet.invoke(any(), any()) } returns flow {
+            every { UserUtils.getLocationId() } returns 10
+            every { _requestFleet.invoke(any(), any(), any()) } returns flow {
                 emit(RequestState.SubLocationInvalid)
             }
-
             // Execute
             val job = launch {
                 _vm.requestFleetDialogState.toList(events)

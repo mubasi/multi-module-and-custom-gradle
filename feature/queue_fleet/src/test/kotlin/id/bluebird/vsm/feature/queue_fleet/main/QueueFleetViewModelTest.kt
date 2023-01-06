@@ -1,9 +1,6 @@
 package id.bluebird.vsm.feature.queue_fleet.main
 
 import com.orhanobut.hawk.Hawk
-import id.bluebird.vsm.domain.user.GetUserByIdState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
-import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.fleet.GetCountState
 import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
@@ -12,6 +9,9 @@ import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.CountResult
 import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
+import id.bluebird.vsm.domain.user.GetUserByIdState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
+import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
@@ -140,7 +140,7 @@ internal class QueueFleetViewModelTest {
         _vm.setUserInfo(UserInfo(10))
 
         // Mock
-        every { _getCount.invoke(any()) } returns flow {
+        every { _getCount.invoke(any(), any()) } returns flow {
             emit(GetCountState.Success(CountResult(10, 11, 12)))
         }
 
@@ -160,7 +160,7 @@ internal class QueueFleetViewModelTest {
         _vm.setUserInfo(UserInfo(10))
 
         // Mock
-        every { _getCount.invoke(any()) } returns flow {
+        every { _getCount.invoke(any(), any()) } returns flow {
             throw NullPointerException(ERROR)
         }
 

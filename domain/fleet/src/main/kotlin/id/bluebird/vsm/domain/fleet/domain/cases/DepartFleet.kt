@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface DepartFleet {
     operator fun invoke(
+        locationId: Long,
         subLocationId: Long,
         fleetNumber: String,
         isWithPassenger: Boolean,
