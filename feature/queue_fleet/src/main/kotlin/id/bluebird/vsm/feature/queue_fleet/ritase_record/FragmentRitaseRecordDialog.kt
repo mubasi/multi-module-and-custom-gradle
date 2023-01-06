@@ -15,7 +15,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.bluebird.vsm.feature.queue_fleet.R
 import id.bluebird.vsm.feature.queue_fleet.databinding.RecordRitaseDialogBinding
 import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetState
-import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -54,9 +53,9 @@ class FragmentRitaseRecordDialog(
         with(mBinding) {
             lifecycleOwner = viewLifecycleOwner
             vm = _departViewModel
-            queueNumber = this@RitaseRecordDialog.queueNumber
-            locationId = this@RitaseRecordDialog.locationId
-            subLocationId = this@RitaseRecordDialog.subLocationId
+            queueNumber = this@FragmentRitaseRecordDialog.queueNumber
+            locationId = this@FragmentRitaseRecordDialog.locationId
+            subLocationId = this@FragmentRitaseRecordDialog.subLocationId
             showProgress = false
         }
         _departViewModel.init(fleetItem, queueNumber, locationId, subLocationId)
@@ -77,15 +76,26 @@ class FragmentRitaseRecordDialog(
                             dialog?.dismiss()
                         }
                         is DepartFleetState.SelectQueueToDepart -> {
-                            showQueueListCallback?.invoke(it.fleetItem, it.currentQueueId, it.locationId, it.subLocationId)
+                            showQueueListCallback?.invoke(
+                                it.fleetItem,
+                                it.currentQueueId,
+                                it.locationId,
+                                it.subLocationId
+                            )
                         }
                         is DepartFleetState.SuccessGetCurrentQueue -> {
                             mBinding.queueNumber = it.queueId
                         }
                         is DepartFleetState.OnFailedGetCurrentQueue -> {
-                            Toast.makeText(requireContext(), "${it.throwable.message}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "${it.throwable.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        else -> {}
+                        else -> {
+                            // do nothing
+                        }
                     }
                 }
             }

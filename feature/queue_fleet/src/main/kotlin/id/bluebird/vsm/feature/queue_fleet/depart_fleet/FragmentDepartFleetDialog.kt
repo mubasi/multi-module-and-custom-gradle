@@ -52,8 +52,8 @@ class FragmentDepartFleetDialog(
             vm = _departViewModel
             title = getString(R.string.depart_description, fleet.name)
             fleetNumber = fleet.name
-            locationId = this@DepartFleetDialog.locationId
-            subLocationId = this@DepartFleetDialog.subLocationId
+            locationId = this@FragmentDepartFleetDialog.locationId
+            subLocationId = this@FragmentDepartFleetDialog.subLocationId
         }
         _departViewModel.init(fleet)
         dialog?.apply {
@@ -77,7 +77,9 @@ class FragmentDepartFleetDialog(
                             onError(it.throwable)
                             dialog?.dismiss()
                         }
-                        else -> {}
+                        else -> {
+                            // do nothing
+                        }
                     }
                 }
             }

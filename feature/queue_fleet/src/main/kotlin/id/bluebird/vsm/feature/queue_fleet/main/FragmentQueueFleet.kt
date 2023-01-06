@@ -70,12 +70,12 @@ class FragmentQueueFleet : Fragment() {
             showList = false
         }
         initRcv()
-        observer(view)
+        observer()
         _mQueueFleetViewModel.init()
 
     }
 
-    private fun observer(view: View) {
+    private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 with(_mQueueFleetViewModel) {
@@ -248,7 +248,7 @@ class FragmentQueueFleet : Fragment() {
         setFragmentResultListener(FragmentAddFleet.REQUEST_SELECT) { _, bundle ->
             _mQueueFleetViewModel.showRecordRitase(
                 fleetItem,
-                bundle.getString(FragmentAddFleet.RESULT_SELECT)
+                bundle.getString(FragmentAddFleet.RESULT_SELECT) ?: ""
             )
         }
     }
