@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface ListQueueSkipped {
     operator fun invoke(
         locationId :  Long,
+        subLocationId: Long,
     ) : Flow<ListQueueSkippedState>
 }

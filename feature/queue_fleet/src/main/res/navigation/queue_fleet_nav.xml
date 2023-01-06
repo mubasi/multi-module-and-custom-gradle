@@ -38,6 +38,10 @@
             android:id="@+id/action_queueFleetFragment_to_searchQueueFragment"
             app:destination="@id/searchQueueFragment">
             <argument
+                android:name="location"
+                android:defaultValue="0L"
+                app:argType="long" />
+            <argument
                 android:name="subLocation"
                 android:defaultValue="0L"
                 app:argType="long" />
@@ -52,6 +56,10 @@
         android:id="@+id/addFleetFragment"
         android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet"
         android:label="@string/add_fleet">
+        <argument
+            android:name="location"
+            android:defaultValue="0L"
+            app:argType="long" />
         <argument
             android:name="subLocation"
             android:defaultValue="0L"
@@ -85,6 +93,10 @@
         android:id="@+id/searchQueueFragment"
         android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet"
         android:label="@string/search_ritase">
+        <argument
+            android:name="location"
+            android:defaultValue="0L"
+            app:argType="long" />
         <argument
             android:name="subLocation"
             android:defaultValue="0L"

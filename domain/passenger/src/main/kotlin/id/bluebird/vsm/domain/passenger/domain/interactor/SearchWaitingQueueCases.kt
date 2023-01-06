@@ -14,10 +14,11 @@ import kotlinx.coroutines.flow.singleOrNull
 class SearchWaitingQueueCases(private val queueReceiptRepository: QueueReceiptRepository): SearchWaitingQueue {
     override fun invoke(
         queueNumber: String,
+        locationId: Long,
         subLocationId: Long
     ): Flow<WaitingQueueState> = flow {
         val response = queueReceiptRepository
-            .searchWaitingQueue(queueNumber, UserUtils.getLocationId(), subLocationId)
+            .searchWaitingQueue(queueNumber, locationId, subLocationId)
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()
 

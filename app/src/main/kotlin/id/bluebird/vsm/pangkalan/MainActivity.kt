@@ -147,6 +147,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     private fun drawer() {
+        mBinding.tvVersion.text = BuildConfig.VERSION_NAME
         if (mBinding.drawerLayout.isDrawerVisible(GravityCompat.START)) {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {

@@ -36,7 +36,7 @@ internal class CurrentQueueCasesTest {
     fun `currentQueueCasesTest, isSuccess` () = runTest {
         //mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { queueReceiptRepository.getCurrentQueue(1) } returns flow {
+        every { queueReceiptRepository.getCurrentQueue(1, 11) } returns flow {
             emit(
                 QueuePangkalanOuterClass.GetCurrentQueueResponse.newBuilder()
                     .apply {
@@ -45,7 +45,7 @@ internal class CurrentQueueCasesTest {
             )
         }
 
-        flowOf(currentQueueCases.invoke(1)).test {
+        flowOf(currentQueueCases.invoke(1, 11)).test {
             assertEquals(
                 awaitItem().single(),
                 GetCurrentQueueState.Success(

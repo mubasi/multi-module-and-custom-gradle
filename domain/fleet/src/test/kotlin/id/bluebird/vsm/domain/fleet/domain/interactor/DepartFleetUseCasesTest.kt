@@ -60,11 +60,12 @@ internal class DepartFleetUseCasesTest {
         }
 
         flowOf(departFleetUseCases.invoke(
-            1,
-            "aa",
-            false,
-            getFleetNumbers(2),
-            "bb"
+            locationId = 1,
+            subLocationId = 20,
+            fleetNumber = "aa",
+            isWithPassenger = false,
+            departFleetItems = getFleetNumbers(2),
+            queueNumber = "bb"
         )).test {
             //result
 

@@ -12,22 +12,29 @@ import java.lang.NullPointerException
 class GetLocationsWithSubUseCases(
     private val locationRepository: LocationRepository
 ) : GetLocationsWithSub {
+
     override fun invoke(): Flow<GetLocationsWithSubState> = flow {
-        val result: HashMap<Long, LocationsWithSub> = HashMap()
+        var result: List<LocationsWithSub> = ArrayList()
         locationRepository.getLocations()
             .flowOn(Dispatchers.IO)
             .zip(locationRepository.getSubLocations()) { getLocationsResponse, getSubLocationsResponse ->
+                val tempResult: HashMap<Long, LocationsWithSub> = HashMap()
                 getLocationsResponse.listLocationsList.forEach {
-                    result[it.id] = LocationsWithSub(locationId = it.id, locationName = it.locationName)
+                    val item =
+                        LocationsWithSub(locationId = it.id, locationName = it.locationName)
+                    tempResult[item.locationId] = item
                 }
                 getSubLocationsResponse.subLocationsList.forEach {
-                    result[it.locationId]?.list?.add(
-                        SubLocationResult(
-                            id = it.subLocationId,
-                            name = it.subLocationName
+                    if (it.prefix.isNotEmpty()) {
+                        tempResult[it.locationId]?.list?.add(
+                            SubLocationResult(
+                                id = it.subLocationId,
+                                name = it.subLocationName
+                            )
                         )
-                    )
+                    }
                 }
+                result = tempResult.values.filter { it.list.isNotEmpty() }.toList()
             }
             .singleOrNull() ?: throw  NullPointerException()
         emit(GetLocationsWithSubState.Success(result))

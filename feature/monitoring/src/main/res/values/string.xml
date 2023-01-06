@@ -5,4 +5,13 @@
     <string name="rotate_screen">Rotate Screen</string>
     <string name="set_buffer_amount">Atur jumlah buffer</string>
     <string name="save">Simpan</string>
-</resources>
+    <string name="location">Lokasi</string>
+    <string-array name="column_header">
+        <item>Antrian Armada</item>
+        <item>Antrian Penumpang</item>
+        <item>Total Ritase</item>
+        <item>Total Antrian Armada</item>
+        <item>Total Antrian Penumpang</item>
+        <item>Permintaan Armada</item>
+        <item>Pengendapan</item>
+    </string-array></resources>

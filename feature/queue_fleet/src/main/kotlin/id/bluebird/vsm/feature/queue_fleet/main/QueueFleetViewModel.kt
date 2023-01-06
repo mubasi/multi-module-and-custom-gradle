@@ -8,22 +8,20 @@ import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.extensions.isUserOfficer
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.user.GetUserByIdState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
-import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.fleet.DepartFleetState
 import id.bluebird.vsm.domain.fleet.GetCountState
 import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.GetCount
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
-import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
-import id.bluebird.vsm.domain.passenger.domain.cases.GetCurrentQueue
-import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
+import id.bluebird.vsm.domain.user.GetUserByIdState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
+import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import id.bluebird.vsm.feature.queue_fleet.model.UserInfo
 import id.bluebird.vsm.feature.queue_fleet.request_fleet.RequestFleetDialogViewModel
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -34,10 +32,10 @@ class QueueFleetViewModel(
     private val getUserId: GetUserId,
     private val _getFleet: GetListFleet,
     private val departFleet: DepartFleet,
-    private val getCurrentQueue: GetCurrentQueue,
 ) : ViewModel() {
 
     companion object {
+
         const val ERROR_MESSAGE_UNKNOWN = "Unknown"
     }
 
@@ -47,16 +45,13 @@ class QueueFleetViewModel(
     private val _queueFleetState: MutableSharedFlow<QueueFleetState> =
         MutableSharedFlow()
     val queueFleetState: SharedFlow<QueueFleetState> = _queueFleetState.asSharedFlow()
-
     private var mCountCache: CountCache = CountCache()
     var mUserInfo: UserInfo = UserInfo()
     private val _fleetItems: MutableList<FleetItem> = mutableListOf()
-
     @VisibleForTesting
     fun setUserInfo(userInfo: UserInfo) {
         mUserInfo = userInfo
     }
-
     @VisibleForTesting
     fun valUserInfo() : UserInfo {
         return mUserInfo
@@ -67,20 +62,9 @@ class QueueFleetViewModel(
         mCountCache = countCache
         counterLiveData.value = mCountCache
     }
-
     @VisibleForTesting
     fun setFleetItems(list: List<FleetItem>) {
         _fleetItems.addAll(list)
-    }
-
-    @VisibleForTesting
-    fun valFleetItems() :List<FleetItem> {
-        return _fleetItems
-    }
-
-    @VisibleForTesting
-    fun valMCountCache() : CountCache {
-        return mCountCache
     }
 
     @VisibleForTesting
@@ -125,8 +109,18 @@ class QueueFleetViewModel(
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = it.result.locationId
-                            mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.locationId
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.locationId
+                                    ?: it.result.locationId
+                            }
+                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.subLocationsId.first()
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.subLocationId
+                                    ?: it.result.subLocationsId.first()
+                            }
                             createTitleLocation(it.result)
                             _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
                         }
@@ -151,7 +145,10 @@ class QueueFleetViewModel(
     fun getCounter() {
         viewModelScope.launch {
             if (!mCountCache.isInit) {
-                getCount.invoke(mUserInfo.subLocationId)
+                getCount.invoke(
+                    subLocationId = mUserInfo.subLocationId,
+                    locationId = mUserInfo.locationId
+                )
                     .flowOn(Dispatchers.Main)
                     .catch { cause ->
                         _queueFleetState.emit(
@@ -174,12 +171,10 @@ class QueueFleetViewModel(
                                 }
                             }
                         }
-
                     }
             }
         }
     }
-
 
     fun updateRequestCount(count: Long) {
         if (count >= RequestFleetDialogViewModel.MINIMUM_COUNTER_VALUE) {
@@ -196,11 +191,12 @@ class QueueFleetViewModel(
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressDepartFleet)
             departFleet.invoke(
-                mUserInfo.subLocationId,
-                fleetItem.name,
-                isWithPassenger,
-                listOf(fleetItem.id),
-                queueId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId,
+                fleetNumber = fleetItem.name,
+                isWithPassenger = isWithPassenger,
+                departFleetItems = listOf(fleetItem.id),
+                queueNumber = queueId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { error ->
@@ -245,31 +241,14 @@ class QueueFleetViewModel(
         }
     }
 
-    fun showRecordRitase(fleetItem: FleetItem, queueId: String?) {
+    fun showRecordRitase(fleetItem: FleetItem, queueId: String) {
         viewModelScope.launch {
-            var queue = queueId ?: ""
-            with(queueId) {
-                if (isNullOrBlank()) {
-                    getCurrentQueue
-                        .invoke()
-                        .flowOn(Dispatchers.Main)
-                        .catch {
-                            queue = ""
-                        }.collect {
-                            when (it) {
-                                is GetCurrentQueueState.Success -> queue =
-                                    it.currentQueueResult.number
-                            }
-                        }
-                } else {
-                    this
-                }
-            }
             _queueFleetState.emit(
                 QueueFleetState.RecordRitaseToDepart(
                     fleetItem,
+                    mUserInfo.locationId,
                     mUserInfo.subLocationId,
-                    queue
+                    queueId
                 )
             )
         }
@@ -277,7 +256,19 @@ class QueueFleetViewModel(
 
     fun requestDepart(fleetItem: FleetItem) {
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.RequestDepartFleet(fleetItem))
+            _queueFleetState.emit(
+                QueueFleetState.RequestDepartFleet(
+                    fleetItem,
+                    mUserInfo.locationId,
+                    mUserInfo.subLocationId
+                )
+            )
+        }
+    }
+
+    fun onErrorFromDialog(throwable: Throwable) {
+        viewModelScope.launch {
+            _queueFleetState.emit(QueueFleetState.FailedGetQueue(throwable))
         }
     }
 
@@ -321,27 +312,24 @@ class QueueFleetViewModel(
         }
     }
 
-    fun showSearchQueue(fleetItem: FleetItem, currentQueueId: String) {
+    fun showSearchQueue(
+        fleetItem: FleetItem,
+        currentQueueId: String,
+        locationId: Long,
+        subLocationId: Long
+    ) {
         viewModelScope.launch {
             _queueFleetState.emit(
                 QueueFleetState.SearchQueueToDepart(
                     fleetItem,
-                    mUserInfo.locationId,
-                    mUserInfo.subLocationId,
+                    locationId,
+                    subLocationId,
                     currentQueueId
                 )
             )
         }
     }
-
-    fun departSuccess(list: List<FleetItem>) {
-        viewModelScope.launch {
-            _fleetItems.clear()
-            _fleetItems.addAll(list)
-            _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
-        }
-    }
-
+    
     fun getFleetList() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetFleetList)
@@ -352,6 +340,7 @@ class QueueFleetViewModel(
                     .flowOn(Dispatchers.Main)
                     .catch { cause: Throwable ->
                         _queueFleetState.emit(QueueFleetState.FailedGetList(cause))
+                        _queueFleetState.emit(QueueFleetState.GetListEmpty)
                     }
                     .collect {
                         when (it) {

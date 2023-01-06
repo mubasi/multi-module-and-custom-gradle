@@ -10,7 +10,6 @@ import org.junit.platform.suite.api.Suite
     CounterBarCasesTest::class,
     CurrentQueueCasesTest::class,
     DeleteSkippedCasesTest::class,
-    GetCurrentQueueCaseTest::class,
     GetQueueReceiptCasesTest::class,
     GetWaitingQueueCasesTest::class,
     ListQueueSkippedCasesTest::class,

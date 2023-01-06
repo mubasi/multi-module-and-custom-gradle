@@ -3,12 +3,15 @@ object Version {
     val compileSdk by lazy { 32 }
     val targetSdk by lazy { 32 }
 
-    val versionType by lazy { "" }
+    private val major by lazy { 1 }
+    private val minor by lazy { 1 }
+    private val patch by lazy { 2 }
+
+    private val versionType by lazy { "" }
 
     val appName by lazy { "VSM Pangkalan" }
     val appNameStaging by lazy { "$appName (Staging)" }
     val appNameDev by lazy { "$appName (Dev)" }
-
-    val versionName by lazy { "1.1.0$versionType" }
-    val versionCode by lazy { 9 }
+    val versionName by lazy { "$major.$minor.$patch$versionType" }
+    val versionCode by lazy { 13 }
 }

@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.queue_fleet.add_fleet
 
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.SearchFleet
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 internal class AddFleetViewModelTest {
 
     companion object {
+
         private const val ERROR = "error"
     }
 
@@ -38,7 +40,6 @@ internal class AddFleetViewModelTest {
     private val _searchFleet: SearchFleet = mockk()
     private val _searchWaitingQueue: SearchWaitingQueue = mockk()
     private val _events = mutableListOf<AddFleetState>()
-
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
@@ -48,12 +49,10 @@ internal class AddFleetViewModelTest {
             searchWaitingQueue = _searchWaitingQueue
         )
     }
-
     @AfterEach
     fun resetEvent() {
         _events.clear()
     }
-
     @Test
     fun searchQueueTestSuccess() = runTest {
         //given
@@ -67,22 +66,23 @@ internal class AddFleetViewModelTest {
                 "aaa",
                 1,
                 "aaa",
-                1
+                11
             )
         )
         _vm.setParams("aaa")
-        _vm.setSubLocation(1)
+        _vm.setSubLocation(11)
 
-        every { _searchWaitingQueue.invoke(
-            queueNumber = "aaa", 1
-        )} returns flow {
+        every {
+            _searchWaitingQueue.invoke(
+                queueNumber = "aaa", 1, 11
+            )
+        } returns flow {
             emit(
                 WaitingQueueState.Success(
                     waitingQueue = queueList
                 )
             )
         }
-
         // Execute
         val job = launch {
             _vm.addFleetState.toList(_events)
@@ -90,12 +90,10 @@ internal class AddFleetViewModelTest {
         _vm.searchQueue()
         runCurrent()
         job.cancel()
-
         // Result
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.GetListEmpty, _events.last())
     }
-
     @Test
     fun searchQueueTestFailed() = runTest {
         //given
@@ -110,18 +108,19 @@ internal class AddFleetViewModelTest {
                 "aaa",
                 1,
                 "aaa",
-                1
+                11
             )
         )
         _vm.setParams("aaa")
-        _vm.setSubLocation(1)
+        _vm.setSubLocation(11)
 
-        every { _searchWaitingQueue.invoke(
-            queueNumber = "aaa", 1
-        )} returns flow {
+        every {
+            _searchWaitingQueue.invoke(
+                queueNumber = "aaa", 1, 11
+            )
+        } returns flow {
             throw NullPointerException(ERROR)
         }
-
         // Execute
         val job = launch {
             _vm.addFleetState.toList(_events)
@@ -129,34 +128,27 @@ internal class AddFleetViewModelTest {
         _vm.searchQueue()
         runCurrent()
         job.cancel()
-
         // Result
         Assertions.assertEquals(1, _events.size)
     }
-
     @Test
     fun `updateSelectedFleetNumber, given selectedFleetNumber , result selectedFleetNumber is empty`() =
         runTest {
             // Given
             val fleetNumber = "BB1212"
             _vm.selectedFleetNumber.value = fleetNumber
-
             // Pre
             Assertions.assertEquals(fleetNumber, _vm.selectedFleetNumber.value)
-
             // Execute
             _vm.updateSelectedFleetNumber(fleetNumber, 1)
-
             // Result
             Assertions.assertEquals("", _vm.selectedFleetNumber.value)
         }
-
     @Test
-    fun `addFleet, finish if isSearchQueue true` () = runTest {
+    fun `addFleet, finish if isSearchQueue true`() = runTest {
         //given
         _vm.setIsSearchQueue(true)
         _vm.selectedFleetNumber.value = "aa"
-
         // Execute
         val job = launch {
             _vm.addFleetState.toList(_events)
@@ -164,70 +156,35 @@ internal class AddFleetViewModelTest {
         _vm.addFleet()
         runCurrent()
         job.cancel()
-
         // Result
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.FinishSelectQueue("aa"), _events.last())
     }
-
-//    @Test
-//    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and success` () = runTest {
-//        //given
-//        _vm.setIsSearchQueue(false)
-//        _vm.selectedFleetNumber.value = "aa"
-//        _vm.setSubLocation(1)
-//
-//        every { _addFleet.invoke(
-//            "aa",
-//            1)
-//        } returns flow {
-//            emit(
-//                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
-//                    FleetItemResult(
-//                        1,
-//                        "aa",
-//                        "2022-01-01"
-//                    )
-//                )
-//            )
-//        }
-//
-//        // Execute
-//        val job = launch {
-//            _vm.addFleetState.toList(_events)
-//        }
-//        _vm.addFleet()
-//        runCurrent()
-//        job.cancel()
-//
-//        // Result
-//        Assertions.assertEquals(1, _events.size)
-//        Assertions.assertEquals(AddFleetState.AddFleetSuccess(
-//            FleetItem(
-//                id = 1,
-//                name = "aa",
-//                arriveAt = "01 Jan 2022 . 07:00"
-//            )
-//        ), _events.last())
-//    }
-
-
     @Test
-    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and failed` () = runTest {
+    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and success`() = runTest {
         //given
         _vm.setIsSearchQueue(false)
         _vm.selectedFleetNumber.value = "aa"
         _vm.setSubLocation(1)
 
-        val result = Throwable()
-
-        every { _addFleet.invoke(
-            "aa",
-            1)
+        every { UserUtils.getLocationId() } returns 10
+        every {
+            _addFleet.invoke(
+                fleetNumber = "aa",
+                subLocationId = 1,
+                locationId = 10
+            )
         } returns flow {
-            throw result //NullPointerException(ERROR)
+            emit(
+                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
+                    FleetItemResult(
+                        1,
+                        "aa",
+                        "2022-01-01"
+                    )
+                )
+            )
         }
-
         // Execute
         val job = launch {
             _vm.addFleetState.toList(_events)
@@ -235,12 +192,49 @@ internal class AddFleetViewModelTest {
         _vm.addFleet()
         runCurrent()
         job.cancel()
-
         // Result
         Assertions.assertEquals(1, _events.size)
-        Assertions.assertEquals(AddFleetState.AddError(result) , _events.last())
+        Assertions.assertEquals(
+            AddFleetState.AddFleetSuccess(
+                FleetItem(
+                    id = 1,
+                    name = "aa",
+                    arriveAt = "01 Jan 2022 . 07:00"
+                )
+            ), _events.last()
+        )
     }
+    @Test
+    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and failed`() = runTest {
+        //given
+        _vm.setIsSearchQueue(false)
+        _vm.selectedFleetNumber.value = "aa"
+        _vm.setSubLocation(1)
+        val result = Throwable()
 
+        every {
+            UserUtils.getLocationId()
+        } returns 10L
+        every {
+            _addFleet.invoke(
+                fleetNumber = any(),
+                subLocationId = any(),
+                locationId = any()
+            )
+        } returns flow {
+            throw result //NullPointerException(ERROR)
+        }
+        // Execute
+        val job = launch {
+            _vm.addFleetState.toList(_events)
+        }
+        _vm.addFleet()
+        runCurrent()
+        job.cancel()
+        // Result
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(AddFleetState.AddError(result), _events.last())
+    }
     @Test
     fun searchFleetTestSuccess() = runTest {
         //given
@@ -271,7 +265,6 @@ internal class AddFleetViewModelTest {
                 )
             )
         }
-
         // Execute
         val job = launch {
             _vm.addFleetState.toList(_events)
@@ -279,18 +272,16 @@ internal class AddFleetViewModelTest {
         _vm.searchFleet()
         runCurrent()
         job.cancel()
-
         // Result
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.GetListEmpty, _events.last())
     }
-
     @Test
     fun `initTest, check val search and sublocation`() = runTest {
-        val subLocation : Long = 1
+        val subLocation: Long = 1
         val isSearchQueue = true
 
-        _vm.init(subLocation, isSearchQueue)
+        _vm.init(locationId = 1, subLocationId = subLocation, isSearchQueue = isSearchQueue)
 
         Assertions.assertEquals(1, _vm.valSubLocationId())
         Assertions.assertEquals(true, _vm.valIsSearchQueue())

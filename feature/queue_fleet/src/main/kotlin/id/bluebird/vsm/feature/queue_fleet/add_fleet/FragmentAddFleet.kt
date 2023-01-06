@@ -62,7 +62,7 @@ class FragmentAddFleet : Fragment() {
             vm = _vm
             isSearchQueue = _args.isSearchQueue
         }
-        _vm.init(_args.subLocation, _args.isSearchQueue)
+        _vm.init(_args.location, _args.subLocation, _args.isSearchQueue)
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 _vm.addFleetState.collectLatest {

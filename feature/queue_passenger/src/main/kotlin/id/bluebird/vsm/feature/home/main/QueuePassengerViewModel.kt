@@ -85,8 +85,16 @@ class QueuePassengerViewModel(
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = it.result.locationId
-                            mUserInfo.subLocationId = it.result.subLocationsId.first()
+                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.locationId
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.locationId ?: it.result.locationId
+                            }
+                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
+                                it.result.subLocationsId.first()
+                            } else {
+                                LocationNavigationTemporary.getLocationNav()?.subLocationId ?: it.result.subLocationsId.first()
+                            }
                             createTitleLocation(it.result)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
                         }
@@ -112,7 +120,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesCurrentQueue)
             currentQueue.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -149,7 +158,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesListQueue)
             listQueueWaiting.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -195,7 +205,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesListQueueSkipped)
             listQueueSkipped.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -269,7 +280,8 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesCounterBar)
             counterBar.invoke(
-                locationId = mUserInfo.locationId
+                locationId = mUserInfo.locationId,
+                subLocationId = mUserInfo.subLocationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->

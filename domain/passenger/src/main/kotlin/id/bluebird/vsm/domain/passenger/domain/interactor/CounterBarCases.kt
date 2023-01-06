@@ -13,9 +13,10 @@ import java.lang.NullPointerException
 
 class CounterBarCases (private val queueReceiptRepository: QueueReceiptRepository):
 CounterBar {
-    override fun invoke(locationId: Long): Flow<CounterBarState> = flow {
+    override fun invoke(locationId: Long, subLocationId: Long): Flow<CounterBarState> = flow {
         val response = queueReceiptRepository.counterBar(
-            locationId
+            locationId,
+            subLocationId
         )
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()

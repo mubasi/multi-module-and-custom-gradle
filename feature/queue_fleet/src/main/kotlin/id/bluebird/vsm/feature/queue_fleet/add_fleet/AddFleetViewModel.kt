@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.api.client.util.DateTime
 import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.SearchFleet
 import id.bluebird.vsm.domain.passenger.WaitingQueueState
 import id.bluebird.vsm.domain.passenger.domain.cases.SearchWaitingQueue
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -33,20 +35,18 @@ class AddFleetViewModel(
     private var _lastPosition: Int = -1
     private var _newPosition: Int = -1
     private var _subLocation: Long = -1
+    private var _locationId: Long = -1
     private var _isSearchQueue: Boolean = false
-
     @VisibleForTesting
     fun setParams(temp: String) {
         param.value = temp
     }
-
     @VisibleForTesting
     fun setSubLocation(temp: Long) {
         _subLocation = temp
     }
-
     @VisibleForTesting
-    fun setIsSearchQueue(temp: Boolean ) {
+    fun setIsSearchQueue(temp: Boolean) {
         _isSearchQueue = temp
     }
 
@@ -60,8 +60,9 @@ class AddFleetViewModel(
         return _subLocation
     }
 
-    fun init(subLocationId: Long, isSearchQueue: Boolean) {
+    fun init(locationId: Long, subLocationId: Long, isSearchQueue: Boolean) {
         _isSearchQueue = isSearchQueue
+        _locationId = locationId
         _subLocation = subLocationId
         if (isSearchQueue) {
             searchQueue()
@@ -81,7 +82,7 @@ class AddFleetViewModel(
             _addFleetState.emit(AddFleetState.OnProgressGetList)
             delay(200)
             searchWaitingQueue
-                .invoke(param.value ?: "", _subLocation)
+                .invoke(param.value ?: "", _locationId, _subLocation)
                 .catch { e ->
                     _addFleetState.emit(AddFleetState.QueueSearchError(e))
                 }
@@ -118,12 +119,21 @@ class AddFleetViewModel(
     fun addFleet() {
         if (_isSearchQueue) {
             viewModelScope.launch {
-                _addFleetState.emit(AddFleetState.FinishSelectQueue(selectedFleetNumber.value ?: ""))
+                _addFleetState.emit(
+                    AddFleetState.FinishSelectQueue(
+                        selectedFleetNumber.value ?: ""
+                    )
+                )
             }
             return
         }
         viewModelScope.launch {
-            addFleet.invoke(selectedFleetNumber.value ?: "", _subLocation)
+            addFleet.invoke(
+                fleetNumber = selectedFleetNumber.value ?: "",
+                subLocationId = _subLocation,
+                locationId = LocationNavigationTemporary.getLocationNav()?.locationId
+                    ?: UserUtils.getLocationId()
+            )
                 .flowOn(Dispatchers.Main)
                 .catch { cause: Throwable ->
                     _addFleetState.emit(AddFleetState.AddError(err = cause))

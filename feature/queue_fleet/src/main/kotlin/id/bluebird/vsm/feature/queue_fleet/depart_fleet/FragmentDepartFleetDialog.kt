@@ -19,7 +19,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentDepartFleetDialog(
     private val fleet: FleetItem,
-    private val callback: (fleetItem: FleetItem, isWithPassenger: Boolean, queueNumber: String) -> Unit
+    private val locationId: Long,
+    private val subLocationId: Long,
+    private val callback: (fleetItem: FleetItem, isWithPassenger: Boolean, queueNumber: String) -> Unit,
+    private val onError: (throwable: Throwable) -> Unit
 ): BottomSheetDialogFragment() {
 
     companion object {
@@ -49,7 +52,8 @@ class FragmentDepartFleetDialog(
             vm = _departViewModel
             title = getString(R.string.depart_description, fleet.name)
             fleetNumber = fleet.name
-            queueNumber = ""
+            locationId = this@FragmentDepartFleetDialog.locationId
+            subLocationId = this@FragmentDepartFleetDialog.subLocationId
         }
         _departViewModel.init(fleet)
         dialog?.apply {
@@ -60,6 +64,7 @@ class FragmentDepartFleetDialog(
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 _departViewModel.sharedDepartFleetState.collect {
+                    mBinding.showProgress = it == DepartFleetState.OnProgressGetCurrentQueue
                     when (it) {
                         is DepartFleetState.CancelDepart -> {
                             dialog?.dismiss()
@@ -68,7 +73,13 @@ class FragmentDepartFleetDialog(
                             callback(it.fleetItem, it.isWithPassenger, it.currentQueueNumber)
                             dialog?.dismiss()
                         }
-                        else -> {}
+                        is DepartFleetState.OnFailed -> {
+                            onError(it.throwable)
+                            dialog?.dismiss()
+                        }
+                        else -> {
+                            // do nothing
+                        }
                     }
                 }
             }

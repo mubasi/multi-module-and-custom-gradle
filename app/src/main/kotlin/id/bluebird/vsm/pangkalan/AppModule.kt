@@ -44,6 +44,7 @@ import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
+import id.bluebird.vsm.feature.queue_fleet.ritase_record.RitaseRecordViewModel
 import id.bluebird.vsm.pangkalan.logout.LogoutDialogViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -54,7 +55,7 @@ import org.koin.dsl.module
 object AppModule {
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
-        viewModel { QueueFleetViewModel(get(), get(), get(), get(), get()) }
+        viewModel { QueueFleetViewModel(get(), get(), get(), get()) }
         viewModel { UserManagementViewModel(get()) }
         viewModel { CreateUserViewModel(get(), get(), get(), get(), get(), get()) }
         viewModel { RequestFleetDialogViewModel(get()) }
@@ -74,6 +75,7 @@ object AppModule {
         viewModel { QueueSearchViewModel(get()) }
         viewModel { SelectLocationViewModel(get()) }
         viewModel { AddByCameraViewModel() }
+        viewModel { RitaseRecordViewModel(get()) }
     }
 
     private val userCases = module {
@@ -111,7 +113,6 @@ object AppModule {
         single<ListQueueSkipped> { ListQueueSkippedCases(get()) }
         single<ListQueueWaiting> { ListQueueWaitingCases(get()) }
         single<GetWaitingQueue> { GetWaitingQueueCases(get()) }
-        single<GetCurrentQueue> { GetCurrentQueueCase(get()) }
         single<SearchWaitingQueue> { SearchWaitingQueueCases(get()) }
         single<DeleteSkipped> { DeleteSkippedCases(get()) }
         single<RestoreSkipped> { RestoreSkippedCases(get()) }

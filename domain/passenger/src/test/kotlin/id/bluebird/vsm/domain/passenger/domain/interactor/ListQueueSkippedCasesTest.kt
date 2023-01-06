@@ -31,14 +31,14 @@ internal class ListQueueSkippedCasesTest {
     @Test
     fun `listQueueSkippedCasesTest, isNotEmpty` () = runTest {
         every { Hawk.get<Long>(any()) } returns 1L
-        every { queueReceiptRepository.listQueueSkipped(1) } returns flow {
+        every { queueReceiptRepository.listQueueSkipped(1, 11) } returns flow {
             emit(
                 QueuePangkalanOuterClass.ResponseGetSkippedQueue.newBuilder()
                     .build()
             )
         }
 
-        flowOf(listQueueSkippedCases.invoke(1)).test {
+        flowOf(listQueueSkippedCases.invoke(1, 11)).test {
             assert(awaitItem().single() is ListQueueSkippedState.Success)
             awaitComplete()
         }

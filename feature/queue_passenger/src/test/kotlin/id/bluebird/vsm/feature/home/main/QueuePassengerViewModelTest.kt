@@ -102,15 +102,15 @@ internal class QueuePassengerViewModelTest {
                 listOf(11L),
                 "subLocationName"
             )
-        val titleString = "locationName subLocationName".getLastSync()
+        val titleString = "locationName2 subLocationName2".getLastSync()
         every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
         every { UserUtils.isUserOfficer() } returns false
         every { UserUtils.getUserId() } returns 1L
         every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            1L,
-            11L,
-            "locationName",
-            "subLocationName"
+            2L,
+            12L,
+            "locationName2",
+            "subLocationName2"
         )
         every { getUserId.invoke(1L) } returns flow {
             emit(GetUserByIdState.Success(userResult))
@@ -128,7 +128,7 @@ internal class QueuePassengerViewModelTest {
         assertEquals(2, states.size)
         assertEquals(QueuePassengerState.ProsesGetUser, states[0])
         assertEquals(QueuePassengerState.SuccessGetUser, states[1])
-        assertEquals(UserInfo(1L, 1L, 11L), subjectUnderTest.mUserInfo)
+        assertEquals(UserInfo(1L, 2L, 12L), subjectUnderTest.mUserInfo)
         assertEquals(titleString, resultTitle)
 
         collect.cancel()
@@ -249,7 +249,7 @@ internal class QueuePassengerViewModelTest {
         val id = 1L
         val number = "AB11"
         val createdDate = "09-09-2020"
-        every { currentQueue.invoke(any()) } returns flow {
+        every { currentQueue.invoke(any(), any()) } returns flow {
             emit(GetCurrentQueueState.Success(
                 CurrentQueueResult(id, number, createdDate)
             ))
@@ -273,7 +273,7 @@ internal class QueuePassengerViewModelTest {
     @Test
     fun `getCurrentQueue, when currentQueue response throw error, emit state FailedCurrentQueue`() = runTest {
         //GIVEN
-        every { currentQueue.invoke(any()) } returns flow {
+        every { currentQueue.invoke(any(), any()) } returns flow {
             throw NullPointerException(error)
         }
         val collect = launch {
@@ -307,7 +307,7 @@ internal class QueuePassengerViewModelTest {
             "10-10-2022",
             11L
         )
-        every { listQueueWaiting.invoke(any()) } returns flow {
+        every { listQueueWaiting.invoke(any(), any()) } returns flow {
             emit(ListQueueWaitingState.Success(
                 ListQueueResult(responseCount.toLong(), ArrayList(List(responseCount) { queue }) )
             ))
@@ -337,7 +337,7 @@ internal class QueuePassengerViewModelTest {
     @Test
     fun `getListQueue, when listQueueWaiting response throw error, emit state SuccessListQueue`() = runTest {
         //GIVEN
-        every { listQueueWaiting.invoke(any()) } returns flow {
+        every { listQueueWaiting.invoke(any(), any()) } returns flow {
             throw NullPointerException(error)
         }
         val collect = launch {
@@ -371,7 +371,7 @@ internal class QueuePassengerViewModelTest {
             "10-10-2022",
             11L
         )
-        every { listQueueSkipped.invoke(any()) } returns flow {
+        every { listQueueSkipped.invoke(any(), any()) } returns flow {
             emit(ListQueueSkippedState.Success(
                 ListQueueResult(responseCount.toLong(), ArrayList(List(responseCount) { queue }) )
             ))
@@ -401,7 +401,7 @@ internal class QueuePassengerViewModelTest {
     @Test
     fun `getListQueueSkipped, when listQueueWaiting response throw error, emit state SuccessListQueue`() = runTest {
         //GIVEN
-        every { listQueueSkipped.invoke(any()) } returns flow {
+        every { listQueueSkipped.invoke(any(), any()) } returns flow {
             throw NullPointerException(error)
         }
         val collect = launch {
@@ -510,7 +510,7 @@ internal class QueuePassengerViewModelTest {
     @Test
     fun `getCounterBar, when counterBar response success, emit state SuccessCounterBar`() = runTest {
         //GIVEN
-        every { counterBar.invoke(any()) } returns flow {
+        every { counterBar.invoke(any(), any()) } returns flow {
             emit(CounterBarState.Success(
                 CounterBarResult(locationId = 1L, ongoing = 1L, skipped = 2L, ritese = 3L, modifiedAt = "10-10-2022")
             ))
@@ -534,7 +534,7 @@ internal class QueuePassengerViewModelTest {
     @Test
     fun `getCounterBar, when counterBar response throw error, emit state FailedCounterBar`() = runTest {
         //GIVEN
-        every { counterBar.invoke(any()) } returns flow {
+        every { counterBar.invoke(any(), any()) } returns flow {
             throw NullPointerException(error)
         }
         val collect = launch {

@@ -1,15 +1,18 @@
 package id.bluebird.vsm.domain.fleet.domain.interactor
 
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.DepartFleetState
 import id.bluebird.vsm.domain.fleet.FleetRepository
 import id.bluebird.vsm.domain.fleet.domain.cases.DepartFleet
 import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.singleOrNull
 
 class DepartFleetUseCases(private val repository: FleetRepository): DepartFleet {
     override fun invoke(
+        locationId: Long,
         subLocationId: Long,
         fleetNumber: String,
         isWithPassenger: Boolean,
@@ -17,12 +20,12 @@ class DepartFleetUseCases(private val repository: FleetRepository): DepartFleet 
         queueNumber: String
     ): Flow<DepartFleetState> = flow {
         val response = repository.departFleet(
-            UserUtils.getLocationId(),
-            subLocationId,
-            fleetNumber,
-            isWithPassenger,
-            departFleetItems,
-            queueNumber
+            locationId = locationId,
+            subLocationId = subLocationId,
+            fleetNumber = fleetNumber,
+            isWithPassenger = isWithPassenger,
+            departFleetItems = departFleetItems,
+            queueNumber = queueNumber
         )
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()
