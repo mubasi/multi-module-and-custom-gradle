@@ -276,13 +276,12 @@ internal class AddFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.GetListEmpty, _events.last())
     }
-
     @Test
     fun `initTest, check val search and sublocation`() = runTest {
-        val subLocation : Long = 1
+        val subLocation: Long = 1
         val isSearchQueue = true
 
-        _vm.init(subLocation, isSearchQueue)
+        _vm.init(locationId = 1, subLocationId = subLocation, isSearchQueue = isSearchQueue)
 
         Assertions.assertEquals(1, _vm.valSubLocationId())
         Assertions.assertEquals(true, _vm.valIsSearchQueue())

@@ -66,15 +66,6 @@ class QueueFleetViewModel(
     fun setFleetItems(list: List<FleetItem>) {
         _fleetItems.addAll(list)
     }
-    @VisibleForTesting
-    fun valFleetItems() :List<FleetItem> {
-        return _fleetItems
-    }
-
-    @VisibleForTesting
-    fun valMCountCache() : CountCache {
-        return mCountCache
-    }
 
     @VisibleForTesting
     fun runTestGetUserById() {
