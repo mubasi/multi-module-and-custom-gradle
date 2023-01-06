@@ -3,8 +3,10 @@ package id.bluebird.vsm.feature.queue_fleet.request_fleet
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.RequestState
 import id.bluebird.vsm.domain.fleet.domain.cases.RequestFleet
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -13,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : ViewModel() {
     companion object {
+
         const val MINIMUM_COUNTER_VALUE = 1
         const val INVALID_SUB_LOCATION = "sublocation tidak sesuai"
         const val INVALID_COUNTER = "counter harus lebih besar dari 1"
@@ -59,7 +62,12 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : View
 
     fun requestFleet() {
         viewModelScope.launch {
-            requestFleet.invoke(getValueCounter().toLong(), _subLocationId)
+            requestFleet.invoke(
+                count = getValueCounter().toLong(),
+                subLocationId = _subLocationId,
+                locationId = LocationNavigationTemporary.getLocationNav()?.locationId
+                    ?: UserUtils.getLocationId()
+            )
                 .catch { cause ->
                     _requestFleetDialogState.emit(
                         RequestFleetDialogState.Err(cause)

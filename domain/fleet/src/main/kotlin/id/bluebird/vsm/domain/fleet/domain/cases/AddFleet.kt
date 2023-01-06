@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface AddFleet {
     operator fun invoke(
         fleetNumber: String,
-        subLocationId: Long
+        subLocationId: Long,
+        locationId: Long
     ): Flow<AddFleetState>
 }

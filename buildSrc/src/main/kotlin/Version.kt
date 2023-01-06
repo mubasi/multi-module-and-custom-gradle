@@ -13,5 +13,5 @@ object Version {
     val appNameStaging by lazy { "$appName (Staging)" }
     val appNameDev by lazy { "$appName (Dev)" }
     val versionName by lazy { "$major.$minor.$patch$versionType" }
-    val versionCode by lazy { 12 }
+    val versionCode by lazy { 13 }
 }

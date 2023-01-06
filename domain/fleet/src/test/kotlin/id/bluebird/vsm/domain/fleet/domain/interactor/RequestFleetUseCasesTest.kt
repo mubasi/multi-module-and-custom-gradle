@@ -24,18 +24,15 @@ internal class RequestFleetUseCasesTest {
 
     private val _repository: FleetRepository = mockk()
     private lateinit var _requestFleet: RequestFleet
-
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
         _requestFleet = RequestFleetUseCases(_repository)
     }
-
     @Test
     fun `validate count is more than 0`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-
         // Execute
         every { _repository.requestFleet(any(), any(), any()) } returns flow {
             emit(
@@ -45,7 +42,7 @@ internal class RequestFleetUseCasesTest {
                     }.build()
             )
         }
-        flowOf(_requestFleet.invoke(1, 0)).test {
+        flowOf(_requestFleet.invoke(count = 1, subLocationId = 0, locationId = 10)).test {
             // Result
             Assertions.assertSame(
                 this.awaitItem().first(),
@@ -54,12 +51,10 @@ internal class RequestFleetUseCasesTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
     @Test
     fun `validate subLocation is more than 0`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-
         // Execute
         every { _repository.requestFleet(any(), any(), any()) } returns flow {
             emit(
@@ -69,7 +64,7 @@ internal class RequestFleetUseCasesTest {
                     }.build()
             )
         }
-        flowOf(_requestFleet.invoke(0, 2)).test {
+        flowOf(_requestFleet.invoke(count = 0, subLocationId = 2, locationId = 1)).test {
             // Result
             Assertions.assertSame(
                 this.awaitItem().first(),
@@ -78,7 +73,6 @@ internal class RequestFleetUseCasesTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
-
     @Test
     fun `requestFleet, result is success and request count is one`() = runTest {
         // Mock
@@ -91,9 +85,8 @@ internal class RequestFleetUseCasesTest {
                     }.build()
             )
         }
-
         // Execute
-        flowOf(_requestFleet.invoke(1, 2)).test {
+        flowOf(_requestFleet.invoke(count = 1, subLocationId = 2, locationId = 1)).test {
             // Result
             Assertions.assertEquals(
                 this.awaitItem().single(),

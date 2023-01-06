@@ -20,7 +20,6 @@ jacoco {
 apply {
     from("../jacoco_app.gradle.kts")
 }
-
 val keyProperties = Properties()
 val keyPropertiesFile = rootProject.file("local.properties")
 if (keyPropertiesFile.exists()) {
@@ -40,7 +39,6 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
     }
-
     /** used for unit-test run with Junit5 */
     tasks.withType<Test> {
         useJUnitPlatform()
@@ -93,6 +91,10 @@ android {
         create("prod") {
             manifestPlaceholders["appName"] = Version.appName
             dimension = "env"
+            ndk {
+                ndkVersion = "25.0.8775105"
+                debugSymbolLevel = "FULL"
+            }
         }
         create("stage") {
             dimension = "env"

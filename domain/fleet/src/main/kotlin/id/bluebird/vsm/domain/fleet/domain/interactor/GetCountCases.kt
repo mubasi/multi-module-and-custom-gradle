@@ -1,6 +1,5 @@
 package id.bluebird.vsm.domain.fleet.domain.interactor
 
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.FleetRepository
 import id.bluebird.vsm.domain.fleet.GetCountState
 import id.bluebird.vsm.domain.fleet.domain.cases.GetCount
@@ -13,11 +12,15 @@ import kotlinx.coroutines.flow.singleOrNull
 import java.time.Instant
 
 class GetCountCases(private val fleetRepository: FleetRepository) : GetCount {
-    override fun invoke(subLocationId: Long): Flow<GetCountState> = flow {
+
+    override fun invoke(
+        subLocationId: Long,
+        locationId: Long
+    ): Flow<GetCountState> = flow {
         val response = fleetRepository.getCount(
-            subLocationId,
-            UserUtils.getLocationId(),
-            Instant.ofEpochMilli(System.currentTimeMillis()).epochSecond
+            subLocation = subLocationId,
+            locationId = locationId,
+            todayEpoch = Instant.ofEpochMilli(System.currentTimeMillis()).epochSecond
         )
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()
