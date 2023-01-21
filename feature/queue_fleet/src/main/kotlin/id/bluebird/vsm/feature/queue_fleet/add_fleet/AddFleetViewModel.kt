@@ -6,7 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.api.client.util.DateTime
-import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.crashlytics.ktx.setCustomKeys
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
@@ -49,14 +50,12 @@ class AddFleetViewModel(
     fun setIsSearchQueue(temp: Boolean) {
         _isSearchQueue = temp
     }
-
     @VisibleForTesting
-    fun valIsSearchQueue() : Boolean {
+    fun valIsSearchQueue(): Boolean {
         return _isSearchQueue
     }
-
     @VisibleForTesting
-    fun valSubLocationId() : Long {
+    fun valSubLocationId(): Long {
         return _subLocation
     }
 
@@ -128,15 +127,22 @@ class AddFleetViewModel(
             return
         }
         viewModelScope.launch {
+            val locationId = LocationNavigationTemporary.getLocationNav()?.locationId
+                ?: UserUtils.getLocationId()
             addFleet.invoke(
                 fleetNumber = selectedFleetNumber.value ?: "",
                 subLocationId = _subLocation,
-                locationId = LocationNavigationTemporary.getLocationNav()?.locationId
-                    ?: UserUtils.getLocationId()
+                locationId = locationId
             )
                 .flowOn(Dispatchers.Main)
                 .catch { cause: Throwable ->
                     _addFleetState.emit(AddFleetState.AddError(err = cause))
+                    FirebaseCrashlytics.getInstance().setCustomKeys {
+                        key("location_id", locationId)
+                        key("sub_location", _subLocation)
+                        key("fleet_number", selectedFleetNumber.value ?: "")
+                    }
+                    FirebaseCrashlytics.getInstance().recordException(cause)
                 }
                 .collect {
                     when (it) {
