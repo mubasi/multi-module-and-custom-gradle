@@ -28,6 +28,11 @@ android {
             name = "VERSION_NAME",
             value = "\"${Version.versionName}\""
         )
+        buildConfigField(
+            type = "String",
+            name = "SPLASH_KEY",
+            value = "${keyProperties["splash_config_key"]}"
+        )
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

@@ -1,10 +1,6 @@
 package id.bluebird.vsm.pangkalan
 
 import android.content.Context
-import id.bluebird.vsm.domain.user.UserRepository
-import id.bluebird.vsm.domain.user.UserRepositoryImpl
-import id.bluebird.vsm.domain.user.domain.intercator.*
-import id.bluebird.vsm.domain.user.domain.usescases.*
 import id.bluebird.vsm.domain.fleet.FleetRepository
 import id.bluebird.vsm.domain.fleet.FleetRepositoryImpl
 import id.bluebird.vsm.domain.fleet.domain.cases.*
@@ -23,18 +19,10 @@ import id.bluebird.vsm.domain.passenger.QueueReceiptRepository
 import id.bluebird.vsm.domain.passenger.QueueReceiptRepositoryImpl
 import id.bluebird.vsm.domain.passenger.domain.cases.*
 import id.bluebird.vsm.domain.passenger.domain.interactor.*
-import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
-import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
-import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
-import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
-import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
-import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel
-import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModel
-import id.bluebird.vsm.feature.queue_fleet.request_fleet.RequestFleetDialogViewModel
-import id.bluebird.vsm.feature.queue_fleet.search_fleet.SearchFleetViewModel
-import id.bluebird.vsm.feature.user_management.create.CreateUserViewModel
-import id.bluebird.vsm.feature.user_management.list.UserManagementViewModel
-import id.bluebird.vsm.feature.user_management.search_location.SearchLocationViewModel
+import id.bluebird.vsm.domain.user.UserRepository
+import id.bluebird.vsm.domain.user.UserRepositoryImpl
+import id.bluebird.vsm.domain.user.domain.intercator.*
+import id.bluebird.vsm.domain.user.domain.usescases.*
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
@@ -43,8 +31,21 @@ import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
+import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
+import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
+import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
+import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
+import id.bluebird.vsm.feature.queue_fleet.depart_fleet.DepartFleetViewModel
+import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModel
+import id.bluebird.vsm.feature.queue_fleet.request_fleet.RequestFleetDialogViewModel
 import id.bluebird.vsm.feature.queue_fleet.ritase_record.RitaseRecordViewModel
+import id.bluebird.vsm.feature.queue_fleet.search_fleet.SearchFleetViewModel
+import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
+import id.bluebird.vsm.feature.splash.SplashViewModel
+import id.bluebird.vsm.feature.user_management.create.CreateUserViewModel
+import id.bluebird.vsm.feature.user_management.list.UserManagementViewModel
+import id.bluebird.vsm.feature.user_management.search_location.SearchLocationViewModel
 import id.bluebird.vsm.pangkalan.logout.LogoutDialogViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -53,6 +54,7 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.dsl.module
 
 object AppModule {
+
     private val vmModule = module {
         viewModel { LoginViewModel(get()) }
         viewModel { QueueFleetViewModel(get(), get(), get(), get()) }
@@ -76,8 +78,8 @@ object AppModule {
         viewModel { SelectLocationViewModel(get()) }
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
+        viewModel { SplashViewModel(get()) }
     }
-
     private val userCases = module {
         single<DeleteUser> { DeleteUserCases(get()) }
         single<ForceLogout> { LogoutCasesImpl(get()) }
@@ -86,8 +88,8 @@ object AppModule {
         single<CreateEditUser> { CreateEditUserCases(get()) }
         single<GetRoles> { GetRolesCases(get()) }
         single<GetUserId> { GetUserIdCases(get()) }
+        single<ValidateForceUpdate> { ValidateForceUpdateUsesCases(get()) }
     }
-
     private val fleetCases = module {
         single<GetCount> { GetCountCases(get()) }
         single<RequestFleet> { RequestFleetUseCases(get()) }
@@ -97,14 +99,12 @@ object AppModule {
         single<DepartFleet> { DepartFleetUseCases(get()) }
         single<Monitoring> { MonitoringUseCases() }
     }
-
     private val locationCases = module {
         single<GetSubLocationByLocationId> { GetSubLocationByLocationIdCases(get()) }
         single<UpdateBuffer> { UpdateBufferCases(get()) }
         single<GetLocations> { GetLocationsCases(get()) }
         single<GetLocationsWithSub> { GetLocationsWithSubUseCases(get()) }
     }
-
     private val passengerCases = module {
         single<GetQueueReceipt> { GetQueueReceiptCases(get()) }
         single<TakeQueue> { TakeQueueCases(get()) }
@@ -119,18 +119,15 @@ object AppModule {
         single<CounterBar> { CounterBarCases(get()) }
         single<SearchQueue> { SearchQueueCases(get()) }
     }
-
     private val repository = module {
         single<UserRepository> { UserRepositoryImpl() }
         single<LocationRepository> { LocationRepositoryImpl() }
         single<FleetRepository> { FleetRepositoryImpl() }
         single<QueueReceiptRepository> { QueueReceiptRepositoryImpl() }
     }
-
     private val adapter = module {
         single { AdapterFleets() }
     }
-
     lateinit var koin: Koin
 
     fun initDependencyInjection(context: Context) {

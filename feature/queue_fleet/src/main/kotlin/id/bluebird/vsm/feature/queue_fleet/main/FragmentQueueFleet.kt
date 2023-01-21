@@ -32,12 +32,12 @@ import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDia
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentQueueFleet : Fragment() {
-
     private val _mQueueFleetViewModel: QueueFleetViewModel by viewModel()
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
@@ -77,9 +77,9 @@ class FragmentQueueFleet : Fragment() {
 
     private fun observer() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(_mQueueFleetViewModel) {
-                    queueFleetState.collect {
+                    queueFleetState.collectLatest {
                         when (it) {
                             QueueFleetState.ProgressHolder -> {
                                 mBinding.showHolder = true
@@ -107,14 +107,14 @@ class FragmentQueueFleet : Fragment() {
                             }
                             is QueueFleetState.GetListSuccess -> {
                                 mBinding.showList = true
-                                _fleetAdapter.submitList(it.list)
+                                _fleetAdapter.submitData(it.list)
                             }
                             is QueueFleetState.FleetDeparted -> {
-                                _fleetAdapter.submitList(it.list)
+                                _fleetAdapter.submitData(it.list)
                                 _fleetAdapter.notifyItemRemoved(it.removedIndex)
                             }
                             is QueueFleetState.GetListEmpty -> {
-                                _fleetAdapter.submitList(arrayListOf())
+                                _fleetAdapter.submitData(arrayListOf())
                             }
                             is QueueFleetState.ShowRequestFleet -> {
                                 FragmentRequestFleetDialog(
@@ -126,7 +126,7 @@ class FragmentQueueFleet : Fragment() {
                                 )
                             }
                             is QueueFleetState.AddFleetSuccess -> {
-                                _fleetAdapter.submitList(it.list)
+                                _fleetAdapter.submitData(it.list)
                                 _fleetAdapter.notifyItemInserted(_fleetAdapter.itemCount)
                             }
                             is QueueFleetState.FailedGetList -> {

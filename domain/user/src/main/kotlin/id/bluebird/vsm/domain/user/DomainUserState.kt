@@ -11,7 +11,7 @@ sealed class GetUserByIdState {
     data class Success(val result: CreateUserResult) : GetUserByIdState()
 }
 
-sealed class SearchUserState{
+sealed class SearchUserState {
     data class Success(val searchUserResult: SearchUserResult) : SearchUserState()
 }
 
@@ -21,5 +21,12 @@ sealed interface UserErr {
     object PasswordIsEmpty : UserErr, UserDomainState<Nothing>()
     object NewPasswordIsEmpty : UserErr, UserDomainState<Nothing>()
     object RoleIsNotSelected : UserErr, UserDomainState<Nothing>()
+}
+
+sealed class ValidateForceUpdateState {
+    object NotFoundNewVersion : ValidateForceUpdateState()
+    object CodeVersionNotFound : ValidateForceUpdateState()
+    data class FoundNewVersion(val versionName: String, val url: String) :
+        ValidateForceUpdateState()
 }
 
