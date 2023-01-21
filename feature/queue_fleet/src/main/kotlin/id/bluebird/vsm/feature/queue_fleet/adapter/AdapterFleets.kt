@@ -13,12 +13,17 @@ import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 class AdapterFleets :
     ListAdapter<FleetItem, AdapterFleets.ViewHolder>(FleetDiffUtils()) {
 
+    companion object {
+
+        private const val TAG = "AdapterFleets"
+    }
 
     class ViewHolder(
         private val binding: ItemFleetBinding,
         private val _vm: ViewModel?
     ) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun setData(fleetItem: FleetItem) {
             with(binding) {
                 fleet = fleetItem
@@ -33,6 +38,10 @@ class AdapterFleets :
         _viewModel = viewModel
     }
 
+    fun submitData(list: List<FleetItem>) {
+        submitList(list)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = DataBindingUtil.inflate<ItemFleetBinding>(
             LayoutInflater.from(parent.context),
@@ -44,7 +53,7 @@ class AdapterFleets :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(holder.absoluteAdapterPosition)
+        val item = getItem(holder.bindingAdapterPosition)
         holder.setData(item)
     }
 }

@@ -150,4 +150,12 @@ class UserRepositoryImpl(
         }
         return result
     }
+
+    override fun getSplashConfig(key: String): Flow<UserOuterClass.SplashConfigResponse> = flow {
+        val request = UserOuterClass.SplashConfigRequest.newBuilder()
+            .apply {
+                this.key = key
+            }.build()
+        emit(userGrpc.getSplashConfig(request))
+    }
 }

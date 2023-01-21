@@ -37,6 +37,7 @@ class QueueFleetViewModel(
     companion object {
 
         const val ERROR_MESSAGE_UNKNOWN = "Unknown"
+        const val ZERO = 0
     }
 
     val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
@@ -303,12 +304,19 @@ class QueueFleetViewModel(
 
     fun addSuccess(fleetItem: FleetItem?) {
         if (fleetItem != null) {
-            mCountCache.stock += 1
+            mCountCache.stock++
+            calculateRequestAfterAddStock()
             counterLiveData.value = mCountCache
             viewModelScope.launch {
                 _fleetItems.add(fleetItem)
                 _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
             }
+        }
+    }
+
+    private fun calculateRequestAfterAddStock() {
+        if (mCountCache.request > ZERO) {
+            mCountCache.request--
         }
     }
 
