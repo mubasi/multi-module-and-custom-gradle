@@ -2,7 +2,9 @@ package id.bluebird.vsm.feature.splash
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -76,9 +78,17 @@ class FragmentSplash : Fragment() {
     private fun getVersion() {
         try {
             val pInfo = context!!.packageManager.getPackageInfo(context!!.packageName, 0)
-            vm.checkNewVersion(codeVersion = pInfo.longVersionCode)
+           vm.checkNewVersion(codeVersion = getVersionCode(pInfo))
         } catch (e: Exception) {
             vm.checkNewVersion()
+        }
+    }
+
+    private fun getVersionCode(pInfo:PackageInfo) :Long{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            pInfo.longVersionCode
+        } else {
+            pInfo.versionCode.toLong()
         }
     }
 
