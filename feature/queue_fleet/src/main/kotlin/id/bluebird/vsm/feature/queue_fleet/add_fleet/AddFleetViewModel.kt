@@ -144,8 +144,6 @@ class AddFleetViewModel(
                             key("fleet_number", selectedFleetNumber.value ?: "")
                         }
                         FirebaseCrashlytics.getInstance().recordException(cause)
-                    } else {
-                        FirebaseCrashlytics.getInstance().recordException(NullPointerException())
                     }
                 }
                 .collect {
