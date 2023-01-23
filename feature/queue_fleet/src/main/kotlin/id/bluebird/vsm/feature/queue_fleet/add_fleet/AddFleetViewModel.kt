@@ -137,12 +137,16 @@ class AddFleetViewModel(
                 .flowOn(Dispatchers.Main)
                 .catch { cause: Throwable ->
                     _addFleetState.emit(AddFleetState.AddError(err = cause))
-                    FirebaseCrashlytics.getInstance().setCustomKeys {
-                        key("location_id", locationId)
-                        key("sub_location", _subLocation)
-                        key("fleet_number", selectedFleetNumber.value ?: "")
+                    if(cause.message.equals("UNKNOWN: Duplicate fleet", ignoreCase = true).not()) {
+                        FirebaseCrashlytics.getInstance().setCustomKeys {
+                            key("location_id", locationId)
+                            key("sub_location", _subLocation)
+                            key("fleet_number", selectedFleetNumber.value ?: "")
+                        }
+                        FirebaseCrashlytics.getInstance().recordException(cause)
+                    } else {
+                        FirebaseCrashlytics.getInstance().recordException(NullPointerException())
                     }
-                    FirebaseCrashlytics.getInstance().recordException(cause)
                 }
                 .collect {
                     when (it) {
@@ -159,7 +163,7 @@ class AddFleetViewModel(
         }
     }
 
-    fun String.convertCreateAtValue(): String {
+    private fun String.convertCreateAtValue(): String {
         val dateTime = DateTime.parseRfc3339(this)
         val sdf = SimpleDateFormat("dd MMM yyyy '.' HH:mm", Locale("id", "ID"))
         return sdf.format(dateTime.value)
