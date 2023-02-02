@@ -42,7 +42,6 @@ import id.bluebird.vsm.feature.queue_fleet.request_fleet.RequestFleetDialogViewM
 import id.bluebird.vsm.feature.queue_fleet.ritase_record.RitaseRecordViewModel
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.SearchFleetViewModel
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
-import id.bluebird.vsm.feature.select_location.search_mall_location.SearchMallLocationViewModel
 import id.bluebird.vsm.feature.splash.SplashViewModel
 import id.bluebird.vsm.feature.user_management.create.CreateUserViewModel
 import id.bluebird.vsm.feature.user_management.list.UserManagementViewModel
@@ -80,7 +79,6 @@ object AppModule {
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
         viewModel { SplashViewModel(get()) }
-        viewModel { SearchMallLocationViewModel() }
     }
     private val userCases = module {
         single<DeleteUser> { DeleteUserCases(get()) }

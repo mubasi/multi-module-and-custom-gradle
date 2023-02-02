@@ -16,14 +16,6 @@
         android:id="@+id/searchLocationFragment"
         android:name="id.bluebird.vsm.feature.select_location.search_mall_location.FragmentSearchMallLocation"
         android:label="@string/search_location_mall">
-        <argument
-            android:name="parentList"
-            app:nullable="false"
-            app:argType="id.bluebird.vsm.feature.select_location.model.CacheParentModel[]"/>
-        <argument
-            android:name="childList"
-            app:nullable="false"
-            app:argType="id.bluebird.vsm.feature.select_location.model.SubLocation[]"/>
     </fragment>
     <argument android:defaultValue="false"
         app:argType="boolean"
