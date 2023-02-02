@@ -8,7 +8,7 @@
             type="int" />
         <variable
             name="vm"
-            type="id.bluebird.vsm.feature.select_location.search_mall_location.SearchMallLocationViewModel" />
+            type="id.bluebird.vsm.feature.select_location.SelectLocationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

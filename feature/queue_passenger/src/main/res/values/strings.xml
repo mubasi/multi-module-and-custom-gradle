@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="queue_passenger">Antrian Penumpang</string>
+    <string name="queue_passenger">Antrian penumpang</string>
     <string name="take_number_queue_text">Ambil no. antrian</string>
     <string name="queue_ticket_text">Antrian Tiket</string>
     <string name="make_queue_text">Antrian berhasil dibuat</string>

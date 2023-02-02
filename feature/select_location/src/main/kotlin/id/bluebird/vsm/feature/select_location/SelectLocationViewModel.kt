@@ -1,5 +1,7 @@
 package id.bluebird.vsm.feature.select_location
 
+import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.domain.location.GetLocationsWithSubState
@@ -17,7 +19,19 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
     private var _state: MutableSharedFlow<SelectLocationState> = MutableSharedFlow()
     val state: SharedFlow<SelectLocationState> = _state.asSharedFlow()
     val _locations: MutableList<LocationModel> = mutableListOf()
+    var params: MutableLiveData<String> = MutableLiveData("")
+    var locationNav : LocationNavigation? = null
     private var _isFleetMenu = false
+
+    @VisibleForTesting
+    fun setValLocation(value : ArrayList<LocationModel>) {
+        _locations.addAll(value)
+    }
+
+    @VisibleForTesting
+    fun setValFleetMenu(value : Boolean) {
+        _isFleetMenu = value
+    }
 
     fun init(isFleetMenu: Boolean) {
         _isFleetMenu = isFleetMenu
@@ -39,14 +53,11 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
         }
     }
 
-    fun setFromSearch(locationId: Long, subLocationId: Long) {
-        val currentLocation = _locations.filter {
-            it.id == locationId
+    fun setFromSearch() {
+        viewModelScope.launch {
+            updateValNav()
+            _state.emit(SelectLocationState.ToAssignFromSearach(isFleetMenu = _isFleetMenu))
         }
-        val currentSubLocation = currentLocation[0].list.filter {
-            it.id == subLocationId
-        }
-        selectLocation(subLocation = currentSubLocation[0])
     }
 
     private fun getData() {
@@ -96,14 +107,19 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     fun selectLocation(subLocation: SubLocation) {
         viewModelScope.launch {
-            val locationNav = LocationNavigation(
+            val tempLocationNav = LocationNavigation(
                 locationId = subLocation.locationId,
                 locationName = subLocation.locationName,
                 subLocationId = subLocation.id,
                 subLocationName = subLocation.name
             )
-            LocationNavigationTemporary.updateLocationNav(locationNav)
+            locationNav = tempLocationNav
+            updateValNav()
             _state.emit(SelectLocationState.ToAssign(isFleetMenu = _isFleetMenu))
         }
+    }
+
+    private fun updateValNav(){
+        LocationNavigationTemporary.updateLocationNav(locationNav)
     }
 }

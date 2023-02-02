@@ -14,17 +14,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.SelectLocationFragmentBinding
-import id.bluebird.vsm.feature.select_location.model.CacheParentModel
-import id.bluebird.vsm.feature.select_location.model.SubLocation
 import id.bluebird.vsm.feature.select_location.search_mall_location.FragmentSearchMallLocation
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FragmentSelectLocation : Fragment() {
 
-    private val _vm: SelectLocationViewModel by viewModel()
+    private val _vm: SelectLocationViewModel by sharedViewModel()
     private lateinit var _mBinding: SelectLocationFragmentBinding
     private val _adapterSelectLocation: AdapterSelectLocation by lazy {
         AdapterSelectLocation(_vm)
@@ -76,13 +74,10 @@ class FragmentSelectLocation : Fragment() {
                             setupVisibility(progress = false, data  = true)
                         }
                         is SelectLocationState.ToAssign -> {
-                            NavigationNav.navigate(
-                                if (it.isFleetMenu) {
-                                    NavigationSealed.QueueFleet(frag = this@FragmentSelectLocation)
-                                } else {
-                                    NavigationSealed.QueuePassenger(frag = this@FragmentSelectLocation)
-                                }
-                            )
+                            navToMainPage(it.isFleetMenu)
+                        }
+                        is SelectLocationState.ToAssignFromSearach -> {
+                            navToMainPage(it.isFleetMenu)
                         }
                         is SelectLocationState.EmptyLocation -> {
                             val title = requireContext().getString(R.string.title_not_show_location)
@@ -90,22 +85,7 @@ class FragmentSelectLocation : Fragment() {
                             DialogUtils.showErrorDialog(requireContext(), title, msg)
                         }
                         is SelectLocationState.SearchLocation -> {
-                            val listParent : ArrayList<CacheParentModel> = ArrayList()
-                            val listChild : ArrayList<SubLocation> = ArrayList()
-                            _vm._locations.forEach { result ->
-                                val tempParent = CacheParentModel(
-                                    id = result.id,
-                                    name = result.name,
-                                    isExpanded = result.isExpanded,
-                                    type = result.type
-                                )
-                                listParent.add(tempParent)
-                                listChild.addAll(result.list)
-                            }
-                            val bundle = Bundle()
-                            bundle.putParcelableArray("parentList", listParent.toTypedArray())
-                            bundle.putParcelableArray("childList", listChild.toTypedArray())
-                            findNavController().navigate(R.id.searchLocationFragment, bundle)
+                            findNavController().navigate(R.id.searchLocationFragment)
                         }
                         else -> {
                             // do nothing
@@ -151,11 +131,20 @@ class FragmentSelectLocation : Fragment() {
 
     private fun onFragmentListenerResult() {
         setFragmentResultListener(FragmentSearchMallLocation.NOTIFICATION_MESSAGE ) { key, bundle ->
-            val locationId = bundle.getLong("locationId")
-            val subLocationId = bundle.getLong("subLocationId")
-            if(locationId != null && subLocationId != null) {
-                _vm.setFromSearch(locationId, subLocationId)
+            val status = bundle.getString(FragmentSearchMallLocation.STATUS_SEARCH)
+            if(status == FragmentSearchMallLocation.BACK) {
+                _vm.setFromSearch()
             }
         }
+    }
+
+    private fun navToMainPage(isFleetMenu : Boolean) {
+        NavigationNav.navigate(
+            if (isFleetMenu) {
+                NavigationSealed.QueueFleet(frag = this@FragmentSelectLocation)
+            } else {
+                NavigationSealed.QueuePassenger(frag = this@FragmentSelectLocation)
+            }
+        )
     }
 }

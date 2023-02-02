@@ -12,4 +12,5 @@ sealed class SelectLocationState {
     object EmptyLocation : SelectLocationState()
     object SearchLocation : SelectLocationState()
     data class OnError(val error: Throwable) : SelectLocationState()
+    data class ToAssignFromSearach(val isFleetMenu: Boolean) : SelectLocationState()
 }

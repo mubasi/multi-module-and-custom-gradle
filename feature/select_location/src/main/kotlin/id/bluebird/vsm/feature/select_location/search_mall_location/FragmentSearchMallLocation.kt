@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
@@ -15,31 +15,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.select_location.R
+import id.bluebird.vsm.feature.select_location.SelectLocationState
+import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
+import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.FragmentSearchLocationBinding
-import id.bluebird.vsm.feature.select_location.model.CacheParentModel
 import id.bluebird.vsm.feature.select_location.model.LocationModel
-import id.bluebird.vsm.feature.select_location.model.SubLocation
-import id.bluebird.vsm.feature.select_location.search_mall_location.adapter.AdapterSearchMallLocation
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 @Suppress("NON_EXHAUSTIVE_WHEN_STATEMENT")
 class FragmentSearchMallLocation : Fragment() {
 
     companion object {
         const val NOTIFICATION_MESSAGE = "notificationMessage"
-        const val EMPTY_STRING = ""
+        const val STATUS_SEARCH = "search"
+        const val BACK = "back"
     }
 
-    private val vm : SearchMallLocationViewModel by viewModel()
-    private val args : FragmentSearchMallLocationArgs by navArgs()
+    private val vm : SelectLocationViewModel by sharedViewModel()
     private lateinit var binding : FragmentSearchLocationBinding
-    private val _adapterSearchLocation: AdapterSearchMallLocation by lazy {
-        AdapterSearchMallLocation(vm)
+    private val _adapterSearchLocation: AdapterSelectLocation by lazy {
+        AdapterSelectLocation(vm)
     }
 
     override fun onCreateView(
@@ -62,9 +62,8 @@ class FragmentSearchMallLocation : Fragment() {
             this.lifecycleOwner = viewLifecycleOwner
         }
         initRcv()
-        setArgumens()
-        binding.statusView = 2
-        setupVisibility(progress = true, data = false)
+        _adapterSearchLocation.submitList(vm._locations)
+        binding.statusView = 0
         setObserver()
 
         binding.searchForm.doOnTextChanged { text, _, _, _ ->
@@ -79,25 +78,11 @@ class FragmentSearchMallLocation : Fragment() {
                 with(vm){
                     state.collect {
                         when (it) {
-                            SearchMallLocationState.Init -> {
-                                setupVisibility(progress = true, data = false)
-                            }
-                            is SearchMallLocationState.Idle -> {
-                                setupVisibility(progress = false, data = true)
-                                binding.statusView = 0
-                                _adapterSearchLocation.submitList(it.list)
-                            }
-                            is SearchMallLocationState.OnItemClick -> {
+                            is SelectLocationState.OnItemClick -> {
                                 _adapterSearchLocation.expandOrCollapseParent(it.locationModel.id)
                             }
-                            SearchMallLocationState.Progress -> {
-                                binding.statusView = 2
-                            }
-                            is SearchMallLocationState.SelectLocation -> {
-                                val bundle = Bundle()
-                                bundle.putLong("locationId", it.locationId)
-                                bundle.putLong("subLocationId", it.subLocationId)
-                                setFragmentResult(NOTIFICATION_MESSAGE, bundle)
+                            is SelectLocationState.ToAssign -> {
+                                setFragmentResult(NOTIFICATION_MESSAGE, bundleOf(STATUS_SEARCH to BACK))
                                 findNavController().popBackStack()
                             }
                         }
@@ -105,17 +90,6 @@ class FragmentSearchMallLocation : Fragment() {
                 }
             }
         }
-    }
-
-    private fun setArgumens(){
-        val listParent : List<CacheParentModel> = args.parentList.toList()
-        val listChild : List<SubLocation> = args.childList.toList()
-        vm.init(listParent, listChild)
-    }
-
-    private fun setupVisibility(progress : Boolean, data : Boolean) {
-        binding.progressPage.isVisible = progress
-        binding.searchPage.isVisible = data
     }
 
     private fun initRcv() {
@@ -128,11 +102,12 @@ class FragmentSearchMallLocation : Fragment() {
     private fun filterNameMall(text: String) {
         val filteredlist: ArrayList<LocationModel> = ArrayList()
 
-        for (item in vm.locations) {
+        for (item in vm._locations) {
             if (item.name.toLowerCase().contains(text.toLowerCase())) {
                 filteredlist.add(item)
             }
         }
+
         if (filteredlist.isEmpty()) {
             val title = requireContext().getString(R.string.title_not_found_location)
             val msg = requireContext().getString(R.string.msg_not_found_location)
