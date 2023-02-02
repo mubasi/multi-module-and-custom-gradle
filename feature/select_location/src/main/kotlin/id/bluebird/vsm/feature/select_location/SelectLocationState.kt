@@ -9,6 +9,7 @@ sealed class SelectLocationState {
     data class ToAssign(val isFleetMenu: Boolean) : SelectLocationState()
     data class OnItemClick(val locationModel: LocationModel, val position: Int) :
         SelectLocationState()
-
+    object EmptyLocation : SelectLocationState()
+    object SearchLocation : SelectLocationState()
     data class OnError(val error: Throwable) : SelectLocationState()
 }

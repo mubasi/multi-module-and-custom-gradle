@@ -1,15 +1,15 @@
 package id.bluebird.vsm.feature.select_location.model
 
-import androidx.annotation.Keep
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Keep
-data class LocationModel(
+@Parcelize
+data class CacheParentModel(
     val id: Long,
     val name: String,
-    var list: List<SubLocation>,
     var isExpanded: Boolean = false,
     var type: Int = PARENT
-) {
+) : Parcelable {
     companion object {
         const val PARENT = 1
         const val CHILD = 2

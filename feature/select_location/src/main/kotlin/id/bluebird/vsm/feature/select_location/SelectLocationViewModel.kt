@@ -16,7 +16,7 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     private var _state: MutableSharedFlow<SelectLocationState> = MutableSharedFlow()
     val state: SharedFlow<SelectLocationState> = _state.asSharedFlow()
-    private val _locations: MutableList<LocationModel> = mutableListOf()
+    val _locations: MutableList<LocationModel> = mutableListOf()
     private var _isFleetMenu = false
 
     fun init(isFleetMenu: Boolean) {
@@ -27,6 +27,26 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
             delay(500)
             getData()
         }
+    }
+
+    fun searchScreen() {
+        viewModelScope.launch {
+            if(_locations.isEmpty()) {
+                _state.emit(SelectLocationState.EmptyLocation)
+            } else {
+                _state.emit(SelectLocationState.SearchLocation)
+            }
+        }
+    }
+
+    fun setFromSearch(locationId: Long, subLocationId: Long) {
+        val currentLocation = _locations.filter {
+            it.id == locationId
+        }
+        val currentSubLocation = currentLocation[0].list.filter {
+            it.id == subLocationId
+        }
+        selectLocation(subLocation = currentSubLocation[0])
     }
 
     private fun getData() {
