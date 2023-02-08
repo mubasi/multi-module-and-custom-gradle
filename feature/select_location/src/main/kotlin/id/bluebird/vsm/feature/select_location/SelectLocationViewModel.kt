@@ -43,6 +43,24 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
         }
     }
 
+    fun filterFleet() {
+        viewModelScope.launch {
+            val filteredlist: ArrayList<LocationModel> = ArrayList()
+
+            for (item in _locations) {
+                if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
+                    filteredlist.add(item)
+                }
+            }
+
+            if (filteredlist.isEmpty()) {
+                _state.emit(SelectLocationState.ErrorFilter)
+            } else {
+                _state.emit(SelectLocationState.FilterFleet(filteredlist))
+            }
+        }
+    }
+
     fun searchScreen() {
         viewModelScope.launch {
             if(_locations.isEmpty()) {

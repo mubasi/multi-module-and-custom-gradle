@@ -1,12 +1,10 @@
 package id.bluebird.vsm.feature.select_location.search_mall_location
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -22,8 +20,6 @@ import id.bluebird.vsm.feature.select_location.SelectLocationState
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
 import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.FragmentSearchLocationBinding
-import id.bluebird.vsm.feature.select_location.model.LocationModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -65,11 +61,7 @@ class FragmentSearchMallLocation : Fragment() {
         _adapterSearchLocation.submitList(vm._locations)
         binding.statusView = 0
         setObserver()
-
-        binding.searchForm.doOnTextChanged { text, _, _, _ ->
-            vm.params.value = text.toString()
-            filterNameMall(text.toString())
-        }
+        setListenerSearch()
     }
 
     private fun setObserver() {
@@ -85,6 +77,14 @@ class FragmentSearchMallLocation : Fragment() {
                                 setFragmentResult(NOTIFICATION_MESSAGE, bundleOf(STATUS_SEARCH to BACK))
                                 findNavController().popBackStack()
                             }
+                            is SelectLocationState.FilterFleet -> {
+                                _adapterSearchLocation.submitList(it.result)
+                            }
+                            is SelectLocationState.ErrorFilter -> {
+                                val title = requireContext().getString(R.string.title_not_found_location)
+                                val msg = requireContext().getString(R.string.msg_not_found_location)
+                                DialogUtils.showErrorDialog(requireContext(), title, msg)
+                            }
                         }
                     }
                 }
@@ -99,21 +99,10 @@ class FragmentSearchMallLocation : Fragment() {
         }
     }
 
-    private fun filterNameMall(text: String) {
-        val filteredlist: ArrayList<LocationModel> = ArrayList()
-
-        for (item in vm._locations) {
-            if (item.name.toLowerCase().contains(text.toLowerCase())) {
-                filteredlist.add(item)
-            }
-        }
-
-        if (filteredlist.isEmpty()) {
-            val title = requireContext().getString(R.string.title_not_found_location)
-            val msg = requireContext().getString(R.string.msg_not_found_location)
-            DialogUtils.showErrorDialog(requireContext(), title, msg)
-        } else {
-            _adapterSearchLocation.submitList(filteredlist)
+    private fun setListenerSearch(){
+        binding.searchForm.doOnTextChanged { text, _, _, _ ->
+            vm.params.value = text.toString()
+            vm.filterFleet()
         }
     }
 
