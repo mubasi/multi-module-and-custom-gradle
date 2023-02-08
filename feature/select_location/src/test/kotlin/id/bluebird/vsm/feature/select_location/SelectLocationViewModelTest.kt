@@ -256,4 +256,48 @@ internal class SelectLocationViewModelTest {
         assertEquals(1, states.size)
         assertEquals(SelectLocationState.ToAssignFromSearach(true), states[0])
     }
+
+    @Test
+    fun `filterSearchTest when is Error`() = runTest {
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.filterFleet()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.ErrorFilter, states[0])
+    }
+
+
+    @Test
+    fun `filterSearchTest when is Not Error`() = runTest {
+        val filteredlist: ArrayList<LocationModel> = ArrayList()
+
+        filteredlist.add(
+            LocationModel(
+                id = 1,
+                name = "Location Name",
+                list = listOf(),
+                isExpanded = true,
+                type = 1
+            )
+        )
+
+        subjectUnderTest._locations.addAll(filteredlist)
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.filterFleet()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.FilterFleet(filteredlist), states[0])
+    }
 }
