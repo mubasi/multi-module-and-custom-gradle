@@ -46,10 +46,10 @@ class ValidateForceUpdateUsesCases(private val userRepository: UserRepository) :
     }
 
     private suspend fun validatePlayStoreUrl(
-        url: String?,
+        url: String,
         flowCollector: FlowCollector<ValidateForceUpdateState>
     ) {
-        if (url.isNullOrEmpty()) {
+        if (url.isEmpty()) {
             flowCollector.emit(ValidateForceUpdateState.NotFoundNewVersion)
         }
     }

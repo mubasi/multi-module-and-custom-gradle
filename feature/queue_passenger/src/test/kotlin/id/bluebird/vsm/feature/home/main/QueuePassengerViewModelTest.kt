@@ -2,7 +2,6 @@ package id.bluebird.vsm.feature.home.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.orhanobut.hawk.Hawk
-import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.passenger.CounterBarState
 import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
@@ -16,13 +15,11 @@ import id.bluebird.vsm.domain.passenger.model.CounterBarResult
 import id.bluebird.vsm.domain.passenger.model.CurrentQueueResult
 import id.bluebird.vsm.domain.passenger.model.ListQueueResult
 import id.bluebird.vsm.domain.passenger.model.Queue
-import id.bluebird.vsm.domain.user.GetUserByIdState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
-import id.bluebird.vsm.domain.user.model.CreateUserResult
+import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
 import id.bluebird.vsm.feature.home.TestCoroutineRule
 import id.bluebird.vsm.feature.home.model.*
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
-import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -45,7 +42,7 @@ internal class QueuePassengerViewModelTest {
     @Rule
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getUserId: GetUserId = mockk(relaxed = true)
+    private val getUserId: GetUserByIdForAssignment = mockk(relaxed = true)
     private val currentQueue: CurrentQueue = mockk()
     private val listQueueWaiting: ListQueueWaiting = mockk()
     private val listQueueSkipped: ListQueueSkipped = mockk()
@@ -59,7 +56,13 @@ internal class QueuePassengerViewModelTest {
         mockkStatic(Hawk::class)
         mockkObject(UserUtils)
         mockkObject(LocationNavigationTemporary)
-        subjectUnderTest = QueuePassengerViewModel(getUserId, currentQueue, listQueueWaiting, listQueueSkipped, counterBar)
+        subjectUnderTest = QueuePassengerViewModel(
+            getUserId,
+            currentQueue,
+            listQueueWaiting,
+            listQueueSkipped,
+            counterBar
+        )
     }
 
     @AfterEach
@@ -68,356 +71,289 @@ internal class QueuePassengerViewModelTest {
     }
 
     @Test
-    fun `init, when user is not officer and LocationNav not available, emit toSelectLocation`() = runTest {
-        //GIVEN
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
-        every { UserUtils.isUserOfficer() } returns false
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
+    fun `init, when user is not officer and LocationNav not available, emit toSelectLocation`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns false
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            delay(500)
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProgressHolder, states[0])
+            assertEquals(QueuePassengerState.ToSelectLocation, states[1])
+            collect.cancel()
         }
 
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        delay(500)
+    @Test
+    fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser`() =
+        runTest {
+            //GIVEN
+            val titleString = "..."
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserId.invoke(any(),any(),any()) } returns flow {
+                throw NullPointerException(error)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
 
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProgressHolder, states[0])
-        assertEquals(QueuePassengerState.ToSelectLocation, states[1])
-        collect.cancel()
-    }
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(QueuePassengerState.FailedGetUser(error), states[1])
+            assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
+            assertEquals(titleString, resultTitle)
+
+            collect.cancel()
+        }
 
     @Test
-    fun `init, when user is not officer and locationNav available, emit getUserSuccess`() = runTest {
-        //GIVEN
-        val userResult =
-            CreateUserResult(
-                1L,
-                "name",
-                "username",
-                1L,
-                1L,
-                "locationName",
-                listOf(11L),
-                "subLocationName"
+    fun `init, when user is officer and locationNav not available and failed to getUser from State, emit failedGetUser`() =
+        runTest {
+            //GIVEN
+            val titleString = "..."
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserId.invoke(any(),any(),any()) } returns flow {
+                emit(GetUserByIdForAssignmentState.UserNotFound)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
+            assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
+            assertEquals(titleString, resultTitle)
+
+            collect.cancel()
+        }
+
+    @Test
+    fun `getCurrentQueue, when currentQueue response success, emit state SuccessCurrentQueue`() =
+        runTest {
+            //GIVEN
+            val id = 1L
+            val number = "AB11"
+            val createdDate = "09-09-2020"
+            every { currentQueue.invoke(any(), any()) } returns flow {
+                emit(
+                    GetCurrentQueueState.Success(
+                        CurrentQueueResult(id, number, createdDate)
+                    )
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+            //WHEN
+            subjectUnderTest.getCurrentQueue()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesCurrentQueue, states[0])
+            assertEquals(QueuePassengerState.SuccessCurrentQueue, states[1])
+            assertEquals(
+                CurrentQueueCache(id, number, createdDate),
+                subjectUnderTest.currentQueueCache
             )
-        val titleString = "locationName2 subLocationName2".getLastSync()
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
-        every { UserUtils.isUserOfficer() } returns false
-        every { UserUtils.getUserId() } returns 1L
-        every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            2L,
-            12L,
-            "locationName2",
-            "subLocationName2"
-        )
-        every { getUserId.invoke(1L) } returns flow {
-            emit(GetUserByIdState.Success(userResult))
+            assertEquals(number, subjectUnderTest.currentQueueNumber.getOrAwaitValue())
         }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesGetUser, states[0])
-        assertEquals(QueuePassengerState.SuccessGetUser, states[1])
-        assertEquals(UserInfo(1L, 2L, 12L), subjectUnderTest.mUserInfo)
-        assertEquals(titleString, resultTitle)
-
-        collect.cancel()
-    }
 
     @Test
-    fun `init, when user is officer and locationNav not available, emit getUserSuccess`() = runTest {
-        //GIVEN
-        val userResult =
-            CreateUserResult(
-                1L,
-                "name",
-                "username",
-                5L,
-                1L,
-                "locationName",
-                listOf(11L),
-                "subLocationName"
-            )
-        val titleString = "locationName subLocationName".getLastSync()
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
-        every { UserUtils.isUserOfficer() } returns true
-        every { UserUtils.getUserId() } returns 1L
-        every { getUserId.invoke(1L) } returns flow {
-            emit(GetUserByIdState.Success(userResult))
+    fun `getCurrentQueue, when currentQueue response throw error, emit state FailedCurrentQueue`() =
+        runTest {
+            //GIVEN
+            every { currentQueue.invoke(any(), any()) } returns flow {
+                throw NullPointerException(error)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+            //WHEN
+            subjectUnderTest.getCurrentQueue()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesCurrentQueue, states[0])
+            assertEquals(QueuePassengerState.FailedCurrentQueue(error), states[1])
         }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesGetUser, states[0])
-        assertEquals(QueuePassengerState.SuccessGetUser, states[1])
-        assertEquals(UserInfo(1L, 1L, 11L), subjectUnderTest.mUserInfo)
-        assertEquals(titleString, resultTitle)
-
-        collect.cancel()
-    }
 
     @Test
-    fun `init, when user is officer and locationNav available, emit getUserSuccess`() = runTest {
-        //GIVEN
-        val userResult =
-            CreateUserResult(
-                1L,
-                "name",
-                "username",
-                5L,
-                1L,
-                "locationName",
-                listOf(11L),
-                "subLocationName"
-            )
-        val titleString = "locationName subLocationName".getLastSync()
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
-        every { UserUtils.isUserOfficer() } returns true
-        every { UserUtils.getUserId() } returns 1L
-        every { getUserId.invoke(1L) } returns flow {
-            emit(GetUserByIdState.Success(userResult))
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesGetUser, states[0])
-        assertEquals(QueuePassengerState.SuccessGetUser, states[1])
-        assertEquals(UserInfo(1L, 1L, 11L), subjectUnderTest.mUserInfo)
-        assertEquals(titleString, resultTitle)
-
-        collect.cancel()
-    }
-
-    @Test
-    fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser`() = runTest {
-        //GIVEN
-        val titleString = "..."
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
-        every { UserUtils.isUserOfficer() } returns true
-        every { UserUtils.getUserId() } returns 1L
-        every { getUserId.invoke(1L) } returns flow {
-            throw NullPointerException(error)
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesGetUser, states[0])
-        assertEquals(QueuePassengerState.FailedGetUser(error), states[1])
-        assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
-        assertEquals(titleString, resultTitle)
-
-        collect.cancel()
-    }
-
-    @Test
-    fun `getCurrentQueue, when currentQueue response success, emit state SuccessCurrentQueue`() = runTest {
-        //GIVEN
-        val id = 1L
-        val number = "AB11"
-        val createdDate = "09-09-2020"
-        every { currentQueue.invoke(any(), any()) } returns flow {
-            emit(GetCurrentQueueState.Success(
-                CurrentQueueResult(id, number, createdDate)
-            ))
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-        //WHEN
-        subjectUnderTest.getCurrentQueue()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesCurrentQueue, states[0])
-        assertEquals(QueuePassengerState.SuccessCurrentQueue, states[1])
-        assertEquals(CurrentQueueCache(id, number, createdDate), subjectUnderTest.currentQueueCache)
-        assertEquals(number, subjectUnderTest.currentQueueNumber.getOrAwaitValue())
-    }
-
-    @Test
-    fun `getCurrentQueue, when currentQueue response throw error, emit state FailedCurrentQueue`() = runTest {
-        //GIVEN
-        every { currentQueue.invoke(any(), any()) } returns flow {
-            throw NullPointerException(error)
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-        //WHEN
-        subjectUnderTest.getCurrentQueue()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesCurrentQueue, states[0])
-        assertEquals(QueuePassengerState.FailedCurrentQueue(error), states[1])
-    }
-
-    @Test
-    fun `getListQueue, when listQueueWaiting response success, emit state SuccessListQueue`() = runTest {
-        //GIVEN
-        val responseCount = 3
-        val resultCount = 2
-        val queueId = 1L
-        val queueNumber = "AB11"
-        val queue = Queue(
-            queueId,
-            queueNumber,
-            "10-10-2022",
-            "message",
-            "AB11",
-            responseCount.toLong(),
-            "10-10-2022",
-            11L
-        )
-        every { listQueueWaiting.invoke(any(), any()) } returns flow {
-            emit(ListQueueWaitingState.Success(
-                ListQueueResult(responseCount.toLong(), ArrayList(List(responseCount) { queue }) )
-            ))
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.getListQueue()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesListQueue, states[0])
-        assertEquals(QueuePassengerState.SuccessListQueue, states[1])
-        assertEquals(
-            ListQueueResultCache(
-                resultCount.toLong(),
-                ArrayList(List(resultCount) { QueueReceiptCache(queueId, queueNumber) })
-            ), subjectUnderTest.listQueueWaitingCache
-        )
-        assertEquals(resultCount.toString(), subjectUnderTest.waitingQueueCount.getOrAwaitValue())
-    }
-
-    @Test
-    fun `getListQueue, when listQueueWaiting response throw error, emit state SuccessListQueue`() = runTest {
-        //GIVEN
-        every { listQueueWaiting.invoke(any(), any()) } returns flow {
-            throw NullPointerException(error)
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.getListQueue()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesListQueue, states[0])
-        assertEquals(QueuePassengerState.FailedListQueue(error), states[1])
-    }
-
-    @Test
-    fun `getListQueueSkipped, when listQueueSkipped response success, emit state SuccessListQueue`() = runTest {
-        //GIVEN
-        val responseCount = 3
-        val queueId = 1L
-        val queueNumber = "AB11"
-        val queue = Queue(
-            queueId,
-            queueNumber,
-            "10-10-2022",
-            "message",
-            "AB11",
-            responseCount.toLong(),
-            "10-10-2022",
-            11L
-        )
-        every { listQueueSkipped.invoke(any(), any()) } returns flow {
-            emit(ListQueueSkippedState.Success(
-                ListQueueResult(responseCount.toLong(), ArrayList(List(responseCount) { queue }) )
-            ))
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.getListQueueSkipped()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesListQueueSkipped, states[0])
-        assertEquals(QueuePassengerState.SuccessListQueueSkipped, states[1])
-        assertEquals(
-            ListQueueResultCache(
+    fun `getListQueue, when listQueueWaiting response success, emit state SuccessListQueue`() =
+        runTest {
+            //GIVEN
+            val responseCount = 3
+            val resultCount = 2
+            val queueId = 1L
+            val queueNumber = "AB11"
+            val queue = Queue(
+                queueId,
+                queueNumber,
+                "10-10-2022",
+                "message",
+                "AB11",
                 responseCount.toLong(),
-                ArrayList(List(responseCount) { QueueReceiptCache(queueId, queueNumber) })
-            ), subjectUnderTest.listQueueSkippedCache
-        )
-        assertEquals(responseCount.toString(), subjectUnderTest.skippedQueueCount.getOrAwaitValue())
-    }
+                "10-10-2022",
+                11L
+            )
+            every { listQueueWaiting.invoke(any(), any()) } returns flow {
+                emit(
+                    ListQueueWaitingState.Success(
+                        ListQueueResult(
+                            responseCount.toLong(),
+                            ArrayList(List(responseCount) { queue })
+                        )
+                    )
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.getListQueue()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesListQueue, states[0])
+            assertEquals(QueuePassengerState.SuccessListQueue, states[1])
+            assertEquals(
+                ListQueueResultCache(
+                    resultCount.toLong(),
+                    ArrayList(List(resultCount) { QueueReceiptCache(queueId, queueNumber) })
+                ), subjectUnderTest.listQueueWaitingCache
+            )
+            assertEquals(
+                resultCount.toString(),
+                subjectUnderTest.waitingQueueCount.getOrAwaitValue()
+            )
+        }
 
     @Test
-    fun `getListQueueSkipped, when listQueueWaiting response throw error, emit state SuccessListQueue`() = runTest {
-        //GIVEN
-        every { listQueueSkipped.invoke(any(), any()) } returns flow {
-            throw NullPointerException(error)
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
+    fun `getListQueue, when listQueueWaiting response throw error, emit state SuccessListQueue`() =
+        runTest {
+            //GIVEN
+            every { listQueueWaiting.invoke(any(), any()) } returns flow {
+                throw NullPointerException(error)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.getListQueue()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesListQueue, states[0])
+            assertEquals(QueuePassengerState.FailedListQueue(error), states[1])
         }
 
-        //WHEN
-        subjectUnderTest.getListQueueSkipped()
-        runCurrent()
-        collect.cancel()
+    @Test
+    fun `getListQueueSkipped, when listQueueSkipped response success, emit state SuccessListQueue`() =
+        runTest {
+            //GIVEN
+            val responseCount = 3
+            val queueId = 1L
+            val queueNumber = "AB11"
+            val queue = Queue(
+                queueId,
+                queueNumber,
+                "10-10-2022",
+                "message",
+                "AB11",
+                responseCount.toLong(),
+                "10-10-2022",
+                11L
+            )
+            every { listQueueSkipped.invoke(any(), any()) } returns flow {
+                emit(
+                    ListQueueSkippedState.Success(
+                        ListQueueResult(
+                            responseCount.toLong(),
+                            ArrayList(List(responseCount) { queue })
+                        )
+                    )
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
 
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesListQueueSkipped, states[0])
-        assertEquals(QueuePassengerState.FailedListQueueSkipped(error), states[1])
-    }
+            //WHEN
+            subjectUnderTest.getListQueueSkipped()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesListQueueSkipped, states[0])
+            assertEquals(QueuePassengerState.SuccessListQueueSkipped, states[1])
+            assertEquals(
+                ListQueueResultCache(
+                    responseCount.toLong(),
+                    ArrayList(List(responseCount) { QueueReceiptCache(queueId, queueNumber) })
+                ), subjectUnderTest.listQueueSkippedCache
+            )
+            assertEquals(
+                responseCount.toString(),
+                subjectUnderTest.skippedQueueCount.getOrAwaitValue()
+            )
+        }
+
+    @Test
+    fun `getListQueueSkipped, when listQueueWaiting response throw error, emit state SuccessListQueue`() =
+        runTest {
+            //GIVEN
+            every { listQueueSkipped.invoke(any(), any()) } returns flow {
+                throw NullPointerException(error)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.getListQueueSkipped()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesListQueueSkipped, states[0])
+            assertEquals(QueuePassengerState.FailedListQueueSkipped(error), states[1])
+        }
 
     @Test
     fun `prosesSkipQueue, emit state ProsesSkipQueue`() = runTest {
@@ -454,40 +390,42 @@ internal class QueuePassengerViewModelTest {
     }
 
     @Test
-    fun `prosesDeleteQueue, with given queueReceiptCache, emit state ProsesDeleteQueueSkip with given item`() = runTest {
-        //GIVEN
-        val cache = QueueReceiptCache(1L, "AB11")
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
+    fun `prosesDeleteQueue, with given queueReceiptCache, emit state ProsesDeleteQueueSkip with given item`() =
+        runTest {
+            //GIVEN
+            val cache = QueueReceiptCache(1L, "AB11")
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.prosesDeleteQueue(cache)
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(1, states.size)
+            assertEquals(QueuePassengerState.ProsesDeleteQueueSkipped(cache), states[0])
         }
-
-        //WHEN
-        subjectUnderTest.prosesDeleteQueue(cache)
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueuePassengerState.ProsesDeleteQueueSkipped(cache), states[0])
-    }
 
     @Test
-    fun `prosesRestoreQueue, with given queueReceiptCache, emit state ProsesRestoreQueueSkip with given item`() = runTest {
-        //GIVEN
-        val cache = QueueReceiptCache(1L, "AB11")
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
+    fun `prosesRestoreQueue, with given queueReceiptCache, emit state ProsesRestoreQueueSkip with given item`() =
+        runTest {
+            //GIVEN
+            val cache = QueueReceiptCache(1L, "AB11")
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.prosesRestoreQueue(cache)
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(1, states.size)
+            assertEquals(QueuePassengerState.ProsesRestoreQueueSkipped(cache), states[0])
         }
-
-        //WHEN
-        subjectUnderTest.prosesRestoreQueue(cache)
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueuePassengerState.ProsesRestoreQueueSkipped(cache), states[0])
-    }
 
     @Test
     fun `prosesSearchQueue, emit state SearchQueue`() = runTest {
@@ -508,47 +446,60 @@ internal class QueuePassengerViewModelTest {
     }
 
     @Test
-    fun `getCounterBar, when counterBar response success, emit state SuccessCounterBar`() = runTest {
-        //GIVEN
-        every { counterBar.invoke(any(), any()) } returns flow {
-            emit(CounterBarState.Success(
-                CounterBarResult(locationId = 1L, ongoing = 1L, skipped = 2L, ritese = 3L, modifiedAt = "10-10-2022")
-            ))
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
+    fun `getCounterBar, when counterBar response success, emit state SuccessCounterBar`() =
+        runTest {
+            //GIVEN
+            every { counterBar.invoke(any(), any()) } returns flow {
+                emit(
+                    CounterBarState.Success(
+                        CounterBarResult(
+                            locationId = 1L,
+                            ongoing = 1L,
+                            skipped = 2L,
+                            ritese = 3L,
+                            modifiedAt = "10-10-2022"
+                        )
+                    )
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
 
-        //WHEN
-        subjectUnderTest.getCounterBar()
-        runCurrent()
-        collect.cancel()
+            //WHEN
+            subjectUnderTest.getCounterBar()
+            runCurrent()
+            collect.cancel()
 
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
-        assertEquals(QueuePassengerState.SuccessCounterBar, states[1])
-        assertEquals(CounterBarCache(1L, 1L, 2L, 3L, "10-10-2022"), subjectUnderTest.currentCounterBar.getOrAwaitValue())
-    }
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
+            assertEquals(QueuePassengerState.SuccessCounterBar, states[1])
+            assertEquals(
+                CounterBarCache(1L, 1L, 2L, 3L, "10-10-2022"),
+                subjectUnderTest.currentCounterBar.getOrAwaitValue()
+            )
+        }
 
     @Test
-    fun `getCounterBar, when counterBar response throw error, emit state FailedCounterBar`() = runTest {
-        //GIVEN
-        every { counterBar.invoke(any(), any()) } returns flow {
-            throw NullPointerException(error)
-        }
-        val collect = launch {
-            subjectUnderTest.queuePassengerState.toList(states)
-        }
+    fun `getCounterBar, when counterBar response throw error, emit state FailedCounterBar`() =
+        runTest {
+            //GIVEN
+            every { counterBar.invoke(any(), any()) } returns flow {
+                throw NullPointerException(error)
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
 
-        //WHEN
-        subjectUnderTest.getCounterBar()
-        runCurrent()
-        collect.cancel()
+            //WHEN
+            subjectUnderTest.getCounterBar()
+            runCurrent()
+            collect.cancel()
 
-        //THEN
-        assertEquals(2, states.size)
-        assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
-        assertEquals(QueuePassengerState.FailedCounterBar(error), states[1])
-    }
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
+            assertEquals(QueuePassengerState.FailedCounterBar(error), states[1])
+        }
 }

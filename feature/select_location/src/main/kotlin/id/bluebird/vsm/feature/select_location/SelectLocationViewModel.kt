@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 
 class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithSub) : ViewModel() {
 
+    companion object {
+        const val ENABLE_VALUE_GREATER = 0
+    }
     private var _state: MutableSharedFlow<SelectLocationState> = MutableSharedFlow()
     val state: SharedFlow<SelectLocationState> = _state.asSharedFlow()
     val _locations: MutableList<LocationModel> = mutableListOf()
@@ -139,5 +142,10 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     private fun updateValNav(){
         LocationNavigationTemporary.updateLocationNav(locationNav)
+    }
+
+    fun clearSearch(){
+        params.value = ""
+        filterFleet()
     }
 }

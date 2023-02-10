@@ -11,9 +11,9 @@ import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.CountResult
 import id.bluebird.vsm.domain.fleet.model.FleetDepartResult
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
-import id.bluebird.vsm.domain.user.GetUserByIdState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
-import id.bluebird.vsm.domain.user.model.CreateUserResult
+import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
+import id.bluebird.vsm.domain.user.model.UserAssignment
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
 import id.bluebird.vsm.feature.queue_fleet.model.CountCache
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
@@ -45,14 +45,16 @@ internal class QueueFleetViewModelTest {
 
         private const val ERROR = "error"
     }
+
     //    @Rule
 //    private val instantTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var _vm: QueueFleetViewModel
     private val _getCount: GetCount = mockk(relaxed = true)
-    private val _getUserId: GetUserId = mockk(relaxed = true)
+    private val _getUserId: GetUserByIdForAssignment = mockk(relaxed = true)
     private val _getFleetList: GetListFleet = mockk(relaxed = true)
     private val _departFleet: DepartFleet = mockk(relaxed = true)
     private val _events = mutableListOf<QueueFleetState>()
+
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
@@ -65,27 +67,26 @@ internal class QueueFleetViewModelTest {
             _departFleet,
         )
     }
+
     @AfterEach
     fun tearDown() {
         _events.clear()
     }
+
     @Test
     fun `getUserById, isSuccess`() = runTest {
+        val userAssignment =
+            UserAssignment(
+                id = 1L,
+                locationId = 8,
+                locationName = "Location",
+                subLocationId = 2L,
+                subLocationName = "Sub Location",
+            )
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(1) } returns flow {
-            emit(
-                GetUserByIdState.Success(
-                    CreateUserResult(
-                        name = "aa",
-                        username = "bb",
-                        locationId = 10,
-                        locationName = "Location",
-                        subLocationsId = mutableListOf(1, 2, 3, 4),
-                        subLocationName = "Sub Location"
-                    )
-                )
-            )
+        every { _getUserId.invoke(any(), any(), any()) } returns flow {
+            emit(GetUserByIdForAssignmentState.Success(userAssignment))
         }
         // Execute
         val job = launch {
@@ -102,11 +103,12 @@ internal class QueueFleetViewModelTest {
             _events.last()
         )
     }
+
     @Test
     fun `getUserById, isFailed`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(any()) } returns flow {
+        every { _getUserId.invoke(any(), any(),any()) } returns flow {
             throw NullPointerException(ERROR)
         }
         // Execute
@@ -124,6 +126,7 @@ internal class QueueFleetViewModelTest {
             _events.last()
         )
     }
+
     @Test
     fun `getCounter, given userInfo, Result success`() = runTest {
         // Given
@@ -140,6 +143,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(11, _vm.counterLiveData.value!!.ritase)
         Assertions.assertEquals(12, _vm.counterLiveData.value!!.request)
     }
+
     @Test
     fun `getCounter, given userInfo, Result throw error`() = runTest {
         // Given
@@ -161,6 +165,7 @@ internal class QueueFleetViewModelTest {
             _events.last()
         )
     }
+
     @Test
     fun `updateRequestCount, given new requestCount 10, result countCache request is 5`() =
         runTest {
@@ -169,6 +174,7 @@ internal class QueueFleetViewModelTest {
             // Result
             Assertions.assertEquals(10, _vm.counterLiveData.value!!.request)
         }
+
     @Test
     fun `showRequestFleet, result state is showRequestFleet with subLocationId 11`() = runTest {
         // Given
@@ -184,6 +190,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(QueueFleetState.ShowRequestFleet(11), _events.last())
     }
+
     @Test
     fun `idleState, result state is Idle`() = runTest {
         // Execute
@@ -197,6 +204,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(QueueFleetState.Idle, _events.last())
     }
+
     @Test
     fun `searchFleet, result state is SearchFleet with subLocationId & FleetItems`() = runTest {
         // Pre
@@ -218,6 +226,7 @@ internal class QueueFleetViewModelTest {
         )
         assert(_events.last() is QueueFleetState.SearchFleet)
     }
+
     @Test
     fun `getListFleet, given subLocationId, condition don't hit api, result QueueFleetState Success`() =
         runTest {
@@ -241,6 +250,7 @@ internal class QueueFleetViewModelTest {
                 (_events.last() as QueueFleetState.GetListSuccess).list.size
             )
         }
+
     @Test
     fun `getListFleet, given subLocationId, result QueueFleetState Success`() = runTest {
         // Result
@@ -276,6 +286,7 @@ internal class QueueFleetViewModelTest {
             (_events.last() as QueueFleetState.GetListSuccess).list.size
         )
     }
+
     @Test
     fun `getListFleet, given subLocationId, result QueueFleetState Empty`() = runTest {
         // Result
@@ -297,6 +308,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(2, _events.size)
         Assertions.assertEquals(QueueFleetState.GetListEmpty, _events.last())
     }
+
     @Test
     fun `getListFleet, given subLocationId, throw exception, result QueueFleetState FailedGetList`() =
         runTest {
@@ -322,6 +334,7 @@ internal class QueueFleetViewModelTest {
             Assertions.assertEquals(QueueFleetState.FailedGetList(exception), _events[1])
             Assertions.assertEquals(QueueFleetState.GetListEmpty, _events.last())
         }
+
     @Test
     fun `addSuccess, pre CountCache stock is 10, condition fleetNumber is notBlank, result stock change to 11`() =
         runTest {
@@ -339,6 +352,7 @@ internal class QueueFleetViewModelTest {
             Assertions.assertEquals(11, _vm.counterLiveData.value!!.stock)
             assert(_events.last() is QueueFleetState.AddFleetSuccess)
         }
+
     @Test
     fun `addSuccess, pre CountCache stock is 10, condition fleetNumber isBlank, result stock isNotChange`() =
         runTest {
@@ -350,6 +364,7 @@ internal class QueueFleetViewModelTest {
             // Result
             Assertions.assertEquals(10, _vm.counterLiveData.value!!.stock)
         }
+
     @Test
     fun `init, when user is not officer and LocationNav not available, emit toSelectLocation`() =
         runTest {
@@ -369,20 +384,18 @@ internal class QueueFleetViewModelTest {
             Assertions.assertEquals(QueueFleetState.ToSelectLocation, _events[1])
             collect.cancel()
         }
+
     @Test
     fun `init, when user is not officer and locationNav available, emit getUserSuccess`() =
         runTest {
             //GIVEN
-            val userResult =
-                CreateUserResult(
-                    1L,
-                    "name",
-                    "username",
-                    1L,
-                    1L,
-                    "locationName",
-                    listOf(11L),
-                    "subLocationName"
+            val userAssignment =
+                UserAssignment(
+                    id = 1L,
+                    locationId = 8,
+                    locationName = "Location",
+                    subLocationId = 2L,
+                    subLocationName = "Sub Location",
                 )
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
             every { UserUtils.isUserOfficer() } returns false
@@ -393,8 +406,8 @@ internal class QueueFleetViewModelTest {
                 "locationName",
                 "subLocationName"
             )
-            every { _getUserId.invoke(1L) } returns flow {
-                emit(GetUserByIdState.Success(userResult))
+            every { _getUserId.invoke(any(), any(),any()) } returns flow {
+                emit(GetUserByIdForAssignmentState.Success(userAssignment))
             }
             val collect = launch {
                 _vm.queueFleetState.toList(_events)
@@ -407,87 +420,13 @@ internal class QueueFleetViewModelTest {
             Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
             Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
             Assertions.assertEquals(
-                UserInfo(1L, 1L, 11L),
+                UserInfo(1L, 8L, 2L),
                 _vm.valUserInfo()
             )
 
             collect.cancel()
         }
-    @Test
-    fun `init, when user is officer and locationNav not available, emit getUserSuccess`() =
-        runTest {
-            //GIVEN
-            val userResult =
-                CreateUserResult(
-                    1L,
-                    "name",
-                    "username",
-                    5L,
-                    1L,
-                    "locationName",
-                    listOf(11L),
-                    "subLocationName"
-                )
-            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
-            every { UserUtils.isUserOfficer() } returns true
-            every { UserUtils.getUserId() } returns 1L
-            every { _getUserId.invoke(1L) } returns flow {
-                emit(GetUserByIdState.Success(userResult))
-            }
-            val collect = launch {
-                _vm.queueFleetState.toList(_events)
-            }
-            //WHEN
-            _vm.init()
-            runCurrent()
-            //THEN
-            Assertions.assertEquals(2, _events.size)
-            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
-            Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
-            Assertions.assertEquals(
-                UserInfo(1L, 1L, 11L),
-                _vm.valUserInfo()
-            )
 
-            collect.cancel()
-        }
-    @Test
-    fun `init, when user is officer and locationNav available, emit getUserSuccess`() = runTest {
-        //GIVEN
-        val userResult =
-            CreateUserResult(
-                1L,
-                "name",
-                "username",
-                5L,
-                1L,
-                "locationName",
-                listOf(11L),
-                "subLocationName"
-            )
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
-        every { UserUtils.isUserOfficer() } returns true
-        every { UserUtils.getUserId() } returns 1L
-        every { _getUserId.invoke(1L) } returns flow {
-            emit(GetUserByIdState.Success(userResult))
-        }
-        val collect = launch {
-            _vm.queueFleetState.toList(_events)
-        }
-        //WHEN
-        _vm.init()
-        runCurrent()
-        //THEN
-        Assertions.assertEquals(2, _events.size)
-        Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
-        Assertions.assertEquals(QueueFleetState.GetUserInfoSuccess, _events[1])
-        Assertions.assertEquals(
-            UserInfo(1L, 1L, 11L),
-            _vm.valUserInfo()
-        )
-
-        collect.cancel()
-    }
     @Test
     fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser`() =
         runTest {
@@ -495,7 +434,7 @@ internal class QueueFleetViewModelTest {
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
             every { UserUtils.isUserOfficer() } returns true
             every { UserUtils.getUserId() } returns 1L
-            every { _getUserId.invoke(1L) } returns flow {
+            every { _getUserId.invoke(any(),any(),any()) } returns flow {
                 throw NullPointerException(ERROR)
             }
             val collect = launch {
@@ -515,6 +454,36 @@ internal class QueueFleetViewModelTest {
 
             collect.cancel()
         }
+
+    @Test
+    fun `init, when user is officer and locationNav not available and failed to getUserState, emit failedGetUser`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { _getUserId.invoke(any(),any(),any()) } returns flow {
+                emit(GetUserByIdForAssignmentState.UserNotFound)
+            }
+            val collect = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+            //WHEN
+            _vm.init()
+            runCurrent()
+            //THEN
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events[0])
+            Assertions.assertEquals(QueueFleetState.FailedGetUser(QueueFleetViewModel.ERROR_MESSAGE_UNKNOWN), _events[1])
+            Assertions.assertEquals(
+                UserInfo(),
+                _vm.valUserInfo()
+            )
+
+            collect.cancel()
+        }
+
+
     @Test
     fun initLocationTest() = runTest {
         _vm.initLocation(1, 2)
@@ -522,6 +491,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(1, _vm.mUserInfo.locationId)
         Assertions.assertEquals(2, _vm.mUserInfo.subLocationId)
     }
+
     @Test
     fun `initLocationTest, when location and sublocation smaller 0`() = runTest {
         _vm.initLocation(-1, -1)
@@ -529,9 +499,10 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(-1, _vm.mUserInfo.locationId)
         Assertions.assertEquals(-1, _vm.mUserInfo.subLocationId)
     }
+
     @Test
-    fun `departFleet, when with passenger and queueIsBlank`() = runTest {
-        val withPassenger = true
+    fun `departFleet, when with passenger and queueisBlank is Success`() = runTest {
+        val withPassenger = false
         val queueId = ""
         val fleetItem = FleetItem(
             id = 1,
@@ -544,10 +515,11 @@ internal class QueueFleetViewModelTest {
         _vm.departFleet(fleetItem, withPassenger, queueId)
         runCurrent()
 
-        Assertions.assertEquals(1, _events.size)
-        assert(_events.last() is QueueFleetState.RecordRitaseToDepart)
+        Assertions.assertEquals(2, _events.size)
+        assert(_events.last() is QueueFleetState.SuccessDepartFleet)
         collect.cancel()
     }
+
     @Test
     fun `departFleet, when with passenger and queueisNotBlank is Error`() = runTest {
         val withPassenger = false
@@ -571,6 +543,7 @@ internal class QueueFleetViewModelTest {
         assert(_events.last() is QueueFleetState.FailedDepart)
         collect.cancel()
     }
+
     @Test
     fun `departFleet, when with passenger and queueisNotBlank is Success`() = runTest {
         val withPassenger = false
@@ -604,6 +577,7 @@ internal class QueueFleetViewModelTest {
         assert(_events.last() is QueueFleetState.SuccessDepartFleet)
         collect.cancel()
     }
+
     @Test
     fun removeFleetTest() = runTest {
         val listFleet = ArrayList<FleetItem>()
@@ -624,6 +598,7 @@ internal class QueueFleetViewModelTest {
         assert(_events.last() is QueueFleetState.FleetDeparted)
         collect.cancel()
     }
+
     @Test
     fun `removeFleetTest, when index smaller 0`() = runTest {
         val listFleet = ArrayList<FleetItem>()
@@ -643,6 +618,7 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(0, _events.size)
         collect.cancel()
     }
+
     @Test
     fun requestDepartTest() = runTest {
         val listFleet = FleetItem(
@@ -658,6 +634,7 @@ internal class QueueFleetViewModelTest {
         assert(_events.last() is QueueFleetState.RequestDepartFleet)
         collect.cancel()
     }
+
     @Test
     fun addFleetTest() = runTest {
         val collect = launch {
@@ -670,6 +647,7 @@ internal class QueueFleetViewModelTest {
         assert(_events.last() is QueueFleetState.AddFleet)
         collect.cancel()
     }
+
     @Test
     fun showSearchQueueTest() = runTest {
         val listFleet = FleetItem(

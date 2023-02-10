@@ -49,5 +49,8 @@
     <string name="repeat_take_picture">Ambil Ulang Gambar</string>
     <string name="msg_not_get_picture">Silahkan ambil ulang gambar</string>
     <string name="msg_not_get_picture_title">Tidak dapat mengambil nomor lambung</string>
+    <string name="enter_name_location">Masukkan nama lokasi</string>
+    <string name="there_is_error">Terjadi kesalahan</string>
+    <string name="please_try_again">Silahkan coba lagi</string>
 
 </resources>

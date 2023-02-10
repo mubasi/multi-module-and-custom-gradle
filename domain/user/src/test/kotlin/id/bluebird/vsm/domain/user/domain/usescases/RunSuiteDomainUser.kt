@@ -12,7 +12,8 @@ import org.junit.platform.suite.api.Suite
     GetUserIdCasesTest::class,
     LoginCaseImplTest::class,
     LogoutCasesImplTest::class,
-    SearchUserCasesTest::class
+    SearchUserCasesTest::class,
+    ValidateForceUpdateUsesCasesTest::class
 )
 @ExperimentalCoroutinesApi
 class RunSuiteDomainUser

@@ -10,6 +10,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
@@ -39,20 +40,23 @@ internal class GetRolesCasesTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
         every { userRepository.getRoles() } returns flow {
-            emit(
-                UserOuterClass.GetRolesResponse.newBuilder()
-                    .build()
-            )
+            val temp = UserOuterClass.GetRolesResponse.newBuilder()
+            val roles = mutableListOf<UserOuterClass.RolesItem>()
+            for (i in 0 until 3){
+                roles.add(UserOuterClass.RolesItem.newBuilder().setId(i.toLong()).build())
+            }
+            temp.addAllRoleItems(roles)
+            emit(temp.build())
         }
 
         // Execute
         flowOf(getRolesCases.invoke()).test {
-
+            awaitItem().collectLatest {
+                for (i in 0 until 3){
+                    assert(it[i].id == i.toLong())
+                }
+            }
             // Result
-            Assertions.assertEquals(
-                this.awaitItem().single(),
-                list
-            )
             awaitComplete()
         }
     }

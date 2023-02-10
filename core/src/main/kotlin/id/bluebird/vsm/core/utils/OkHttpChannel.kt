@@ -16,13 +16,15 @@ class OkHttpChannel {
             Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER)
         private val DEVICE_ID_KEY: Metadata.Key<String> =
             Metadata.Key.of("device_id", Metadata.ASCII_STRING_MARSHALLER)
-
+        private val VERSION_CODE: Metadata.Key<String> =
+            Metadata.Key.of("version_code", Metadata.ASCII_STRING_MARSHALLER)
 
         var lastRequest: (() -> Unit)? = null
 
         val TAG = OkHttpChannel::class.java.simpleName
 
         var channel: ManagedChannel? = null
+        var versionCode: Long? = null
 
         private val loggingInterceptor = object : ClientInterceptor {
             override fun <ReqT, RespT> interceptCall(
@@ -31,7 +33,6 @@ class OkHttpChannel {
                 next: Channel
             ): ClientCall<ReqT, RespT> {
 
-                val auth: String? = AuthUtils.getAccessToken()
                 return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(
                     next.newCall(
                         method,
@@ -47,17 +48,8 @@ class OkHttpChannel {
                     }
 
                     override fun start(responseListener: Listener<RespT>?, headers: Metadata?) {
-                        if (auth.isNullOrEmpty().not()) {
-                            headers?.put(
-                                AUTHORIZATION_KEY,
-                                "Bearer $auth"
-                            )
-                        }
-
-                        headers?.put(
-                            DEVICE_ID_KEY,
-                            AuthUtils.getAppUUID()
-                        )
+                        val auth: String = AuthUtils.getAccessToken()
+                        initHeader(headers = headers, auth = auth)
 
                         val listener = object : Listener<RespT>() {
                             override fun onMessage(message: RespT) {
@@ -97,7 +89,27 @@ class OkHttpChannel {
             }
         }
 
-        fun initChannel(tokenExpiredCallback: TokenExpiredCallback) {
+        fun initHeader(headers: Metadata?, auth : String?){
+            headers?.let {
+                if (auth.isNullOrEmpty().not()) {
+                    it.put(
+                        AUTHORIZATION_KEY,
+                        "Bearer $auth",
+                    )
+                }
+                it.put(
+                    DEVICE_ID_KEY,
+                    AuthUtils.getAppUUID(),
+                )
+                it.put(
+                    VERSION_CODE,
+                    versionCode.toString(),
+                )
+            }
+        }
+
+        fun initChannel(tokenExpiredCallback: TokenExpiredCallback, vCode: Long?) {
+            versionCode = vCode ?: -1
             val builder: ManagedChannel =
                 OkHttpChannelBuilder.forAddress(BuildConfig.BASE_URL, 443)
                     .intercept(loggingInterceptor)

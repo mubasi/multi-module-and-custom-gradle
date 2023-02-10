@@ -5,11 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
-import id.bluebird.vsm.core.extensions.isUserOfficer
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.user.GetUserByIdState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserId
-import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.passenger.CounterBarState
 import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
 import id.bluebird.vsm.domain.passenger.ListQueueSkippedState
@@ -18,6 +14,9 @@ import id.bluebird.vsm.domain.passenger.domain.cases.CounterBar
 import id.bluebird.vsm.domain.passenger.domain.cases.CurrentQueue
 import id.bluebird.vsm.domain.passenger.domain.cases.ListQueueSkipped
 import id.bluebird.vsm.domain.passenger.domain.cases.ListQueueWaiting
+import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
+import id.bluebird.vsm.domain.user.model.UserAssignment
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import id.bluebird.vsm.feature.home.model.*
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class QueuePassengerViewModel(
-    private val getUserId: GetUserId,
+    private val getUserByIdForAssignment: GetUserByIdForAssignment,
     private val currentQueue: CurrentQueue,
     private val listQueueWaiting: ListQueueWaiting,
     private val listQueueSkipped: ListQueueSkipped,
@@ -72,7 +71,8 @@ class QueuePassengerViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesGetUser)
-            getUserId.invoke(UserUtils.getUserId())
+            val nav = LocationNavigationTemporary.getLocationNav()
+            getUserByIdForAssignment.invoke(UserUtils.getUserId(), locationIdNav = nav?.locationId, subLocationIdNav = nav?.subLocationId)
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _queuePassengerState.emit(
@@ -83,29 +83,23 @@ class QueuePassengerViewModel(
                 }
                 .collect {
                     when (it) {
-                        is GetUserByIdState.Success -> {
-                            mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
-                                it.result.locationId
-                            } else {
-                                LocationNavigationTemporary.getLocationNav()?.locationId ?: it.result.locationId
-                            }
-                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
-                                it.result.subLocationsId.first()
-                            } else {
-                                LocationNavigationTemporary.getLocationNav()?.subLocationId ?: it.result.subLocationsId.first()
-                            }
-                            createTitleLocation(it.result)
+                        is GetUserByIdForAssignmentState.Success -> {
+                            mUserInfo = UserInfo(userId = it.result.id, locationId = it.result.locationId, subLocationId = it.result.subLocationId)
+                            createTitleLocation(userAssignment = it.result)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
+                        }
+                        GetUserByIdForAssignmentState.UserNotFound -> {
+                            _queuePassengerState.emit(QueuePassengerState.FailedGetUser(
+                                ERROR_MESSAGE_UNKNOWN))
                         }
                     }
                 }
         }
     }
 
-    private fun createTitleLocation(it: CreateUserResult) {
-        with(it) {
-            titleLocation.value = if (roleId.isUserOfficer()) {
+    private fun createTitleLocation(userAssignment: UserAssignment) {
+        with(userAssignment) {
+            titleLocation.value = if (isOfficer) {
                 "$locationName $subLocationName".getLastSync()
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()

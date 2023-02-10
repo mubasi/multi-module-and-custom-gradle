@@ -1,7 +1,9 @@
 package id.bluebird.vsm.domain.user
 
+import id.bluebird.vsm.domain.user.domain.usescases.GetUserByIdForAssignmentUsesCases
 import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.user.model.SearchUserResult
+import id.bluebird.vsm.domain.user.model.UserAssignment
 
 sealed class UserDomainState<out T : Any> {
     data class Success<out T : Any>(val value: T) : UserDomainState<T>()
@@ -9,6 +11,12 @@ sealed class UserDomainState<out T : Any> {
 
 sealed class GetUserByIdState {
     data class Success(val result: CreateUserResult) : GetUserByIdState()
+    object UserIsNotFound: GetUserByIdState()
+}
+
+sealed class GetUserByIdForAssignmentState{
+    data class Success(val result: UserAssignment):GetUserByIdForAssignmentState()
+    object UserNotFound:GetUserByIdForAssignmentState()
 }
 
 sealed class SearchUserState {

@@ -18,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
+import id.bluebird.vsm.core.BuildConfig
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.feature.select_location.SelectNavigationVariable
 import id.bluebird.vsm.pangkalan.databinding.ActivityMainBinding
@@ -71,6 +72,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             mBinding.navView.menu.findItem(R.id.user_management_nav).isVisible =
                 UserUtils.isUserOfficer().not()
+
+            setupVisibleToolbar(destination.id)
+
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -110,6 +114,10 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.selectLocationFragment -> {
                         setToolbarTittleForLocationFragment(args)
                     }
+                    R.id.monitoringFragmentSearch -> {
+                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                        navigateBackWithArrow(R.id.monitoringFragmentSearch)
+                    }
                     else -> {
                         toolbarVisibility()
                     }
@@ -138,6 +146,15 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             toolbar.visibility = View.VISIBLE
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             setToggle()
+        }
+    }
+
+    private fun setupVisibleToolbar(destination : Int){
+        if(destination == R.id.monitoringFragmentSearch) {
+            supportActionBar?.hide()
+        } else {
+            supportActionBar?.show()
+            toolbarVisibility()
         }
     }
 
