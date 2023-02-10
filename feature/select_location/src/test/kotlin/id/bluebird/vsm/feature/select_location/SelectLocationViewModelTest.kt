@@ -5,6 +5,7 @@ import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
 import id.bluebird.vsm.domain.location.model.LocationsWithSub
 import id.bluebird.vsm.domain.location.model.SubLocationResult
 import id.bluebird.vsm.feature.select_location.model.LocationModel
+import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import id.bluebird.vsm.feature.select_location.model.SubLocation
 import io.mockk.every
 import io.mockk.mockk
@@ -156,6 +157,13 @@ internal class SelectLocationViewModelTest {
             val isFleetMenu = false
             val subLocation = SubLocation(11L, "subLocation name", 1L, "location name")
 
+            val locNav = LocationNavigation(
+                locationId = subLocation.locationId,
+                locationName = subLocation.locationName,
+                subLocationId = subLocation.id,
+                subLocationName = subLocation.name
+            )
+
             val collect = launch {
                 subjectUnderTest.state.toList(states)
             }
@@ -167,8 +175,129 @@ internal class SelectLocationViewModelTest {
             //THEN
             assertEquals(1, states.size)
             assertEquals(SelectLocationState.ToAssign(isFleetMenu), states[0])
+            assertEquals(locNav, subjectUnderTest.locationNav)
             collect.cancel()
 
         }
 
+    @Test
+    fun `searchScreen, when locationIsEmpty`() = runTest {
+        val location : ArrayList<LocationModel> = ArrayList()
+        subjectUnderTest.setValLocation(location)
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.searchScreen()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.EmptyLocation, states[0])
+    }
+
+    @Test
+    fun `searchScreen, when locationIsNotEmpty`() = runTest {
+        val location : ArrayList<LocationModel> = ArrayList()
+
+        location.add(
+            LocationModel(
+                id = 1,
+                name = "Location Name",
+                list = listOf(),
+                isExpanded = true,
+                type = 1
+            )
+        )
+
+        subjectUnderTest.setValLocation(location)
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.searchScreen()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.SearchLocation, states[0])
+    }
+
+    @Test
+    fun `setFromSearch, when isFleetMenuFalse`() = runTest {
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.setFromSearch()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.ToAssignFromSearach(false), states[0])
+    }
+
+    @Test
+    fun `setFromSearch, when isFleetMenuTrue`() = runTest {
+
+        subjectUnderTest.setValFleetMenu(true)
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.setFromSearch()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.ToAssignFromSearach(true), states[0])
+    }
+
+    @Test
+    fun `filterSearchTest when is Error`() = runTest {
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.filterFleet()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.ErrorFilter, states[0])
+    }
+
+
+    @Test
+    fun `filterSearchTest when is Not Error`() = runTest {
+        val filteredlist: ArrayList<LocationModel> = ArrayList()
+
+        filteredlist.add(
+            LocationModel(
+                id = 1,
+                name = "Location Name",
+                list = listOf(),
+                isExpanded = true,
+                type = 1
+            )
+        )
+
+        subjectUnderTest._locations.addAll(filteredlist)
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.filterFleet()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationState.FilterFleet(filteredlist), states[0])
+    }
 }

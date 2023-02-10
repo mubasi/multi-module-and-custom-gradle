@@ -2,6 +2,8 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    id(Plugins.safeargs)
+    kotlin(Plugins.parcelize)
     id("jacoco")
 }
 

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/select_location_nav"
     app:startDestination="@id/selectLocationFragment">
-
     <fragment
         android:id="@+id/selectLocationFragment"
         android:name="id.bluebird.vsm.feature.select_location.FragmentSelectLocation"
@@ -13,8 +12,14 @@
             android:defaultValue="false"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="id.bluebird.vsm.feature.select_location.search_mall_location.FragmentSearchMallLocation"
+        android:label="@string/search_location_mall">
+    </fragment>
     <argument android:defaultValue="false"
         app:argType="boolean"
         android:name="isMenu"/>
     <deepLink app:uri="android-app://id.bluebird.mall/select_location/{isMenu}" />
+
 </navigation>

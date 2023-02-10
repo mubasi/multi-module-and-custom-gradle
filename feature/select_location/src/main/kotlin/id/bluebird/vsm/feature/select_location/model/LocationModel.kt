@@ -1,5 +1,8 @@
 package id.bluebird.vsm.feature.select_location.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class LocationModel(
     val id: Long,
     val name: String,

@@ -1,5 +1,7 @@
 package id.bluebird.vsm.feature.select_location
 
+import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.domain.location.GetLocationsWithSubState
@@ -16,8 +18,20 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     private var _state: MutableSharedFlow<SelectLocationState> = MutableSharedFlow()
     val state: SharedFlow<SelectLocationState> = _state.asSharedFlow()
-    private val _locations: MutableList<LocationModel> = mutableListOf()
+    val _locations: MutableList<LocationModel> = mutableListOf()
+    var params: MutableLiveData<String> = MutableLiveData("")
+    var locationNav : LocationNavigation? = null
     private var _isFleetMenu = false
+
+    @VisibleForTesting
+    fun setValLocation(value : ArrayList<LocationModel>) {
+        _locations.addAll(value)
+    }
+
+    @VisibleForTesting
+    fun setValFleetMenu(value : Boolean) {
+        _isFleetMenu = value
+    }
 
     fun init(isFleetMenu: Boolean) {
         _isFleetMenu = isFleetMenu
@@ -26,6 +40,41 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
             _state.emit(SelectLocationState.OnProgressGetLocations)
             delay(500)
             getData()
+        }
+    }
+
+    fun filterFleet() {
+        viewModelScope.launch {
+            val filteredlist: ArrayList<LocationModel> = ArrayList()
+
+            for (item in _locations) {
+                if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
+                    filteredlist.add(item)
+                }
+            }
+
+            if (filteredlist.isEmpty()) {
+                _state.emit(SelectLocationState.ErrorFilter)
+            } else {
+                _state.emit(SelectLocationState.FilterFleet(filteredlist))
+            }
+        }
+    }
+
+    fun searchScreen() {
+        viewModelScope.launch {
+            if(_locations.isEmpty()) {
+                _state.emit(SelectLocationState.EmptyLocation)
+            } else {
+                _state.emit(SelectLocationState.SearchLocation)
+            }
+        }
+    }
+
+    fun setFromSearch() {
+        viewModelScope.launch {
+            updateValNav()
+            _state.emit(SelectLocationState.ToAssignFromSearach(isFleetMenu = _isFleetMenu))
         }
     }
 
@@ -76,14 +125,19 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     fun selectLocation(subLocation: SubLocation) {
         viewModelScope.launch {
-            val locationNav = LocationNavigation(
+            val tempLocationNav = LocationNavigation(
                 locationId = subLocation.locationId,
                 locationName = subLocation.locationName,
                 subLocationId = subLocation.id,
                 subLocationName = subLocation.name
             )
-            LocationNavigationTemporary.updateLocationNav(locationNav)
+            locationNav = tempLocationNav
+            updateValNav()
             _state.emit(SelectLocationState.ToAssign(isFleetMenu = _isFleetMenu))
         }
+    }
+
+    private fun updateValNav(){
+        LocationNavigationTemporary.updateLocationNav(locationNav)
     }
 }
