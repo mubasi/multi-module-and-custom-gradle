@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <import type="android.view.View" />
@@ -56,6 +57,15 @@
                 android:paddingStart="8dp"
                 android:text="@={vm.params}"
                 android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/clear_search"
+                style="?android:buttonBarButtonStyle"
+                android:paddingBottom="5dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_cross_disable"
+                android:layout_width="24dp"
+                android:layout_height="24dp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
