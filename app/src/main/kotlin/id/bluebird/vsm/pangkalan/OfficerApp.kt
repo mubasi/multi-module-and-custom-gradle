@@ -5,6 +5,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.extensions.getVersionCode
 import id.bluebird.vsm.core.utils.OkHttpChannel
 import id.bluebird.vsm.core.utils.hawk.AuthUtils
 import id.bluebird.vsm.core.utils.hawk.UserUtils
@@ -20,7 +21,7 @@ class OfficerApp : Application() {
         FirebaseCrashlytics.getInstance().setUserId(UserUtils.getUserId().toString())
         FirebaseCrashlytics.getInstance().setCustomKey("role", UserUtils.getPrivilege() ?: "-")
         initDependencyInjection(this)
-        OkHttpChannel.initChannel(tokenExpiredCallback = tokenExpiredCallback)
+        OkHttpChannel.initChannel(tokenExpiredCallback = tokenExpiredCallback, applicationContext.getVersionCode())
     }
 
     private val tokenExpiredCallback = object : OkHttpChannel.Companion.TokenExpiredCallback {

@@ -501,8 +501,8 @@ internal class QueueFleetViewModelTest {
     }
 
     @Test
-    fun `departFleet, when with passenger and queueIsBlank`() = runTest {
-        val withPassenger = true
+    fun `departFleet, when with passenger and queueisBlank is Success`() = runTest {
+        val withPassenger = false
         val queueId = ""
         val fleetItem = FleetItem(
             id = 1,
@@ -515,8 +515,8 @@ internal class QueueFleetViewModelTest {
         _vm.departFleet(fleetItem, withPassenger, queueId)
         runCurrent()
 
-        Assertions.assertEquals(1, _events.size)
-        assert(_events.last() is QueueFleetState.RecordRitaseToDepart)
+        Assertions.assertEquals(2, _events.size)
+        assert(_events.last() is QueueFleetState.SuccessDepartFleet)
         collect.cancel()
     }
 
