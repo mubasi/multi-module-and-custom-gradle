@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="monitoring_title">Pemantauan</string>
+    <string name="monitoring_search">Cari Lokasi Pemantauan</string>
     <string name="monitoring_hint">Geser kesamping untuk informasi lainnya</string>
     <string name="rotate_screen">Rotate Screen</string>
     <string name="set_buffer_amount">Atur jumlah buffer</string>
     <string name="save">Simpan</string>
     <string name="location">Lokasi</string>
+    <string name="total_buffer">Jumlah Buffer</string>
+    <string name="success_change">Berhasil diubah</string>
+    <string name="failed_change">Gagal diubah</string>
     <string-array name="column_header">
         <item>Antrian Armada</item>
         <item>Antrian Penumpang</item>

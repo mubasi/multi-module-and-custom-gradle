@@ -9,4 +9,5 @@
     <string name="msg_not_show_location">daftar lokasi tidak tersedia</string>
     <string name="title_not_found_location">Tidak dapat menemukan lokasi</string>
     <string name="msg_not_found_location">Nama mall yang dicari tidak ditemukan</string>
+    <string name="search_hint_location">Masukkan nama lokasi</string>
 </resources>
