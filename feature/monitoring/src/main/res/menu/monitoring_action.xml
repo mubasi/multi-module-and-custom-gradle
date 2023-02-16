@@ -7,4 +7,10 @@
         android:icon="@drawable/ic_rotation"
         android:title="@string/rotate_screen"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/searchScreen"
+        android:icon="@drawable/ic_search"
+        android:title="@string/monitoring_search"
+        app:showAsAction="always"/>
 </menu>
