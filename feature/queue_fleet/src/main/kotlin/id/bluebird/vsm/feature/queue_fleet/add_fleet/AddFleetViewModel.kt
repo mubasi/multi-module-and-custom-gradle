@@ -47,6 +47,10 @@ class AddFleetViewModel(
         _subLocation = temp
     }
     @VisibleForTesting
+    fun setLocationId(temp: Long) {
+        _locationId = temp
+    }
+    @VisibleForTesting
     fun setIsSearchQueue(temp: Boolean) {
         _isSearchQueue = temp
     }
@@ -57,6 +61,10 @@ class AddFleetViewModel(
     @VisibleForTesting
     fun valSubLocationId(): Long {
         return _subLocation
+    }
+    @VisibleForTesting
+    fun valLocationId(): Long {
+        return _locationId
     }
 
     fun init(locationId: Long, subLocationId: Long, isSearchQueue: Boolean) {
@@ -80,8 +88,8 @@ class AddFleetViewModel(
             delay(200)
             _addFleetState.emit(AddFleetState.OnProgressGetList)
             delay(200)
-            searchWaitingQueue
-                .invoke(param.value ?: "", _locationId, _subLocation)
+            val queueNumber = param.value ?: ""
+            searchWaitingQueue.invoke(queueNumber, _locationId, _subLocation)
                 .catch { e ->
                     _addFleetState.emit(AddFleetState.QueueSearchError(e))
                 }
@@ -137,14 +145,6 @@ class AddFleetViewModel(
                 .flowOn(Dispatchers.Main)
                 .catch { cause: Throwable ->
                     _addFleetState.emit(AddFleetState.AddError(err = cause))
-                    if(cause.message.equals("UNKNOWN: Duplicate fleet", ignoreCase = true).not()) {
-                        FirebaseCrashlytics.getInstance().setCustomKeys {
-                            key("location_id", locationId)
-                            key("sub_location", _subLocation)
-                            key("fleet_number", selectedFleetNumber.value ?: "")
-                        }
-                        FirebaseCrashlytics.getInstance().recordException(cause)
-                    }
                 }
                 .collect {
                     when (it) {

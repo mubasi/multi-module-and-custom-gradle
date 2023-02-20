@@ -71,10 +71,11 @@ internal class AddFleetViewModelTest {
         )
         _vm.setParams("aaa")
         _vm.setSubLocation(11)
+        _vm.setLocationId(1)
 
         every {
             _searchWaitingQueue.invoke(
-                queueNumber = "aaa", 1, 11
+                queueNumber = any(), any(), any()
             )
         } returns flow {
             emit(
@@ -113,6 +114,7 @@ internal class AddFleetViewModelTest {
         )
         _vm.setParams("aaa")
         _vm.setSubLocation(11)
+        _vm.setLocationId(1)
 
         every {
             _searchWaitingQueue.invoke(
@@ -166,6 +168,8 @@ internal class AddFleetViewModelTest {
         _vm.setIsSearchQueue(false)
         _vm.selectedFleetNumber.value = "aa"
         _vm.setSubLocation(1)
+        _vm.setLocationId(10)
+        _vm.setParams("aa")
 
         every { UserUtils.getLocationId() } returns 10
         every {
@@ -209,6 +213,7 @@ internal class AddFleetViewModelTest {
         //given
         _vm.setIsSearchQueue(false)
         _vm.selectedFleetNumber.value = "aa"
+        _vm.param.value = null
         _vm.setSubLocation(1)
         val result = Throwable()
 
@@ -278,12 +283,12 @@ internal class AddFleetViewModelTest {
     }
     @Test
     fun `initTest, check val search and sublocation`() = runTest {
-        val subLocation: Long = 1
         val isSearchQueue = true
 
-        _vm.init(locationId = 1, subLocationId = subLocation, isSearchQueue = isSearchQueue)
+        _vm.init(locationId = 1, subLocationId = 11, isSearchQueue = isSearchQueue)
 
-        Assertions.assertEquals(1, _vm.valSubLocationId())
+        Assertions.assertEquals(11, _vm.valSubLocationId())
+        Assertions.assertEquals(1, _vm.valLocationId())
         Assertions.assertEquals(true, _vm.valIsSearchQueue())
     }
 
