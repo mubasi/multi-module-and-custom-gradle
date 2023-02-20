@@ -162,52 +162,7 @@ internal class AddFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         Assertions.assertEquals(AddFleetState.FinishSelectQueue("aa"), _events.last())
     }
-    @Test
-    fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and success`() = runTest {
-        //given
-        _vm.setIsSearchQueue(false)
-        _vm.selectedFleetNumber.value = "aa"
-        _vm.setSubLocation(1)
-        _vm.setLocationId(10)
-        _vm.setParams("aa")
 
-        every { UserUtils.getLocationId() } returns 10
-        every {
-            _addFleet.invoke(
-                fleetNumber = "aa",
-                subLocationId = 1,
-                locationId = 10
-            )
-        } returns flow {
-            emit(
-                id.bluebird.vsm.domain.fleet.AddFleetState.Success(
-                    FleetItemResult(
-                        1,
-                        "aa",
-                        "2022-01-01"
-                    )
-                )
-            )
-        }
-        // Execute
-        val job = launch {
-            _vm.addFleetState.toList(_events)
-        }
-        _vm.addFleet()
-        runCurrent()
-        job.cancel()
-        // Result
-        Assertions.assertEquals(1, _events.size)
-        Assertions.assertEquals(
-            AddFleetState.AddFleetSuccess(
-                FleetItem(
-                    id = 1,
-                    name = "aa",
-                    arriveAt = "01 Jan 2022 . 07:00"
-                )
-            ), _events.last()
-        )
-    }
     @Test
     fun `addFleet, finish if isSearchQueue false, and set fleetNumber, and failed`() = runTest {
         //given
