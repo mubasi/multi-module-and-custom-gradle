@@ -1,10 +1,13 @@
-package id.bluebird.vsm.feature.monitoring.main
+package id.bluebird.vsm.feature.monitoring.search_location
 
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -14,14 +17,16 @@ import androidx.navigation.fragment.findNavController
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.core.utils.StringUtils
 import id.bluebird.vsm.feature.monitoring.R
-import id.bluebird.vsm.feature.monitoring.databinding.MonitoringFragmentBinding
+import id.bluebird.vsm.feature.monitoring.databinding.FragmentSearchMonitoringBinding
 import id.bluebird.vsm.feature.monitoring.edit_buffer.FragmentEditBufferDialog
+import id.bluebird.vsm.feature.monitoring.main.MonitoringState
+import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
 import id.bluebird.vsm.feature.monitoring.tableview.AdapterMonitoringTable
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentMonitoring: Fragment() {
-    private lateinit var mBinding: MonitoringFragmentBinding
+class FragmentSearchLocationMonitoring : Fragment() {
+    private lateinit var mBinding: FragmentSearchMonitoringBinding
     private lateinit var tableAdapter: AdapterMonitoringTable
     private val monitoringViewModel: MonitoringViewModel by viewModel()
 
@@ -30,7 +35,7 @@ class FragmentMonitoring: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.monitoring_fragment, container, false)
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_monitoring, container, false)
         return mBinding.root
     }
 
@@ -42,10 +47,10 @@ class FragmentMonitoring: Fragment() {
             isNotificationVisible = true
             state = MonitoringState.OnProgressGetList
         }
-        setHasOptionsMenu(true)
         initTable()
+        setupFilter()
+        visibleIconClear(false)
         monitoringViewModel.init()
-
         monitoringViewModel.notificationVisibility.observe(viewLifecycleOwner) {
             mBinding.isNotificationVisible = it
         }
@@ -86,44 +91,19 @@ class FragmentMonitoring: Fragment() {
                             )
                             showNotification(message, R.color.warning_0)
                         }
-                        MonitoringState.SearchScreen -> {
-                            findNavController().navigate(R.id.monitoringFragmentSearch)
+                        is MonitoringState.FilterLocation -> {
+                            tableAdapter.setItem(it.data)
+                        }
+                        MonitoringState.BackSearchScreen -> {
+                            findNavController().popBackStack()
                         }
                         else -> {
-                            //do noting
+                            //do nothing
                         }
                     }
                 }
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
-            R.id.rotateScreen -> {
-                when(requireActivity().requestedOrientation) {
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT -> {
-                        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                    }
-                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE -> {
-                        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    }
-                    else -> {
-                        //do nothing
-                    }
-                }
-                true
-            }
-            R.id.searchScreen -> {
-                monitoringViewModel.searchScreen()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.monitoring_action, menu)
     }
 
     private fun initTable() {
@@ -134,6 +114,24 @@ class FragmentMonitoring: Fragment() {
         }
     }
 
+    private fun setupFilter(){
+        mBinding.searchForm.doOnTextChanged { text, _, _, _ ->
+            monitoringViewModel.params.value = text.toString()
+            monitoringViewModel.filterLocation()
+            visibleIconClear(text?.isNotEmpty() ?: false)
+        }
+        mBinding.clearSearch.setOnClickListener {
+            mBinding.searchForm.text?.clear()
+            monitoringViewModel.clearSearch()
+            visibleIconClear(false)
+        }
+
+    }
+
+    private fun visibleIconClear(result : Boolean){
+        mBinding.clearSearch.isVisible = result
+    }
+
     private fun showNotification(message : Spanned, color : Int){
         DialogUtils.showSnackbar(
             requireView(),
@@ -141,5 +139,4 @@ class FragmentMonitoring: Fragment() {
             color
         )
     }
-
 }

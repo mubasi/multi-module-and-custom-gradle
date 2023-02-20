@@ -19,6 +19,8 @@ class MonitoringViewModel(
     private val _monitoringState: MutableSharedFlow<MonitoringState> = MutableSharedFlow()
     val monitoringState = _monitoringState.asSharedFlow()
     val notificationVisibility = MutableLiveData(true)
+    val listLocation : MutableList<MonitoringModel> = mutableListOf()
+    var params: MutableLiveData<String> = MutableLiveData("")
     private val isPrivilegedUser: Boolean by lazy {
         when(UserUtils.getPrivilege()) {
             UserUtils.SVP, UserUtils.OFFICER -> false
@@ -52,6 +54,7 @@ class MonitoringViewModel(
                                     editableBuffer = isPrivilegedUser
                                 )
                             }
+                            listLocation.addAll(data)
                             _monitoringState.emit(MonitoringState.OnSuccessGetList(data))
                         }
                     }
@@ -80,5 +83,42 @@ class MonitoringViewModel(
         viewModelScope.launch {
             _monitoringState.emit(MonitoringState.RequestEditBuffer(model))
         }
+    }
+
+    fun searchScreen(){
+        viewModelScope.launch {
+            _monitoringState.emit(MonitoringState.SearchScreen)
+        }
+    }
+
+    fun backSearchScreen(){
+        viewModelScope.launch {
+            _monitoringState.emit(MonitoringState.BackSearchScreen)
+        }
+    }
+
+    fun filterLocation() {
+        viewModelScope.launch {
+            if (resultFilterLocation().isEmpty()) {
+                _monitoringState.emit(MonitoringState.ErrorFilter)
+            } else {
+                _monitoringState.emit(MonitoringState.FilterLocation(resultFilterLocation()))
+            }
+        }
+    }
+
+    private fun resultFilterLocation() : ArrayList<MonitoringModel> {
+        val filteredlist: ArrayList<MonitoringModel> = ArrayList()
+        for (item in listLocation) {
+            if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: "")) {
+                filteredlist.add(item)
+            }
+        }
+        return filteredlist
+    }
+
+    fun clearSearch(){
+        params.value = ""
+        filterLocation()
     }
 }

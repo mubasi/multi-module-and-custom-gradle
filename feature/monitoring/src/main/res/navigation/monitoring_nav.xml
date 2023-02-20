@@ -10,6 +10,10 @@
         android:label="@string/monitoring_title">
 
     </fragment>
+    <fragment
+        android:id="@+id/monitoringFragmentSearch"
+        android:name="id.bluebird.vsm.feature.monitoring.search_location.FragmentSearchLocationMonitoring"
+        android:label="@string/monitoring_search"/>
 
     <deepLink
         android:id="@+id/deepLink"
