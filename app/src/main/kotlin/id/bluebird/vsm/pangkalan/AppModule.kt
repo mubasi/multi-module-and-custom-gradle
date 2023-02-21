@@ -88,6 +88,7 @@ object AppModule {
         single<CreateEditUser> { CreateEditUserCases(get()) }
         single<GetRoles> { GetRolesCases(get()) }
         single<GetUserId> { GetUserIdCases(get()) }
+        single<GetUserByIdForAssignment> { GetUserByIdForAssignmentUsesCases(get()) }
         single<ValidateForceUpdate> { ValidateForceUpdateUsesCases(get()) }
     }
     private val fleetCases = module {
