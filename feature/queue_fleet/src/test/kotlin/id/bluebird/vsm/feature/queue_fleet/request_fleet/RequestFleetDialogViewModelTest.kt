@@ -5,6 +5,7 @@ import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.RequestState
 import id.bluebird.vsm.domain.fleet.domain.cases.RequestFleet
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

@@ -13,6 +13,7 @@ import id.bluebird.vsm.domain.passenger.GetQueueReceiptState
 import id.bluebird.vsm.domain.passenger.TakeQueueState
 import id.bluebird.vsm.domain.passenger.domain.cases.GetQueueReceipt
 import id.bluebird.vsm.domain.passenger.domain.cases.TakeQueue
+import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.feature.home.model.QueueReceiptCache
 import id.bluebird.vsm.feature.home.model.TakeQueueCache
 import id.bluebird.vsm.feature.home.model.UserInfo
@@ -72,22 +73,33 @@ class DialogQueueReceiptViewModel(
                     when (it) {
                         is GetUserByIdState.Success -> {
                             mUserInfo = UserInfo(it.result.id)
-                            mUserInfo.locationId = if (it.result.roleId.isUserOfficer()) {
-                                it.result.locationId
-                            } else {
-                                LocationNavigationTemporary.getLocationNav()?.locationId ?: it.result.locationId
-                            }
-                            mUserInfo.subLocationId = if (it.result.roleId.isUserOfficer()) {
-                                it.result.subLocationsId.first()
-                            } else {
-                                LocationNavigationTemporary.getLocationNav()?.subLocationId ?: it.result.subLocationsId.first()
-                            }
+                            assignLocationId(createResult = it.result)
+                            assignSubLocation(createResult = it.result)
                             _dialogQueueReceiptState.emit(DialogQueueReceiptState.GetUserInfoSuccess)
                         }
                     }
                 }
         }
     }
+
+    private fun assignSubLocation(createResult: CreateUserResult) {
+        mUserInfo.subLocationId = if (createResult.roleId.isUserOfficer()) {
+            createResult.subLocationsId.first()
+        } else {
+            getLocationNav()?.subLocationId ?: createResult.subLocationsId.first()
+        }
+    }
+
+    private fun assignLocationId(createResult: CreateUserResult) {
+        mUserInfo.locationId = if (createResult.roleId.isUserOfficer()) {
+            createResult.locationId
+        } else {
+            getLocationNav()?.locationId ?: createResult.locationId
+        }
+    }
+
+    private fun getLocationNav() = LocationNavigationTemporary.getLocationNav()
+
 
     fun getQueue() {
         viewModelScope.launch {
