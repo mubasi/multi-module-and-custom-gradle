@@ -65,4 +65,13 @@ internal class GetUserIdCasesTest {
         }
     }
 
+    @Test
+    fun `GetUserId, condition userId less than 1, result `() = runTest {
+        // Execute
+        flowOf(getUserIdCases.invoke(0)).test {
+            assert(awaitItem().single() is GetUserByIdState.UserIsNotFound)
+            awaitComplete()
+        }
+    }
+
 }

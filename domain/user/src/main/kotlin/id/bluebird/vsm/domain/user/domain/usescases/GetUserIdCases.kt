@@ -34,7 +34,9 @@ class GetUserIdCases(private val userRepository: UserRepository) : GetUserId {
                 emit(GetUserByIdState.Success(mResult))
             }
         } else {
-            emit(GetUserByIdState.Success(CreateUserResult()))
+            emit(GetUserByIdState.UserIsNotFound)
         }
     }
+
+
 }

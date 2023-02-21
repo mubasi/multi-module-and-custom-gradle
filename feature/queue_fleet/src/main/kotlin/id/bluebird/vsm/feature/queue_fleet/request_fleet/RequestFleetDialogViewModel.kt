@@ -7,13 +7,15 @@ import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.RequestState
 import id.bluebird.vsm.domain.fleet.domain.cases.RequestFleet
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class RequestFleetDialogViewModel(private val requestFleet: RequestFleet) : ViewModel() {
+class RequestFleetDialogViewModel(private val requestFleet: RequestFleet, val dispatcher: CoroutineDispatcher = Dispatchers.Default) : ViewModel() {
     companion object {
 
         const val MINIMUM_COUNTER_VALUE = 1
