@@ -509,6 +509,19 @@ internal class QueueFleetViewModelTest {
             name = "aa",
             arriveAt = "bb"
         )
+        every { _departFleet.invoke(any(), any(), any(), any(), any(), any()) } returns flow {
+            emit(
+                DepartFleetState.Success(
+                    FleetDepartResult(
+                        taxiNo = "aa",
+                        message = "bb",
+                        stockType = "cc",
+                        stockId = "dd",
+                        createdAt = "ff"
+                    )
+                )
+            )
+        }
         val collect = launch {
             _vm.queueFleetState.toList(_events)
         }
