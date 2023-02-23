@@ -177,10 +177,15 @@ class QueueFleetViewModel(
     }
 
     fun departFleet(fleetItem: FleetItem, isWithPassenger: Boolean = false, queueId: String = "") {
-        if (isWithPassenger && queueId.isBlank()) {
-            showRecordRitase(fleetItem, queueId)
-            return
-        }
+        /**
+         * disable this condition (showRecordRitase)
+         * for not selected queue and set fleet only ada penumpang or tanpa penumpang
+         * this disable in version 1.1.2
+         */
+//        if (isWithPassenger && queueId.isBlank()) {
+//            showRecordRitase(fleetItem, queueId)
+//            return
+//        }
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressDepartFleet)
             departFleet.invoke(
