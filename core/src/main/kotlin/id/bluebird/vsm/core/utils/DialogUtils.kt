@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import id.bluebird.vsm.core.R
+import id.bluebird.vsm.core.databinding.DialogProgressBinding
 import id.bluebird.vsm.core.databinding.ErrorViewBinding
 
 object DialogUtils {
@@ -28,6 +29,23 @@ object DialogUtils {
         binding?.tvTitleError?.text = title ?: "Bermasalah"
         binding?.btnSubmitError
             ?.setOnClickListener { bottomDialog.dismiss() }
+        bottomDialog.show()
+        return bottomDialog
+    }
+
+    fun progressDialog(
+        context: Context,
+        title: String?,
+    ): BottomSheetDialog {
+        val bottomDialog = BottomSheetDialog(context, R.style.SheetDialog)
+        val view = LayoutInflater.from(context).inflate(R.layout.dialog_progress, null)
+        bottomDialog.setContentView(view)
+        bottomDialog.setCancelable(false)
+        bottomDialog.window?.also {
+            it.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+        val binding = DataBindingUtil.bind<DialogProgressBinding>(view)
+        binding?.tvTitleActionBottom?.text = title ?: context.getString(R.string.please_wait)
         bottomDialog.show()
         return bottomDialog
     }

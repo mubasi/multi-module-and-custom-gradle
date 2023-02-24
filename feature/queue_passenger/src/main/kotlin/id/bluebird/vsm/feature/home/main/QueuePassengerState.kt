@@ -7,6 +7,7 @@ sealed class QueuePassengerState {
 
     object ProsesQueue : QueuePassengerState()
     object ProsesSkipQueue : QueuePassengerState()
+    object ProsesRitase : QueuePassengerState()
 
     object ProsesGetUser : QueuePassengerState()
     object SuccessGetUser : QueuePassengerState()
@@ -36,6 +37,6 @@ sealed class QueuePassengerState {
     data class SearchQueue(
         val locationId: Long,
         val subLocationId: Long,
-    ) : QueuePassengerState()
+    ): QueuePassengerState()
 
 }

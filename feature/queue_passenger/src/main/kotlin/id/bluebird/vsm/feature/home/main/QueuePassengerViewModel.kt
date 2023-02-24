@@ -37,6 +37,7 @@ class QueuePassengerViewModel(
 
     companion object {
         const val ERROR_MESSAGE_UNKNOWN = "Unknown"
+        const val EMPTY_STRING = ""
     }
 
     private val _queuePassengerState: MutableSharedFlow<QueuePassengerState> =
@@ -238,6 +239,12 @@ class QueuePassengerViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    fun prosesRitase() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(QueuePassengerState.ProsesRitase)
         }
     }
 

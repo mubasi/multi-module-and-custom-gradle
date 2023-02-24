@@ -17,6 +17,7 @@ apply {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature:select_location"))
+    implementation(project(":domain:fleet"))
     implementation(project(":domain:passenger"))
     implementation(project(":domain:user"))
     implementation(project(":navigation"))

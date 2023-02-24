@@ -43,10 +43,11 @@ class QueueReceiptRepositoryImpl(
         fleetNumber: String,
     ): Flow<QueuePangkalanOuterClass.ResponseQueues> =
         flow {
+            val currentQueueType = QueuePangkalanOuterClass.QueueType.forNumber(queueType.toInt())
             val request = QueuePangkalanOuterClass.RequestQueues.newBuilder()
                 .apply {
                     this.queueId = queueId
-                    this.queueType = QueuePangkalanOuterClass.QueueType.TAKE_QUEUE
+                    this.queueType = currentQueueType
                     this.locationId = locationId
                     this.queueNumber = queueNumber
                     this.subLocationId = subLocationId
