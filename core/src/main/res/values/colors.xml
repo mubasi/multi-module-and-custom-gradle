@@ -25,6 +25,7 @@
     <color name="search_line_color">#DEDEDE</color>
     <color name="grey_background">#F8F8F8</color>
     <color name="grey_line">#DEDEDE</color>
+    <color name="success_3">#E6F7F4</color>
 
     // font
     <color name="gray_line">#DEDEDE</color>

@@ -2,6 +2,8 @@ plugins {
     id(Plugins.library)
     kotlin(Plugins.android)
     kotlin(Plugins.kapt)
+    id(Plugins.safeargs)
+    kotlin(Plugins.parcelize)
 //    jacoco
     id("jacoco")
 }
@@ -69,6 +71,7 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":feature:select_location"))
+    implementation(project(":domain:fleet"))
     implementation(project(":domain:passenger"))
     implementation(project(":domain:user"))
     implementation(project(":navigation"))

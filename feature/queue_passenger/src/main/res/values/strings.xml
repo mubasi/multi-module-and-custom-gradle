@@ -32,6 +32,15 @@
     <string name="search_queue_message">Masukkan no antrian minimal 3 karakter</string>
     <string name="search_no_queue">No antrian tidak tersedia</string>
     <string name="error_current_queue_message">Antrian sekarang tidak tersedia</string>
+    <string name="select_no_fleet">Pilih No. Lambung</string>
+    <string name="search_no_fleet">Cari No. Lambung</string>
+    <string name="current_queue_not_found">Antrian sekarang tidak tersedia</string>
+    <string name="fleet_not_found">Armada tidak tersedia</string>
+    <string name="msg_fleet_not_found">Daftar Armada tidak tersedia</string>
+    <string name="save_text">Pilih</string>
+    <string name="title_fleet_not_selected">Armada tidak dipilih</string>
+    <string name="msg_fleet_not_selected">Silahkan pilih salah satu no. lambung</string>
+    <string name="ritase_failed_title">Armada gagal diritase</string>
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">

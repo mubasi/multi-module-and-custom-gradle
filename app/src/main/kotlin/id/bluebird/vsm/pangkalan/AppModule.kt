@@ -25,11 +25,13 @@ import id.bluebird.vsm.domain.user.domain.intercator.*
 import id.bluebird.vsm.domain.user.domain.usescases.*
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_queue_receipt.DialogQueueReceiptViewModel
+import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewModel
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_skip_queue.DialogSkipQueueViewModel
 import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
+import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
@@ -56,6 +58,7 @@ import org.koin.dsl.module
 object AppModule {
 
     private val vmModule = module {
+        viewModel { RitaseFleetViewModel(get()) }
         viewModel { LoginViewModel(get()) }
         viewModel { QueueFleetViewModel(get(), get(), get(), get()) }
         viewModel { UserManagementViewModel(get()) }
@@ -79,6 +82,7 @@ object AppModule {
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
         viewModel { SplashViewModel(get()) }
+        viewModel { DialogRecordRitaseViewModel(get()) }
     }
     private val userCases = module {
         single<DeleteUser> { DeleteUserCases(get()) }
