@@ -97,6 +97,9 @@ class FragmentSearchLocationMonitoring : Fragment() {
                         MonitoringState.BackSearchScreen -> {
                             findNavController().popBackStack()
                         }
+                        is MonitoringState.ErrorFilter -> {
+                            showErrorMassage()
+                        }
                         else -> {
                             //do nothing
                         }
@@ -138,5 +141,13 @@ class FragmentSearchLocationMonitoring : Fragment() {
             message,
             color
         )
+    }
+
+    private fun showErrorMassage(){
+        val title =
+            requireContext().getString(R.string.title_not_found_location)
+        val msg =
+            requireContext().getString(R.string.msg_not_found_location)
+        DialogUtils.showErrorDialog(requireContext(), title, msg)
     }
 }
