@@ -2,17 +2,25 @@ package id.bluebird.vsm.feature.home.utils
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.ColorStateList
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModel
 import id.bluebird.vsm.feature.home.R
 import id.bluebird.vsm.feature.home.model.QueueCache
+import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModel
 
 object BindingAdapter {
     @JvmStatic
@@ -146,5 +154,11 @@ object BindingAdapter {
                 else -> textView.context.getString(R.string.waiting)
             }
         }
+    }
+
+    @JvmStatic
+    @BindingAdapter("valueCheckList", "bindingVm")
+    fun showCheckList(imageView: AppCompatImageView, value: String, vm: RitaseFleetViewModel) {
+        imageView.isVisible = vm.selectedFleetNumber.value == value
     }
 }

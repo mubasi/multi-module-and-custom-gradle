@@ -38,4 +38,5 @@
     <string name="side_text_desc">Silahkan arahkan kamera ke nomor lambung</string>
     <string name="side_text">Nomor Lambung</string>
     <string name="unavailable_queue">N/A</string>
+    <string name="fleet_not_found">Armada belum tersedia</string>
 </resources>

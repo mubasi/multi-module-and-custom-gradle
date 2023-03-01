@@ -9,7 +9,11 @@
             type="Boolean" />
 
         <variable
-            name="showList"
+            name="showProgress"
+            type="Boolean" />
+
+        <variable
+            name="successList"
             type="Boolean" />
 
         <import type="android.view.View" />
@@ -141,6 +145,7 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
                         android:gravity="center"
+                        android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -148,14 +153,36 @@
 
                         <ProgressBar
                             android:id="@+id/listProgressBarFleetFragment"
-                            bindVisibility="@{!showList}"
+                            bindVisibility="@{showProgress}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:indeterminateTint="@color/primary_0" />
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:layout_marginTop="50dp"
+                            android:visibility="@{!successList &amp;&amp; !showProgress ? View.VISIBLE : View.GONE, default=visible}">
+
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:src="@drawable/bg_queue_not_found"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="@string/fleet_not_found"
+                                android:textStyle="bold"/>
+
+                        </LinearLayout>
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/mainListFleetFleetFragment"
-                            bindVisibility="@{showList}"
+                            bindVisibility="@{successList &amp;&amp; !showProgress}"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
                     </LinearLayout>

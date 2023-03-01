@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.queue_fleet.R
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet
@@ -67,7 +68,8 @@ class FragmentQueueFleet : Fragment() {
         mBinding.apply {
             vm = _mQueueFleetViewModel
             lifecycleOwner = viewLifecycleOwner
-            showList = false
+            showProgress = true
+            successList = false
         }
         initRcv()
         observer()
@@ -106,12 +108,14 @@ class FragmentQueueFleet : Fragment() {
                                 getFleetList()
                             }
                             is QueueFleetState.GetListSuccess -> {
-                                mBinding.showList = true
+                                mBinding.showProgress = false
+                                mBinding.successList = true
                                 _fleetAdapter.submitData(it.list)
                             }
                             is QueueFleetState.FleetDeparted -> {
                                 _fleetAdapter.submitData(it.list)
                                 _fleetAdapter.notifyItemRemoved(it.removedIndex)
+                                mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.GetListEmpty -> {
                                 _fleetAdapter.submitData(arrayListOf())
@@ -128,12 +132,14 @@ class FragmentQueueFleet : Fragment() {
                             is QueueFleetState.AddFleetSuccess -> {
                                 _fleetAdapter.submitData(it.list)
                                 _fleetAdapter.notifyItemInserted(_fleetAdapter.itemCount)
+                                mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.FailedGetList -> {
-                                mBinding.showList = true
+                                mBinding.showProgress = false
+                                mBinding.successList = false
                             }
                             QueueFleetState.ProgressGetUser -> {
-                                mBinding.showList = false
+                                mBinding.showProgress = false
                             }
                             is QueueFleetState.RequestDepartFleet -> {
                                 FragmentDepartFleetDialog(
@@ -211,15 +217,7 @@ class FragmentQueueFleet : Fragment() {
     }
 
     fun showSnackbar(message: Spanned, color: Int){
-        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
-        val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
-
-        layoutParams.gravity = Gravity.TOP
-        layoutParams.setMargins(-10,160,-10,0)
-        snackbar.view.layoutParams = layoutParams
-        snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-        snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))
-        snackbar.show()
+        DialogUtils.showSnackbar(requireView(), message, color)
     }
 
     private fun navigateToSearchFleet() {

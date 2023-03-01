@@ -52,7 +52,11 @@
     <string name="enter_name_location">Masukkan nama lokasi</string>
     <string name="there_is_error">Terjadi kesalahan</string>
     <string name="please_try_again">Silahkan coba lagi</string>
+    <string name="please_wait">Silahkan tunggu . . .</string>
     <string name="title_not_found_location">Tidak dapat menemukan lokasi</string>
     <string name="msg_not_found_location">Nama mall yang dicari tidak ditemukan</string>
+    <string name="ritase_record">Pencatatan Ritase</string>
+    <string name="ritase_record_msg">Pilih no. lambung untuk mencatat ritase antrian armada.</string>
+    <string name="ritase_record_text">Catat ritase</string>
 
 </resources>

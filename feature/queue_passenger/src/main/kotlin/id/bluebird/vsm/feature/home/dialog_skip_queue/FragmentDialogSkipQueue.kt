@@ -19,11 +19,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.home.databinding.DialogSkipQueueBinding
 import id.bluebird.vsm.feature.home.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentDialogSkipQueue : BottomSheetDialogFragment() {
+class FragmentDialogSkipQueue(
+    callBackProcess: () -> Unit
+) : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "requestDialogSkipQueue"
@@ -31,12 +34,13 @@ class FragmentDialogSkipQueue : BottomSheetDialogFragment() {
 
     private lateinit var binding : DialogSkipQueueBinding
     private val _dialogSkipQueueViewModel : DialogSkipQueueViewModel by viewModel()
+    private val chooseProcess = callBackProcess
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.dialog_skip_queue, container, false)
         return binding.root
     }
@@ -82,7 +86,7 @@ class FragmentDialogSkipQueue : BottomSheetDialogFragment() {
                             DialogSkipQueueState.SuccessDialog -> {
                                 dialog?.dismiss()
                                 showSnackbar(Html.fromHtml("<b>No. antrian $number telah ditunda</b>",1), R.color.error_color_second)
-                                findNavController().navigate(R.id.queuePassengerFragment)
+                                chooseProcess()
                             }
                             is DialogSkipQueueState.FailedDialog -> {
                                 showSnackbar(Html.fromHtml("<b>No. antrian $number tidak dapat diproses</b>",1), R.color.error_color)
@@ -95,15 +99,7 @@ class FragmentDialogSkipQueue : BottomSheetDialogFragment() {
     }
 
     fun showSnackbar(message: Spanned, color: Int){
-        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
-        val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
-
-        layoutParams.gravity = Gravity.TOP
-        layoutParams.setMargins(-10,160,-10,0)
-        snackbar.view.layoutParams = layoutParams
-        snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-        snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))
-        snackbar.show()
+        DialogUtils.showSnackbar(requireView(), message, color)
     }
 
 

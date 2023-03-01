@@ -1,27 +1,34 @@
 package id.bluebird.vsm.feature.home.main
 
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
+import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.home.R
 import id.bluebird.vsm.feature.home.databinding.FragmentQueuePassengerBinding
-import id.bluebird.vsm.feature.home.dialog_queue_receipt.FragmentDialogQueueReceipt
-import id.bluebird.vsm.feature.home.dialog_skip_queue.FragmentDialogSkipQueue
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.FragmentDialogDeleteSkipped
+import id.bluebird.vsm.feature.home.dialog_queue_receipt.FragmentDialogQueueReceipt
+import id.bluebird.vsm.feature.home.dialog_record_ritase.FragmentDialogRecordRitase
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.FragmentDialogRestoreSkipped
+import id.bluebird.vsm.feature.home.dialog_skip_queue.FragmentDialogSkipQueue
+import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel.Companion.EMPTY_STRING
+import id.bluebird.vsm.feature.home.ritase_fleet.FragmentRitaseFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class FragmentQueuePassenger : Fragment() {
@@ -55,6 +62,7 @@ class FragmentQueuePassenger : Fragment() {
         setupListQueue()
         setupSwipeRefresh()
         observer()
+        checkNavigationData()
         _queuePassengerViewModel.init()
 
     }
@@ -87,44 +95,15 @@ class FragmentQueuePassenger : Fragment() {
                             QueuePassengerState.SuccessGetUser -> {
                                 binding.showData = false
                                 binding.swipeRefreshLayout.isRefreshing = false
-                                getCounterBar()
-                                getCurrentQueue()
+                                getCounterAndListQueue()
                             }
                             QueuePassengerState.SuccessCurrentQueue -> {
-                                binding.showData = true
                                 binding.successCurrentQueue = true
                                 setupFirst()
                             }
                             is QueuePassengerState.FailedCurrentQueue -> {
-                                binding.showData = true
                                 binding.successCurrentQueue = false
                                 setupFirst()
-                            }
-                            QueuePassengerState.ProsesListQueue -> {
-                                binding.showData = false
-                                binding.swipeRefreshLayout.isRefreshing = false
-                            }
-                            is QueuePassengerState.FailedListQueue -> {
-                                setListQueue(binding.tabLayout.selectedTabPosition)
-                                binding.showData = true
-                                binding.successListQueue = false
-                            }
-                            QueuePassengerState.SuccessListQueue -> {
-                                setListQueue(binding.tabLayout.selectedTabPosition)
-                                binding.showData = true
-                            }
-                            QueuePassengerState.ProsesListQueueSkipped -> {
-                                binding.showData = false
-                                binding.swipeRefreshLayout.isRefreshing = false
-                            }
-                            is QueuePassengerState.FailedListQueueSkipped -> {
-                                setListQueue(binding.tabLayout.selectedTabPosition)
-                                binding.showData = true
-                                binding.successListQueue = false
-                            }
-                            QueuePassengerState.SuccessListQueueSkipped -> {
-                                setListQueue(binding.tabLayout.selectedTabPosition)
-                                binding.showData = true
                             }
                             QueuePassengerState.ProsesSkipQueue -> {
                                 val bundle = Bundle()
@@ -133,7 +112,9 @@ class FragmentQueuePassenger : Fragment() {
                                 bundle.putLong("location_id", mUserInfo.locationId)
                                 bundle.putLong("sub_location_id", mUserInfo.subLocationId)
 
-                                val dialogSkipQueue = FragmentDialogSkipQueue()
+                                val dialogSkipQueue = FragmentDialogSkipQueue {
+                                    getCounterAndListQueue()
+                                }
                                 dialogSkipQueue.arguments = bundle
                                 dialogSkipQueue.show(
                                     requireActivity().supportFragmentManager,
@@ -171,6 +152,9 @@ class FragmentQueuePassenger : Fragment() {
                                 bundle.putInt("type", positionType)
                                 findNavController().navigate(R.id.searchFleetFragment, bundle)
                             }
+                            is QueuePassengerState.ProsesRitase -> {
+                                showDialogRecordRitase(EMPTY_STRING)
+                            }
                             else -> {
                                 // do nothing
                             }
@@ -181,11 +165,14 @@ class FragmentQueuePassenger : Fragment() {
         }
 
         _queuePassengerViewModel.waitingQueueCount.observe(viewLifecycleOwner) {
-            binding.tabLayout.getTabAt(0)?.text = requireContext().getString(R.string.tab_waiting_format, it)
+            binding.tabLayout.getTabAt(0)?.text =
+                requireContext().getString(R.string.tab_waiting_format, it)
+            setupWaiting()
         }
 
         _queuePassengerViewModel.skippedQueueCount.observe(viewLifecycleOwner) {
-            binding.tabLayout.getTabAt(1)?.text = requireContext().getString(R.string.tab_delayed_format, it)
+            binding.tabLayout.getTabAt(1)?.text =
+                requireContext().getString(R.string.tab_delayed_format, it)
         }
     }
 
@@ -196,6 +183,11 @@ class FragmentQueuePassenger : Fragment() {
     private fun setupFirst() {
         _queuePassengerViewModel.getListQueue()
         _queuePassengerViewModel.getListQueueSkipped()
+        binding.apply {
+            showData = true
+            successListQueue = false
+            swipeRefreshLayout.isRefreshing = false
+        }
         val selectedPosition = binding.tabLayout.selectedTabPosition
         setListQueue(selectedPosition)
     }
@@ -203,16 +195,14 @@ class FragmentQueuePassenger : Fragment() {
     private fun setupWaiting() {
         val countWaiting = _queuePassengerViewModel.listQueueWaitingCache.count
         val adapter = AdapterCustom(_queuePassengerViewModel.listQueueWaitingCache.queue)
-        binding.recyclerView.adapter = adapter
-
-        if (countWaiting > 0L) {
-            binding.successListQueue = true
+        binding.apply {
+            recyclerView.adapter = adapter
+            binding.successListQueue = countWaiting > 0
         }
     }
 
     fun setListQueue(position: Int) {
         positionType = position
-        binding.successListQueue = false
         if (position == 0) {
             setupWaiting()
         } else if (position == 1) {
@@ -221,19 +211,21 @@ class FragmentQueuePassenger : Fragment() {
     }
 
     private fun setupSkipped() {
+        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
         val adapter = AdapterCustomSkipped(
             _queuePassengerViewModel.listQueueSkippedCache.queue,
             _queuePassengerViewModel
         )
-        binding.recyclerView.adapter = adapter
-
-        val countSkipped = _queuePassengerViewModel.listQueueSkippedCache.count
-        binding.successListQueue = countSkipped > 0
+        binding.apply {
+            recyclerView.adapter = adapter
+            successListQueue = countSkipped > 0L
+        }
     }
 
     private fun setupSwipeRefresh() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            _queuePassengerViewModel.init()
+            getCounterAndListQueue()
+            binding.showData = false
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
@@ -254,5 +246,49 @@ class FragmentQueuePassenger : Fragment() {
                 // Write code to handle tab reselect
             }
         })
+    }
+
+    private fun getCounterAndListQueue() {
+        _queuePassengerViewModel.getCurrentQueue()
+        _queuePassengerViewModel.getCounterBar()
+    }
+
+    private fun checkNavigationData() {
+        setFragmentResultListener(FragmentRitaseFleet.RITASE_FLEET) { _, bundle ->
+            val status = bundle.getString(FragmentRitaseFleet.FLEET_NUMBER)
+            if (!status.isNullOrEmpty()) {
+                showDialogRecordRitase(status)
+            }
+        }
+    }
+
+    private fun showDialogRecordRitase(fleetNumber: String) {
+        FragmentDialogRecordRitase(
+            locationId = _queuePassengerViewModel.mUserInfo.locationId,
+            subLocationId = _queuePassengerViewModel.mUserInfo.subLocationId,
+            queue = _queuePassengerViewModel.currentQueueCache,
+            fleetNumber = fleetNumber
+        ) { numberFleet, numberQueue ->
+            callBackProses(
+                fleetNumber = numberFleet,
+                queueNumber = numberQueue
+            )
+        }.show(
+            requireActivity().supportFragmentManager,
+            FragmentDialogRecordRitase.TAG
+        )
+    }
+
+    private fun callBackProses(fleetNumber: String, queueNumber: String) {
+        getCounterAndListQueue()
+        val message = Html.fromHtml(
+            "<b>No. antrian ${queueNumber}</b> berhasil berangkat dengan <b>${fleetNumber}</b>",
+            1
+        )
+        showNotifInfo(message, R.color.success_color)
+    }
+
+    private fun showNotifInfo(message: Spanned, color: Int) {
+        DialogUtils.showSnackbar(requireView(), message, color)
     }
 }

@@ -118,6 +118,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                         navigateBackWithArrow(R.id.monitoringFragmentSearch)
                     }
+                    R.id.ritaseFleetFragment  -> {
+                        navigateBackWithArrow(R.id.ritaseFleetFragment)
+                    }
                     else -> {
                         toolbarVisibility()
                     }

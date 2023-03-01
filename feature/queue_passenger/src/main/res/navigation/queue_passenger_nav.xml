@@ -18,5 +18,10 @@
         android:id="@+id/searchFleetFragment"
         android:name="id.bluebird.vsm.feature.home.queue_search.FragmentQueueSearch"
         android:label="@string/label_queue_search" />
+    <fragment
+        android:id="@+id/ritaseFleetFragment"
+        android:name="id.bluebird.vsm.feature.home.ritase_fleet.FragmentRitaseFleet"
+        android:label="@string/select_no_fleet">
+    </fragment>
     <deepLink app:uri="android-app://id.bluebird.mall/queue_passenger" />
 </navigation>
