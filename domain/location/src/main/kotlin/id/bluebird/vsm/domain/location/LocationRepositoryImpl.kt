@@ -53,4 +53,16 @@ class LocationRepositoryImpl(
 
             emit(response)
         }
+
+    override fun getSubLocationQrCode(
+        subLocationId: Long
+    ): Flow<LocationPangkalanOuterClass.ResponseGetLocationQrCode> = flow {
+        val request = LocationPangkalanOuterClass.RequestGetLocationQrCode.newBuilder()
+            .apply {
+                this.subLocationId = subLocationId
+            }
+            .build()
+        val response = locationGrpc.getLocationQrCode(request)
+        emit(response)
+    }
 }

@@ -7,14 +7,8 @@ import id.bluebird.vsm.domain.fleet.domain.cases.*
 import id.bluebird.vsm.domain.fleet.domain.interactor.*
 import id.bluebird.vsm.domain.location.LocationRepository
 import id.bluebird.vsm.domain.location.LocationRepositoryImpl
-import id.bluebird.vsm.domain.location.domain.cases.GetLocationsCases
-import id.bluebird.vsm.domain.location.domain.cases.GetLocationsWithSubUseCases
-import id.bluebird.vsm.domain.location.domain.cases.GetSubLocationByLocationIdCases
-import id.bluebird.vsm.domain.location.domain.cases.UpdateBufferCases
-import id.bluebird.vsm.domain.location.domain.interactor.GetLocations
-import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
-import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationByLocationId
-import id.bluebird.vsm.domain.location.domain.interactor.UpdateBuffer
+import id.bluebird.vsm.domain.location.domain.cases.*
+import id.bluebird.vsm.domain.location.domain.interactor.*
 import id.bluebird.vsm.domain.passenger.QueueReceiptRepository
 import id.bluebird.vsm.domain.passenger.QueueReceiptRepositoryImpl
 import id.bluebird.vsm.domain.passenger.domain.cases.*
@@ -29,6 +23,7 @@ import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewM
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_skip_queue.DialogSkipQueueViewModel
 import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel
+import id.bluebird.vsm.feature.home.qr_code.QrCodeViewModel
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModel
@@ -83,6 +78,7 @@ object AppModule {
         viewModel { RitaseRecordViewModel(get()) }
         viewModel { SplashViewModel(get()) }
         viewModel { DialogRecordRitaseViewModel(get()) }
+        viewModel { QrCodeViewModel(get()) }
     }
     private val userCases = module {
         single<DeleteUser> { DeleteUserCases(get()) }
@@ -109,6 +105,7 @@ object AppModule {
         single<UpdateBuffer> { UpdateBufferCases(get()) }
         single<GetLocations> { GetLocationsCases(get()) }
         single<GetLocationsWithSub> { GetLocationsWithSubUseCases(get()) }
+        single<GetSubLocationQrCode> { GetSubLocationQrCodeCases(get()) }
     }
     private val passengerCases = module {
         single<GetQueueReceipt> { GetQueueReceiptCases(get()) }

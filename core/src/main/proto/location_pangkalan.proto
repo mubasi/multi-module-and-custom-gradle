@@ -10,26 +10,88 @@ service LocationPangkalan {
     rpc GetLocationType (google.protobuf.Empty) returns (GetLocationTypeResponse);
     rpc GetLocationTypeById (GetLocationTypeByIdRequest) returns (GetLocationTypeByIdResponse);
     // mst_location...
-    rpc CreateLocation (CreateLocationRequest) returns (CreateLocationResponse);
-    rpc GetLocations (google.protobuf.Empty) returns (GetLocationsResponse);
-    rpc GetLocationById (GetLocationByIdRequest) returns (GetLocationByIdResponse);
-    // mst_sub_location...
-    rpc CreateSubLocation (CreateSubLocationRequest) returns (CreateSubLocationResponse);
-    rpc GetSubLocationById (GetSubLocationByIdRequest) returns (GetSubLocationByIdResponse);
-    rpc GetSubLocationByLocation (GetSubLocationByLocationReq) returns (GetSubLocationByLocationResp);
-    rpc GetSubLocations(google.protobuf.Empty) returns (GetSubLocationsResponse);
-    rpc UpdateBufferSubLocation(RequestUpdateBuffer) returns (ResponseUpdateBuffer);
-    rpc GetBuffers(google.protobuf.Empty) returns (ResponseGetBuffers);
+  rpc CreateLocation (CreateLocationRequest) returns (CreateLocationResponse);
+  rpc GetLocations (google.protobuf.Empty) returns (GetLocationsResponse);
+  rpc GetLocationById (GetLocationByIdRequest) returns (GetLocationByIdResponse);
+  // mst_sub_location...
+  rpc CreateSubLocation (CreateSubLocationRequest) returns (CreateSubLocationResponse);
+  rpc GetSubLocationById (GetSubLocationByIdRequest) returns (GetSubLocationByIdResponse);
+  rpc GetSubLocationByLocation (GetSubLocationByLocationReq) returns (GetSubLocationByLocationResp);
+  rpc GetSubLocations(google.protobuf.Empty) returns (GetSubLocationsResponse);
+  rpc UpdateBufferSubLocation(RequestUpdateBuffer) returns (ResponseUpdateBuffer);
+  rpc GetBuffers(google.protobuf.Empty) returns (ResponseGetBuffers);
+  rpc UpdateLocation(RequestUpdateLocation) returns (ResponseUpdateLocation);
+  rpc UpdateSubLocation(RequestUpdateSubLocation) returns (ResponseUpdateSubLocation);
+
+  // GetLocationByHashedId...
+  rpc GetLocationByHashedId    (GetLocationByHashedIdRequest) returns (GetLocationByHashedIdResponse);
+  rpc GetSubLocationByHashedId (GetSubLocationByHashedIdRequest) returns (GetSubLocationByHashedIdResponse);
+  rpc OperationalTime(RequestOperationalTime) returns(ResponseOperationalTime);
+  rpc GetLocationQrCode(RequestGetLocationQrCode) returns(ResponseGetLocationQrCode);
+}
+
+// ActionType...
+enum ActionType {
+  ADD_OPERATIONAL_TIME = 0;
+  UPDATE_OPERATIONAL_TIME = 1;
+  GET_ALL_OPERATIONAL_TIME = 2;
+}
+
+// BDO 805....
+message OperationalTimeItem {
+  int64  id = 1;
+  string operational_time = 2;
+  string description = 3;
+}
+message RequestOperationalTime {
+  int64  id = 1;
+  string operational_time = 2;
+  string description = 3;
+  ActionType action_type = 4;
+}
+message ResponseOperationalTime {
+  string   message = 1;
+  repeated OperationalTimeItem operational_time = 2;
+}
+
+// BDO 781 Show hide location
+message RequestUpdateSubLocation {
+  int64  id = 1;
+  string sub_location_name = 2;
+  string prefix = 3;
+  bool   have_qr = 4;
+}
+message ResponseUpdateSubLocation{
+  string  message = 1;
+  string  modified_at = 2;
+  string  hashed_id = 3;
+}
+
+// BDO 537...
+message RequestUpdateLocation {
+  int64  id = 1;
+  string location_name = 2;
+  int32  is_active = 3;
+  string code_area = 4;
+  float  lat = 5;
+  float  long = 6;
+  string address = 7;
+  int64 operational_time = 8;
+}
+
+message ResponseUpdateLocation {
+  string message = 1;
 }
 
 // GetSubLocationsResponse...
 message GetSubLocationsItem {
-	int64  location_id = 1;
-	string location_name = 2;
-	string sub_location_name = 3;
-	int64  sub_location_id = 4;
-	string area_code = 5;
-	string prefix = 6;
+  int64  location_id = 1;
+  string location_name = 2;
+  string sub_location_name = 3;
+  int64  sub_location_id = 4;
+  string area_code = 5;
+  string prefix = 6;
+  string operational_time = 7;
 }
 message GetSubLocationsResponse {
 	repeated GetSubLocationsItem sub_locations = 1;
@@ -97,14 +159,18 @@ message GetLocationsResponse {
 }
 
 message CreateLocationRequest {
-    int64  id=1;
-    string location_name=2;
-    int32  is_active=3;
-    string created_at=4;
-    string modified_at=5;
-    int64  created_by=6;
-    int64  modified_by=7;
-    string code_area = 8;
+  int64  id = 1;
+  string location_name = 2;
+  int32  is_active = 3;
+  string created_at = 4;
+  string modified_at = 5;
+  int64  created_by = 6;
+  int64  modified_by = 7;
+  string code_area = 8;
+  float  lat = 9;
+  float  long = 10;
+  string address = 11;
+  int64  operation_time = 12;
 }
 
 message CreateLocationResponse {
@@ -167,13 +233,38 @@ message RequestUpdateBuffer {
     int64 value = 2;
 }
 message ResponseUpdateBuffer {
-    string message = 1;
+  string message = 1;
 }
 
 message BufferItem {
-    int64 sub_location_id = 1;
-    int64 value = 2;
+  int64 sub_location_id = 1;
+  int64 value = 2;
 }
 message ResponseGetBuffers {
-    repeated BufferItem sub_location_buffer = 1;
+  repeated BufferItem sub_location_buffer = 1;
+}
+
+message GetLocationByHashedIdRequest {
+  string hashed_id = 1;
+}
+message GetLocationByHashedIdResponse {
+  CreateLocationRequest location = 1;
+}
+message GetSubLocationByHashedIdRequest {
+  string hashed_id = 1;
+}
+message GetSubLocationByHashedIdResponse{
+  GetSubLocationsItem sub_location = 1;
+}
+
+// BDO 823...
+message RequestGetLocationQrCode {
+  int64 sub_location_id = 1;
+}
+message ResponseGetLocationQrCode {
+  int64  sub_location_id = 1;
+  int64  location_id = 2;
+  string sub_location_name = 3;
+  string da_qr_code = 4;
+  string queue_passanger_qr_code = 5;
 }

@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":domain:fleet"))
     implementation(project(":domain:passenger"))
     implementation(project(":domain:user"))
+    implementation(project(":domain:location"))
     implementation(project(":navigation"))
     implementation(OtherLib.slidetoact)
 

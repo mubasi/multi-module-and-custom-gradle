@@ -5,7 +5,7 @@ data class UserAssignment(
     val id: Long,
     val locationId: Long = -1,
     val subLocationId: Long,
-    val locationName: String,
-    val subLocationName: String? = null,
+    var locationName: String,
+    var subLocationName: String? = null,
     val isOfficer: Boolean = true
 )

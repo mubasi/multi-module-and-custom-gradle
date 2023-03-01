@@ -3,9 +3,7 @@ package id.bluebird.vsm.feature.home.main
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -51,7 +49,7 @@ class FragmentQueuePassenger : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = _queuePassengerViewModel
-
+        setHasOptionsMenu(true)
         binding.showData = false
         binding.successCurrentQueue = false
         binding.successListQueue = false
@@ -65,6 +63,20 @@ class FragmentQueuePassenger : Fragment() {
         checkNavigationData()
         _queuePassengerViewModel.init()
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.queue_passenger_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.qr_code_screen -> {
+                _queuePassengerViewModel.toQrCodeScreen()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun observer() {
@@ -145,7 +157,7 @@ class FragmentQueuePassenger : Fragment() {
                                     FragmentDialogRestoreSkipped.TAG
                                 )
                             }
-                            is QueuePassengerState.SearchQueue -> {
+                            is QueuePassengerState.ToSearchQueue -> {
                                 val bundle = Bundle()
                                 bundle.putLong("locationId", it.locationId)
                                 bundle.putLong("subLocationId", it.subLocationId)
@@ -154,6 +166,13 @@ class FragmentQueuePassenger : Fragment() {
                             }
                             is QueuePassengerState.ProsesRitase -> {
                                 showDialogRecordRitase(EMPTY_STRING)
+                            }
+                            is QueuePassengerState.ToQrCodeScreen -> {
+                                val bundle = Bundle()
+                                bundle.putLong("locationId", it.locationId)
+                                bundle.putLong("subLocationId", it.subLocationId)
+                                bundle.putString("titleLocation", it.titleLocation)
+                                findNavController().navigate(R.id.qrCodeFragment, bundle)
                             }
                             else -> {
                                 // do nothing

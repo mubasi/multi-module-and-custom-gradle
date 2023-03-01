@@ -6,6 +6,7 @@ import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewM
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.DialogRestoreSkippedViewModelTest
 import id.bluebird.vsm.feature.home.dialog_skip_queue.DialogSkipQueueViewModelTest
 import id.bluebird.vsm.feature.home.main.QueuePassengerViewModelTest
+import id.bluebird.vsm.feature.home.qr_code.QrCodeViewModelTest
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModelTest
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModelTest
 import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModelTest
@@ -23,7 +24,8 @@ import org.junit.platform.suite.api.Suite
     QueueSearchViewModelTest::class,
     QueueTicketViewModelTest::class,
     RitaseFleetViewModelTest::class,
-    DialogRecordRitaseViewModelTest::class
+    DialogRecordRitaseViewModelTest::class,
+    QrCodeViewModelTest::class
 )
 
 @ExperimentalCoroutinesApi

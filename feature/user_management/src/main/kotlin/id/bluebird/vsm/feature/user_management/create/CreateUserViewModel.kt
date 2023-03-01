@@ -13,11 +13,8 @@ import id.bluebird.vsm.feature.user_management.create.model.LocationAssignment
 import id.bluebird.vsm.feature.user_management.create.model.RoleCache
 import id.bluebird.vsm.feature.user_management.create.model.SubLocationCache
 import id.bluebird.vsm.feature.user_management.search_location.model.Location
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
 
 class CreateUserViewModel(
     private val createEditUser: CreateEditUser,
