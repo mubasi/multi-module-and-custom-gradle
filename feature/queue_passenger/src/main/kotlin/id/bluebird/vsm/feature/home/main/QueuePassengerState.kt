@@ -34,9 +34,15 @@ sealed class QueuePassengerState {
     object SuccessCounterBar : QueuePassengerState()
     data class FailedCounterBar(val message: String) : QueuePassengerState()
 
-    data class SearchQueue(
+    data class ToSearchQueue(
         val locationId: Long,
         val subLocationId: Long,
-    ): QueuePassengerState()
+    ) : QueuePassengerState()
+
+    data class ToQrCodeScreen(
+        val locationId: Long,
+        val subLocationId: Long,
+        val titleLocation: String
+    ) : QueuePassengerState()
 
 }

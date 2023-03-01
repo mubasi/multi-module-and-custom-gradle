@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.home.main
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,8 +18,8 @@ import id.bluebird.vsm.domain.passenger.domain.cases.ListQueueWaiting
 import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
 import id.bluebird.vsm.domain.user.model.UserAssignment
-import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import id.bluebird.vsm.feature.home.model.*
+import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +44,8 @@ class QueuePassengerViewModel(
     private val _queuePassengerState: MutableSharedFlow<QueuePassengerState> =
         MutableSharedFlow()
     val queuePassengerState = _queuePassengerState.asSharedFlow()
+    private val _locationName: MutableLiveData<String> = MutableLiveData("...")
+    private val _subLocationName: MutableLiveData<String> = MutableLiveData("...")
     val titleLocation: MutableLiveData<String> = MutableLiveData("...")
     var currentQueueCache: CurrentQueueCache = CurrentQueueCache()
     var currentCounterBar: MutableLiveData<CounterBarCache> = MutableLiveData()
@@ -54,6 +57,17 @@ class QueuePassengerViewModel(
     val waitingQueueCount: LiveData<CharSequence> = _waitingQueueCount
     private var _skippedQueueCount: MutableLiveData<CharSequence> = MutableLiveData("0")
     val skippedQueueCount: LiveData<CharSequence> = _skippedQueueCount
+
+
+    @VisibleForTesting
+    fun setLocationName(result: String) {
+        _locationName.value = result
+    }
+
+    @VisibleForTesting
+    fun setSubLocationName(result: String) {
+        _subLocationName.value = result
+    }
 
     fun init() {
         if (LocationNavigationTemporary.isLocationNavAvailable()
@@ -100,13 +114,17 @@ class QueuePassengerViewModel(
 
     private fun createTitleLocation(userAssignment: UserAssignment) {
         with(userAssignment) {
-            titleLocation.value = if (isOfficer) {
-                "$locationName $subLocationName".getLastSync()
+            if (isOfficer) {
+                _locationName.value = locationName
+                _subLocationName.value = subLocationName
+                titleLocation.value = "$locationName $subLocationName".getLastSync()
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
-                location?.let {
+                titleLocation.value = location?.let {
                     "${it.locationName} ${it.subLocationName}".getLastSync()
                 }
+                _locationName.value = location?.locationName ?: EMPTY_STRING
+                _subLocationName.value = location?.subLocationName ?: EMPTY_STRING
             }
         }
     }
@@ -319,9 +337,22 @@ class QueuePassengerViewModel(
     fun searchQueue() {
         viewModelScope.launch {
             _queuePassengerState.emit(
-                QueuePassengerState.SearchQueue(
+                QueuePassengerState.ToSearchQueue(
                     locationId = mUserInfo.locationId,
                     subLocationId = mUserInfo.subLocationId
+                )
+            )
+        }
+    }
+
+
+    fun toQrCodeScreen() {
+        viewModelScope.launch {
+            _queuePassengerState.emit(
+                QueuePassengerState.ToQrCodeScreen(
+                    locationId = mUserInfo.locationId,
+                    subLocationId = mUserInfo.subLocationId,
+                    titleLocation = "${_locationName.value} ${_subLocationName.value}"
                 )
             )
         }
