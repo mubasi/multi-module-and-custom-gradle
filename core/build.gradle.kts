@@ -56,6 +56,11 @@ android {
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_staging"]}"
             )
+            buildConfigField(
+                type = "String",
+                name = "VERSION_NAME",
+                value = "\"${Version.versionName} Staging\""
+            )
         }
         getByName("develop") {
             buildConfigField(
@@ -67,6 +72,11 @@ android {
                 type = "String",
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_dev"]}"
+            )
+            buildConfigField(
+                type = "String",
+                name = "VERSION_NAME",
+                value = "\"${Version.versionName} Dev\""
             )
         }
     }
