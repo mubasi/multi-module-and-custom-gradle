@@ -3,7 +3,7 @@ package id.bluebird.vsm.feature.home.qr_code
 import id.bluebird.vsm.domain.location.GetLocationQrCodeState
 import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationQrCode
 import id.bluebird.vsm.domain.location.model.GetLocationQrCodeResult
-import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
+import id.bluebird.vsm.feature.home.TestCoroutineRule
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +26,6 @@ internal class QrCodeViewModelTest {
     companion object {
         const val ERROR = "error"
     }
-
 
     private lateinit var subjectTest: QrCodeViewModel
     private val getSubLocationQrCode: GetSubLocationQrCode = mockk(relaxed = true)
