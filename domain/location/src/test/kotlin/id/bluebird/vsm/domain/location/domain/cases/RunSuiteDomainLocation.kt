@@ -9,7 +9,8 @@ import org.junit.platform.suite.api.Suite
     GetLocationsCasesTest::class,
     GetLocationsWithSubUseCasesTest::class,
     GetSubLocationByLocationIdCasesTest::class,
-    UpdateBufferCasesTest::class
+    UpdateBufferCasesTest::class,
+    GetSubLocationQrCodeCasesTest::class
 )
 
 @ExperimentalCoroutinesApi

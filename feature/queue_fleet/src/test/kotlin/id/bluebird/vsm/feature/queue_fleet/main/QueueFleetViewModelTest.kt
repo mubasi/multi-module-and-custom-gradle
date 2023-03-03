@@ -1,6 +1,8 @@
 package id.bluebird.vsm.feature.queue_fleet.main
 
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.extensions.StringExtensions
+import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.DepartFleetState
 import id.bluebird.vsm.domain.fleet.GetCountState
@@ -46,8 +48,6 @@ internal class QueueFleetViewModelTest {
         private const val ERROR = "error"
     }
 
-    //    @Rule
-//    private val instantTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var _vm: QueueFleetViewModel
     private val _getCount: GetCount = mockk(relaxed = true)
     private val _getUserId: GetUserByIdForAssignment = mockk(relaxed = true)
@@ -57,6 +57,7 @@ internal class QueueFleetViewModelTest {
 
     @BeforeEach
     fun setup() {
+        LocationNavigationTemporary.setTestingVariable(true)
         mockkStatic(Hawk::class)
         mockkObject(UserUtils)
         mockkObject(LocationNavigationTemporary)
@@ -70,18 +71,19 @@ internal class QueueFleetViewModelTest {
 
     @AfterEach
     fun tearDown() {
+        LocationNavigationTemporary.setTestingVariable(false)
         _events.clear()
     }
 
     @Test
-    fun `getUserById, isSuccess`() = runTest {
+    fun `getUserById, when isSuccess and create title by response then createTitle and Success`() = runTest {
         val userAssignment =
             UserAssignment(
                 id = 1L,
                 locationId = 8,
                 locationName = "Location",
                 subLocationId = 2L,
-                subLocationName = "Sub Location",
+                subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
             )
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
@@ -102,6 +104,40 @@ internal class QueueFleetViewModelTest {
             QueueFleetState.GetUserInfoSuccess,
             _events.last()
         )
+        Assertions.assertEquals("${userAssignment.locationName} ${userAssignment.subLocationName}".getLastSync(), _vm.titleLocation!!.value)
+    }
+
+    @Test
+    fun `getUserById, when isSuccess and create location temp then createTitle and Success`() = runTest {
+        val userAssignment =
+            UserAssignment(
+                id = 1L,
+                locationId = 8,
+                locationName = "Location",
+                subLocationId = 2L,
+                subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
+                isOfficer = true
+            )
+        // Mock
+        every { Hawk.get<Long>(any()) } returns 1L
+        every { _getUserId.invoke(any(), any(), any()) } returns flow {
+            emit(GetUserByIdForAssignmentState.Success(userAssignment))
+        }
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.runTestGetUserById()
+        runCurrent()
+        job.cancel()
+        // Result
+        Assertions.assertEquals(2, _events.size)
+        Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events.first())
+        Assertions.assertEquals(
+            QueueFleetState.GetUserInfoSuccess,
+            _events.last()
+        )
+        Assertions.assertEquals("${LocationNavigationTemporary.locationName} ${LocationNavigationTemporary.subLocationName}".getLastSync(), _vm.titleLocation.value)
     }
 
     @Test

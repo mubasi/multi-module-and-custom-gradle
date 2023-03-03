@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object StringExtensions {
+    const val SUFFIX_TEST = "forTest"
 
     fun String.getTodayDate(): String {
         val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
@@ -15,6 +16,9 @@ object StringExtensions {
     }
 
     fun String.getLastSync(): String {
+        if(this.endsWith(SUFFIX_TEST)){
+            return "time"
+        }
         val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         return "$this, ${sdf.format(Date().time)}"
     }

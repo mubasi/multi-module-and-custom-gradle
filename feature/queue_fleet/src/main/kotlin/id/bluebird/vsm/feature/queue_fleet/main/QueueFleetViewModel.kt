@@ -105,7 +105,6 @@ class QueueFleetViewModel(
                         )
                     )
                 }
-                .flowOn(Dispatchers.Main)
                 .collect {
                     when (it) {
                         is GetUserByIdForAssignmentState.Success -> {
@@ -142,7 +141,6 @@ class QueueFleetViewModel(
                     subLocationId = mUserInfo.subLocationId,
                     locationId = mUserInfo.locationId
                 )
-                    .flowOn(Dispatchers.Main)
                     .catch { cause ->
                         _queueFleetState.emit(
                             QueueFleetState.FailedGetCounter(
