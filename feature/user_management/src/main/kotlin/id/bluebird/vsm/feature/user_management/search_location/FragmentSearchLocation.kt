@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.feature.user_management.R
-import id.bluebird.vsm.feature.user_management.databinding.FragmentSearchLocationBinding
+import id.bluebird.vsm.feature.user_management.databinding.FragmentUserSearchLocationBinding
 import id.bluebird.vsm.feature.user_management.search_location.adapter.AdapterSearchLocation
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -25,7 +25,7 @@ class FragmentSearchLocation : Fragment() {
         const val RESULT_KEY = "searchLocationResult"
     }
 
-    private lateinit var mBinding: FragmentSearchLocationBinding
+    private lateinit var mBinding: FragmentUserSearchLocationBinding
     private val searchLocationViewModel: SearchLocationViewModel by viewModel()
     private val adapter: AdapterSearchLocation by lazy {
         AdapterSearchLocation(searchLocationViewModel)
@@ -37,7 +37,12 @@ class FragmentSearchLocation : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mBinding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_search_location, container, false)
+            DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_user_search_location,
+                container,
+                false
+            )
         return mBinding.root
     }
 

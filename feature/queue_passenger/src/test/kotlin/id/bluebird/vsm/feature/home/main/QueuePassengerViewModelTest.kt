@@ -100,7 +100,7 @@ internal class QueuePassengerViewModelTest {
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
             every { UserUtils.isUserOfficer() } returns true
             every { UserUtils.getUserId() } returns 1L
-            every { getUserId.invoke(any(),any(),any()) } returns flow {
+            every { getUserId.invoke(any(), any(), any()) } returns flow {
                 throw NullPointerException(error)
             }
             val collect = launch {
@@ -130,7 +130,7 @@ internal class QueuePassengerViewModelTest {
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
             every { UserUtils.isUserOfficer() } returns true
             every { UserUtils.getUserId() } returns 1L
-            every { getUserId.invoke(any(),any(),any()) } returns flow {
+            every { getUserId.invoke(any(), any(), any()) } returns flow {
                 emit(GetUserByIdForAssignmentState.UserNotFound)
             }
             val collect = launch {
@@ -145,7 +145,10 @@ internal class QueuePassengerViewModelTest {
             //THEN
             assertEquals(2, states.size)
             assertEquals(QueuePassengerState.ProsesGetUser, states[0])
-            assertEquals(QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
+            assertEquals(
+                QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN),
+                states[1]
+            )
             assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
             assertEquals(titleString, resultTitle)
 
@@ -442,7 +445,7 @@ internal class QueuePassengerViewModelTest {
 
         //THEN
         assertEquals(1, states.size)
-        assertEquals(QueuePassengerState.SearchQueue(1L, 11L), states[0])
+        assertEquals(QueuePassengerState.ToSearchQueue(1L, 11L), states[0])
     }
 
     @Test
@@ -502,4 +505,34 @@ internal class QueuePassengerViewModelTest {
             assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
             assertEquals(QueuePassengerState.FailedCounterBar(error), states[1])
         }
+
+    @Test
+    fun `qrCodeScreenTest, emit state QrCodeScreen`() = runTest {
+        //GIVEN
+        val locationName = "aa"
+        val subLocationName = "bb"
+
+        subjectUnderTest.mUserInfo = UserInfo(1L, 1L, 11L)
+        subjectUnderTest.setLocationName(locationName)
+        subjectUnderTest.setSubLocationName(subLocationName)
+
+        val result = "$locationName $subLocationName"
+
+        val collect = launch {
+            subjectUnderTest.queuePassengerState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.toQrCodeScreen()
+        runCurrent()
+        collect.cancel()
+
+        //THEN
+        assertEquals(1, states.size)
+        assertEquals(
+            QueuePassengerState.ToQrCodeScreen(
+                1L, 11L, result
+            ), states[0]
+        )
+    }
 }

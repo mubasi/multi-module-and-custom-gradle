@@ -13,4 +13,8 @@ interface LocationRepository {
     ): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer>
 
     fun getLocations(): Flow<LocationPangkalanOuterClass.GetLocationsResponse>
+
+    fun getSubLocationQrCode(
+        subLocationId: Long
+    ): Flow<LocationPangkalanOuterClass.ResponseGetLocationQrCode>
 }

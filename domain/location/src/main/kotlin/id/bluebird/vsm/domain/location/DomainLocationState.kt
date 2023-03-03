@@ -1,5 +1,6 @@
 package id.bluebird.vsm.domain.location
 
+import id.bluebird.vsm.domain.location.model.GetLocationQrCodeResult
 import id.bluebird.vsm.domain.location.model.LocationsWithSub
 
 sealed class LocationDomainState<out T : Any> {
@@ -15,4 +16,8 @@ sealed interface LocationErrorState {
 
 sealed class GetLocationsWithSubState {
     data class Success(val list: List<LocationsWithSub>) : GetLocationsWithSubState()
+}
+
+sealed class GetLocationQrCodeState {
+    data class Success(val result: GetLocationQrCodeResult) : GetLocationQrCodeState()
 }

@@ -93,6 +93,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.searchFleetFragment -> {
                         navigateBackWithArrow(R.id.searchFleetFragment)
                     }
+                    R.id.qrCodeFragment -> {
+                        navigateBackWithArrow(R.id.qrCodeFragment)
+                    }
                     R.id.searchQueueFragment -> {
                         navigateBackWithArrow(R.id.searchQueueFragment)
                     }

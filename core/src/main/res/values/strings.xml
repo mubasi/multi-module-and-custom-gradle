@@ -58,5 +58,6 @@
     <string name="ritase_record">Pencatatan Ritase</string>
     <string name="ritase_record_msg">Pilih no. lambung untuk mencatat ritase antrian armada.</string>
     <string name="ritase_record_text">Catat ritase</string>
+    <string name="qr_code_text">QR Code</string>
 
 </resources>
