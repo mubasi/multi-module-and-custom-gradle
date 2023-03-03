@@ -21,11 +21,6 @@ android {
         minSdk = Version.minSdk
         targetSdk = Version.targetSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField(
-            type = "String",
-            name = "VERSION_NAME",
-            value = "\"${Version.versionName}\""
-        )
     }
 
     tasks.withType<Test> {

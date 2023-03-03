@@ -24,7 +24,7 @@ class LoginViewModel(
     }
 
     init {
-        version.value = BuildConfig.VERSION_NAME
+        version.value =id.bluebird.vsm.core.BuildConfig.VERSION_NAME
     }
 
     fun login() {

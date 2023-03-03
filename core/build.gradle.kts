@@ -64,6 +64,7 @@ android {
 
     productFlavors {
         register("prod") {
+            dimension = "env"
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -74,7 +75,11 @@ android {
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_production"]}"
             )
-            dimension = "env"
+            buildConfigField(
+                type = "String",
+                name = "VERSION_NAME",
+                value = "\"${Version.versionName}\""
+            )
         }
         register("stage") {
             dimension = "env"
@@ -88,6 +93,11 @@ android {
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_staging"]}"
             )
+            buildConfigField(
+                type = "String",
+                name = "VERSION_NAME",
+                value = "\"${Version.versionName} Staging\""
+            )
         }
         register("develop") {
             dimension = "env"
@@ -100,6 +110,11 @@ android {
                 type = "String",
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_dev"]}"
+            )
+            buildConfigField(
+                type = "String",
+                name = "VERSION_NAME",
+                value = "\"${Version.versionName} Dev\""
             )
         }
     }
