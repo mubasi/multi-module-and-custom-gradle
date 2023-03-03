@@ -42,7 +42,6 @@ class FragmentLogin : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mBinding.vm = mLoginViewModel
         mBinding.lifecycleOwner = viewLifecycleOwner
-        mBinding.tvVersionNameLogin.text = BuildConfig.VERSION_NAME
         onBackPressedFragment()
         state()
     }
