@@ -28,8 +28,11 @@ import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class FragmentQueuePassenger : Fragment() {
+
+    companion object {
+        const val POSITION = 1L
+    }
 
     private lateinit var binding: FragmentQueuePassengerBinding
     private val _queuePassengerViewModel: QueuePassengerViewModel by viewModel()
@@ -168,11 +171,7 @@ class FragmentQueuePassenger : Fragment() {
                                 showDialogRecordRitase(EMPTY_STRING)
                             }
                             is QueuePassengerState.ToQrCodeScreen -> {
-                                val bundle = Bundle()
-                                bundle.putLong("locationId", it.locationId)
-                                bundle.putLong("subLocationId", it.subLocationId)
-                                bundle.putString("titleLocation", it.titleLocation)
-                                findNavController().navigate(R.id.qrCodeFragment, bundle)
+                                gotoQrcodeScreen(it.locationId, it.subLocationId, it.titleLocation)
                             }
                             else -> {
                                 // do nothing
@@ -310,5 +309,18 @@ class FragmentQueuePassenger : Fragment() {
 
     private fun showNotifInfo(message: Spanned, color: Int) {
         DialogUtils.showSnackbar(requireView(), message, color)
+    }
+
+    private fun gotoQrcodeScreen(locationId: Long, subLocationId: Long, titleLocation: String) {
+        NavigationNav.navigate(
+            NavigationSealed.QrCode(
+                destination = null,
+                frag = this@FragmentQueuePassenger,
+                locationId = locationId,
+                subLocationId = subLocationId,
+                titleLocation = titleLocation,
+                position = POSITION
+            )
+        )
     }
 }

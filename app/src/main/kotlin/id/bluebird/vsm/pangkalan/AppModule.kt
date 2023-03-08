@@ -23,13 +23,13 @@ import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewM
 import id.bluebird.vsm.feature.home.dialog_restore_skipped.DialogRestoreSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_skip_queue.DialogSkipQueueViewModel
 import id.bluebird.vsm.feature.home.main.QueuePassengerViewModel
-import id.bluebird.vsm.feature.home.qr_code.QrCodeViewModel
 import id.bluebird.vsm.feature.home.queue_search.QueueSearchViewModel
 import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
+import id.bluebird.vsm.feature.qrcode.QrCodeViewModel
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel

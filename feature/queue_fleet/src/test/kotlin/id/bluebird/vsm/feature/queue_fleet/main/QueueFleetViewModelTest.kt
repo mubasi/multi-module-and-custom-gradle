@@ -137,14 +137,96 @@ internal class QueueFleetViewModelTest {
             QueueFleetState.GetUserInfoSuccess,
             _events.last()
         )
-        Assertions.assertEquals("${LocationNavigationTemporary.locationName} ${LocationNavigationTemporary.subLocationName}".getLastSync(), _vm.titleLocation.value)
+        Assertions.assertEquals(
+            "${LocationNavigationTemporary.locationName} ${LocationNavigationTemporary.subLocationName}".getLastSync(),
+            _vm.titleLocation.value
+        )
     }
+
+    @Test
+    fun `getUserById, when isSuccess and create location temp then createTitle and Success and is Not Officer`() =
+        runTest {
+            val userAssignment =
+                UserAssignment(
+                    id = 1L,
+                    locationId = 8,
+                    locationName = "Location",
+                    subLocationId = 2L,
+                    subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
+                    isOfficer = false
+                )
+            // Mock
+            every { Hawk.get<Long>(any()) } returns 1L
+            every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
+                locationId = 8,
+                subLocationId = 2L,
+                locationName = "Location",
+                subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}"
+            )
+            every { _getUserId.invoke(any(), any(), any()) } returns flow {
+                emit(GetUserByIdForAssignmentState.Success(userAssignment))
+            }
+            // Execute
+            val job = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+            _vm.runTestGetUserById()
+            runCurrent()
+            job.cancel()
+            // Result
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events.first())
+            Assertions.assertEquals(
+                QueueFleetState.GetUserInfoSuccess,
+                _events.last()
+            )
+            Assertions.assertEquals(
+                "${LocationNavigationTemporary.locationName} ${LocationNavigationTemporary.subLocationName}".getLastSync(),
+                _vm.titleLocation.value
+            )
+        }
+
+
+    @Test
+    fun `getUserById, when isSuccess and create location temp then createTitle and Success and is Not Officer and locationNav is Null`() =
+        runTest {
+            val userAssignment =
+                UserAssignment(
+                    id = 1L,
+                    locationId = 8,
+                    locationName = "Location",
+                    subLocationId = 2L,
+                    subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
+                    isOfficer = false
+                )
+            // Mock
+            every { Hawk.get<Long>(any()) } returns 1L
+            every { LocationNavigationTemporary.getLocationNav() } returns null
+            every { _getUserId.invoke(any(), any(), any()) } returns flow {
+                emit(GetUserByIdForAssignmentState.Success(userAssignment))
+            }
+            // Execute
+            val job = launch {
+                _vm.queueFleetState.toList(_events)
+            }
+            _vm.runTestGetUserById()
+            runCurrent()
+            job.cancel()
+            // Result
+            Assertions.assertEquals(2, _events.size)
+            Assertions.assertEquals(QueueFleetState.ProgressGetUser, _events.first())
+            Assertions.assertEquals(
+                QueueFleetState.GetUserInfoSuccess,
+                _events.last()
+            )
+            Assertions.assertEquals(" ".getLastSync(), _vm.titleLocation.value)
+        }
 
     @Test
     fun `getUserById, isFailed`() = runTest {
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
-        every { _getUserId.invoke(any(), any(),any()) } returns flow {
+        every { _getUserId.invoke(any(), any(), any()) } returns flow {
             throw NullPointerException(ERROR)
         }
         // Execute
@@ -716,5 +798,119 @@ internal class QueueFleetViewModelTest {
         Assertions.assertEquals(1, _events.size)
         assert(_events.last() is QueueFleetState.SearchQueueToDepart)
         collect.cancel()
+    }
+
+
+    @Test
+    fun `qrCodeScreenTest, emit state QrCodeScreen`() = runTest {
+        //GIVEN
+        val locationName = "aa"
+        val subLocationName = "bb"
+
+        _vm.mUserInfo = UserInfo(1L, 1L, 11L)
+        _vm.setLocationName(locationName)
+        _vm.setSubLocationName(subLocationName)
+
+        val result = "$locationName $subLocationName"
+
+        val collect = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+
+        //WHEN
+        _vm.goToQrCodeScreen()
+        runCurrent()
+        collect.cancel()
+
+        //THEN
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(
+            QueueFleetState.GoToQrCodeScreen(
+                1L, 11L, result
+            ), _events[0]
+        )
+    }
+
+    @Test
+    fun refreshTest() = runTest {
+
+        val counter = CountCache()
+
+        //mock
+        every { Hawk.get<Long>(any()) } returns 1L
+        every { LocationNavigationTemporary.isLocationNavAvailable().not() } returns false
+        every { UserUtils.isUserOfficer().not() } returns false
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.refresh()
+        runCurrent()
+        delay(500)
+
+        //THEN
+        Assertions.assertEquals(2, _events.size)
+        Assertions.assertEquals(QueueFleetState.ProgressHolder, _events[0])
+        Assertions.assertEquals(QueueFleetState.ToSelectLocation, _events[1])
+        Assertions.assertEquals(0, _vm.getFleetItem().size)
+        Assertions.assertEquals(counter, _vm.getCountCache())
+        job.cancel()
+    }
+
+    @Test
+    fun showRecordRitaseTest() = runTest {
+        //given
+        val fleetItem = FleetItem(
+            id = 1,
+            name = "aa",
+            arriveAt = "bb"
+        )
+        val queueId = "cc"
+        _vm.mUserInfo = UserInfo(1L, 1L, 11L)
+
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.showRecordRitase(fleetItem, queueId)
+        runCurrent()
+        delay(500)
+
+        //THEN
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(
+            QueueFleetState.RecordRitaseToDepart(
+                fleetItem,
+                1L,
+                11L,
+                queueId
+            ), _events[0]
+        )
+        job.cancel()
+    }
+
+    @Test
+    fun onErrorFromDialogTest() = runTest {
+
+        val result = Throwable(message = ERROR)
+
+        // Execute
+        val job = launch {
+            _vm.queueFleetState.toList(_events)
+        }
+        _vm.onErrorFromDialog(result)
+        runCurrent()
+        delay(500)
+
+        //THEN
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(
+            QueueFleetState.FailedGetQueue(
+                result
+            ), _events[0]
+        )
+        job.cancel()
     }
 }

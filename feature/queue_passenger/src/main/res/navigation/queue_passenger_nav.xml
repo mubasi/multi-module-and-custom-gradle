@@ -23,9 +23,5 @@
         android:name="id.bluebird.vsm.feature.home.ritase_fleet.FragmentRitaseFleet"
         android:label="@string/select_no_fleet">
     </fragment>
-    <fragment
-        android:id="@+id/qrCodeFragment"
-        android:name="id.bluebird.vsm.feature.home.qr_code.FragmentQrCode"
-        android:label="@string/qr_code_title" />
     <deepLink app:uri="android-app://id.bluebird.mall/queue_passenger" />
 </navigation>

@@ -1,9 +1,8 @@
-package id.bluebird.vsm.feature.home.qr_code
+package id.bluebird.vsm.feature.qrcode
 
 import id.bluebird.vsm.domain.location.GetLocationQrCodeState
 import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationQrCode
 import id.bluebird.vsm.domain.location.model.GetLocationQrCodeResult
-import id.bluebird.vsm.feature.home.TestCoroutineRule
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,10 +73,10 @@ internal class QrCodeViewModelTest {
 
         Assertions.assertEquals(2, _events.size)
         Assertions.assertEquals(
-            QrCodeState.Progress, _events[0]
+            id.bluebird.vsm.feature.qrcode.QrCodeState.Progress, _events[0]
         )
         Assertions.assertEquals(
-            QrCodeState.OnError(result), _events[1]
+            id.bluebird.vsm.feature.qrcode.QrCodeState.OnError(result), _events[1]
         )
         collect.cancel()
     }
@@ -109,10 +108,10 @@ internal class QrCodeViewModelTest {
 
             Assertions.assertEquals(2, _events.size)
             Assertions.assertEquals(
-                QrCodeState.Progress, _events[0]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.Progress, _events[0]
             )
             Assertions.assertEquals(
-                QrCodeState.SuccessLoad("bb"), _events[1]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.SuccessLoad("bb"), _events[1]
             )
             Assertions.assertEquals("bb", subjectTest.qrCodeDriver)
             Assertions.assertEquals("cc", subjectTest.qrCodeWeb)
@@ -146,10 +145,10 @@ internal class QrCodeViewModelTest {
 
             Assertions.assertEquals(2, _events.size)
             Assertions.assertEquals(
-                QrCodeState.Progress, _events[0]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.Progress, _events[0]
             )
             Assertions.assertEquals(
-                QrCodeState.SuccessLoad("cc"), _events[1]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.SuccessLoad("cc"), _events[1]
             )
             Assertions.assertEquals("bb", subjectTest.qrCodeDriver)
             Assertions.assertEquals("cc", subjectTest.qrCodeWeb)
@@ -174,7 +173,7 @@ internal class QrCodeViewModelTest {
 
             Assertions.assertEquals(1, _events.size)
             Assertions.assertEquals(
-                QrCodeState.SuccessLoad("aa"), _events[0]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.SuccessLoad("aa"), _events[0]
             )
             Assertions.assertEquals("aa", subjectTest.qrCodeDriver)
             Assertions.assertEquals("bb", subjectTest.qrCodeWeb)
@@ -200,7 +199,7 @@ internal class QrCodeViewModelTest {
 
             Assertions.assertEquals(1, _events.size)
             Assertions.assertEquals(
-                QrCodeState.SuccessLoad("bb"), _events[0]
+                id.bluebird.vsm.feature.qrcode.QrCodeState.SuccessLoad("bb"), _events[0]
             )
             Assertions.assertEquals("aa", subjectTest.qrCodeDriver)
             Assertions.assertEquals("bb", subjectTest.qrCodeWeb)

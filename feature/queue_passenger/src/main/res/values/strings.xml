@@ -41,13 +41,6 @@
     <string name="title_fleet_not_selected">Armada tidak dipilih</string>
     <string name="msg_fleet_not_selected">Silahkan pilih salah satu no. lambung</string>
     <string name="ritase_failed_title">Armada gagal diritase</string>
-    <string name="qr_code_title">QR Code</string>
-    <string name="driver_app_text">Driver\'s App</string>
-    <string name="web_passenger_text">Web Penumpang</string>
-    <string name="location_id">ID Lokasi</string>
-    <string name="sub_location_id">ID Sub Lokasi</string>
-    <string name="error_qr_code_message">Gagal mengambil QR Code</string>
-    <string name="recall_qr_code">Ambil ulang QR Code</string>
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">

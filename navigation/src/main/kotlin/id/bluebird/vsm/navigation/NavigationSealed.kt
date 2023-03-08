@@ -30,4 +30,14 @@ sealed class NavigationSealed(
         val isMenuFleet: Boolean = false
     ) :
         NavigationSealed(action = destination, fragment = frag)
+
+    data class QrCode(
+        val destination: Int? = null,
+        val frag: Fragment,
+        val locationId: Long = -1,
+        val subLocationId: Long = -1,
+        val titleLocation: String = "",
+        val position: Long = 0
+    ) :
+        NavigationSealed(action = destination, fragment = frag)
 }

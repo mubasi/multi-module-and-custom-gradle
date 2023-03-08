@@ -37,6 +37,7 @@ class QueueFleetViewModel(
 
         const val ERROR_MESSAGE_UNKNOWN = "Unknown"
         const val ZERO = 0
+        const val EMPTY_STRING = ""
     }
 
     val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
@@ -48,12 +49,16 @@ class QueueFleetViewModel(
     private var mCountCache: CountCache = CountCache()
     var mUserInfo: UserInfo = UserInfo()
     private val _fleetItems: MutableList<FleetItem> = mutableListOf()
+    private val _locationName: MutableLiveData<String> = MutableLiveData("...")
+    private val _subLocationName: MutableLiveData<String> = MutableLiveData("...")
+
     @VisibleForTesting
     fun setUserInfo(userInfo: UserInfo) {
         mUserInfo = userInfo
     }
+
     @VisibleForTesting
-    fun valUserInfo() : UserInfo {
+    fun valUserInfo(): UserInfo {
         return mUserInfo
     }
 
@@ -62,6 +67,7 @@ class QueueFleetViewModel(
         mCountCache = countCache
         counterLiveData.value = mCountCache
     }
+
     @VisibleForTesting
     fun setFleetItems(list: List<FleetItem>) {
         _fleetItems.addAll(list)
@@ -70,6 +76,26 @@ class QueueFleetViewModel(
     @VisibleForTesting
     fun runTestGetUserById() {
         getUserById()
+    }
+
+    @VisibleForTesting
+    fun setLocationName(result: String) {
+        _locationName.value = result
+    }
+
+    @VisibleForTesting
+    fun setSubLocationName(result: String) {
+        _subLocationName.value = result
+    }
+
+    @VisibleForTesting
+    fun getFleetItem(): List<FleetItem> {
+        return _fleetItems
+    }
+
+    @VisibleForTesting
+    fun getCountCache(): CountCache {
+        return mCountCache
     }
 
     fun init() {
@@ -123,14 +149,15 @@ class QueueFleetViewModel(
 
     private fun createTitleLocation(userAssignment: UserAssignment) {
         with(userAssignment) {
-            titleLocation.value = if (isOfficer) {
-                "$locationName $subLocationName".getLastSync()
+            if (isOfficer) {
+                _locationName.value = locationName
+                _subLocationName.value = subLocationName
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
-                location?.let {
-                    "${it.locationName} ${it.subLocationName}".getLastSync()
-                }
+                _locationName.value = location?.locationName ?: EMPTY_STRING
+                _subLocationName.value = location?.subLocationName ?: EMPTY_STRING
             }
+            titleLocation.value = "${_locationName.value} ${_subLocationName.value}".getLastSync()
         }
     }
 
@@ -372,5 +399,17 @@ class QueueFleetViewModel(
         mCountCache = CountCache()
         _fleetItems.clear()
         init()
+    }
+
+    fun goToQrCodeScreen() {
+        viewModelScope.launch {
+            _queueFleetState.emit(
+                QueueFleetState.GoToQrCodeScreen(
+                    locationId = mUserInfo.locationId,
+                    subLocationId = mUserInfo.subLocationId,
+                    titleLocation = "${_locationName.value} ${_subLocationName.value}"
+                )
+            )
+        }
     }
 }
