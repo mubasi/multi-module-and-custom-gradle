@@ -22,7 +22,7 @@ object LocationNavigationTemporary {
     }
 
     fun getLocationNav(): LocationNavigation? {
-        return if(!isOnTesting){
+        return if (isOnTesting) {
             LocationNavigation(
                 locationName = "sample"
             )
