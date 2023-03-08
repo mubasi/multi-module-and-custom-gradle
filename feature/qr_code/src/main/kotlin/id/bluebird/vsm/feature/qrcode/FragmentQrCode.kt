@@ -1,4 +1,4 @@
-package id.bluebird.vsm.feature.home.qr_code
+package id.bluebird.vsm.feature.qrcode
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.tabs.TabLayout
 import id.bluebird.vsm.core.extensions.StringExtensions.convertBase64
-import id.bluebird.vsm.feature.home.R
-import id.bluebird.vsm.feature.home.databinding.FragmentQrCodeBinding
-import id.bluebird.vsm.feature.home.qr_code.QrCodeViewModel.Companion.EMPTY_STRING
+import id.bluebird.vsm.feature.qrcode.QrCodeViewModel.Companion.EMPTY_STRING
+import id.bluebird.vsm.feature.qrcode.databinding.FragmentQrCodeBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,6 +21,7 @@ class FragmentQrCode : Fragment() {
 
     private val _vm: QrCodeViewModel by viewModel()
     private lateinit var binding: FragmentQrCodeBinding
+    private var position: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,9 +76,10 @@ class FragmentQrCode : Fragment() {
 
     private fun setArgument() {
         if (arguments != null) {
-            val titleLocation = arguments?.getString("titleLocation") ?: EMPTY_STRING
-            val subLocationId = arguments?.getLong("subLocationId") ?: 0
-            val locationId = arguments?.getLong("locationId") ?: 0
+            val titleLocation = arguments?.getString("title_location") ?: EMPTY_STRING
+            val subLocationId = arguments?.getLong("sub_location_id") ?: 0
+            val locationId = arguments?.getLong("location_id") ?: 0
+            position = (arguments?.getLong("position") ?: 0).toInt()
             _vm.init(locationId, subLocationId, titleLocation)
             setResultArgument()
         }
@@ -95,14 +96,14 @@ class FragmentQrCode : Fragment() {
         (activity as AppCompatActivity?)!!.supportActionBar!!.title = label
     }
 
-    private fun changeQrCode(position: Int) {
+    private fun changeQrCode(pos: Int) {
         binding.isLoading = true
-        _vm.changeQrCode(position)
+        _vm.changeQrCode(pos)
     }
 
     private fun setupFirst() {
-        val selectedPosition = binding.tabLayout.selectedTabPosition
-        changeQrCode(selectedPosition)
+        binding.tabLayout.getTabAt(position)?.select()
+        changeQrCode(position)
     }
 
     private fun showQrCode(result: String) {
