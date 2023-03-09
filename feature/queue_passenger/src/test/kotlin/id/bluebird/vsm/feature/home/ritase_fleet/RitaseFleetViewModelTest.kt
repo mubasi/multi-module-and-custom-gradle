@@ -6,15 +6,10 @@ import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
 import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
-import id.bluebird.vsm.domain.passenger.domain.cases.GetQueueReceipt
-import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.feature.home.TestCoroutineRule
-import id.bluebird.vsm.feature.home.model.CurrentQueueCache
 import id.bluebird.vsm.feature.home.model.FleetItemList
-import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketState
-import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
+import id.bluebird.vsm.feature.home.model.UserInfo
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
-import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -32,7 +27,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import java.text.SimpleDateFormat
 
 @ExperimentalCoroutinesApi
 @ExtendWith(TestCoroutineRule::class)
@@ -58,31 +52,16 @@ internal class RitaseFleetViewModelTest {
     }
 
     @Test
-    fun `init when location is Null`() = runTest {
-        every { LocationNavigationTemporary.getLocationNav() } returns null
-        val collect = launch {
-            subjectUnderTest.ritaseFleetState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.init()
-        runCurrent()
-        delay(500)
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(RitaseFleetState.CurrentQueueNotFound, states[0])
-        collect.cancel()
-    }
-
-    @Test
     fun `init when location is not null and getFleet failed`() = runTest {
-        every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            locationId = 1,
-            subLocationId = 2,
-            locationName = "aa",
-            subLocationName = "bb"
+        //given
+        val userId = 1L
+        val locationId = 2L
+        val subLocationId = 3L
+
+        val mUserInfo = UserInfo(
+            userId, locationId, subLocationId
         )
+
         val result = Throwable(message = "error")
 
         every { getFleet.invoke(any()) } returns flow {
@@ -93,14 +72,16 @@ internal class RitaseFleetViewModelTest {
         }
 
         //WHEN
-        subjectUnderTest.init()
+        subjectUnderTest.init(userId, locationId, subLocationId)
         runCurrent()
         delay(500)
 
         //THEN
         assertEquals(2, states.size)
-        assertEquals(2L, subjectUnderTest.mUserInfo.subLocationId)
-        assertEquals(1L, subjectUnderTest.mUserInfo.locationId)
+        assertEquals(3L, subjectUnderTest.mUserInfo.subLocationId)
+        assertEquals(2L, subjectUnderTest.mUserInfo.locationId)
+        assertEquals(1L, subjectUnderTest.mUserInfo.userId)
+        assertEquals(mUserInfo, subjectUnderTest.mUserInfo)
         assertEquals(RitaseFleetState.ProsesListFleet, states[0])
         assertEquals(RitaseFleetState.FailedGetList(result), states[1])
         collect.cancel()
@@ -128,31 +109,36 @@ internal class RitaseFleetViewModelTest {
             )
         }
 
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
-        every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            2L,
-            12L,
-            "locationName2",
-            "subLocationName2"
+        val userId = 1L
+        val locationId = 2L
+        val subLocationId = 3L
+
+        val mUserInfo = UserInfo(
+            userId, locationId, subLocationId
         )
+
         every { getFleet.invoke(any()) } returns flow {
-            emit(GetListFleetState.Success(
-                list = currentListItem.toList()
-            ))
+            emit(
+                GetListFleetState.Success(
+                    list = currentListItem.toList()
+                )
+            )
         }
         val collect = launch {
             subjectUnderTest.ritaseFleetState.toList(states)
         }
 
         //WHEN
-        subjectUnderTest.init()
+        subjectUnderTest.init(userId, locationId, subLocationId)
         runCurrent()
         delay(500)
 
         //THEN
         assertEquals(2, states.size)
-        assertEquals(12L, subjectUnderTest.mUserInfo.subLocationId)
+        assertEquals(3L, subjectUnderTest.mUserInfo.subLocationId)
         assertEquals(2L, subjectUnderTest.mUserInfo.locationId)
+        assertEquals(1L, subjectUnderTest.mUserInfo.userId)
+        assertEquals(mUserInfo, subjectUnderTest.mUserInfo)
         assertEquals(RitaseFleetState.ProsesListFleet, states[0])
         assertEquals(RitaseFleetState.GetListSuccess(currentListResult), states[1])
         collect.cancel()
@@ -160,13 +146,14 @@ internal class RitaseFleetViewModelTest {
 
     @Test
     fun `init when location is not null with get fleet success and is empty`() = runTest {
-        every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
-        every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
-            2L,
-            12L,
-            "locationName2",
-            "subLocationName2"
+        val userId = 1L
+        val locationId = 2L
+        val subLocationId = 3L
+
+        val mUserInfo = UserInfo(
+            userId, locationId, subLocationId
         )
+
         every { getFleet.invoke(any()) } returns flow {
             emit(GetListFleetState.EmptyResult)
         }
@@ -175,14 +162,16 @@ internal class RitaseFleetViewModelTest {
         }
 
         //WHEN
-        subjectUnderTest.init()
+        subjectUnderTest.init(userId, locationId, subLocationId)
         runCurrent()
         delay(500)
 
         //THEN
         assertEquals(2, states.size)
-        assertEquals(12L, subjectUnderTest.mUserInfo.subLocationId)
+        assertEquals(3L, subjectUnderTest.mUserInfo.subLocationId)
         assertEquals(2L, subjectUnderTest.mUserInfo.locationId)
+        assertEquals(1L, subjectUnderTest.mUserInfo.userId)
+        assertEquals(mUserInfo, subjectUnderTest.mUserInfo)
         assertEquals(RitaseFleetState.ProsesListFleet, states[0])
         assertEquals(RitaseFleetState.GetListEmpty, states[1])
         collect.cancel()

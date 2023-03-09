@@ -286,7 +286,8 @@ class FragmentQueuePassenger : Fragment() {
             locationId = _queuePassengerViewModel.mUserInfo.locationId,
             subLocationId = _queuePassengerViewModel.mUserInfo.subLocationId,
             queue = _queuePassengerViewModel.currentQueueCache,
-            fleetNumber = fleetNumber
+            fleetNumber = fleetNumber,
+            userId = _queuePassengerViewModel.mUserInfo.userId
         ) { numberFleet, numberQueue ->
             callBackProses(
                 fleetNumber = numberFleet,

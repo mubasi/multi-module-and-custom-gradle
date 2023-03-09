@@ -29,8 +29,11 @@ class FragmentRitaseFleet : Fragment() {
         const val FLEET_NUMBER = "fleetNumber"
     }
 
-    private lateinit var binding : FragmentRitaseFleetBinding
-    private val vm : RitaseFleetViewModel by viewModel()
+    private lateinit var binding: FragmentRitaseFleetBinding
+    private val vm: RitaseFleetViewModel by viewModel()
+    private var userId: Long = -1
+    private var locationId: Long = -1
+    private var subLocationId: Long = -1
     private val _adapterListFleet: AdapterListFleet by lazy {
         AdapterListFleet(vm)
     }
@@ -40,7 +43,8 @@ class FragmentRitaseFleet : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ritase_fleet, container, false)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_ritase_fleet, container, false)
         return binding.root
     }
 
@@ -53,17 +57,27 @@ class FragmentRitaseFleet : Fragment() {
         setAdapter()
         setButtonAction()
         setFilter()
-        vm.init()
+        setArgument()
+
     }
 
-    private fun setObserve(){
+    private fun setArgument() {
+        if (arguments != null) {
+            userId = arguments?.getLong("userId") ?: -1
+            locationId = arguments?.getLong("locationId") ?: -1
+            subLocationId = arguments?.getLong("subLocationId") ?: -1
+            vm.init(userId, locationId, subLocationId)
+        }
+    }
+
+    private fun setObserve() {
         vm.selectedFleetNumber.observe(viewLifecycleOwner) {
             setBackgroundButton(it.isNotEmpty())
         }
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                with(vm){
-                    ritaseFleetState.collect{
+                with(vm) {
+                    ritaseFleetState.collect {
                         when(it) {
                             is RitaseFleetState.ProsesListFleet -> {
                                 setVisible(progress = true, 1)
@@ -139,7 +153,7 @@ class FragmentRitaseFleet : Fragment() {
 
     private fun initRefreshLayout() {
         binding.swipeRefreshLayout.setOnRefreshListener {
-            vm.init()
+            vm.init(userId, locationId, subLocationId)
         }
     }
 

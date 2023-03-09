@@ -23,6 +23,7 @@ class DialogRecordRitaseViewModel(
 
     private val _action: MutableSharedFlow<DialogRecordRitaseState> = MutableSharedFlow()
     val action = _action.asSharedFlow()
+    var userId: Long = -1
     var subLocationId: Long = -1
     var locationId: Long = -1
     val currentQueue: MutableLiveData<CurrentQueueCache> = MutableLiveData()
@@ -39,6 +40,11 @@ class DialogRecordRitaseViewModel(
     }
 
     @VisibleForTesting
+    fun setValUserId(value: Long) {
+        userId = value
+    }
+
+    @VisibleForTesting
     fun setValFleetNumber(value: String) {
         fleetNumber = value
     }
@@ -52,7 +58,8 @@ class DialogRecordRitaseViewModel(
         queue: CurrentQueueCache,
         valLocationId: Long,
         valSubLocationId: Long,
-        valFleetNumber: String
+        valFleetNumber: String,
+        valUserId: Long
     ) {
         viewModelScope.launch {
             _action.emit(DialogRecordRitaseState.ProgressDialog)
@@ -60,6 +67,7 @@ class DialogRecordRitaseViewModel(
             locationId = valLocationId
             subLocationId = valSubLocationId
             fleetNumber = valFleetNumber
+            userId = valUserId
             _action.emit(DialogRecordRitaseState.Idle)
         }
     }
@@ -75,7 +83,11 @@ class DialogRecordRitaseViewModel(
     fun selectFleet() {
         viewModelScope.launch {
             _action.emit(
-                DialogRecordRitaseState.SelectFleet
+                DialogRecordRitaseState.SelectFleet(
+                    userId = userId,
+                    locationId = locationId,
+                    subLocationId = subLocationId
+                )
             )
         }
     }
