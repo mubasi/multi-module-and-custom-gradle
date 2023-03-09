@@ -19,10 +19,11 @@ import id.bluebird.vsm.feature.home.model.CurrentQueueCache
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentDialogRecordRitase(
-    locationId : Long,
-    subLocationId : Long,
-    queue : CurrentQueueCache,
-    fleetNumber : String,
+    userId: Long,
+    locationId: Long,
+    subLocationId: Long,
+    queue: CurrentQueueCache,
+    fleetNumber: String,
     callBackProsess: (fleetNumber: String, queueNumber: String) -> Unit
 ) : BottomSheetDialogFragment() {
     companion object {
@@ -32,6 +33,7 @@ class FragmentDialogRecordRitase(
     private lateinit var binding: DialogRitaseRecordBinding
     private val vm: DialogRecordRitaseViewModel by viewModel()
     private val _queue = queue
+    private val _userId = userId
     private val _locationId = locationId
     private val _subLocationId = subLocationId
     private val _fleetNumber = fleetNumber
@@ -64,7 +66,8 @@ class FragmentDialogRecordRitase(
             queue = _queue,
             valLocationId = _locationId,
             valSubLocationId = _subLocationId,
-            valFleetNumber = _fleetNumber
+            valFleetNumber = _fleetNumber,
+            valUserId = _userId
         )
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
@@ -77,7 +80,11 @@ class FragmentDialogRecordRitase(
                             }
                             is DialogRecordRitaseState.SelectFleet -> {
                                 dialog?.dismiss()
-                                findNavController().navigate(R.id.ritaseFleetFragment)
+                                val bundle = Bundle()
+                                bundle.putLong("userId", it.userId)
+                                bundle.putLong("locationId", it.locationId)
+                                bundle.putLong("subLocationId", it.subLocationId)
+                                findNavController().navigate(R.id.ritaseFleetFragment, bundle)
                             }
                             DialogRecordRitaseState.FleetEmpty -> {
                                 val title = requireContext().getString(R.string.title_fleet_not_selected)

@@ -48,6 +48,7 @@ internal class DialogRecordRitaseViewModelTest {
     fun `initTest, when set currentQueue is Success and fleetNumber is Empty`() = runTest {
         val locationId: Long = 1
         val subLocationId: Long = 2
+        val userId: Long = 3
         val currentQueueCache = CurrentQueueCache(
             id = 1,
             number = "aa",
@@ -59,13 +60,14 @@ internal class DialogRecordRitaseViewModelTest {
             subjectUnderTest.action.toList(states)
         }
         //WHEN
-        subjectUnderTest.init(currentQueueCache, locationId, subLocationId, fleetNumber)
+        subjectUnderTest.init(currentQueueCache, locationId, subLocationId, fleetNumber, userId)
         runCurrent()
         delay(500)
 
         Assertions.assertEquals(2, states.size)
         Assertions.assertEquals(DialogRecordRitaseState.ProgressDialog, states[0])
         Assertions.assertEquals(DialogRecordRitaseState.Idle, states[1])
+        Assertions.assertEquals(userId, subjectUnderTest.userId)
         Assertions.assertEquals(locationId, subjectUnderTest.locationId)
         Assertions.assertEquals(subLocationId, subjectUnderTest.subLocationId)
         Assertions.assertEquals(fleetNumber, subjectUnderTest.fleetNumber)
@@ -93,9 +95,11 @@ internal class DialogRecordRitaseViewModelTest {
     fun selectFleetTest() = runTest {
         val locationId: Long = 1
         val subLocationId: Long = 2
+        val userId: Long = 3
 
         subjectUnderTest.setValLocationId(locationId)
         subjectUnderTest.setValSubLocationId(subLocationId)
+        subjectUnderTest.setValUserId(userId)
 
         val collect = launch {
             subjectUnderTest.action.toList(states)
@@ -107,7 +111,13 @@ internal class DialogRecordRitaseViewModelTest {
         delay(500)
 
         Assertions.assertEquals(1, states.size)
-        Assertions.assertEquals(DialogRecordRitaseState.SelectFleet, states[0])
+        Assertions.assertEquals(
+            DialogRecordRitaseState.SelectFleet(
+                userId = userId,
+                locationId = locationId,
+                subLocationId = subLocationId
+            ), states[0]
+        )
         collect.cancel()
     }
 
