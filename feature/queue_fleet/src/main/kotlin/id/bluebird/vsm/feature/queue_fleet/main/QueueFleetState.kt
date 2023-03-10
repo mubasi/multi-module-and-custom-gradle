@@ -40,4 +40,10 @@ sealed class QueueFleetState {
     ) : QueueFleetState()
 
     data class FailedDepart(val message: String) : QueueFleetState()
+
+    data class GoToQrCodeScreen(
+        val locationId: Long,
+        val subLocationId: Long,
+        val titleLocation: String
+    ) : QueueFleetState()
 }

@@ -3,12 +3,7 @@ package id.bluebird.vsm.feature.queue_fleet.main
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
+import android.view.*
 import androidx.core.text.bold
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -19,8 +14,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.queue_fleet.R
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
@@ -39,6 +32,11 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentQueueFleet : Fragment() {
+
+    companion object {
+        const val POSITION = 0
+    }
+
     private val _mQueueFleetViewModel: QueueFleetViewModel by viewModel()
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
@@ -71,6 +69,7 @@ class FragmentQueueFleet : Fragment() {
             showProgress = true
             successList = false
         }
+        setHasOptionsMenu(true)
         initRcv()
         observer()
         _mQueueFleetViewModel.init()
@@ -194,6 +193,9 @@ class FragmentQueueFleet : Fragment() {
 
                                 showSnackbar(string, R.color.warning_0)
                             }
+                            is QueueFleetState.GoToQrCodeScreen -> {
+                                gotoQrcodeScreen(it.locationId, it.subLocationId, it.titleLocation)
+                            }
                             else -> {
                                 // do nothing
                             }
@@ -268,5 +270,32 @@ class FragmentQueueFleet : Fragment() {
             mainListFleetFleetFragment.adapter = _fleetAdapter
             mainListFleetFleetFragment.layoutManager = LinearLayoutManager(requireContext())
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.queue_fleet_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.qr_code_screen -> {
+                _mQueueFleetViewModel.goToQrCodeScreen()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun gotoQrcodeScreen(locationId: Long, subLocationId: Long, titleLocation: String) {
+        NavigationNav.navigate(
+            NavigationSealed.QrCode(
+                destination = null,
+                frag = this@FragmentQueueFleet,
+                locationId = locationId,
+                subLocationId = subLocationId,
+                titleLocation = titleLocation,
+                position = POSITION.toLong()
+            )
+        )
     }
 }

@@ -13,7 +13,7 @@
 
         <variable
             name="vm"
-            type="id.bluebird.vsm.feature.home.qr_code.QrCodeViewModel" />
+            type="id.bluebird.vsm.feature.qrcode.QrCodeViewModel" />
 
         <import type="android.view.View" />
     </data>

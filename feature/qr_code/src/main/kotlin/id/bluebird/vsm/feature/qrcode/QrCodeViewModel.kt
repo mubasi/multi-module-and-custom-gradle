@@ -1,4 +1,4 @@
-package id.bluebird.vsm.feature.home.qr_code
+package id.bluebird.vsm.feature.qrcode
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData

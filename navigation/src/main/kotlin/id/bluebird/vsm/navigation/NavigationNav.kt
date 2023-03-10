@@ -25,6 +25,7 @@ object NavigationNav {
             is NavigationSealed.QueuePassenger -> "queue_passenger"
             is NavigationSealed.Monitoring -> "monitoring_nav"
             is NavigationSealed.SelectLocation -> "select_location/${navigationSealed.isMenuFleet}"
+            is NavigationSealed.QrCode -> "qr_code/${navigationSealed.locationId}/${navigationSealed.subLocationId}/${navigationSealed.titleLocation}/${navigationSealed.position}"
         }
         return "android-app://id.bluebird.mall/$target".toUri()
     }
