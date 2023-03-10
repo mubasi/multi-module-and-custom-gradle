@@ -11,8 +11,6 @@ import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
 import id.bluebird.vsm.feature.home.model.FleetItemList
 import id.bluebird.vsm.feature.home.model.UserInfo
-import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
-import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,7 +24,6 @@ class RitaseFleetViewModel(
     private val _ritaseFleetState: MutableSharedFlow<RitaseFleetState> =
         MutableSharedFlow()
     val ritaseFleetState = _ritaseFleetState.asSharedFlow()
-    var currentLocation : LocationNavigation? = null
     val fleetItems: MutableList<FleetItemList> = mutableListOf()
     val params: MutableLiveData<String> = MutableLiveData("")
     var fleetItem : MutableLiveData<FleetItemList> = MutableLiveData(null)
@@ -36,38 +33,32 @@ class RitaseFleetViewModel(
     private var _newPosition: Int = -1
 
     @VisibleForTesting
-    fun getValLastPosition() : Int {
+    fun getValLastPosition(): Int {
         return _lastPosition
     }
 
     @VisibleForTesting
-    fun getValNewtPosition() : Int {
+    fun getValNewtPosition(): Int {
         return _newPosition
     }
 
-    fun init(){
-        currentLocation = LocationNavigationTemporary.getLocationNav()
-        initLocation()
+    fun init(userId: Long, locationId: Long, subLocationId: Long) {
+        mUserInfo = UserInfo(
+            userId, locationId, subLocationId
+        )
+        getFleetList()
     }
 
-    private fun initLocation() {
-        viewModelScope.launch {
-            if(currentLocation == null) {
-                _ritaseFleetState.emit(RitaseFleetState.CurrentQueueNotFound)
-            } else {
-                if (currentLocation!!.locationId!! > 0 && currentLocation!!.subLocationId!! > 0) {
-                    mUserInfo.subLocationId = currentLocation!!.subLocationId!!
-                    mUserInfo.locationId = currentLocation!!.locationId!!
-                    getFleetList()
-                }
-            }
-        }
-    }
-    fun updateSelectedFleetNumber(fleetNumber : String, position : Int) {
+    fun updateSelectedFleetNumber(fleetNumber: String, position: Int) {
         selectedFleetNumber.updateSelectedFleetNumberValue(fleetNumber)
         viewModelScope.launch {
             updatePosition(position)
-            _ritaseFleetState.emit(RitaseFleetState.UpdateSelectPosition(_lastPosition, _newPosition))
+            _ritaseFleetState.emit(
+                RitaseFleetState.UpdateSelectPosition(
+                    _lastPosition,
+                    _newPosition
+                )
+            )
         }
     }
 
