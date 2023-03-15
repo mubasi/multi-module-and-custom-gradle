@@ -48,25 +48,27 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
 
     fun filterFleet() {
         viewModelScope.launch {
-            val filteredlist: ArrayList<LocationModel> = ArrayList()
-
-            for (item in _locations) {
-                if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
-                    filteredlist.add(item)
-                }
-            }
-
-            if (filteredlist.isEmpty()) {
+            if (resultFilterFleet().isEmpty()) {
                 _state.emit(SelectLocationState.ErrorFilter)
             } else {
-                _state.emit(SelectLocationState.FilterFleet(filteredlist))
+                _state.emit(SelectLocationState.FilterFleet(resultFilterFleet()))
             }
         }
     }
 
+    private fun resultFilterFleet(): ArrayList<LocationModel> {
+        val filteredlist: ArrayList<LocationModel> = ArrayList()
+        for (item in _locations) {
+            if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
+                filteredlist.add(item)
+            }
+        }
+        return filteredlist
+    }
+
     fun searchScreen() {
         viewModelScope.launch {
-            if(_locations.isEmpty()) {
+            if (_locations.isEmpty()) {
                 _state.emit(SelectLocationState.EmptyLocation)
             } else {
                 _state.emit(SelectLocationState.SearchLocation)
@@ -100,7 +102,8 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
                                             id = subLocationResult.id,
                                             name = subLocationResult.name,
                                             locationId = subLocations.locationId,
-                                            locationName = subLocations.locationName
+                                            locationName = subLocations.locationName,
+                                            prefix = subLocationResult.prefix
                                         )
                                     )
                                 }
@@ -132,7 +135,8 @@ class SelectLocationViewModel(private val getLocationsWithSub: GetLocationsWithS
                 locationId = subLocation.locationId,
                 locationName = subLocation.locationName,
                 subLocationId = subLocation.id,
-                subLocationName = subLocation.name
+                subLocationName = subLocation.name,
+                prefix = subLocation.prefix
             )
             locationNav = tempLocationNav
             updateValNav()

@@ -84,6 +84,7 @@ internal class QueueFleetViewModelTest {
                 locationName = "Location",
                 subLocationId = 2L,
                 subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
+                prefix = "prefix"
             )
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
@@ -116,7 +117,8 @@ internal class QueueFleetViewModelTest {
                 locationName = "Location",
                 subLocationId = 2L,
                 subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
-                isOfficer = true
+                isOfficer = true,
+                prefix = "prefix"
             )
         // Mock
         every { Hawk.get<Long>(any()) } returns 1L
@@ -153,7 +155,8 @@ internal class QueueFleetViewModelTest {
                     locationName = "Location",
                     subLocationId = 2L,
                     subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
-                    isOfficer = false
+                    isOfficer = false,
+                    prefix = "prefix"
                 )
             // Mock
             every { Hawk.get<Long>(any()) } returns 1L
@@ -197,7 +200,8 @@ internal class QueueFleetViewModelTest {
                     locationName = "Location",
                     subLocationId = 2L,
                     subLocationName = "Sub Location ${StringExtensions.SUFFIX_TEST}",
-                    isOfficer = false
+                    isOfficer = false,
+                    prefix = "prefix"
                 )
             // Mock
             every { Hawk.get<Long>(any()) } returns 1L
@@ -514,6 +518,7 @@ internal class QueueFleetViewModelTest {
                     locationName = "Location",
                     subLocationId = 2L,
                     subLocationName = "Sub Location",
+                    prefix = "prefix"
                 )
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns true
             every { UserUtils.isUserOfficer() } returns false

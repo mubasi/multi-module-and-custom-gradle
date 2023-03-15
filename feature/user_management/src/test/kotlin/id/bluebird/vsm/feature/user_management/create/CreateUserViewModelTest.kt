@@ -2,26 +2,22 @@ package id.bluebird.vsm.feature.user_management.create
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import id.bluebird.vsm.feature.user_management.TestCoroutineRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.extension.ExtendWith
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.location.LocationDomainState
 import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.vsm.domain.location.model.SubLocationResult
 import id.bluebird.vsm.domain.user.GetUserByIdState
 import id.bluebird.vsm.domain.user.domain.intercator.*
 import id.bluebird.vsm.domain.user.model.CreateUserResult
-import id.bluebird.vsm.domain.user.model.RoleParam
+import id.bluebird.vsm.feature.user_management.TestCoroutineRule
 import id.bluebird.vsm.feature.user_management.create.model.LocationAssignment
 import id.bluebird.vsm.feature.user_management.create.model.RoleCache
 import id.bluebird.vsm.feature.user_management.create.model.SubLocationCache
 import id.bluebird.vsm.feature.user_management.search_location.model.Location
 import io.mockk.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -29,6 +25,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -285,7 +282,7 @@ internal class CreateUserViewModelTest {
                 LocationDomainState.Success(
                     value = listOf(
                         SubLocationResult(
-                            1, "aa"
+                            1, "aa", "bb"
                         ))
                 )
             )
@@ -503,7 +500,7 @@ internal class CreateUserViewModelTest {
         val itemList = ArrayList<SubLocationResult>()
         itemList.add(
             SubLocationResult(
-                1, "aa"
+                1, "aa", "bb"
             )
         )
 

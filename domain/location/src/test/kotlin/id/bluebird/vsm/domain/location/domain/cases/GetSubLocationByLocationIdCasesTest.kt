@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
-
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import proto.LocationPangkalanOuterClass
@@ -38,6 +37,7 @@ internal class GetSubLocationByLocationIdCasesTest {
         val defaultLocationId = 1L
         val defaultSubLocationId = 2L
         val defaultSubLocationName = "Test"
+        val prefix = "prefix"
         every { Hawk.get<Long>(any()) } returns defaultLocationId
         every { repository.getSubLocationByLocationId(defaultLocationId) } returns flow {
             emit(
@@ -45,6 +45,7 @@ internal class GetSubLocationByLocationIdCasesTest {
                     .addSubLocationList(LocationPangkalanOuterClass.SubLocationItems.newBuilder().apply {
                         this.subLocationId = defaultSubLocationId
                         this.subLocationName = defaultSubLocationName
+                        this.prefix = prefix
                     }.build()).build()
             )
         }
@@ -58,7 +59,8 @@ internal class GetSubLocationByLocationIdCasesTest {
                     listOf(
                         SubLocationResult(
                             defaultSubLocationId,
-                            defaultSubLocationName
+                            defaultSubLocationName,
+                            prefix
                         )
                     )
                 ), awaitItem().singleOrNull()

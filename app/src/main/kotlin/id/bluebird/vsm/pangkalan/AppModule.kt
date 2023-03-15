@@ -72,7 +72,7 @@ object AppModule {
         viewModel { MonitoringViewModel(get()) }
         viewModel { EditBufferViewModel(get()) }
         viewModel { SearchLocationViewModel(get()) }
-        viewModel { QueueSearchViewModel(get()) }
+        viewModel { QueueSearchViewModel() }
         viewModel { SelectLocationViewModel(get()) }
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
@@ -81,6 +81,7 @@ object AppModule {
         viewModel { QrCodeViewModel(get()) }
     }
     private val userCases = module {
+        single<GetUserAssignment> { GetUserAssignmentCases(get()) }
         single<DeleteUser> { DeleteUserCases(get()) }
         single<ForceLogout> { LogoutCasesImpl(get()) }
         single<SearchUser> { SearchUserCases(get()) }

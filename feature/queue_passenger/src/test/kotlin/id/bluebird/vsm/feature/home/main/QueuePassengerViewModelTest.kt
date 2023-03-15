@@ -15,8 +15,8 @@ import id.bluebird.vsm.domain.passenger.model.CounterBarResult
 import id.bluebird.vsm.domain.passenger.model.CurrentQueueResult
 import id.bluebird.vsm.domain.passenger.model.ListQueueResult
 import id.bluebird.vsm.domain.passenger.model.Queue
-import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
+import id.bluebird.vsm.domain.user.GetUserAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
 import id.bluebird.vsm.feature.home.TestCoroutineRule
 import id.bluebird.vsm.feature.home.model.*
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
@@ -42,7 +42,7 @@ internal class QueuePassengerViewModelTest {
     @Rule
     private val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val getUserId: GetUserByIdForAssignment = mockk(relaxed = true)
+    private val getUserAssignment: GetUserAssignment = mockk(relaxed = true)
     private val currentQueue: CurrentQueue = mockk()
     private val listQueueWaiting: ListQueueWaiting = mockk()
     private val listQueueSkipped: ListQueueSkipped = mockk()
@@ -57,7 +57,7 @@ internal class QueuePassengerViewModelTest {
         mockkObject(UserUtils)
         mockkObject(LocationNavigationTemporary)
         subjectUnderTest = QueuePassengerViewModel(
-            getUserId,
+            getUserAssignment,
             currentQueue,
             listQueueWaiting,
             listQueueSkipped,
@@ -100,7 +100,7 @@ internal class QueuePassengerViewModelTest {
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
             every { UserUtils.isUserOfficer() } returns true
             every { UserUtils.getUserId() } returns 1L
-            every { getUserId.invoke(any(), any(), any()) } returns flow {
+            every { getUserAssignment.invoke(any()) } returns flow {
                 throw NullPointerException(error)
             }
             val collect = launch {
@@ -130,8 +130,8 @@ internal class QueuePassengerViewModelTest {
             every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
             every { UserUtils.isUserOfficer() } returns true
             every { UserUtils.getUserId() } returns 1L
-            every { getUserId.invoke(any(), any(), any()) } returns flow {
-                emit(GetUserByIdForAssignmentState.UserNotFound)
+            every { getUserAssignment.invoke(any()) } returns flow {
+                emit(GetUserAssignmentState.UserNotFound)
             }
             val collect = launch {
                 subjectUnderTest.queuePassengerState.toList(states)
@@ -431,9 +431,26 @@ internal class QueuePassengerViewModelTest {
         }
 
     @Test
-    fun `prosesSearchQueue, emit state SearchQueue`() = runTest {
+    fun `prosesSearchQueue, emit state SearchQueue when prefix not null`() = runTest {
         //GIVEN
         subjectUnderTest.mUserInfo = UserInfo(1L, 1L, 11L)
+
+        val dataWaiting = ArrayList(List(1) { QueueReceiptCache(1L, "aa") })
+        val listWaiting = ListQueueResultCache(
+            dataWaiting.size.toLong(),
+            dataWaiting
+        )
+
+        val dataSkipping = ArrayList(List(1) { QueueReceiptCache(2L, "bb") })
+        val listSkipping = ListQueueResultCache(
+            dataSkipping.size.toLong(),
+            dataSkipping
+        )
+
+        subjectUnderTest.setPrefix("cc")
+        subjectUnderTest.setListQueueWaiting(listWaiting)
+        subjectUnderTest.setListQueueSkipped(listSkipping)
+
         val collect = launch {
             subjectUnderTest.queuePassengerState.toList(states)
         }
@@ -445,7 +462,58 @@ internal class QueuePassengerViewModelTest {
 
         //THEN
         assertEquals(1, states.size)
-        assertEquals(QueuePassengerState.ToSearchQueue(1L, 11L), states[0])
+        assertEquals(
+            QueuePassengerState.ToSearchQueue(
+                1L,
+                11L,
+                "cc",
+                listWaiting.queue,
+                listSkipping.queue
+            ), states[0]
+        )
+    }
+
+    @Test
+    fun `prosesSearchQueue, emit state SearchQueue when prefix is null`() = runTest {
+        //GIVEN
+        subjectUnderTest.mUserInfo = UserInfo(1L, 1L, 11L)
+
+        val dataWaiting = ArrayList(List(1) { QueueReceiptCache(1L, "aa") })
+        val listWaiting = ListQueueResultCache(
+            dataWaiting.size.toLong(),
+            dataWaiting
+        )
+
+        val dataSkipping = ArrayList(List(1) { QueueReceiptCache(2L, "bb") })
+        val listSkipping = ListQueueResultCache(
+            dataSkipping.size.toLong(),
+            dataSkipping
+        )
+
+        subjectUnderTest.setPrefix(null)
+        subjectUnderTest.setListQueueWaiting(listWaiting)
+        subjectUnderTest.setListQueueSkipped(listSkipping)
+
+        val collect = launch {
+            subjectUnderTest.queuePassengerState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.searchQueue()
+        runCurrent()
+        collect.cancel()
+
+        //THEN
+        assertEquals(1, states.size)
+        assertEquals(
+            QueuePassengerState.ToSearchQueue(
+                1L,
+                11L,
+                "",
+                listWaiting.queue,
+                listSkipping.queue
+            ), states[0]
+        )
     }
 
     @Test

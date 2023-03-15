@@ -9,8 +9,6 @@ import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import id.bluebird.vsm.feature.select_location.model.SubLocation
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
@@ -75,6 +73,7 @@ internal class SelectLocationViewModelTest {
             val isFleetMenu = true
             val locationId = 1L
             val locationName = "test name"
+            val prefix = "prefix"
             val subLocationIds = arrayOf(11L, 12L)
             val subLocationName = "test subLocationName"
 
@@ -86,7 +85,7 @@ internal class SelectLocationViewModelTest {
                                 locationId,
                                 locationName,
                                 MutableList(subLocationIds.size) {
-                                    SubLocationResult(subLocationIds[it], subLocationName)
+                                    SubLocationResult(subLocationIds[it], subLocationName, prefix)
                                 })
                         )
                     )
@@ -113,7 +112,8 @@ internal class SelectLocationViewModelTest {
                                     subLocationIds[it],
                                     subLocationName,
                                     locationId,
-                                    locationName
+                                    locationName,
+                                    prefix
                                 )
                             })
                     )
@@ -129,9 +129,10 @@ internal class SelectLocationViewModelTest {
             //GIVEN
             val locationId = 1L
             val locationName = "location name"
+            val prefix = "prefix"
             val testItem = LocationModel(
                 locationId, locationName, listOf(
-                    SubLocation(11L, "subLocation name", locationId, locationName)
+                    SubLocation(11L, "subLocation name", locationId, locationName, prefix)
                 )
             )
             val testPosition = 0
@@ -155,13 +156,14 @@ internal class SelectLocationViewModelTest {
         runTest {
             //GIVEN
             val isFleetMenu = false
-            val subLocation = SubLocation(11L, "subLocation name", 1L, "location name")
+            val subLocation = SubLocation(11L, "subLocation name", 1L, "location name", "prefix")
 
             val locNav = LocationNavigation(
                 locationId = subLocation.locationId,
                 locationName = subLocation.locationName,
                 subLocationId = subLocation.id,
-                subLocationName = subLocation.name
+                subLocationName = subLocation.name,
+                prefix = subLocation.prefix
             )
 
             val collect = launch {

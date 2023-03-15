@@ -1,13 +1,16 @@
 package id.bluebird.vsm.feature.home.queue_search
 
-import id.bluebird.vsm.feature.home.model.QueueReceiptCache
+import id.bluebird.vsm.feature.home.model.QueueSearchCache
 
 sealed class QueueSearchState {
     object ProsesSearchQueue : QueueSearchState()
-    object SuccessSearchQueue: QueueSearchState()
-    object ClearSearchQueue: QueueSearchState()
-    data class FailedSearchQueue(val message: String) : QueueSearchState()
+    data class SuccessSearchQueue(
+        val result: ArrayList<QueueSearchCache>
+    ) : QueueSearchState()
 
-    data class ProsesDeleteQueueSkipped(val queueReceiptCache: QueueReceiptCache) : QueueSearchState()
-    data class ProsesRestoreQueueSkipped(val queueReceiptCache: QueueReceiptCache) : QueueSearchState()
+    object Idle : QueueSearchState()
+    object OnError : QueueSearchState()
+    object ClearSearchQueue : QueueSearchState()
+    object ErrorFilter : QueueSearchState()
+    data class FilterResult(val result: ArrayList<QueueSearchCache>) : QueueSearchState()
 }

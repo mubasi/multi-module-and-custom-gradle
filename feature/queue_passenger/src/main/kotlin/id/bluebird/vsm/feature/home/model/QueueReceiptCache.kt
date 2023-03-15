@@ -1,9 +1,12 @@
 package id.bluebird.vsm.feature.home.model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
+import kotlinx.parcelize.Parcelize
 
 @Keep
-data class QueueReceiptCache (
+@Parcelize
+data class QueueReceiptCache(
     var queueId: Long = 0,
-    var queueNumber : String = ""
-)
+    var queueNumber: String = ""
+) : Parcelable
