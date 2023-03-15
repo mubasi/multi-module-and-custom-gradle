@@ -34,6 +34,7 @@ internal class GetLocationsWithSubUseCasesTest {
         val locationName = "testLocation"
         val subLocationSize = 2
         val subLocationName = "testSubLocation"
+        val prefix = "prefix"
         every { repository.getLocations() } returns flow {
             emit(
                 LocationPangkalanOuterClass.GetLocationsResponse.newBuilder().apply {
@@ -54,7 +55,7 @@ internal class GetLocationsWithSubUseCasesTest {
                                 this.locationId = locationId
                                 this.subLocationId = i.toLong()
                                 this.subLocationName = subLocationName
-                                this.prefix = "prefix"
+                                this.prefix = prefix
                             }.build()
                         )
                     }
@@ -68,7 +69,7 @@ internal class GetLocationsWithSubUseCasesTest {
                 GetLocationsWithSubState.Success(
                     listOf(LocationsWithSub(
                         locationId, locationName, MutableList(subLocationSize) {
-                            SubLocationResult(it.toLong(), subLocationName)
+                            SubLocationResult(it.toLong(), subLocationName, prefix)
                         }
                     ))
                 ), awaitItem().singleOrNull())

@@ -11,5 +11,6 @@ data class CreateUserResult(
     val locationId: Long = -1,
     val locationName: String = "",
     val subLocationsId: List<Long> = ArrayList(),
-    val subLocationName: String = ""
+    val subLocationName: String = "",
+    val prefix: String = "",
 )

@@ -17,7 +17,7 @@
     <fragment
         android:id="@+id/searchFleetFragment"
         android:name="id.bluebird.vsm.feature.home.queue_search.FragmentQueueSearch"
-        android:label="@string/label_queue_search" />
+        android:label="@string/label_queue_search"></fragment>
     <fragment
         android:id="@+id/ritaseFleetFragment"
         android:name="id.bluebird.vsm.feature.home.ritase_fleet.FragmentRitaseFleet"

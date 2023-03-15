@@ -22,6 +22,8 @@
     <color name="success_color">#00B496</color>
     <color name="success_color_second">#66D2C0</color>
     <color name="success_color_third">#E6F7F4</color>
+    <color name="warning_color">#CC5D32</color>
+    <color name="warning_color_second">#FFF1EC</color>
     <color name="search_line_color">#DEDEDE</color>
     <color name="grey_background">#F8F8F8</color>
     <color name="grey_line">#DEDEDE</color>

@@ -23,7 +23,13 @@ class GetSubLocationByLocationIdCases(private val locationRepository: LocationRe
             .singleOrNull() ?: throw NullPointerException()
         val result = mutableListOf<SubLocationResult>()
         response.subLocationListList.forEach {
-            result.add(SubLocationResult(it.subLocationId, it.subLocationName))
+            result.add(
+                SubLocationResult(
+                    it.subLocationId,
+                    it.subLocationName,
+                    it.prefix
+                )
+            )
         }
         emit(LocationDomainState.Success(result))
     }

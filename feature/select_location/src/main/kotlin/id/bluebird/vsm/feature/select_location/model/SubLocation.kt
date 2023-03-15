@@ -1,8 +1,6 @@
 package id.bluebird.vsm.feature.select_location.model
 
-import android.os.Parcelable
 import androidx.annotation.Keep
-import kotlinx.parcelize.Parcelize
 
 @Keep
 data class SubLocation(
@@ -10,5 +8,6 @@ data class SubLocation(
     val name: String,
     val locationId: Long,
     val locationName: String,
+    val prefix: String,
     var type: Int = LocationModel.CHILD
 )

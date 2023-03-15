@@ -1,41 +1,32 @@
 package id.bluebird.vsm.feature.home.queue_search
 
-import id.bluebird.vsm.domain.passenger.SearchQueueState
-import id.bluebird.vsm.domain.passenger.domain.cases.SearchQueue
-import id.bluebird.vsm.domain.passenger.model.Queue
-import id.bluebird.vsm.domain.passenger.model.SearchQueueResult
 import id.bluebird.vsm.feature.home.TestCoroutineRule
 import id.bluebird.vsm.feature.home.model.QueueReceiptCache
-import id.bluebird.vsm.feature.home.model.SearchQueueCache
-import io.mockk.every
-import io.mockk.mockk
+import id.bluebird.vsm.feature.home.model.QueueSearchCache
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
-
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import proto.QueuePangkalanOuterClass
-import java.lang.NullPointerException
+
 
 @ExperimentalCoroutinesApi
 @ExtendWith(TestCoroutineRule::class)
 internal class QueueSearchViewModelTest {
 
     private lateinit var subjectUnderTest: QueueSearchViewModel
-    private val searchQueue: SearchQueue = mockk()
     private val states = mutableListOf<QueueSearchState>()
-    private val error = "error"
+    private val error = "Error"
 
     @BeforeEach
     fun setUp() {
-        subjectUnderTest = QueueSearchViewModel(searchQueue)
+        subjectUnderTest = QueueSearchViewModel()
     }
 
     @AfterEach
@@ -44,153 +35,233 @@ internal class QueueSearchViewModelTest {
     }
 
     @Test
-    fun `filter, when param is empty, emit ClearSearchQueue`() = runTest {
+    fun `initTest set value list and prefix`() = runTest {
         //GIVEN
-        subjectUnderTest.params.value = ""
-        val collect = launch {
-            subjectUnderTest.queueSearchState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.filter()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.ClearSearchQueue, states[0])
-    }
-
-    @Test
-    fun `filter, when param length is 1, do nothing`() = runTest {
-        //GIVEN
-        subjectUnderTest.params.value = "a"
-        val collect = launch {
-            subjectUnderTest.queueSearchState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.filter()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(0, states.size)
-    }
-
-    @Test
-    fun `filter, when param length is more than 2, emit ProsesSearchQueue`() = runTest {
-        //GIVEN
-        subjectUnderTest.params.value = "agu"
-        val collect = launch {
-            subjectUnderTest.queueSearchState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.filter()
-        runCurrent()
-        collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.ProsesSearchQueue, states[0])
-    }
-
-    @Test
-    fun `filterSearch, when response success, emit SuccessSearchQueue`() = runTest {
-        //GIVEN
-        val locationId = 1L
-        val subLocationId = 11L
-        val typeQueue = QueuePangkalanOuterClass.QueueType.SEARCH_WAITING_QUEUE
-        val searchQueueCache = SearchQueueCache("searchType", ArrayList(List(2) {
-            QueueReceiptCache((it + 1).toLong(), "number")
-        }))
-        every { searchQueue.invoke(any(), any(), any(), any()) } returns flow {
-            emit(SearchQueueState.Success(SearchQueueResult("searchType", ArrayList(List(2) {
-                Queue(
-                    (it + 1).toLong(),
-                    "number",
-                    "12-12-2022",
-                    "message",
-                    "currentQueue",
-                    2L,
-                    "12-12-2022",
-                    11L
+        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
+        val listWaiting: ArrayList<QueueReceiptCache> = ArrayList()
+        val listSkipped: ArrayList<QueueReceiptCache> = ArrayList()
+        for (i in 1..2) {
+            val queueId = i.toLong()
+            val queueName = "aa$i"
+            listWaiting.add(
+                QueueReceiptCache(
+                    queueId = queueId,
+                    queueNumber = queueName
                 )
-            }))))
+            )
+            listQueue.add(
+                QueueSearchCache(
+                    queueId,
+                    queueName,
+                    true
+                )
+            )
         }
+        for (y in 3..4) {
+            val queueId = y.toLong()
+            val queueName = "aa$y"
+            listSkipped.add(
+                QueueReceiptCache(
+                    queueId = queueId,
+                    queueNumber = queueName
+                )
+            )
+            listQueue.add(
+                QueueSearchCache(
+                    queueId,
+                    queueName,
+                    false
+                )
+            )
+        }
+        val prefix = "cc"
         val collect = launch {
             subjectUnderTest.queueSearchState.toList(states)
         }
 
         //WHEN
-        subjectUnderTest.searchFilter(locationId, subLocationId, typeQueue)
+        subjectUnderTest.init(listWaiting, listSkipped, prefix)
         runCurrent()
-        collect.cancel()
+        delay(500)
 
         //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.SuccessSearchQueue, states[0])
-        assertEquals(searchQueueCache, subjectUnderTest.listQueue)
+        Assertions.assertEquals(2, states.size)
+        Assertions.assertEquals(QueueSearchState.ProsesSearchQueue, states[0])
+        Assertions.assertEquals(
+            QueueSearchState.Idle, states[1]
+        )
+        Assertions.assertEquals(prefix, subjectUnderTest.getPrefix())
+        collect.cancel()
     }
 
     @Test
-    fun `filterSearch, when response throw error, emit SuccessSearchQueue`() = runTest {
-        //GIVEN
-        val locationId = 1L
-        val subLocationId = 11L
-        val typeQueue = QueuePangkalanOuterClass.QueueType.SEARCH_WAITING_QUEUE
-
-        every { searchQueue.invoke(any(), any(), any(), any()) } returns flow {
-            throw NullPointerException(error)
-        }
+    fun clearSearchTest() = runTest {
+        //given
         val collect = launch {
             subjectUnderTest.queueSearchState.toList(states)
         }
 
         //WHEN
-        subjectUnderTest.searchFilter(locationId, subLocationId, typeQueue)
+        subjectUnderTest.clearSearch()
         runCurrent()
+        delay(500)
+        Assertions.assertEquals(1, states.size)
+        Assertions.assertEquals(QueueSearchState.Idle, states[0])
         collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.FailedSearchQueue(error), states[0])
     }
 
     @Test
-    fun `prosesDeleteQueue, with given parameter, emit ProsesDeleteQueueSkipped`() = runTest {
-        //GIVEN
-        val queueReceiptCache = QueueReceiptCache(1L, "queueNumber")
+    fun errorStateTest() = runTest {
+        //given
         val collect = launch {
             subjectUnderTest.queueSearchState.toList(states)
         }
 
         //WHEN
-        subjectUnderTest.prosesDeleteQueue(queueReceiptCache)
+        subjectUnderTest.errorState()
         runCurrent()
+        delay(500)
+        Assertions.assertEquals(1, states.size)
+        Assertions.assertEquals(QueueSearchState.OnError, states[0])
         collect.cancel()
-
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.ProsesDeleteQueueSkipped(queueReceiptCache), states[0])
     }
 
     @Test
-    fun `prosesRestoreQueue, with given parameter, emit ProsesRestoreQueueSkipped`() = runTest {
-        //GIVEN
-        val queueReceiptCache = QueueReceiptCache(1L, "queueNumber")
+    fun `setFilterStatusTest when statusFilter is all`() = runTest {
+        //given
+        val status = QueueSearchViewModel.StatusFilter.ALL
+        subjectUnderTest.setFilterStatus(status)
+
+        Assertions.assertEquals(status, subjectUnderTest.getStatusFilter())
+    }
+
+    @Test
+    fun `setFilterStatusTest when statusFilter is waiting`() = runTest {
+        //given
+        val status = QueueSearchViewModel.StatusFilter.WAITING
+        subjectUnderTest.setFilterStatus(status)
+
+        Assertions.assertEquals(status, subjectUnderTest.getStatusFilter())
+    }
+
+    @Test
+    fun `setFilterStatusTest when statusFilter is skipped`() = runTest {
+        //given
+        val status = QueueSearchViewModel.StatusFilter.SKIPPED
+        subjectUnderTest.setFilterStatus(status)
+
+        Assertions.assertEquals(status, subjectUnderTest.getStatusFilter())
+    }
+
+    @Test
+    fun `filterQueueTest when result is empty`() = runTest {
+        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
+        for (i in 1..2) {
+            val queueId = i.toLong()
+            val queueName = "aa$i"
+            listQueue.add(
+                QueueSearchCache(
+                    queueId,
+                    queueName,
+                    true
+                )
+            )
+        }
+
+        val prefix = "bb"
+        val params = "cc"
+
+        subjectUnderTest.setPrefix(prefix)
+        subjectUnderTest.setParams(params)
+        subjectUnderTest.setListQueue(listQueue)
+
+        //given
         val collect = launch {
             subjectUnderTest.queueSearchState.toList(states)
         }
 
         //WHEN
-        subjectUnderTest.prosesRestoreQueue(queueReceiptCache)
+        subjectUnderTest.filterQueue()
         runCurrent()
+        delay(500)
+        Assertions.assertEquals(1, states.size)
+        Assertions.assertEquals(QueueSearchState.ErrorFilter, states[0])
         collect.cancel()
+    }
 
-        //THEN
-        assertEquals(1, states.size)
-        assertEquals(QueueSearchState.ProsesRestoreQueueSkipped(queueReceiptCache), states[0])
+    @Test
+    fun `filterQueueTest when result is empty and params is null`() = runTest {
+        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
+        for (i in 1..2) {
+            val queueId = i.toLong()
+            val queueName = "aa$i"
+            listQueue.add(
+                QueueSearchCache(
+                    queueId,
+                    queueName,
+                    true
+                )
+            )
+        }
+
+        val prefix = "bb"
+        val params = null
+
+        subjectUnderTest.setPrefix(prefix)
+        subjectUnderTest.setParams(params)
+        subjectUnderTest.setListQueue(listQueue)
+
+        //given
+        val collect = launch {
+            subjectUnderTest.queueSearchState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.filterQueue()
+        runCurrent()
+        delay(500)
+        Assertions.assertEquals(1, states.size)
+        Assertions.assertEquals(QueueSearchState.ErrorFilter, states[0])
+        collect.cancel()
+    }
+
+    @Test
+    fun `filterQueueTest when result is not empty`() = runTest {
+        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
+        for (i in 1..1) {
+            val queueId = i.toLong()
+            val queueName = "aa.$i"
+            listQueue.add(
+                QueueSearchCache(
+                    queueId,
+                    queueName,
+                    true
+                )
+            )
+        }
+
+        val prefix = "aa"
+        val params = "1"
+
+        subjectUnderTest.setPrefix(prefix)
+        subjectUnderTest.setParams(params)
+        subjectUnderTest.setListQueue(listQueue)
+
+        //given
+        val collect = launch {
+            subjectUnderTest.queueSearchState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.filterQueue()
+        runCurrent()
+        delay(500)
+        Assertions.assertEquals(1, states.size)
+        Assertions.assertEquals(
+            QueueSearchState.FilterResult(
+                listQueue
+            ), states[0]
+        )
+        collect.cancel()
     }
 }
