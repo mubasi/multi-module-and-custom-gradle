@@ -43,62 +43,6 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_title_name_create_user"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/ubuntu_bold"
-                    android:lineHeight="21sp"
-                    android:text="@string/name"
-                    android:textColor="@color/title_create_user_font_color"
-                    android:textSize="14sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:id="@+id/ll_name_create_user"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_title_name_create_user"
-                    app:layout_constraintRight_toRightOf="@id/tv_title_name_create_user"
-                    app:layout_constraintTop_toBottomOf="@id/tv_title_name_create_user">
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="6dp"
-                        android:background="@{createUserVM.name.length() &gt; 0 ? @drawable/bg_editext_login_enable :@drawable/bg_search_user_setting}"
-                        android:hint="@string/edt_hint"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:text="@={createUserVM.name}"
-                        android:visibility="@{createUserVM.isCreateNewUser ? View.VISIBLE : View.GONE, default= gone}" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:hint="@string/edt_hint"
-                        android:text="@{createUserVM.name}"
-                        android:textAllCaps="true"
-                        android:textColor="@color/title_create_user_font_color"
-                        android:textSize="16sp"
-                        android:visibility="@{createUserVM.isCreateNewUser ? View.GONE : View.VISIBLE, default= visible}" />
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_name_error"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/name_must_not_empty"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:visibility="@{createUserVM.name.length() &gt; 0 ? View.GONE : View.VISIBLE, default=gone}"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ll_name_create_user" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_title_username_create_user"
@@ -112,7 +56,7 @@
                     android:textSize="14sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_name_error" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/ll_username_create_user"
@@ -161,6 +105,63 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ll_username_create_user" />
 
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_title_name_create_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/ubuntu_bold"
+                    android:lineHeight="21sp"
+                    android:text="@string/name"
+                    android:textColor="@color/title_create_user_font_color"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_username_error" />
+
+                <LinearLayout
+                    android:id="@+id/ll_name_create_user"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_title_name_create_user"
+                    app:layout_constraintRight_toRightOf="@id/tv_title_name_create_user"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_name_create_user">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@{createUserVM.name.length() &gt; 0 ? @drawable/bg_editext_login_enable :@drawable/bg_search_user_setting}"
+                        android:hint="@string/edt_hint"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:text="@={createUserVM.name}" />
+
+                    <!--                    <androidx.appcompat.widget.AppCompatTextView-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="16dp"-->
+                    <!--                        android:hint="@string/edt_hint"-->
+                    <!--                        android:text="@{createUserVM.name}"-->
+                    <!--                        android:textAllCaps="true"-->
+                    <!--                        android:textColor="@color/title_create_user_font_color"-->
+                    <!--                        android:textSize="16sp"-->
+                    <!--                        android:visibility="@{createUserVM.isCreateNewUser ? View.GONE : View.VISIBLE, default= visible}" />-->
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_name_error"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/name_must_not_empty"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="@{createUserVM.name.length() &gt; 0 ? View.GONE : View.VISIBLE, default=gone}"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ll_name_create_user" />
+
                 <LinearLayout
                     android:id="@+id/ll_old_password"
                     android:layout_width="0dp"
@@ -171,7 +172,7 @@
                     app:layout_constraintBottom_toTopOf="@id/ll_new_password"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_username_error">
+                    app:layout_constraintTop_toBottomOf="@id/tv_name_error">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_title_old_password_create_user"
