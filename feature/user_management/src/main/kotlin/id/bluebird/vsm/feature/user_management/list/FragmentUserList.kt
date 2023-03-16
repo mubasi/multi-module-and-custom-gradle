@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.feature.user_management.R
 import id.bluebird.vsm.feature.user_management.create.FragmentCreateUser
+import id.bluebird.vsm.feature.user_management.databinding.FragmentUserSettingBinding
 import id.bluebird.vsm.feature.user_management.utils.DialogUtil
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -21,8 +22,9 @@ class FragmentUserList : Fragment() {
     companion object {
         private const val EMPTY_STRING = ""
     }
+
     private val mUserSettingVM: UserManagementViewModel by viewModel()
-    private lateinit var mBinding: id.bluebird.vsm.feature.user_management.databinding.FragmentUserSettingBinding
+    private lateinit var mBinding: FragmentUserSettingBinding
     private var mContainer: ViewGroup? = null
     private val mAdapterUserSetting: AdapterUserSetting by lazy {
         AdapterUserSetting(userSettingViewModel = mUserSettingVM)

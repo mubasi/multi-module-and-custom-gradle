@@ -79,6 +79,7 @@ class UserManagementViewModel(
             .collect {
                 when(it) {
                     is SearchUserState.Success -> {
+                        clearCounterAndList()
                         it.searchUserResult.searchResult.forEach { row ->
                             if (row.id != UserUtils.getUserId()) {
                                 userSettings.add(
@@ -98,14 +99,35 @@ class UserManagementViewModel(
             }
     }
 
+    private fun clearCounterAndList() {
+        userSettings.clear()
+        counter.postValue(userSettings.size)
+    }
+
     fun result(name: String, action: ModifyUserAction) {
         viewModelScope.launch {
             delay(300)
             when (action) {
-                is ModifyUserAction.Create -> userSettingSealed.postValue(UserSettingSealed.CreateUserSuccess(name))
-                is ModifyUserAction.Edit -> userSettingSealed.postValue(UserSettingSealed.EditUserSuccess(name))
-                is ModifyUserAction.Delete -> userSettingSealed.postValue(UserSettingSealed.DeleteSuccess(name))
-                is ModifyUserAction.ForceLogout -> userSettingSealed.postValue(UserSettingSealed.ForceSuccess(name))
+                is ModifyUserAction.Create -> userSettingSealed.postValue(
+                    UserSettingSealed.CreateUserSuccess(
+                        name
+                    )
+                )
+                is ModifyUserAction.Edit -> userSettingSealed.postValue(
+                    UserSettingSealed.EditUserSuccess(
+                        name
+                    )
+                )
+                is ModifyUserAction.Delete -> userSettingSealed.postValue(
+                    UserSettingSealed.DeleteSuccess(
+                        name
+                    )
+                )
+                is ModifyUserAction.ForceLogout -> userSettingSealed.postValue(
+                    UserSettingSealed.ForceSuccess(
+                        name
+                    )
+                )
                 else -> {
                     //do nothing
                 }

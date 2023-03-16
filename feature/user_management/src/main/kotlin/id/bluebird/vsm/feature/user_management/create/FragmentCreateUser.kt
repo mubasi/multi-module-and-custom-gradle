@@ -67,6 +67,9 @@ class FragmentCreateUser : Fragment() {
                     mBinding.spinnerSubLocation.setSelection(it)
                 }
             }
+            isCreateNewUser.observe(viewLifecycleOwner) {
+                getDataInformation(it == true)
+            }
             userName.observe(viewLifecycleOwner) {
                 usernameTextHandler(it)
             }
@@ -97,15 +100,15 @@ class FragmentCreateUser : Fragment() {
                         assignLocation()
                     }
                     is CreateUserState.InvalidField -> {
-                        var currentView = requireActivity().window.decorView.rootView
+                        val currentView = requireActivity().window.decorView.rootView
                         DialogUtil.showSnackbar(currentView, Html.fromHtml("",1), R.color.danger_1)
                     }
                     is CreateUserState.OnError -> {
-                        var currentView = requireActivity().window.decorView.rootView
+                        val currentView = requireActivity().window.decorView.rootView
                         DialogUtil.showSnackbar(currentView, Html.fromHtml("",1), R.color.danger_1)
                     }
                     is CreateUserState.GetUserStateSuccess -> {
-                        getInformation()
+                        getDataInformation(true)
                     }
                     is CreateUserState.OnSuccess -> {
                         val bundle = Bundle()
@@ -215,10 +218,17 @@ class FragmentCreateUser : Fragment() {
     }
 
     private fun navigateToSearchLocation() {
-        val destination = FragmentCreateUserDirections.actionCreateUserFragmentToSearchLocationFragment()
+        val destination =
+            FragmentCreateUserDirections.actionCreateUserFragmentToSearchLocationFragment()
         findNavController().navigate(destination)
         setFragmentResultListener(FragmentSearchLocation.REQUEST_KEY) { _, bundle ->
             createUserViewModel.setSelectedLocation(bundle.getParcelable(FragmentSearchLocation.RESULT_KEY))
+        }
+    }
+
+    private fun getDataInformation(status: Boolean) {
+        if (status) {
+            createUserViewModel.getInformation()
         }
     }
 }
