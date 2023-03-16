@@ -36,30 +36,37 @@ class AddFleetViewModel(
     private var _subLocation: Long = -1
     private var _locationId: Long = -1
     private var _isSearchQueue: Boolean = false
+
     @VisibleForTesting
     fun setParams(temp: String) {
         param.value = temp
     }
+
     @VisibleForTesting
     fun setSubLocation(temp: Long) {
         _subLocation = temp
     }
+
     @VisibleForTesting
     fun setLocationId(temp: Long) {
         _locationId = temp
     }
+
     @VisibleForTesting
     fun setIsSearchQueue(temp: Boolean) {
         _isSearchQueue = temp
     }
+
     @VisibleForTesting
     fun valIsSearchQueue(): Boolean {
         return _isSearchQueue
     }
+
     @VisibleForTesting
     fun valSubLocationId(): Long {
         return _subLocation
     }
+
     @VisibleForTesting
     fun valLocationId(): Long {
         return _locationId
@@ -87,19 +94,16 @@ class AddFleetViewModel(
             _addFleetState.emit(AddFleetState.OnProgressGetList)
             delay(200)
             val queueNumber = param.value ?: ""
-            searchWaitingQueue.invoke(queueNumber, _locationId, _subLocation)
-                .catch { e ->
-                    _addFleetState.emit(AddFleetState.QueueSearchError(e))
-                }
-                .flowOn(Dispatchers.Main)
-                .collect {
-                    _addFleetState.emit(
-                        when (it) {
-                            is WaitingQueueState.EmptyResult -> AddFleetState.GetListEmpty
-                            is WaitingQueueState.Success -> AddFleetState.SuccessGetQueue(it.waitingQueue.map { queue -> queue.number })
-                        }
-                    )
-                }
+            searchWaitingQueue.invoke(queueNumber, _locationId, _subLocation).catch { e ->
+                _addFleetState.emit(AddFleetState.QueueSearchError(e))
+            }.flowOn(Dispatchers.Main).collect {
+                _addFleetState.emit(
+                    when (it) {
+                        is WaitingQueueState.EmptyResult -> AddFleetState.GetListEmpty
+                        is WaitingQueueState.Success -> AddFleetState.SuccessGetQueue(it.waitingQueue.map { queue -> queue.number })
+                    }
+                )
+            }
         }
     }
 
@@ -123,15 +127,23 @@ class AddFleetViewModel(
 
     fun addFleet() {
         if (_isSearchQueue) {
-            viewModelScope.launch {
-                _addFleetState.emit(
-                    AddFleetState.FinishSelectQueue(
-                        selectedFleetNumber.value ?: ""
-                    )
-                )
-            }
-            return
+            selectFleetNumber()
+        } else {
+            addFleetToServer()
         }
+    }
+
+    private fun selectFleetNumber() {
+        viewModelScope.launch {
+            _addFleetState.emit(
+                AddFleetState.FinishSelectQueue(
+                    selectedFleetNumber.value ?: ""
+                )
+            )
+        }
+    }
+
+    private fun addFleetToServer() {
         viewModelScope.launch {
             val locationId = LocationNavigationTemporary.getLocationNav()?.locationId
                 ?: UserUtils.getLocationId()
@@ -139,23 +151,20 @@ class AddFleetViewModel(
                 fleetNumber = selectedFleetNumber.value ?: "",
                 subLocationId = _subLocation,
                 locationId = locationId
-            )
-                .flowOn(Dispatchers.Main)
-                .catch { cause: Throwable ->
-                    _addFleetState.emit(AddFleetState.AddError(err = cause))
-                }
-                .collect {
-                    when (it) {
-                        is id.bluebird.vsm.domain.fleet.AddFleetState.Success -> {
-                            val fleetItem = FleetItem(
-                                id = it.fleetItemResult.fleetId,
-                                name = it.fleetItemResult.fleetName,
-                                arriveAt = it.fleetItemResult.arriveAt.convertCreateAtValue()
-                            )
-                            _addFleetState.emit(AddFleetState.AddFleetSuccess(fleetItem))
-                        }
+            ).flowOn(Dispatchers.Main).catch { cause: Throwable ->
+                _addFleetState.emit(AddFleetState.AddError(err = cause))
+            }.collect {
+                when (it) {
+                    is id.bluebird.vsm.domain.fleet.AddFleetState.Success -> {
+                        val fleetItem = FleetItem(
+                            id = it.fleetItemResult.fleetId,
+                            name = it.fleetItemResult.fleetName,
+                            arriveAt = it.fleetItemResult.arriveAt.convertCreateAtValue()
+                        )
+                        _addFleetState.emit(AddFleetState.AddFleetSuccess(fleetItem))
                     }
                 }
+            }
         }
     }
 
@@ -175,21 +184,18 @@ class AddFleetViewModel(
             _addFleetState.emit(AddFleetState.GetListEmpty)
             delay(200)
             _addFleetState.emit(AddFleetState.OnProgressGetList)
-            searchFleet.invoke(param.value)
-                .catch { cause: Throwable ->
-                    _addFleetState.emit(AddFleetState.SearchError(err = cause))
-                }
-                .flowOn(Dispatchers.Main)
-                .collect {
-                    when (it) {
-                        SearchFleetState.EmptyResult -> {
-                            _addFleetState.emit(AddFleetState.GetListEmpty)
-                        }
-                        is SearchFleetState.Success -> {
-                            _addFleetState.emit(AddFleetState.GetListSuccess(it.fleetNumbers))
-                        }
+            searchFleet.invoke(param.value).catch { cause: Throwable ->
+                _addFleetState.emit(AddFleetState.SearchError(err = cause))
+            }.flowOn(Dispatchers.Main).collect {
+                when (it) {
+                    SearchFleetState.EmptyResult -> {
+                        _addFleetState.emit(AddFleetState.GetListEmpty)
+                    }
+                    is SearchFleetState.Success -> {
+                        _addFleetState.emit(AddFleetState.GetListSuccess(it.fleetNumbers))
                     }
                 }
+            }
         }
     }
 

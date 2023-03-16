@@ -34,7 +34,7 @@ class FragmentAddFleet : Fragment() {
         const val REQUEST_SELECT = "requestSelectQueue"
         const val RESULT_SELECT = "resultSelect"
         var PERMISSIONS = arrayOf(
-            android.Manifest.permission.CAMERA,
+            Manifest.permission.CAMERA,
         )
 
     }
@@ -42,7 +42,7 @@ class FragmentAddFleet : Fragment() {
     private val _args: FragmentAddFleetArgs by navArgs()
     private lateinit var _mBinding: AddFleetFragmentBinding
     private val _vm: AddFleetViewModel by viewModel()
-    private val _AdapterAddFleet: AdapterAddFleet by lazy {
+    private val _adapterAddFleet: AdapterAddFleet by lazy {
         AdapterAddFleet(_vm)
     }
 
@@ -72,7 +72,7 @@ class FragmentAddFleet : Fragment() {
                             DialogUtils.showErrorDialog(
                                 requireContext(),
                                 getString(R.string.add_fleet_failed_title),
-                                getString(R.string.add_fleet_failed_message)
+                                it.err.message ?: getString(R.string.add_fleet_failed_message)
                             )
                                 .show()
                         }
@@ -80,7 +80,7 @@ class FragmentAddFleet : Fragment() {
                             DialogUtils.showErrorDialog(
                                 requireContext(),
                                 getString(R.string.search_flett_error_title),
-                                getString(R.string.search_flett_error_message)
+                                it.err.message ?: getString(R.string.search_flett_error_message)
                             )
                                 .show()
                         }
@@ -88,18 +88,18 @@ class FragmentAddFleet : Fragment() {
                             DialogUtils.showErrorDialog(
                                 requireContext(),
                                 getString(R.string.search_flett_error_title),
-                                getString(R.string.search_queue_error_message)
+                              it.err.message ?:   getString(R.string.search_queue_error_message)
                             )
                                 .show()
                         }
                         AddFleetState.GetListEmpty -> {
-                            _AdapterAddFleet.submitList(ArrayList())
+                            _adapterAddFleet.submitList(ArrayList())
                         }
                         is AddFleetState.GetListSuccess -> {
-                            _AdapterAddFleet.submitList(it.list)
+                            _adapterAddFleet.submitList(it.list)
                         }
                         is AddFleetState.SuccessGetQueue -> {
-                            _AdapterAddFleet.submitList(it.list)
+                            _adapterAddFleet.submitList(it.list)
                         }
                         is AddFleetState.UpdateSelectPosition -> updateAdapterPosition(
                             it.lastPosition,
@@ -134,12 +134,12 @@ class FragmentAddFleet : Fragment() {
         try {
             lastPosition.checkIfIntegerIsGtThanZero().let { bool ->
                 if (bool) {
-                    _AdapterAddFleet.notifyItemChanged(lastPosition)
+                    _adapterAddFleet.notifyItemChanged(lastPosition)
                 }
             }
             newPosition.checkIfIntegerIsGtThanZero().let { bool ->
                 if (bool) {
-                    _AdapterAddFleet.notifyItemChanged(newPosition)
+                    _adapterAddFleet.notifyItemChanged(newPosition)
                 }
             }
         } catch (e: Exception) {
@@ -149,7 +149,7 @@ class FragmentAddFleet : Fragment() {
 
     private fun initRecyclerview() {
         _mBinding.listItemFleetFragment.layoutManager = LinearLayoutManager(requireContext())
-        _mBinding.listItemFleetFragment.adapter = _AdapterAddFleet
+        _mBinding.listItemFleetFragment.adapter = _adapterAddFleet
     }
 
     private fun addByCamera() {
@@ -171,8 +171,8 @@ class FragmentAddFleet : Fragment() {
         val destination = FragmentAddFleetDirections.actionQueueFleetFragmentToAddByCamera()
         findNavController().navigate(destination)
         setFragmentResultListener(FragmentAddByCamera.RESULT) { _, bundle ->
-            var temp = bundle.getString(FragmentAddByCamera.RESULT_ADD)
-            var lambungNumber = temp.toString().replace("\\s".toRegex(), "")
+            val temp = bundle.getString(FragmentAddByCamera.RESULT_ADD)
+            val lambungNumber = temp.toString().replace("\\s".toRegex(), "")
             _vm.resultScan(lambungNumber)
         }
     }

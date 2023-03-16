@@ -5,12 +5,10 @@ import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.SearchFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.AddFleet
 import id.bluebird.vsm.domain.fleet.domain.cases.SearchFleet
-import id.bluebird.vsm.domain.fleet.model.FleetItemResult
 import id.bluebird.vsm.domain.passenger.WaitingQueueState
 import id.bluebird.vsm.domain.passenger.domain.cases.SearchWaitingQueue
 import id.bluebird.vsm.domain.passenger.model.Queue
 import id.bluebird.vsm.feature.queue_fleet.TestCoroutineRule
-import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -97,8 +95,8 @@ internal class AddFleetViewModelTest {
     }
     @Test
     fun searchQueueTestFailed() = runTest {
-        //given
-        val result = Throwable()
+        // Given
+        Throwable()
         val queueList: MutableList<Queue> = mutableListOf()
         queueList.add(
             Queue(
