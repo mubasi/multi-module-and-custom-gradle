@@ -111,6 +111,7 @@ class UserRepositoryImpl(
                 userId = model.id
                 email = "${model.username}$EMAIL_CONST"
                 modifiedBy = currentUserId
+                name = model.name
             }
         model.subLocationsId.forEach {
             request.addUserAssignment(
