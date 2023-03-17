@@ -105,7 +105,11 @@ class FragmentCreateUser : Fragment() {
                     }
                     is CreateUserState.OnError -> {
                         val currentView = requireActivity().window.decorView.rootView
-                        DialogUtil.showSnackbar(currentView, Html.fromHtml("",1), R.color.danger_1)
+                        DialogUtil.showSnackbar(
+                            currentView,
+                            Html.fromHtml(it.err.message, 1),
+                            R.color.danger_1
+                        )
                     }
                     is CreateUserState.GetUserStateSuccess -> {
                         getDataInformation(true)
