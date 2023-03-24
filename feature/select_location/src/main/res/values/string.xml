@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="select_location_mall">Pilih Lokasi Mall</string>
-    <string name="search_location_mall">Cari Lokasi Mall</string>
-    <string name="hint_mall_name">Cari nama mall</string>
-    <string name="search_name_mall">Masukkan nama mall minimal 3 karakter</string>
+    <string name="select_location_mall">Pilih Lokasi Pangkalan</string>
+    <string name="search_location_mall">Cari Lokasi pangkalan</string>
+    <string name="hint_mall_name">Cari nama pangkalan</string>
+    <string name="search_name_mall">Masukkan nama pangkalan minimal 3 karakter</string>
     <string name="mall_not_found">Mall tidak tersedia</string>
     <string name="title_not_show_location">Tidak dapat menampilkan lokasi</string>
     <string name="msg_not_show_location">daftar lokasi tidak tersedia</string>
     <string name="title_not_found_location">Tidak dapat menemukan lokasi</string>
-    <string name="msg_not_found_location">Nama mall yang dicari tidak ditemukan</string>
+    <string name="msg_not_found_location">Nama pangkalan yang dicari tidak ditemukan</string>
     <string name="search_hint_location">Masukkan nama lokasi</string>
 </resources>
