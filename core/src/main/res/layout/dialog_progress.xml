@@ -37,6 +37,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/ubuntu_bold"
+            android:gravity="center"
             android:lineHeight="30sp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
