@@ -39,4 +39,6 @@
     <string name="side_text">Nomor Lambung</string>
     <string name="unavailable_queue">N/A</string>
     <string name="fleet_not_found">Armada belum tersedia</string>
+    // Up to Version 1.0.1
+    <string name="failed_get_queue">Gagal mendapatkan Antrian</string>
 </resources>

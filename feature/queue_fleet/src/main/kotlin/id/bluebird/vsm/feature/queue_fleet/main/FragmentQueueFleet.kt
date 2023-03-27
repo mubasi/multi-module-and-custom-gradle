@@ -14,18 +14,21 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.queue_fleet.R
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet
 import id.bluebird.vsm.feature.queue_fleet.databinding.FleetFragmentBinding
 import id.bluebird.vsm.feature.queue_fleet.depart_fleet.FragmentDepartFleetDialog
+import id.bluebird.vsm.feature.queue_fleet.main.QueueFleetViewModel.Companion.EMPTY_STRING
 import id.bluebird.vsm.feature.queue_fleet.model.FleetItem
 import id.bluebird.vsm.feature.queue_fleet.request_fleet.FragmentRequestFleetDialog
 import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDialog
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -41,6 +44,7 @@ class FragmentQueueFleet : Fragment() {
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
     private val _args by navArgs<FragmentQueueFleetArgs>()
+    private var bottomProgressDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -120,13 +124,13 @@ class FragmentQueueFleet : Fragment() {
                                 _fleetAdapter.submitData(arrayListOf())
                             }
                             is QueueFleetState.ShowRequestFleet -> {
-                                FragmentRequestFleetDialog(
-                                    it.subLocationId,
-                                    _mQueueFleetViewModel::updateRequestCount
-                                ).show(
-                                    childFragmentManager,
-                                    FragmentRequestFleetDialog.TAG
-                                )
+                                if (bottomProgressDialog?.isShowing == true) {
+                                    bottomProgressDialog?.dismiss()
+                                }
+                                showProgressDialog(null)
+                                delay(500)
+                                bottomProgressDialog?.dismiss()
+                                showRequestFleet(it.subLocationId)
                             }
                             is QueueFleetState.AddFleetSuccess -> {
                                 _fleetAdapter.submitData(it.list)
@@ -189,7 +193,10 @@ class FragmentQueueFleet : Fragment() {
                             }
                             is QueueFleetState.FailedGetQueue -> {
                                 val string = SpannableStringBuilder()
-                                    .append(it.throwable.message ?: "Gagal mendapatkan Antrian")
+                                    .append(
+                                        it.throwable.message
+                                            ?: requireContext().getString(R.string.failed_get_queue)
+                                    )
 
                                 showSnackbar(string, R.color.warning_0)
                             }
@@ -218,8 +225,22 @@ class FragmentQueueFleet : Fragment() {
         _mQueueFleetViewModel.removeFleet(fleetNumber)
     }
 
-    fun showSnackbar(message: Spanned, color: Int){
+    private fun showSnackbar(message: Spanned, color: Int) {
         DialogUtils.showSnackbar(requireView(), message, color)
+    }
+
+    private fun showProgressDialog(message: String?) {
+        bottomProgressDialog = DialogUtils.progressDialog(requireContext(), message)
+    }
+
+    private fun showRequestFleet(subLocationId: Long) {
+        FragmentRequestFleetDialog(
+            subLocationId,
+            _mQueueFleetViewModel::updateRequestCount
+        ).show(
+            childFragmentManager,
+            FragmentRequestFleetDialog.TAG
+        )
     }
 
     private fun navigateToSearchFleet() {
@@ -248,7 +269,7 @@ class FragmentQueueFleet : Fragment() {
         setFragmentResultListener(FragmentAddFleet.REQUEST_SELECT) { _, bundle ->
             _mQueueFleetViewModel.showRecordRitase(
                 fleetItem,
-                bundle.getString(FragmentAddFleet.RESULT_SELECT) ?: ""
+                bundle.getString(FragmentAddFleet.RESULT_SELECT) ?: EMPTY_STRING
             )
         }
     }
