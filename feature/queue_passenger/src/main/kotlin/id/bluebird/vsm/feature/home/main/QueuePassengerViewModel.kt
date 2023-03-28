@@ -102,7 +102,6 @@ class QueuePassengerViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesGetUser)
-            val nav = LocationNavigationTemporary.getLocationNav()
             getUserByIdForAssignment.invoke(UserUtils.getUserId())
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
@@ -115,10 +114,11 @@ class QueuePassengerViewModel(
                 .collect {
                     when (it) {
                         is GetUserAssignmentState.Success -> {
+                            val nav = LocationNavigationTemporary.getLocationNav()
                             mUserInfo = UserInfo(
                                 userId = it.result.id,
-                                locationId = it.result.locationId,
-                                subLocationId = it.result.subLocationId
+                                locationId = nav?.locationId ?: it.result.locationId,
+                                subLocationId = nav?.subLocationId ?: it.result.subLocationId
                             )
                             createTitleLocation(userAssignment = it.result)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
@@ -143,9 +143,9 @@ class QueuePassengerViewModel(
                 _prefix.value = prefix
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
-                _locationName.value = location?.locationName ?: EMPTY_STRING
-                _subLocationName.value = location?.subLocationName ?: EMPTY_STRING
-                _prefix.value = location?.prefix ?: EMPTY_STRING
+                _locationName.value = location?.locationName ?: locationName
+                _subLocationName.value = location?.subLocationName ?: subLocationName
+                _prefix.value = location?.prefix ?: prefix
             }
             titleLocation.value = "${_locationName.value} ${_subLocationName.value}".getLastSync()
         }
