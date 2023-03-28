@@ -82,7 +82,12 @@ class FragmentRequestFleetDialog(
                         }
                         is RequestFleetDialogState.RequestSuccess -> {
                             callback(it.count)
-                            showSnackbar(Html.fromHtml("<b>Request Armada</b> berhasil ditambahkan",1), R.color.success_0)
+                            showSnackbar(
+                                Html.fromHtml(
+                                    "<b>Request Armada</b> memiliki total permintaan sebanyak ${it.count}",
+                                    1
+                                ), R.color.success_0
+                            )
                             dialog?.dismiss()
                         }
                         is RequestFleetDialogState.Err -> {
@@ -109,12 +114,16 @@ class FragmentRequestFleetDialog(
         }
     }
 
-    fun showSnackbar(message: Spanned, color: Int){
-        val snackbar = Snackbar.make(requireActivity().window.decorView.rootView,message, Snackbar.LENGTH_LONG)
+    private fun showSnackbar(message: Spanned, color: Int) {
+        val snackbar = Snackbar.make(
+            requireActivity().window.decorView.rootView,
+            message,
+            Snackbar.LENGTH_LONG
+        )
         val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
 
         layoutParams.gravity = Gravity.TOP
-        layoutParams.setMargins(-10,160,-10,0)
+        layoutParams.setMargins(-10, 160, -10, 0)
         snackbar.view.layoutParams = layoutParams
         snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))
