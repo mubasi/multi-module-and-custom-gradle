@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.home.main
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Html
 import android.text.Spanned
 import android.view.*
@@ -162,9 +163,13 @@ class FragmentQueuePassenger : Fragment() {
                             }
                             is QueuePassengerState.ToSearchQueue -> {
                                 val bundle = Bundle()
-                                bundle.putLong("locationId", it.locationId)
-                                bundle.putLong("subLocationId", it.subLocationId)
-                                bundle.putInt("type", positionType)
+                                bundle.putString("prefix", it.prefix)
+                                bundle.putParcelableArrayList(
+                                    "listWaiting", it.listWaiting as ArrayList<out Parcelable>?
+                                )
+                                bundle.putParcelableArrayList(
+                                    "listSkipped", it.listSkipped as ArrayList<out Parcelable>?
+                                )
                                 findNavController().navigate(R.id.searchFleetFragment, bundle)
                             }
                             is QueuePassengerState.ProsesRitase -> {

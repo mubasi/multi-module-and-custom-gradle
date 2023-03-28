@@ -35,7 +35,11 @@ class GetUserByIdForAssignmentUsesCases(val getUserId: GetUserId) :
                         ),
                         isOfficer = roleId.isUserOfficer(),
                         locationName = getUserId.result.locationName,
-                        subLocationName = getSubLocationName(roleId = roleId, subLocationName = locationName)
+                        subLocationName = getSubLocationName(
+                            roleId = roleId,
+                            subLocationName = locationName
+                        ),
+                        prefix = getUserId.result.prefix
                     )
                     emit(GetUserByIdForAssignmentState.Success(userAssignment))
                 }

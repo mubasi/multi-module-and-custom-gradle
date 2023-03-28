@@ -159,4 +159,15 @@ class UserRepositoryImpl(
             }.build()
         emit(userGrpc.getSplashConfig(request))
     }
+
+    override fun getUserAssignment(id: Long): Flow<UserOuterClass.UserAssignmentResponse> = flow {
+        val request = UserOuterClass.UserAssignmentRequest.newBuilder()
+            .apply {
+                this.userId = id
+                this.versionCode = 0
+            }.build()
+        emit(userGrpc.getUserAssignment(request))
+    }
+
+
 }

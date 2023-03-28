@@ -7,7 +7,6 @@ import id.bluebird.vsm.domain.location.model.LocationsWithSub
 import id.bluebird.vsm.domain.location.model.SubLocationResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import java.lang.NullPointerException
 
 class GetLocationsWithSubUseCases(
     private val locationRepository: LocationRepository
@@ -29,7 +28,8 @@ class GetLocationsWithSubUseCases(
                         tempResult[it.locationId]?.list?.add(
                             SubLocationResult(
                                 id = it.subLocationId,
-                                name = it.subLocationName
+                                name = it.subLocationName,
+                                prefix = it.prefix
                             )
                         )
                     }

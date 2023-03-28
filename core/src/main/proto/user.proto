@@ -183,6 +183,8 @@ message AssignmentLocationItems {
     bool   is_deposition = 3;
     int64  location_id = 4;
     bool   is_wings = 5;
+    string prefix = 6;
+    string location_name = 7;
 }
 
 message UserAssignmentResponse {

@@ -37,6 +37,9 @@ sealed class QueuePassengerState {
     data class ToSearchQueue(
         val locationId: Long,
         val subLocationId: Long,
+        val prefix: String,
+        val listWaiting: ArrayList<QueueReceiptCache>,
+        val listSkipped: ArrayList<QueueReceiptCache>
     ) : QueuePassengerState()
 
     data class ToQrCodeScreen(

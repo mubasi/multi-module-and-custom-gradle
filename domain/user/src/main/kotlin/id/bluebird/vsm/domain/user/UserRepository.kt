@@ -18,6 +18,6 @@ interface UserRepository {
         subLocationsId: List<Long>,
         locationId: Long
     ): List<UserOuterClass.userAssignmentItem>
-
     fun getSplashConfig(key: String): Flow<UserOuterClass.SplashConfigResponse>
+    fun getUserAssignment(id: Long): Flow<UserOuterClass.UserAssignmentResponse>
 }

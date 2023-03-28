@@ -1,101 +1,132 @@
 package id.bluebird.vsm.feature.home.queue_search
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.vsm.domain.passenger.SearchQueueState
-import id.bluebird.vsm.domain.passenger.domain.cases.SearchQueue
 import id.bluebird.vsm.feature.home.model.QueueReceiptCache
-import id.bluebird.vsm.feature.home.model.SearchQueueCache
-import kotlinx.coroutines.Dispatchers
+import id.bluebird.vsm.feature.home.model.QueueSearchCache
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import proto.QueuePangkalanOuterClass
 
-class QueueSearchViewModel(
-    private val searchQueue: SearchQueue
-) : ViewModel() {
+class QueueSearchViewModel : ViewModel() {
     companion object {
-        const val ERROR_MESSAGE_UNKNOWN = "Unknown"
+        const val EMPTY_STRING = ""
     }
-    private val _queueSearchState : MutableSharedFlow<QueueSearchState> =
+
+    private val _queueSearchState: MutableSharedFlow<QueueSearchState> =
         MutableSharedFlow()
     val queueSearchState = _queueSearchState.asSharedFlow()
-    val params: MutableLiveData<String> = MutableLiveData("")
-    var listQueue : SearchQueueCache = SearchQueueCache("", queues = ArrayList<QueueReceiptCache>())
+    val params: MutableLiveData<String> = MutableLiveData(EMPTY_STRING)
+    var listQueue: ArrayList<QueueSearchCache> = ArrayList()
+    private var _prefix: String = EMPTY_STRING
+    private var _statusFilter: StatusFilter = StatusFilter.ALL
 
-    fun filter() {
-        viewModelScope.launch {
-            if(params.value.toString().length > 2) {
-                _queueSearchState.emit(QueueSearchState.ProsesSearchQueue)
-            }
-
-            if(params.value.toString().isEmpty()) {
-                _queueSearchState.emit(QueueSearchState.ClearSearchQueue)
-            }
-        }
+    @VisibleForTesting
+    fun getPrefix(): String {
+        return _prefix
     }
 
-    fun searchFilter(
-        locationId: Long,
-        subLocationId: Long,
-        typeQueue : QueuePangkalanOuterClass.QueueType
+    @VisibleForTesting
+    fun getStatusFilter(): StatusFilter {
+        return _statusFilter
+    }
+
+    @VisibleForTesting
+    fun setPrefix(result: String) {
+        _prefix = result
+    }
+
+    @VisibleForTesting
+    fun setParams(result: String?) {
+        params.value = result
+    }
+
+    @VisibleForTesting
+    fun setListQueue(result: List<QueueSearchCache>) {
+        listQueue.addAll(result)
+    }
+
+    fun init(
+        listWaiting: ArrayList<QueueReceiptCache>,
+        listSkipped: ArrayList<QueueReceiptCache>,
+        prefix: String
     ) {
         viewModelScope.launch {
-            searchQueue.invoke(
-                queueNumber = params.value.toString(),
-                locationId = locationId,
-                subLocationId = subLocationId,
-                typeQueue = typeQueue
-            ).flowOn(Dispatchers.Main)
-                .catch { cause ->
-                    _queueSearchState.emit(
-                        QueueSearchState.FailedSearchQueue(
-                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
-                        )
-                    )
-                }
-                .collect{
-                    when(it) {
-                        is SearchQueueState.Success -> {
-                            val tempListQueue = ArrayList<QueueReceiptCache>()
-                            it.searchQueueResult.queues.forEach { result ->
-                                tempListQueue.add(
-                                    QueueReceiptCache(
-                                        result.id,
-                                        result.number
-                                    )
-                                )
-                            }
-
-                            listQueue = SearchQueueCache(
-                                it.searchQueueResult.searchType,
-                                tempListQueue
-                            )
-
-                            _queueSearchState.emit(
-                                QueueSearchState.SuccessSearchQueue
-                            )
-                        }
-                    }
-                }
+            _queueSearchState.emit(
+                QueueSearchState.ProsesSearchQueue
+            )
+            setQueueList(listWaiting, true)
+            setQueueList(listSkipped, false)
+            _prefix = prefix
+            _queueSearchState.emit(
+                QueueSearchState.Idle
+            )
         }
     }
 
-
-    fun prosesDeleteQueue(queueReceiptCache: QueueReceiptCache){
-        viewModelScope.launch {
-            _queueSearchState.emit(QueueSearchState.ProsesDeleteQueueSkipped(queueReceiptCache))
+    private fun setQueueList(dataList: ArrayList<QueueReceiptCache>, isWaiting: Boolean) {
+        dataList.forEach {
+            listQueue.add(
+                QueueSearchCache(
+                    it.queueId,
+                    it.queueNumber,
+                    isWaiting
+                )
+            )
         }
     }
 
-    fun prosesRestoreQueue(queueReceiptCache: QueueReceiptCache){
+    fun clearSearch() {
         viewModelScope.launch {
-            _queueSearchState.emit(QueueSearchState.ProsesRestoreQueueSkipped(queueReceiptCache))
+            params.value = EMPTY_STRING
+            _queueSearchState.emit(QueueSearchState.Idle)
         }
+    }
+
+    fun errorState() {
+        viewModelScope.launch {
+            _queueSearchState.emit(QueueSearchState.OnError)
+        }
+    }
+
+    fun setFilterStatus(status: StatusFilter) {
+        _statusFilter = status
+    }
+
+    fun filterQueue() {
+        viewModelScope.launch {
+            if (resultFilterLocation().isEmpty()) {
+                _queueSearchState.emit(QueueSearchState.ErrorFilter)
+            } else {
+                _queueSearchState.emit(QueueSearchState.FilterResult(resultFilterLocation()))
+            }
+        }
+    }
+
+    private fun resultFilterLocation(): ArrayList<QueueSearchCache> {
+        val filteredlist: ArrayList<QueueSearchCache> = ArrayList()
+        val dataParams = "$_prefix.${params.value ?: EMPTY_STRING}".toLowerCase()
+        for (item in listQueue) {
+            if (_statusFilter == StatusFilter.ALL) {
+                if (item.queueNumber.toLowerCase().contains(dataParams)) {
+                    filteredlist.add(item)
+                }
+            } else {
+                if (item.queueNumber.toLowerCase()
+                        .contains(dataParams) && item.isWaiting == (_statusFilter == StatusFilter.WAITING)
+                ) {
+                    filteredlist.add(item)
+                }
+            }
+        }
+        filteredlist.sortBy { it.queueNumber }
+        return filteredlist
+    }
+
+    enum class StatusFilter {
+        ALL, WAITING, SKIPPED
     }
 
 }

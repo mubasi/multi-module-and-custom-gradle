@@ -15,8 +15,8 @@ import id.bluebird.vsm.domain.passenger.domain.cases.CounterBar
 import id.bluebird.vsm.domain.passenger.domain.cases.CurrentQueue
 import id.bluebird.vsm.domain.passenger.domain.cases.ListQueueSkipped
 import id.bluebird.vsm.domain.passenger.domain.cases.ListQueueWaiting
-import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
+import id.bluebird.vsm.domain.user.GetUserAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
 import id.bluebird.vsm.domain.user.model.UserAssignment
 import id.bluebird.vsm.feature.home.model.*
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class QueuePassengerViewModel(
-    private val getUserByIdForAssignment: GetUserByIdForAssignment,
+    private val getUserByIdForAssignment: GetUserAssignment,
     private val currentQueue: CurrentQueue,
     private val listQueueWaiting: ListQueueWaiting,
     private val listQueueSkipped: ListQueueSkipped,
@@ -46,6 +46,7 @@ class QueuePassengerViewModel(
     val queuePassengerState = _queuePassengerState.asSharedFlow()
     private val _locationName: MutableLiveData<String> = MutableLiveData("...")
     private val _subLocationName: MutableLiveData<String> = MutableLiveData("...")
+    private val _prefix: MutableLiveData<String> = MutableLiveData("...")
     val titleLocation: MutableLiveData<String> = MutableLiveData("...")
     var currentQueueCache: CurrentQueueCache = CurrentQueueCache()
     var currentCounterBar: MutableLiveData<CounterBarCache> = MutableLiveData()
@@ -69,6 +70,21 @@ class QueuePassengerViewModel(
         _subLocationName.value = result
     }
 
+    @VisibleForTesting
+    fun setListQueueWaiting(result: ListQueueResultCache) {
+        listQueueWaitingCache = result
+    }
+
+    @VisibleForTesting
+    fun setListQueueSkipped(result: ListQueueResultCache) {
+        listQueueSkippedCache = result
+    }
+
+    @VisibleForTesting
+    fun setPrefix(result: String?) {
+        _prefix.value = result
+    }
+
     fun init() {
         if (LocationNavigationTemporary.isLocationNavAvailable()
                 .not() && UserUtils.isUserOfficer().not()
@@ -87,7 +103,7 @@ class QueuePassengerViewModel(
         viewModelScope.launch {
             _queuePassengerState.emit(QueuePassengerState.ProsesGetUser)
             val nav = LocationNavigationTemporary.getLocationNav()
-            getUserByIdForAssignment.invoke(UserUtils.getUserId(), locationIdNav = nav?.locationId, subLocationIdNav = nav?.subLocationId)
+            getUserByIdForAssignment.invoke(UserUtils.getUserId())
                 .flowOn(Dispatchers.Main)
                 .catch { cause ->
                     _queuePassengerState.emit(
@@ -98,14 +114,21 @@ class QueuePassengerViewModel(
                 }
                 .collect {
                     when (it) {
-                        is GetUserByIdForAssignmentState.Success -> {
-                            mUserInfo = UserInfo(userId = it.result.id, locationId = it.result.locationId, subLocationId = it.result.subLocationId)
+                        is GetUserAssignmentState.Success -> {
+                            mUserInfo = UserInfo(
+                                userId = it.result.id,
+                                locationId = it.result.locationId,
+                                subLocationId = it.result.subLocationId
+                            )
                             createTitleLocation(userAssignment = it.result)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
                         }
-                        GetUserByIdForAssignmentState.UserNotFound -> {
-                            _queuePassengerState.emit(QueuePassengerState.FailedGetUser(
-                                ERROR_MESSAGE_UNKNOWN))
+                        GetUserAssignmentState.UserNotFound -> {
+                            _queuePassengerState.emit(
+                                QueuePassengerState.FailedGetUser(
+                                    ERROR_MESSAGE_UNKNOWN
+                                )
+                            )
                         }
                     }
                 }
@@ -117,15 +140,14 @@ class QueuePassengerViewModel(
             if (isOfficer) {
                 _locationName.value = locationName
                 _subLocationName.value = subLocationName
-                titleLocation.value = "$locationName $subLocationName".getLastSync()
+                _prefix.value = prefix
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
-                titleLocation.value = location?.let {
-                    "${it.locationName} ${it.subLocationName}".getLastSync()
-                }
                 _locationName.value = location?.locationName ?: EMPTY_STRING
                 _subLocationName.value = location?.subLocationName ?: EMPTY_STRING
+                _prefix.value = location?.prefix ?: EMPTY_STRING
             }
+            titleLocation.value = "${_locationName.value} ${_subLocationName.value}".getLastSync()
         }
     }
 
@@ -339,7 +361,10 @@ class QueuePassengerViewModel(
             _queuePassengerState.emit(
                 QueuePassengerState.ToSearchQueue(
                     locationId = mUserInfo.locationId,
-                    subLocationId = mUserInfo.subLocationId
+                    subLocationId = mUserInfo.subLocationId,
+                    prefix = _prefix.value ?: EMPTY_STRING,
+                    listWaiting = listQueueWaitingCache.queue,
+                    listSkipped = listQueueSkippedCache.queue
                 )
             )
         }
