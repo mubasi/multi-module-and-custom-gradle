@@ -14,15 +14,15 @@ import kotlinx.coroutines.launch
 
 class MonitoringViewModel(
     private val monitoringUseCases: Monitoring
-): ViewModel() {
+) : ViewModel() {
 
     private val _monitoringState: MutableSharedFlow<MonitoringState> = MutableSharedFlow()
     val monitoringState = _monitoringState.asSharedFlow()
     val notificationVisibility = MutableLiveData(true)
-    val listLocation : MutableList<MonitoringModel> = mutableListOf()
+    val listLocation: MutableList<MonitoringModel> = mutableListOf()
     var params: MutableLiveData<String> = MutableLiveData("")
     private val isPrivilegedUser: Boolean by lazy {
-        when(UserUtils.getPrivilege()) {
+        when (UserUtils.getPrivilege()) {
             UserUtils.SVP, UserUtils.OFFICER -> false
             else -> true
         }
@@ -37,9 +37,10 @@ class MonitoringViewModel(
                     _monitoringState.emit(MonitoringState.OnFailedGetList)
                 }
                 .collect {
-                    when(it) {
+                    when (it) {
                         is MonitoringResultState.Error -> _monitoringState.emit(MonitoringState.OnFailedGetList)
                         is MonitoringResultState.Success -> {
+                            listLocation.clear()
                             val data = it.data.map { result ->
                                 MonitoringModel(
                                     subLocationId = result.subLocationId,
@@ -55,11 +56,14 @@ class MonitoringViewModel(
                                 )
                             }
                             listLocation.addAll(data)
-                            _monitoringState.emit(MonitoringState.OnSuccessGetList(data))
+                            _monitoringState.emit(
+                                MonitoringState.OnSuccessGetList(
+                                    resultFilterLocation()
+                                )
+                            )
                         }
                     }
                 }
-
         }
     }
 
@@ -85,13 +89,13 @@ class MonitoringViewModel(
         }
     }
 
-    fun searchScreen(){
+    fun searchScreen() {
         viewModelScope.launch {
             _monitoringState.emit(MonitoringState.SearchScreen)
         }
     }
 
-    fun backSearchScreen(){
+    fun backSearchScreen() {
         viewModelScope.launch {
             _monitoringState.emit(MonitoringState.BackSearchScreen)
         }
@@ -107,17 +111,21 @@ class MonitoringViewModel(
         }
     }
 
-    private fun resultFilterLocation() : ArrayList<MonitoringModel> {
-        val filteredlist: ArrayList<MonitoringModel> = ArrayList()
-        for (item in listLocation) {
-            if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: "")) {
-                filteredlist.add(item)
+    private fun resultFilterLocation(): List<MonitoringModel> {
+        val filteredList: MutableList<MonitoringModel> = mutableListOf()
+        if (params.value.isNullOrEmpty()) {
+            filteredList.addAll(listLocation)
+        } else {
+            for (item in listLocation) {
+                if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: "")) {
+                    filteredList.add(item)
+                }
             }
         }
-        return filteredlist
+        return filteredList
     }
 
-    fun clearSearch(){
+    fun clearSearch() {
         params.value = ""
         filterLocation()
     }
