@@ -1,5 +1,9 @@
 package id.bluebird.vsm.feature.monitoring.model
 
+import androidx.annotation.Keep
+
+
+@Keep
 data class MonitoringModel(
     val subLocationId: Long,
     val locationName: String,
