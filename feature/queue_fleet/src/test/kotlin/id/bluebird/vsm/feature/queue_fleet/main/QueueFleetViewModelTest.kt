@@ -468,7 +468,7 @@ internal class QueueFleetViewModelTest {
             job.cancel()
             // Result
             Assertions.assertEquals(11, _vm.counterLiveData.value!!.stock)
-            assert(_events.last() is QueueFleetState.AddFleetSuccess)
+            assert(_events.last() is QueueFleetState.NotifyDataChanged)
         }
 
     @Test
@@ -726,7 +726,7 @@ internal class QueueFleetViewModelTest {
         runCurrent()
 
         Assertions.assertEquals(1, _events.size)
-        assert(_events.last() is QueueFleetState.FleetDeparted)
+        assert(_events.last() is QueueFleetState.NotifyDataChanged)
         collect.cancel()
     }
 

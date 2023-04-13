@@ -26,6 +26,10 @@ import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDia
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -41,6 +45,8 @@ class FragmentQueueFleet : Fragment() {
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
     private val _args by navArgs<FragmentQueueFleetArgs>()
+    private lateinit var _stateFlow:FlowCollector<QueueFleetState>
+    private lateinit var _coroutineScope: Job
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,6 +65,7 @@ class FragmentQueueFleet : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _mQueueFleetViewModel.stateIdle()
+        //_coroutineScope.cancel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,10 +84,10 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun observer() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        _coroutineScope = viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(_mQueueFleetViewModel) {
-                    queueFleetState.collectLatest {
+                     queueFleetState.collectLatest {
                         when (it) {
                             QueueFleetState.ProgressHolder -> {
                                 mBinding.showHolder = true
@@ -111,9 +118,8 @@ class FragmentQueueFleet : Fragment() {
                                 mBinding.successList = true
                                 _fleetAdapter.submitData(it.list)
                             }
-                            is QueueFleetState.FleetDeparted -> {
-                                _fleetAdapter.submitData(it.list)
-                                _fleetAdapter.notifyItemRemoved(it.removedIndex)
+                            is QueueFleetState.NotifyDataChanged -> {
+                                _fleetAdapter.notifyDataSetChanged()
                                 mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.GetListEmpty -> {
@@ -127,11 +133,6 @@ class FragmentQueueFleet : Fragment() {
                                     childFragmentManager,
                                     FragmentRequestFleetDialog.TAG
                                 )
-                            }
-                            is QueueFleetState.AddFleetSuccess -> {
-                                _fleetAdapter.submitData(it.list)
-                                _fleetAdapter.notifyItemInserted(_fleetAdapter.itemCount)
-                                mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.FailedGetList -> {
                                 mBinding.showProgress = false

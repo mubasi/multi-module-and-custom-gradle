@@ -257,10 +257,9 @@ class QueueFleetViewModel(
         val fleetIndex = _fleetItems.indexOfFirst { it.name == fleetNumber }
         if (fleetIndex < 0)
             return
-
         _fleetItems.removeAt(fleetIndex)
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.FleetDeparted(_fleetItems, fleetIndex))
+            _queueFleetState.emit(QueueFleetState.NotifyDataChanged(_fleetItems))
         }
     }
 
@@ -331,7 +330,7 @@ class QueueFleetViewModel(
             counterLiveData.value = mCountCache
             viewModelScope.launch {
                 _fleetItems.add(fleetItem)
-                _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
+                _queueFleetState.emit(QueueFleetState.NotifyDataChanged(_fleetItems))
             }
         }
     }
