@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -67,6 +68,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         mBinding.navView.setNavigationItemSelectedListener(this)
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun navController() {
         navController.addOnDestinationChangedListener { _, destination, args ->
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
