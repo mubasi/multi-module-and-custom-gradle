@@ -26,10 +26,6 @@ import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDia
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -45,8 +41,6 @@ class FragmentQueueFleet : Fragment() {
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
     private val _args by navArgs<FragmentQueueFleetArgs>()
-    private lateinit var _stateFlow:FlowCollector<QueueFleetState>
-    private lateinit var _coroutineScope: Job
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +59,6 @@ class FragmentQueueFleet : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _mQueueFleetViewModel.stateIdle()
-        //_coroutineScope.cancel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,10 +77,10 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun observer() {
-        _coroutineScope = viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(_mQueueFleetViewModel) {
-                     queueFleetState.collectLatest {
+                    queueFleetState.collectLatest {
                         when (it) {
                             QueueFleetState.ProgressHolder -> {
                                 mBinding.showHolder = true
@@ -118,8 +111,8 @@ class FragmentQueueFleet : Fragment() {
                                 mBinding.successList = true
                                 _fleetAdapter.submitData(it.list)
                             }
-                            is QueueFleetState.NotifyDataChanged -> {
-                                _fleetAdapter.notifyDataSetChanged()
+                            is QueueFleetState.NotifyDataFleetChanged -> {
+                                _fleetAdapter.submitData(it.list)
                                 mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.GetListEmpty -> {
@@ -156,7 +149,9 @@ class FragmentQueueFleet : Fragment() {
                             }
                             is QueueFleetState.RecordRitaseToDepart -> {
                                 val fragment =
-                                    childFragmentManager.findFragmentByTag(FragmentRitaseRecordDialog.TAG)
+                                    childFragmentManager.findFragmentByTag(
+                                        FragmentRitaseRecordDialog.TAG
+                                    )
                                 if (fragment is FragmentRitaseRecordDialog) {
                                     fragment.updateQueue(it.queueId)
                                 } else {
@@ -175,7 +170,12 @@ class FragmentQueueFleet : Fragment() {
                                 }
                             }
                             is QueueFleetState.SearchQueueToDepart -> {
-                                navigateToSearchQueue(it.fleet, it.locationId, it.subLocationId, it.currentQueueId)
+                                navigateToSearchQueue(
+                                    it.fleet,
+                                    it.locationId,
+                                    it.subLocationId,
+                                    it.currentQueueId
+                                )
                             }
                             is QueueFleetState.SuccessDepartFleet -> {
                                 successDialogDepartFleet(it.fleetNumber, it.isWithPassenger)
@@ -219,7 +219,7 @@ class FragmentQueueFleet : Fragment() {
         _mQueueFleetViewModel.removeFleet(fleetNumber)
     }
 
-    fun showSnackbar(message: Spanned, color: Int){
+    private fun showSnackbar(message: Spanned, color: Int) {
         DialogUtils.showSnackbar(requireView(), message, color)
     }
 
@@ -245,7 +245,7 @@ class FragmentQueueFleet : Fragment() {
                     this.subLocation = subLocationId
                     this.currentQueue = currentQueueId
                 }
-        findNavController().navigate(destination)
+
         setFragmentResultListener(FragmentAddFleet.REQUEST_SELECT) { _, bundle ->
             _mQueueFleetViewModel.showRecordRitase(
                 fleetItem,
@@ -255,11 +255,16 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun navigationToAddFleet(subLocationId: Long) {
-        val destination = FragmentQueueFleetDirections.actionQueueFleetFragmentToAddFleetFragment()
-            .apply {
-                subLocation = subLocationId
+        with(findNavController()) {
+            if (currentDestination?.id == R.id.queueFleetFragment) {
+                val destination =
+                    FragmentQueueFleetDirections.actionQueueFleetFragmentToAddFleetFragment()
+                        .apply {
+                            subLocation = subLocationId
+                        }
+                navigate(destination)
             }
-        findNavController().navigate(destination)
+        }
         setFragmentResultListener(FragmentAddFleet.RESULT) { _, bundle ->
             _mQueueFleetViewModel.addSuccess(bundle.getParcelable(FragmentAddFleet.REQUEST_ADD))
         }
