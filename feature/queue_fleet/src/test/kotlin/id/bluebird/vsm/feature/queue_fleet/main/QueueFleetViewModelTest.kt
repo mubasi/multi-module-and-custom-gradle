@@ -31,6 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.AfterEach
@@ -472,7 +473,7 @@ internal class QueueFleetViewModelTest {
             job.cancel()
             // Result
             Assertions.assertEquals(11, _vm.counterLiveData.value!!.stock)
-            assert(_events.last() is QueueFleetState.AddFleetSuccess)
+            assert(_events.last() is QueueFleetState.NotifyDataFleetChanged)
         }
 
     @Test
@@ -731,7 +732,7 @@ internal class QueueFleetViewModelTest {
         runCurrent()
 
         Assertions.assertEquals(1, _events.size)
-        assert(_events.last() is QueueFleetState.FleetDeparted)
+        assert(_events.last() is QueueFleetState.NotifyDataFleetChanged)
         collect.cancel()
     }
 
@@ -764,6 +765,7 @@ internal class QueueFleetViewModelTest {
             _vm.queueFleetState.toList(_events)
         }
         _vm.requestDepart(listFleet)
+        advanceTimeBy(100)
         runCurrent()
 
         Assertions.assertEquals(1, _events.size)

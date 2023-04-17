@@ -115,9 +115,8 @@ class FragmentQueueFleet : Fragment() {
                                 mBinding.successList = true
                                 _fleetAdapter.submitData(it.list)
                             }
-                            is QueueFleetState.FleetDeparted -> {
+                            is QueueFleetState.NotifyDataFleetChanged -> {
                                 _fleetAdapter.submitData(it.list)
-                                _fleetAdapter.notifyItemRemoved(it.removedIndex)
                                 mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.GetListEmpty -> {
@@ -131,11 +130,6 @@ class FragmentQueueFleet : Fragment() {
                                 delay(500)
                                 bottomProgressDialog?.dismiss()
                                 showRequestFleet(it.subLocationId)
-                            }
-                            is QueueFleetState.AddFleetSuccess -> {
-                                _fleetAdapter.submitData(it.list)
-                                _fleetAdapter.notifyItemInserted(_fleetAdapter.itemCount)
-                                mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueFleetState.FailedGetList -> {
                                 mBinding.showProgress = false
@@ -159,7 +153,9 @@ class FragmentQueueFleet : Fragment() {
                             }
                             is QueueFleetState.RecordRitaseToDepart -> {
                                 val fragment =
-                                    childFragmentManager.findFragmentByTag(FragmentRitaseRecordDialog.TAG)
+                                    childFragmentManager.findFragmentByTag(
+                                        FragmentRitaseRecordDialog.TAG
+                                    )
                                 if (fragment is FragmentRitaseRecordDialog) {
                                     fragment.updateQueue(it.queueId)
                                 } else {
@@ -178,7 +174,12 @@ class FragmentQueueFleet : Fragment() {
                                 }
                             }
                             is QueueFleetState.SearchQueueToDepart -> {
-                                navigateToSearchQueue(it.fleet, it.locationId, it.subLocationId, it.currentQueueId)
+                                navigateToSearchQueue(
+                                    it.fleet,
+                                    it.locationId,
+                                    it.subLocationId,
+                                    it.currentQueueId
+                                )
                             }
                             is QueueFleetState.SuccessDepartFleet -> {
                                 successDialogDepartFleet(it.fleetNumber, it.isWithPassenger)
@@ -265,7 +266,7 @@ class FragmentQueueFleet : Fragment() {
                     this.subLocation = subLocationId
                     this.currentQueue = currentQueueId
                 }
-        findNavController().navigate(destination)
+
         setFragmentResultListener(FragmentAddFleet.REQUEST_SELECT) { _, bundle ->
             _mQueueFleetViewModel.showRecordRitase(
                 fleetItem,
@@ -275,11 +276,16 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun navigationToAddFleet(subLocationId: Long) {
-        val destination = FragmentQueueFleetDirections.actionQueueFleetFragmentToAddFleetFragment()
-            .apply {
-                subLocation = subLocationId
+        with(findNavController()) {
+            if (currentDestination?.id == R.id.queueFleetFragment) {
+                val destination =
+                    FragmentQueueFleetDirections.actionQueueFleetFragmentToAddFleetFragment()
+                        .apply {
+                            subLocation = subLocationId
+                        }
+                navigate(destination)
             }
-        findNavController().navigate(destination)
+        }
         setFragmentResultListener(FragmentAddFleet.RESULT) { _, bundle ->
             _mQueueFleetViewModel.addSuccess(bundle.getParcelable(FragmentAddFleet.REQUEST_ADD))
         }

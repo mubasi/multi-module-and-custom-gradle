@@ -122,28 +122,39 @@ class QueueFleetViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetUser)
-            val nav = LocationNavigationTemporary.getLocationNav()
-            getUserByIdForAssignment.invoke(UserUtils.getUserId(), locationIdNav = nav?.locationId, subLocationIdNav = nav?.subLocationId)
-                .catch { cause ->
-                    _queueFleetState.emit(
-                        QueueFleetState.FailedGetUser(
-                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                val nav = LocationNavigationTemporary.getLocationNav()
+                getUserByIdForAssignment.invoke(
+                    UserUtils.getUserId(),
+                    locationIdNav = nav?.locationId,
+                    subLocationIdNav = nav?.subLocationId
+                )
+                    .catch { cause ->
+                        _queueFleetState.emit(
+                            QueueFleetState.FailedGetUser(
+                                message = cause.message ?: ERROR_MESSAGE_UNKNOWN
+                            )
                         )
-                    )
-                }
-                .collect {
-                    when (it) {
-                        is GetUserByIdForAssignmentState.Success -> {
-                            mUserInfo = UserInfo(userId = it.result.id, locationId = it.result.locationId, subLocationId = it.result.subLocationId)
-                            createTitleLocation(userAssignment = it.result)
-                            _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
-                        }
-                        GetUserByIdForAssignmentState.UserNotFound -> {
-                            _queueFleetState.emit(QueueFleetState.FailedGetUser(
-                                ERROR_MESSAGE_UNKNOWN))
+                    }
+                    .collect {
+                        when (it) {
+                            is GetUserByIdForAssignmentState.Success -> {
+                                mUserInfo = UserInfo(
+                                    userId = it.result.id,
+                                    locationId = it.result.locationId,
+                                    subLocationId = it.result.subLocationId
+                                )
+                                createTitleLocation(userAssignment = it.result)
+                                _queueFleetState.emit(QueueFleetState.GetUserInfoSuccess)
+                            }
+                            GetUserByIdForAssignmentState.UserNotFound -> {
+                                _queueFleetState.emit(
+                                    QueueFleetState.FailedGetUser(
+                                        ERROR_MESSAGE_UNKNOWN
+                                    )
+                                )
+                            }
                         }
                     }
-                }
         }
     }
 
@@ -257,10 +268,9 @@ class QueueFleetViewModel(
         val fleetIndex = _fleetItems.indexOfFirst { it.name == fleetNumber }
         if (fleetIndex < 0)
             return
-
         _fleetItems.removeAt(fleetIndex)
         viewModelScope.launch {
-            _queueFleetState.emit(QueueFleetState.FleetDeparted(_fleetItems, fleetIndex))
+            _queueFleetState.emit(QueueFleetState.NotifyDataFleetChanged(_fleetItems.toList()))
         }
     }
 
@@ -279,6 +289,7 @@ class QueueFleetViewModel(
 
     fun requestDepart(fleetItem: FleetItem) {
         viewModelScope.launch {
+            delay(50)
             _queueFleetState.emit(
                 QueueFleetState.RequestDepartFleet(
                     fleetItem,
@@ -315,6 +326,10 @@ class QueueFleetViewModel(
     fun addFleet() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.AddFleet(subLocationId = mUserInfo.subLocationId))
+            delay(200)
+            _queueFleetState.emit(QueueFleetState.AddFleet(subLocationId = mUserInfo.subLocationId))
+            delay(200)
+            _queueFleetState.emit(QueueFleetState.AddFleet(subLocationId = mUserInfo.subLocationId))
         }
     }
 
@@ -331,7 +346,7 @@ class QueueFleetViewModel(
             counterLiveData.value = mCountCache
             viewModelScope.launch {
                 _fleetItems.add(fleetItem)
-                _queueFleetState.emit(QueueFleetState.AddFleetSuccess(_fleetItems))
+                _queueFleetState.emit(QueueFleetState.NotifyDataFleetChanged(_fleetItems.toList()))
             }
         }
     }
@@ -359,12 +374,12 @@ class QueueFleetViewModel(
             )
         }
     }
-    
+
     fun getFleetList() {
         viewModelScope.launch {
             _queueFleetState.emit(QueueFleetState.ProgressGetFleetList)
             if (_fleetItems.isNotEmpty()) {
-                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
+                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems.toList()))
             } else {
                 _getFleet.invoke(mUserInfo.subLocationId)
                     .flowOn(Dispatchers.Main)
@@ -387,7 +402,7 @@ class QueueFleetViewModel(
                                         )
                                     )
                                 }
-                                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems))
+                                _queueFleetState.emit(QueueFleetState.GetListSuccess(_fleetItems.toList()))
                             }
                         }
                     }
@@ -397,7 +412,6 @@ class QueueFleetViewModel(
 
     fun refresh() {
         mCountCache = CountCache()
-        _fleetItems.clear()
         init()
     }
 
