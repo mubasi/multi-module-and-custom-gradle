@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fleet_airport_nav"
+    app:startDestination="@id/fleetAirportFragment">
+
+    <fragment
+        android:id="@+id/fleetAirportFragment"
+        android:name="id.bluebird.vsm.feature.airport_fleet.main.FragmentFleetNonApsh">
+        <deepLink app:uri="android-app://id.bluebird.mall/fleet_airport" />
+    </fragment>
+
+</navigation>

@@ -17,14 +17,17 @@ class GetCountCases(private val fleetRepository: FleetRepository) : GetCount {
         subLocationId: Long,
         locationId: Long
     ): Flow<GetCountState> = flow {
-        val response = fleetRepository.getCount(
-            subLocation = subLocationId,
-            locationId = locationId,
-            todayEpoch = Instant.ofEpochMilli(System.currentTimeMillis()).epochSecond
+//        val response = fleetRepository.getCount(
+//            subLocation = subLocationId,
+//            locationId = locationId,
+//            todayEpoch = Instant.ofEpochMilli(System.currentTimeMillis()).epochSecond
+//        )
+//            .flowOn(Dispatchers.IO)
+//            .singleOrNull() ?: throw NullPointerException()
+//        val countResult = CountResult(response.stock, response.ritase, response.request)
+        val temp = CountResult(
+            200, 300, 400
         )
-            .flowOn(Dispatchers.IO)
-            .singleOrNull() ?: throw NullPointerException()
-        val countResult = CountResult(response.stock, response.ritase, response.request)
-        emit(GetCountState.Success(countResult))
+        emit(GetCountState.Success(temp))
     }
 }

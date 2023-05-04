@@ -1,4 +1,4 @@
-package id.bluebird.vsm.feature.select_location.adapter
+package id.bluebird.vsm.feature.select_location.adapter.outlet
 
 import androidx.recyclerview.widget.RecyclerView
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel

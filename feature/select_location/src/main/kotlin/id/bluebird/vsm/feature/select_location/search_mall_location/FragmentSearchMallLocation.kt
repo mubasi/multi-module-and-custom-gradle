@@ -19,7 +19,7 @@ import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.select_location.R
 import id.bluebird.vsm.feature.select_location.SelectLocationState
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
-import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
+import id.bluebird.vsm.feature.select_location.adapter.outlet.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.FragmentSearchLocationBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel

@@ -17,6 +17,8 @@ import id.bluebird.vsm.domain.user.UserRepository
 import id.bluebird.vsm.domain.user.UserRepositoryImpl
 import id.bluebird.vsm.domain.user.domain.intercator.*
 import id.bluebird.vsm.domain.user.domain.usescases.*
+import id.bluebird.vsm.feature.airport_fleet.dialog_request_stock.DialogButtomRequestStockViewModel
+import id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModel
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewModel
@@ -73,12 +75,14 @@ object AppModule {
         viewModel { EditBufferViewModel(get()) }
         viewModel { SearchLocationViewModel(get()) }
         viewModel { QueueSearchViewModel() }
-        viewModel { SelectLocationViewModel(get()) }
+        viewModel { SelectLocationViewModel(get(), get()) }
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
         viewModel { SplashViewModel(get()) }
         viewModel { DialogRecordRitaseViewModel(get()) }
         viewModel { QrCodeViewModel(get()) }
+        viewModel { FleetNonApshViewModel(get(),get(),get(),get()) }
+        viewModel { DialogButtomRequestStockViewModel(get()) }
     }
     private val userCases = module {
         single<GetUserAssignment> { GetUserAssignmentCases(get()) }

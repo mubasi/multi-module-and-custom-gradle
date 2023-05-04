@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <import type="id.bluebird.vsm.feature.airport_fleet.utils.CounterBarPages" />
+        <variable
+            name="fleetNonApshViewModel"
+            type="id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModel" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/viewCounterNonApsh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <id.bluebird.vsm.feature.airport_fleet.utils.CounterBarPages
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/counter_bar_gap"
+            android:paddingBottom="@dimen/counter_bar_gap"
+            android:layout_weight="1"
+            android:visibility="@{fleetNonApshViewModel.isPerimeter ? View.VISIBLE : View.GONE, default= gone}"
+            app:counterStyle="yellow"
+            app:counterText="@{String.valueOf(fleetNonApshViewModel.counterLiveData.request)}"
+            app:plusIconVisible="false"
+            app:titleText="@string/request_from_deposition"
+            tools:visibility="visible" />
+
+        <id.bluebird.vsm.feature.airport_fleet.utils.CounterBarPages
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/counter_bar_gap"
+            android:layout_weight="1"
+            android:visibility="@{fleetNonApshViewModel.isPerimeter ? View.GONE : View.VISIBLE, default=gone}"
+            app:counterStyle="orange"
+            app:counterText="@{String.valueOf(fleetNonApshViewModel.counterLiveData.request)}"
+            app:titleText="@string/request_from_deposition"
+            app:plusIconText="@string/request"
+            app:plusIconVisible="true"
+            app:onClickPlusFunction="@{()->fleetNonApshViewModel.dialogRequest()}"
+            tools:visibility="visible" />
+
+        <id.bluebird.vsm.feature.airport_fleet.utils.CounterBarPages
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/counter_bar_gap"
+            android:layout_weight="1"
+            android:visibility="@{fleetNonApshViewModel.isPerimeter ? View.GONE : View.VISIBLE, default=gone}"
+            app:counterStyle="green"
+            app:counterText="@{String.valueOf(fleetNonApshViewModel.counterLiveData.ritase)}"
+            app:plusIconVisible="false"
+            app:titleText="@string/ritase"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+</layout>

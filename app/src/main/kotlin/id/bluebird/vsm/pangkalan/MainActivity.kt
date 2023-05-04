@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -72,11 +71,8 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private fun navController() {
         navController.addOnDestinationChangedListener { _, destination, args ->
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            mBinding.navView.menu.findItem(R.id.user_management_nav).isVisible =
-                UserUtils.isUserOfficer().not()
-
             setupVisibleToolbar(destination.id)
-
+            showHideNavMenu()
             with(mBinding) {
                 when (destination.id) {
                     R.id.loginFragment, R.id.splashFragment -> {
@@ -125,6 +121,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     }
                     R.id.ritaseFleetFragment  -> {
                         navigateBackWithArrow(R.id.ritaseFleetFragment)
+                    }
+                    R.id.fleetAirportFragment -> {
+                        setQueueToolbar(R.id.fleetAirportFragment)
                     }
                     else -> {
                         toolbarVisibility()
@@ -265,5 +264,14 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             }
         }
         return true
+    }
+
+    private fun showHideNavMenu() {
+        with(mBinding) {
+            navView.menu.findItem(R.id.user_management_nav).isVisible =
+                UserUtils.isUserOfficer().not()
+            navView.menu.findItem(R.id.queue_passenger_nav).isVisible =
+                UserUtils.getIsUserAirport().not() ?: true
+        }
     }
 }

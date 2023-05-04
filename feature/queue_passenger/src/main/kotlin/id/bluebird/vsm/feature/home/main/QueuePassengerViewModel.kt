@@ -115,12 +115,22 @@ class QueuePassengerViewModel(
                     when (it) {
                         is GetUserAssignmentState.Success -> {
                             val nav = LocationNavigationTemporary.getLocationNav()
-                            mUserInfo = UserInfo(
-                                userId = it.result.id,
-                                locationId = nav?.locationId ?: it.result.locationId,
-                                subLocationId = nav?.subLocationId ?: it.result.subLocationId
+                            val dataUser = UserAssignment(
+                                id = UserUtils.getUserId(),
+                                locationId = it.result[0].locationId,
+                                subLocationId = it.result[0].subLocationId,
+                                locationName = it.result[0].locationName,
+                                subLocationName = it.result[0].subLocationName,
+                                prefix = it.result[0].prefix,
+                                isOfficer = UserUtils.isUserOfficer()
                             )
-                            createTitleLocation(userAssignment = it.result)
+                            mUserInfo = UserInfo(
+                                userId = dataUser.id,
+                                locationId = nav?.locationId ?: dataUser.locationId,
+                                subLocationId = nav?.subLocationId ?: dataUser.subLocationId
+                            )
+
+                            createTitleLocation(userAssignment = dataUser)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
                         }
                         GetUserAssignmentState.UserNotFound -> {

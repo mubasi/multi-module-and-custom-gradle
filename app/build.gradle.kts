@@ -146,6 +146,7 @@ dependencies {
     implementation(project(":navigation"))
     implementation(project(":feature:monitoring"))
     implementation(project(":feature:qr_code"))
+    implementation(project(":feature:airport_fleet"))
 
     testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)

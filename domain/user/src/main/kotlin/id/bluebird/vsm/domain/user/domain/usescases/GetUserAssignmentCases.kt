@@ -1,11 +1,9 @@
 package id.bluebird.vsm.domain.user.domain.usescases
 
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.user.GetUserAssignmentState
 import id.bluebird.vsm.domain.user.UserRepository
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
 import id.bluebird.vsm.domain.user.model.AssignmentLocationItem
-import id.bluebird.vsm.domain.user.model.UserAssignment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -35,16 +33,7 @@ class GetUserAssignmentCases(
                         )
                     )
                 }
-                val result = UserAssignment(
-                    id = userId,
-                    locationId = list[0].locationId,
-                    subLocationId = list[0].subLocationId,
-                    locationName = list[0].locationName,
-                    subLocationName = list[0].subLocationName,
-                    prefix = list[0].prefix,
-                    isOfficer = UserUtils.isUserOfficer()
-                )
-                emit(GetUserAssignmentState.Success(result))
+                emit(GetUserAssignmentState.Success(list))
             }
         } else {
             emit(GetUserAssignmentState.UserNotFound)

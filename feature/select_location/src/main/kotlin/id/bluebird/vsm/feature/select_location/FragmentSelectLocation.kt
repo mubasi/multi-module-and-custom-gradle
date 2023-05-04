@@ -12,7 +12,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.utils.DialogUtils
-import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
+import id.bluebird.vsm.core.utils.hawk.UserUtils
+import id.bluebird.vsm.feature.select_location.adapter.airport.AdapterAirport
+import id.bluebird.vsm.feature.select_location.adapter.outlet.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.SelectLocationFragmentBinding
 import id.bluebird.vsm.feature.select_location.search_mall_location.FragmentSearchMallLocation
 import id.bluebird.vsm.navigation.NavigationNav
@@ -24,8 +26,11 @@ class FragmentSelectLocation : Fragment() {
 
     private val _vm: SelectLocationViewModel by sharedViewModel()
     private lateinit var _mBinding: SelectLocationFragmentBinding
-    private val _adapterSelectLocation: AdapterSelectLocation by lazy {
+    private val _adapterLocationOutlet: AdapterSelectLocation by lazy {
         AdapterSelectLocation(_vm)
+    }
+    private val _adapterLocationAirport: AdapterAirport by lazy {
+        AdapterAirport(_vm)
     }
 
     override fun onCreateView(
@@ -47,8 +52,7 @@ class FragmentSelectLocation : Fragment() {
         with(_mBinding) {
             this.lifecycleOwner = viewLifecycleOwner
         }
-        setHasOptionsMenu(true)
-        initRcv()
+        setMenuSearch()
         initRefreshLayout()
         launch()
         onFragmentListenerResult()
@@ -61,20 +65,28 @@ class FragmentSelectLocation : Fragment() {
                 _vm.state.collect {
                     when (it) {
                         is SelectLocationState.OnProgressGetLocations -> {
-                            setupVisibility(progress = true, data  = false)
+                            setupVisibility(progress = true, data = false)
                         }
                         is SelectLocationState.GetLocationSuccess -> {
-                            _adapterSelectLocation.submitList(it.locationModes)
-                            setupVisibility(progress = false, data  = true)
+                            _adapterLocationOutlet.submitList(it.locationModes)
+                            setupVisibility(progress = false, data = true)
+                        }
+                        is SelectLocationState.GetSubLocationSuccess -> {
+                            _adapterLocationAirport.submitList(it.locationModes)
                         }
                         is SelectLocationState.OnItemClick -> {
-                            _adapterSelectLocation.expandOrCollapseParent(it.locationModel.id)
+                            _adapterLocationOutlet.expandOrCollapseParent(it.locationModel.id)
                         }
                         is SelectLocationState.OnError -> {
-                            setupVisibility(progress = false, data  = true)
+                            setupVisibility(progress = false, data = true)
                         }
                         is SelectLocationState.ToAssign -> {
                             navToMainPage(it.isFleetMenu)
+                        }
+                        is SelectLocationState.ToAssignAirport -> {
+                            NavigationNav.navigate(
+                                NavigationSealed.FleetAirport(frag = this@FragmentSelectLocation)
+                            )
                         }
                         is SelectLocationState.ToAssignFromSearach -> {
                             navToMainPage(it.isFleetMenu)
@@ -83,6 +95,12 @@ class FragmentSelectLocation : Fragment() {
                             val title = requireContext().getString(R.string.title_not_show_location)
                             val msg = requireContext().getString(R.string.msg_not_show_location)
                             DialogUtils.showErrorDialog(requireContext(), title, msg)
+                        }
+                        SelectLocationState.UserOutlet -> {
+                            initRcvOutlet()
+                        }
+                        SelectLocationState.UserAirport -> {
+                            initRcvAirport()
                         }
                         is SelectLocationState.SearchLocation -> {
                             findNavController().navigate(R.id.searchLocationFragment)
@@ -96,16 +114,31 @@ class FragmentSelectLocation : Fragment() {
         }
     }
 
-    private fun initRcv() {
+    private fun setMenuSearch() {
+        if (UserUtils.getIsUserAirport()) {
+            setHasOptionsMenu(true)
+        }
+    }
+
+    private fun initRcvOutlet() {
         with(_mBinding) {
             rcvSelectLocationFragment.layoutManager = LinearLayoutManager(requireContext())
-            rcvSelectLocationFragment.adapter = _adapterSelectLocation
+            rcvSelectLocationFragment.adapter = _adapterLocationOutlet
+        }
+    }
+
+    private fun initRcvAirport() {
+        with(_mBinding) {
+            rcvSelectLocationFragment.layoutManager = LinearLayoutManager(requireContext())
+            rcvSelectLocationFragment.adapter = _adapterLocationAirport
+            tvTitle.text = getString(R.string.select_location_assigment)
         }
     }
 
     private fun initRefreshLayout() {
         _mBinding.swipeRefreshLayout.setOnRefreshListener {
             _vm.init(arguments?.getBoolean("isMenu", false) ?: false)
+            setupVisibility(progress = true, false)
         }
     }
 
@@ -127,12 +160,13 @@ class FragmentSelectLocation : Fragment() {
         _mBinding.swipeRefreshLayout.isRefreshing = progress
         _mBinding.progressPage.isVisible = progress
         _mBinding.tvTitle.isVisible = data
+        _mBinding.rcvSelectLocationFragment.isVisible = data
     }
 
     private fun onFragmentListenerResult() {
-        setFragmentResultListener(FragmentSearchMallLocation.NOTIFICATION_MESSAGE ) { key, bundle ->
+        setFragmentResultListener(FragmentSearchMallLocation.NOTIFICATION_MESSAGE) { _, bundle ->
             val status = bundle.getString(FragmentSearchMallLocation.STATUS_SEARCH)
-            if(status == FragmentSearchMallLocation.BACK) {
+            if (status == FragmentSearchMallLocation.BACK) {
                 _vm.setFromSearch()
             }
         }
