@@ -60,7 +60,7 @@ object UserUtils {
 
     fun getUsername(): String? = Hawk.get(USERNAME)
 
-    fun getIsUserAirport(): Boolean = Hawk.get(IS_USER_AIRPORT)
+    fun getIsUserAirport(): Boolean = Hawk.get(IS_USER_AIRPORT) ?: false
 
     fun isUserOfficer() = getPrivilege() == OFFICER
 }

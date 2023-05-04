@@ -1,0 +1,128 @@
+syntax="proto3";
+package proto;
+import "google/protobuf/timestamp.proto";
+option go_package="./;client";
+
+service OutltetAssignmentPangkalan{
+    rpc StockPangkalan(StockRequestPangkalan) returns (StockResponsePangkalan);
+    rpc RequestTaxiPangkalan(RequestTaxiPangkalanRequest) returns (RequestTaxiPangkalanResponse);
+    rpc GetSubLocationStockCountPangkalan(StockCountPangkalanRequest) returns (StockCountPangkalanResponse);
+    rpc GetListFleetTerminalPangkalan (GetListFleetTerminalPangkalanReq) returns (GetListFleetTerminalPangkalanResp);
+    rpc SearchStockPangkalan(SearchStockPangkalanRequest) returns (SearchStockPangkalanResponse);
+    rpc GetStatusDriverInStockPangkalan(RequestGetStatusDriverPangkalan) returns (ResponseGetStatusDriverPangkalan);
+    rpc GetRequestPangkalanSublocations (RequestSublocationPangkalan) returns (ResponseSubLocationPangkalan);
+}
+
+enum StockTypePangkalan {
+    STOCK_PANGKALAN_IN = 0;
+    STOCK_PANGKALAN_OUT= 1;
+}
+message DepartFleetItemsPangkalan {
+    int64 stock_id = 1;
+}
+message StockRequestPangkalan {
+    int64  sub_location_id=1;
+    string taxi_no = 2;
+    int64  is_with_passenger=3;
+    repeated DepartFleetItemsPangkalan depart_fleet_items=4;
+    StockTypePangkalan stock_type = 5;
+    int64 location_id = 6;
+    bool is_arrived = 7;
+    string queue_number = 8;
+}
+// item for dump 
+// fleet number and stock id after press 'sampai button'
+message ArrivedItemPangkalan {
+    int64 stock_id_pangkalan = 1;
+    string taxi_no_pangkalan = 2;
+    string created_at_pangkalan = 3;
+}
+
+message StockResponsePangkalan {
+    string message = 1;
+    repeated string taxi_no = 2;
+    string stock_type=3;
+    int64  stock_id = 4;
+    string created_at = 5;
+    repeated ArrivedItemPangkalan arrived_fleet = 6;
+    string sub_location_name = 7;
+}
+
+message RequestTaxiPangkalanRequest {
+    int64 request_from = 1;
+    int64 location_id = 2;
+    int64  count = 3;
+}
+message RequestTaxiPangkalanResponse {
+    string message = 1;
+    int64 request_from = 2;
+    string created_at = 3;
+    int64 request_count = 4;
+}
+
+message StockCountPangkalanRequest {
+    int64 sub_location_id = 1;
+    int64 location_id = 2;
+    google.protobuf.Timestamp created_at = 3;
+}
+message StockCountPangkalanResponse {
+    int64 stock=1;
+    int64 request=2;
+    int64 ritase=3;
+}
+
+message GetListFleetTerminalPangkalanReq {
+    int64 sub_location=1;
+    int32 page=2;
+    int32 item_perPage=3;
+}
+message FleetItemsPangkalan {
+    int64  fleet_id = 1;
+    string taxi_no  = 2;
+    string created_at =3;
+    string status = 4;
+}
+message GetListFleetTerminalPangkalanResp {
+    repeated FleetItemsPangkalan fleet_list =1;
+}
+
+message PagingPangkalan {
+    int32 page_stock = 1;
+    int32 item_stock_per_page = 2;
+}
+message SearchStockPangkalanRequest {
+	string fleet_number = 1;
+	int64  sub_location_id = 2;
+	PagingPangkalan paging = 3;
+}
+message SearchStockPangkalanResponse {
+	int64 total = 1;
+	repeated ArrivedItemPangkalan fleets = 2;
+}
+
+message RequestGetStatusDriverPangkalan {
+    string taxi_no = 1;
+}
+message ResponseGetStatusDriverPangkalan {
+    bool  is_queue = 1;
+    int64 stock_id = 2;
+    int64 location_id = 3;
+    int64 sub_location_id = 4;
+    string sub_location_name = 5;
+    string location_name = 6;
+}
+
+message CountSubLocationPangkalanItems {
+    string sub_location_name = 1;
+    int64  count = 2;
+    int64  sub_location_id = 3;
+    bool   with_passenger = 4;
+}
+message RequestSublocationPangkalan {
+    int64 location_id = 1;
+}
+message ResponseSubLocationPangkalan{
+    string location_name = 1;
+    int64  location_id = 2;
+    repeated CountSubLocationPangkalanItems sub_location_items = 3;
+}

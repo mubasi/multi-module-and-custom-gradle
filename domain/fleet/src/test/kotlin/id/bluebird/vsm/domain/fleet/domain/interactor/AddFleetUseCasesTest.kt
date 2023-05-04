@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 
 @ExperimentalCoroutinesApi
 internal class AddFleetUseCasesTest {
@@ -33,7 +33,7 @@ internal class AddFleetUseCasesTest {
         every { Hawk.get<Long>(any()) } returns 1L
         every { repository.addFleet(any(), any(), any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.StockResponse.newBuilder()
+                OutletAssignmentPangkalan.StockResponsePangkalan.newBuilder()
                     .apply {
                         message = ""
                         stockType = "AA"

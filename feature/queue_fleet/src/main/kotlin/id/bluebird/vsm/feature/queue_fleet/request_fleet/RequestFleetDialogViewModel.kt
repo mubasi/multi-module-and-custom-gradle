@@ -20,7 +20,7 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet, val di
 
         const val MINIMUM_COUNTER_VALUE = 1
         const val INVALID_SUB_LOCATION = "sublocation tidak sesuai"
-        const val INVALID_COUNTER = "counter harus lebih besar dari 1"
+        const val INVALID_COUNTER = "Permintaan tidak boleh kosong"
     }
 
     private val _requestFleetDialogState: MutableSharedFlow<RequestFleetDialogState> =

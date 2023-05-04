@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class GetLocationsCasesTest {
@@ -33,7 +33,7 @@ internal class GetLocationsCasesTest {
         //GIVEN
         every { repository.getLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetLocationsResponse.newBuilder().build()
+                OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse.newBuilder().build()
             )
         }
 
@@ -55,9 +55,9 @@ internal class GetLocationsCasesTest {
         val codeArea = "000"
         every { repository.getLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetLocationsResponse.newBuilder().apply {
+                OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse.newBuilder().apply {
                     for (i in 0 until size) {
-                        this.addListLocations(LocationPangkalanOuterClass.CreateLocationRequest.newBuilder().apply {
+                        this.addListLocations(OutletLocationPangkalanOuterClass.CreateLocationPangkalanRequest.newBuilder().apply {
                             this.id = i.toLong()
                             this.locationName = locationName
                             this.isActive = if (isActive) 1 else 0

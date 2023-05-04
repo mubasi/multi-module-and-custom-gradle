@@ -3,6 +3,7 @@ package id.bluebird.vsm.feature.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.core.utils.hawk.AuthUtils
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.user.ValidateForceUpdateState
 import id.bluebird.vsm.domain.user.domain.intercator.ValidateForceUpdate
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,11 +32,24 @@ class SplashViewModel(
     private suspend fun validateUserLogin() {
         delay(1000)
         if (AuthUtils.getAccessToken().isEmpty().not()) {
-            _splashState.emit(SplashState.Home)
+            validateUserType()
         } else {
             _splashState.emit(SplashState.Login)
         }
     }
+
+    private suspend fun validateUserType() {
+        with(UserUtils) {
+            _splashState.emit(
+                if (getIsUserAirport()) {
+                    SplashState.LoginAsAirportUser
+                } else {
+                    SplashState.LoginAsOutletUser
+                }
+            )
+        }
+    }
+
 
     fun checkNewVersion(codeVersion: Long? = null) {
         viewModelScope.launch(coroutineDispatcher) {

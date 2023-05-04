@@ -57,7 +57,7 @@ class MonitoringUseCases : Monitoring {
     }
 
     private fun initRef(baseReference: DatabaseReference) {
-        val parent = when (id.bluebird.vsm.domain.fleet.BuildConfig.FLAVOR) {
+        val parent = when (BuildConfig.FLAVOR) {
             "prod" -> PROD
             "stage" -> STAGING
             else -> DEV
