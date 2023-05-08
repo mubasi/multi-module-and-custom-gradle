@@ -41,7 +41,8 @@ class MonitoringUseCases : Monitoring {
                         totalRitase = value.totalRitase
                     )
                 }
-                this@callbackFlow.trySendBlocking(MonitoringResultState.Success(result))
+                val sortedItems = result.sortedByDescending { it.queueFleet }
+                this@callbackFlow.trySendBlocking(MonitoringResultState.Success(sortedItems))
             }
 
             override fun onCancelled(error: DatabaseError) {
