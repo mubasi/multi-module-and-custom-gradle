@@ -64,6 +64,9 @@ class RequestFleetDialogViewModel(private val requestFleet: RequestFleet, val di
 
     fun requestFleet() {
         viewModelScope.launch {
+            _requestFleetDialogState.emit(
+                RequestFleetDialogState.ProcessRequest
+            )
             requestFleet.invoke(
                 count = getValueCounter().toLong(),
                 subLocationId = _subLocationId,
