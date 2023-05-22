@@ -1203,7 +1203,7 @@ internal class FleetNonApshViewModelTest {
             )
             assertEquals(
                 CountCache(
-                    0, 6, 12
+                    0, 6, 7
                 ), subjectUnderTest.getCounter()
             )
             assertEquals(
