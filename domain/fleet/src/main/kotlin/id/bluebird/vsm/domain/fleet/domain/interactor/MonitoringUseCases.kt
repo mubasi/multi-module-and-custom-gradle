@@ -41,7 +41,7 @@ class MonitoringUseCases : Monitoring {
                         totalRitase = value.totalRitase
                     )
                 }
-                val sortedItems = result.sortedByDescending { it.queueFleet }
+                val sortedItems = result.sortedBy { it.queueFleet }
                 this@callbackFlow.trySendBlocking(MonitoringResultState.Success(sortedItems))
             }
 
