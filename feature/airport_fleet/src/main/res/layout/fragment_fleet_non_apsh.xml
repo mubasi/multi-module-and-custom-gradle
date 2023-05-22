@@ -263,8 +263,6 @@
                     app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
                     app:fastScrollVerticalTrackDrawable="@drawable/line_drawable" />
 
-<!--            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-
         </LinearLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
