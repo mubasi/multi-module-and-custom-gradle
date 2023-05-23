@@ -88,7 +88,7 @@ class SelectLocationViewModel(
     private fun resultFilterFleet(): ArrayList<LocationModel> {
         val filteredlist: ArrayList<LocationModel> = ArrayList()
         for (item in _locations) {
-            if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
+            if (item.name.toLowerCase().contains((params.value?: EMPTY_STRING ).toLowerCase())) {
                 filteredlist.add(item)
             }
         }
@@ -98,7 +98,7 @@ class SelectLocationViewModel(
     private fun resultFilterLocationAirport() : ArrayList<SubLocationModelCache> {
         val filteredlist: ArrayList<SubLocationModelCache> = ArrayList()
         for (item in locationsAirport) {
-            if (item.name.toLowerCase().contains(params.value!!.toLowerCase())) {
+            if (item.name.toLowerCase().contains((params.value?: EMPTY_STRING ).toLowerCase())) {
                 filteredlist.add(item)
             }
         }
