@@ -1,5 +1,6 @@
 package id.bluebird.vsm.domain.user
 
+import id.bluebird.vsm.domain.user.model.AssignmentLocationItem
 import id.bluebird.vsm.domain.user.model.CreateUserResult
 import id.bluebird.vsm.domain.user.model.SearchUserResult
 import id.bluebird.vsm.domain.user.model.UserAssignment
@@ -14,7 +15,7 @@ sealed class GetUserByIdState {
 }
 
 sealed class GetUserAssignmentState {
-    data class Success(val result: UserAssignment) : GetUserAssignmentState()
+    data class Success(val result: AssignmentLocationItem) : GetUserAssignmentState()
     object UserNotFound : GetUserAssignmentState()
 }
 

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fleet_title">Antrian Armada</string>
+    <string name="leave">Berangkat</string>
+    <string name="arrived">Sampai</string>
+    <string name="assign">Tugaskan</string>
+    <string name="please_add_fleet_message">Segera tambahkan stok armada\n untuk memenuhi permintaan</string>
+    <string name="please_request_fleet_message">Segera request armada untuk\n memenuhi permintaan</string>
+    <string name="fleet_not_found_message">Harap masukan nomor fleet yg sudah ditambahkan</string>
+    <string name="fleet_stock_empty">Stok armada kosong</string>
+    <string name="fleet_is_not_available">Armada belum tersedia</string>
+    <string name="fleet_not_found">Fleet tidak ditemukan</string>
+    <string name="without_passenger">Tanpa penumpang</string>
+    <string name="with_passenger">Ada penumpang</string>
+    <string name="insert_car_number">Masukkan nomor mobil</string>
+    <string name="search_fleet">Cari taxi</string>
+    <string name="stock_title">Stok Armada : </string>
+    <string name="request_armada">Permintaan armada</string>
+    <string name="selected2">terpilih</string>
+    <string name="title_something_wrong">Terjadi Kesalahan</string>
+    <string name="channel_description">...</string>
+    <string name="request_bar_placeholder">%1$s req \u2022 %2$s </string>
+    <string name="request_zero_placeholder">%1$s req</string>
+    <string name="request_deposition">Permintaan ke\nPengendapan</string>
+    <string name="request_from_deposition">Permintaan dari Terminal</string>
+    <string name="request_to_deposition">Permintaan ke Perimeter</string>
+    <string name="request">Permintaan</string>
+    <string name="error_unknown">Kesalahan tidak dikenali</string>
+    <string name="request_fleet_failed">Gagal melakukan permintaan armada</string>
+    <string name="total_request_on_terminal">memiliki total permintaan sebanyak</string>
+    <string name="add_fleet">Tambah Armada</string>
+    <string name="add_fleet_failed">Gagal menambahkan armada</string>
+    <string name="search_fleet_failed">Gagal mencari armada</string>
+    <string name="car_success_add_in_stock">berhasil ditambahkan ke stock</string>
+    <string name="tu">TU</string>
+    <string name="list_fleet_is_empty">Tidak ada armada yang di pilih</string>
+    <string name="assign_fleet_on_progress">Sedang melakukan proses pengiriman harap tunggu</string>
+    <string name="assign_fleet_error">Gagal melakukan pengiriman</string>
+    <string name="scan_number_fleet">Scan nomor lambung</string>
+    <string name="side_text_desc">Silahkan arahkan kamera ke nomor lambung</string>
+    <string name="side_text">Nomor Lambung</string>
+    <string name="repeat_take_picture">Ambil ulang gambar</string>
+    <string name="add">Tambah</string>
+    <string name="failed_to_add_stock">Gagal menambah stock</string>
+    <string name="fleet_number_can_not_scan">Nomor lambung tidak dapat di scan</string>
+    <string name="title_not_get_picture">Gagal mengambil gambar</string>
+</resources>

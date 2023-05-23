@@ -227,7 +227,7 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun showSnackbar(message: Spanned, color: Int) {
-        DialogUtils.showSnackbar(requireView(), message, color)
+        DialogUtils.showSnackbar(requireView(), requireContext(), message, color, null)
     }
 
     private fun showProgressDialog(message: String?) {

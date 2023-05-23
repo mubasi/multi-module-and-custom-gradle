@@ -1,20 +1,20 @@
 package id.bluebird.vsm.domain.location
 
 import kotlinx.coroutines.flow.Flow
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 
 interface LocationRepository {
-    fun getSubLocations(): Flow<LocationPangkalanOuterClass.GetSubLocationsResponse>
-    fun getSubLocationByLocationId(locationId: Long): Flow<LocationPangkalanOuterClass.GetSubLocationByLocationResp>
+    fun getSubLocations(): Flow<OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanResponse>
+    fun getSubLocationByLocationId(locationId: Long): Flow<OutletLocationPangkalanOuterClass.GetSubLocationPangkalanByLocationResp>
     fun updateBuffer(
         subLocationId: Long,
         value: Long
-    ): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer>
+    ): Flow<OutletLocationPangkalanOuterClass.ResponseUpdateBufferPangkalan>
 
-    fun getLocations(): Flow<LocationPangkalanOuterClass.GetLocationsResponse>
+    fun getLocations(): Flow<OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse>
 
     fun getSubLocationQrCode(
         subLocationId: Long
-    ): Flow<LocationPangkalanOuterClass.ResponseGetLocationQrCode>
+    ): Flow<OutletLocationPangkalanOuterClass.ResponseGetLocationPangkalanQrCode>
 }

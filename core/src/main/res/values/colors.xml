@@ -34,4 +34,9 @@
     <color name="gray_tile">#222222</color>
     <color name="gray_subtitle">#444444</color>
     <color name="text_alert_color">#721E12</color>
+
+    <color name="rating_min3">#F9F5E6</color>
+    <color name="rating_min2">#DEC366</color>
+    <color name="rating_0">#C89B00</color>
+    <color name="rating_plus1">#A07C00</color>
 </resources>

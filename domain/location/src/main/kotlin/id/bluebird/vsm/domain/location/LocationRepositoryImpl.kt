@@ -4,28 +4,28 @@ import com.google.protobuf.Empty
 import id.bluebird.vsm.core.utils.OkHttpChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import proto.LocationPangkalanGrpc
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanGrpc
+import proto.OutletLocationPangkalanOuterClass
 
 class LocationRepositoryImpl(
-    private val locationGrpc: LocationPangkalanGrpc.LocationPangkalanBlockingStub = LocationPangkalanGrpc.newBlockingStub(
+    private val locationGrpc: OutletLocationPangkalanGrpc.OutletLocationPangkalanBlockingStub = OutletLocationPangkalanGrpc.newBlockingStub(
         OkHttpChannel.channel
     )
 ) : LocationRepository {
-    override fun getSubLocations(): Flow<LocationPangkalanOuterClass.GetSubLocationsResponse> =
+    override fun getSubLocations(): Flow<OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanResponse> =
         flow {
-            val response = locationGrpc.getSubLocations(Empty.getDefaultInstance())
+            val response = locationGrpc.getSubLocationsPangkalan(Empty.getDefaultInstance())
             emit(response)
         }
 
-    override fun getSubLocationByLocationId(locationId: Long): Flow<LocationPangkalanOuterClass.GetSubLocationByLocationResp> =
+    override fun getSubLocationByLocationId(locationId: Long): Flow<OutletLocationPangkalanOuterClass.GetSubLocationPangkalanByLocationResp> =
         flow {
-            val request = LocationPangkalanOuterClass.GetSubLocationByLocationReq.newBuilder()
+            val request = OutletLocationPangkalanOuterClass.GetSubLocationPangkalanByLocationReq.newBuilder()
                 .apply {
                     this.locationId = locationId
                 }
                 .build()
-            val response = locationGrpc.getSubLocationByLocation(request)
+            val response = locationGrpc.getSubLocationPangkalanByLocation(request)
             emit(response)
 
         }
@@ -33,36 +33,36 @@ class LocationRepositoryImpl(
     override fun updateBuffer(
         subLocationId: Long,
         value: Long
-    ): Flow<LocationPangkalanOuterClass.ResponseUpdateBuffer> =
+    ): Flow<OutletLocationPangkalanOuterClass.ResponseUpdateBufferPangkalan> =
         flow {
-            val request = LocationPangkalanOuterClass.RequestUpdateBuffer.newBuilder()
+            val request = OutletLocationPangkalanOuterClass.RequestUpdateBufferPangkalan.newBuilder()
                 .apply {
                     this.subLocationId = subLocationId
                     this.value = value
                 }
                 .build()
 
-            val response = locationGrpc.updateBufferSubLocation(request)
+            val response = locationGrpc.updateBufferSubLocationPangkalan(request)
             emit(response)
         }
 
-    override fun getLocations(): Flow<LocationPangkalanOuterClass.GetLocationsResponse> =
+    override fun getLocations(): Flow<OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse> =
         flow {
             val request = Empty.newBuilder().build()
-            val response = locationGrpc.getLocations(request)
+            val response = locationGrpc.getLocationsPangkalan(request)
 
             emit(response)
         }
 
     override fun getSubLocationQrCode(
         subLocationId: Long
-    ): Flow<LocationPangkalanOuterClass.ResponseGetLocationQrCode> = flow {
-        val request = LocationPangkalanOuterClass.RequestGetLocationQrCode.newBuilder()
+    ): Flow<OutletLocationPangkalanOuterClass.ResponseGetLocationPangkalanQrCode> = flow {
+        val request = OutletLocationPangkalanOuterClass.RequestGetLocationPangkalanQrCode.newBuilder()
             .apply {
                 this.subLocationId = subLocationId
             }
             .build()
-        val response = locationGrpc.getLocationQrCode(request)
+        val response = locationGrpc.getLocationPangkalanQrCode(request)
         emit(response)
     }
 }
