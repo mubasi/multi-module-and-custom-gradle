@@ -222,5 +222,67 @@ internal class UserManagementViewModelTest {
         verify { actionSealedObserver.onChanged(UserSettingSealed.EditUser(userSettingCache)) }
     }
 
+    @Test
+    fun `initTest, when role is svp`() = runTest {
+        // Given
+        every { UserUtils.getPrivilege() } returns UserUtils.SVP
+        every { UserUtils.getUserId() } returns 1L
+
+        // Execution
+        _vm.init()
+
+        //Result
+        Assertions.assertEquals(
+            _vm.privilege.value ,
+            UserUtils.SVP
+        )
+        Assertions.assertEquals(
+            _vm.loginUserId ,
+            1L
+        )
+
+    }
+
+
+    @Test
+    fun `initTest, when role is admin`() = runTest {
+        // Given
+        every { UserUtils.getPrivilege() } returns UserUtils.ADMIN
+        every { UserUtils.getUserId() } returns 1L
+
+        // Execution
+        _vm.init()
+
+        //Result
+        Assertions.assertEquals(
+            _vm.privilege.value ,
+            UserUtils.ADMIN
+        )
+        Assertions.assertEquals(
+            _vm.loginUserId ,
+            1L
+        )
+
+    }
+
+    @Test
+    fun `clearCounterAndListTest`() = runTest {
+        // Given
+
+        // Execution
+        _vm.callClearCounterAndList()
+
+        //Result
+        Assertions.assertEquals(
+            _vm.getUserSettings().size,
+            0
+        )
+        Assertions.assertEquals(
+            _vm.counter.value ,
+            0
+        )
+
+    }
+
 
 }

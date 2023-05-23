@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.airport_assignment.AirportAssignmentRepository
 import id.bluebird.vsm.domain.airport_assignment.DispatchFleetAirportState
+import id.bluebird.vsm.domain.airport_assignment.StockDepartState
+import id.bluebird.vsm.domain.airport_assignment.model.AddStockDepartModel
 import id.bluebird.vsm.domain.airport_assignment.model.DispatchFleetModel
 import io.mockk.every
 import io.mockk.mockk
@@ -22,12 +24,12 @@ import proto.AssignmentOuterClass
 internal class DispatchFleetAirportCasesTest{
 
     private val repository : AirportAssignmentRepository = mockk()
-    private lateinit var dispatchFleerAirportCases: DispatchFleetAirportCases
+    private lateinit var cases: DispatchFleetAirportCases
 
     @BeforeEach
     fun setup() {
         mockkStatic(Hawk::class)
-        dispatchFleerAirportCases = DispatchFleetAirportCases(repository)
+        cases = DispatchFleetAirportCases(repository)
     }
 
     @Test
@@ -35,7 +37,7 @@ internal class DispatchFleetAirportCasesTest{
         every { Hawk.get<Long>(any()) } returns 1L
 
         flowOf(
-            dispatchFleerAirportCases.invoke(
+            cases.invoke(
                 DispatchFleetModel(
                     subLocationId = 1L,
                     locationId = 2L,
@@ -71,12 +73,20 @@ internal class DispatchFleetAirportCasesTest{
                         this.stockType = "bb"
                         this.stockId = 1L
                         this.createdAt = "cc"
+                        addArrivedFleet(
+                            AssignmentOuterClass.ArrivedItem.newBuilder()
+                                .apply {
+                                    this.stockId = 1L
+                                    this.taxiNo = "dd"
+                                    this.createdAt = "ee"
+                                }.build()
+                        )
                     }.build()
             )
         }
 
         flowOf(
-            dispatchFleerAirportCases.invoke(
+            cases.invoke(
                 DispatchFleetModel(
                     subLocationId = 1L,
                     locationId = 2L,
@@ -88,8 +98,14 @@ internal class DispatchFleetAirportCasesTest{
             )
         ).test {
             //result
-            assert(
-                awaitItem().single() is DispatchFleetAirportState.SuccessArrived
+            val result: HashMap<String, Long> = hashMapOf()
+            result["dd"] = 1L
+
+            Assertions.assertEquals(
+                awaitItem().single(),
+                DispatchFleetAirportState.SuccessArrived(
+                    result
+                )
             )
             awaitComplete()
         }
@@ -97,7 +113,7 @@ internal class DispatchFleetAirportCasesTest{
     }
 
     @Test
-    fun `DispatchFleerAirportCasesTest, when perimeter is false and isarrived`() = runTest {
+    fun `DispatchFleerAirportCasesTest, when perimeter is false and isArrived`() = runTest {
         every { Hawk.get<Long>(any()) } returns 1L
         every {
             repository.dispatchFleetFromTerminal(
@@ -111,12 +127,13 @@ internal class DispatchFleetAirportCasesTest{
                         this.stockType = "bb"
                         this.stockId = 1L
                         this.createdAt = "cc"
+                        addTaxiNo("aa")
                     }.build()
             )
         }
 
         flowOf(
-            dispatchFleerAirportCases.invoke(
+            cases.invoke(
                 DispatchFleetModel(
                     subLocationId = 1L,
                     locationId = 2L,
@@ -128,8 +145,65 @@ internal class DispatchFleetAirportCasesTest{
             )
         ).test {
             //result
-            assert(
-                awaitItem().single() is DispatchFleetAirportState.SuccessDispatchFleet
+            Assertions.assertEquals(
+                awaitItem().single(),
+                DispatchFleetAirportState.SuccessDispatchFleet(
+                    1
+                )
+            )
+            awaitComplete()
+        }
+
+    }
+
+    @Test
+    fun `DispatchFleerAirportCasesTest, when perimeter is false and with passenger and not arrived`() = runTest {
+        every { Hawk.get<Long>(any()) } returns 1L
+        every {
+            repository.dispatchFleetFromTerminal(
+                any(), any(), any(), any(), any()
+            )
+        } returns flow {
+            emit(
+                AssignmentOuterClass.StockResponse.newBuilder()
+                    .apply {
+                        this.message = "aa"
+                        this.stockType = "bb"
+                        this.stockId = 1L
+                        this.createdAt = "cc"
+                        addArrivedFleet(
+                            AssignmentOuterClass.ArrivedItem.newBuilder()
+                                .apply {
+                                    this.stockId = 1L
+                                    this.taxiNo = "dd"
+                                    this.createdAt = "ee"
+                                }.build()
+                        )
+                    }.build()
+            )
+        }
+
+        flowOf(
+            cases.invoke(
+                DispatchFleetModel(
+                    subLocationId = 1L,
+                    locationId = 2L,
+                    isPerimeter = false,
+                    withPassenger = true,
+                    isArrived = false,
+                    fleetsAssignment = listOf()
+                )
+            )
+        ).test {
+            //result
+            val result: HashMap<String, Long> = hashMapOf()
+            result["dd"] = 1L
+
+            Assertions.assertEquals(
+                awaitItem().single(),
+                DispatchFleetAirportState.SuccessArrived(
+                    result
+                )
             )
             awaitComplete()
         }

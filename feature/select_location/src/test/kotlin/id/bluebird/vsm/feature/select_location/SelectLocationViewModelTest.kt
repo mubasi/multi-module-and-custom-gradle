@@ -4,6 +4,7 @@ import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.airport_location.GetListSublocationAirportState
 import id.bluebird.vsm.domain.airport_location.domain.cases.GetListSublocationAirport
 import id.bluebird.vsm.domain.airport_location.model.GetSubLocationByIdModel
+import id.bluebird.vsm.domain.airport_location.model.SubLocationItemModel
 import id.bluebird.vsm.domain.location.GetLocationsWithSubState
 import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
 import id.bluebird.vsm.domain.location.model.LocationsWithSub
@@ -52,32 +53,62 @@ internal class SelectLocationViewModelTest {
     }
 
     @Test
-    fun `init, when isFleetMenu true and user is outlet, result state changed to success with empty list`() = runTest {
-        //GIVEN
-        val isFleetMenu = true
-        every { UserUtils.getIsUserAirport() } returns false
-        every { getLocationsWithSub.invoke() } returns flow {
-            emit(
-                GetLocationsWithSubState.Success(listOf())
-            )
+    fun `init, when isFleetMenu true and user is outlet, result state changed to success with empty list`() =
+        runTest {
+            //GIVEN
+            val isFleetMenu = true
+            every { UserUtils.getIsUserAirport() } returns false
+            every { getLocationsWithSub.invoke() } returns flow {
+                emit(
+                    GetLocationsWithSubState.Success(listOf())
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.state.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init(isFleetMenu)
+            runCurrent()
+            delay(2000)
+
+            //THEN
+            assertEquals(3, states.size)
+            assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
+            assertEquals(SelectLocationState.UserOutlet, states[1])
+            assertEquals(SelectLocationState.GetLocationSuccess(listOf()), states[2])
+
+            collect.cancel()
         }
-        val collect = launch {
-            subjectUnderTest.state.toList(states)
+
+
+    @Test
+    fun `init, when isFleetMenu true and user is outlet, result state changed to failed`() =
+        runTest {
+            //GIVEN
+            val isFleetMenu = true
+            val result = Throwable("error")
+            every { UserUtils.getIsUserAirport() } returns false
+            every { getLocationsWithSub.invoke() } returns flow {
+                throw result
+            }
+            val collect = launch {
+                subjectUnderTest.state.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init(isFleetMenu)
+            runCurrent()
+            delay(2000)
+
+            //THEN
+            assertEquals(3, states.size)
+            assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
+            assertEquals(SelectLocationState.UserOutlet, states[1])
+            assertEquals(SelectLocationState.OnError(result), states[2])
+
+            collect.cancel()
         }
-
-        //WHEN
-        subjectUnderTest.init(isFleetMenu)
-        runCurrent()
-        delay(2000)
-
-        //THEN
-        assertEquals(3, states.size)
-        assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
-        assertEquals(SelectLocationState.UserOutlet, states[1])
-        assertEquals(SelectLocationState.GetLocationSuccess(listOf()), states[2])
-
-        collect.cancel()
-    }
 
     @Test
     fun `init, when isFleetMenu true and user is airport, result is success`() = runTest {
@@ -92,7 +123,15 @@ internal class SelectLocationViewModelTest {
                         locationId = 1L,
                         locationName = "aa",
                         codeArea = "bb",
-                        subLocationList = listOf()
+                        subLocationList = listOf(
+                            SubLocationItemModel(
+                                subLocationId = 2L,
+                                subLocationName = "cc",
+                                subLocationType = "dd",
+                                isDeposition = false,
+                                isWings = false
+                            )
+                        )
                     )
                 )
             )
@@ -110,9 +149,80 @@ internal class SelectLocationViewModelTest {
         assertEquals(3, states.size)
         assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
         assertEquals(SelectLocationState.UserAirport, states[1])
-        assertEquals(SelectLocationState.GetSubLocationSuccess(
-            listOf()
-        ), states[2])
+        assertEquals(
+            SelectLocationState.GetSubLocationSuccess(
+                listOf(SubLocationModelCache(
+                    id = 2L,
+                    name = "cc",
+                    prefix = SelectLocationViewModel.EMPTY_STRING,
+                    isPerimeter = false,
+                    isWing = false
+                ))
+            ), states[2]
+        )
+
+        collect.cancel()
+    }
+
+    @Test
+    fun `init, when isFleetMenu true and user is airport, result is empty result`() = runTest {
+        //GIVEN
+        val isFleetMenu = true
+        every { UserUtils.getLocationId() } returns 1L
+        every { UserUtils.getIsUserAirport() } returns true
+        every { getLocationAirport.invoke(any(), any(), any()) } returns flow {
+            emit(
+                GetListSublocationAirportState.EmptyResult
+            )
+        }
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.init(isFleetMenu)
+        runCurrent()
+        delay(2000)
+
+        //THEN
+        assertEquals(3, states.size)
+        assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
+        assertEquals(SelectLocationState.UserAirport, states[1])
+        assertEquals(
+            SelectLocationState.EmptyLocation, states[2]
+        )
+
+        collect.cancel()
+    }
+
+    @Test
+    fun `init, when isFleetMenu true and user is airport, result is failed`() = runTest {
+        //GIVEN
+        val isFleetMenu = true
+        val result = Throwable("error")
+        every { UserUtils.getLocationId() } returns 1L
+        every { UserUtils.getIsUserAirport() } returns true
+        every { getLocationAirport.invoke(any(), any(), any()) } returns flow {
+            throw result
+        }
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.init(isFleetMenu)
+        runCurrent()
+        delay(2000)
+
+        //THEN
+        assertEquals(3, states.size)
+        assertEquals(SelectLocationState.OnProgressGetLocations, states[0])
+        assertEquals(SelectLocationState.UserAirport, states[1])
+        assertEquals(
+            SelectLocationState.OnError(
+                result
+            ), states[2]
+        )
 
         collect.cancel()
     }
@@ -238,7 +348,7 @@ internal class SelectLocationViewModelTest {
 
     @Test
     fun `searchScreen, when user is outlet locationIsEmpty`() = runTest {
-        val location : ArrayList<LocationModel> = ArrayList()
+        val location: ArrayList<LocationModel> = ArrayList()
         subjectUnderTest.setValLocation(location)
 
         every { UserUtils.getIsUserAirport() } returns false
@@ -257,7 +367,7 @@ internal class SelectLocationViewModelTest {
 
     @Test
     fun `searchScreen, when user is airport locationIsEmpty`() = runTest {
-        val location : ArrayList<LocationModel> = ArrayList()
+        val location: ArrayList<LocationModel> = ArrayList()
         subjectUnderTest.setValLocation(location)
 
         every { UserUtils.getIsUserAirport() } returns true
@@ -276,7 +386,7 @@ internal class SelectLocationViewModelTest {
 
     @Test
     fun `searchScreen, when locationIsNotEmpty and isAirport is false`() = runTest {
-        val location : ArrayList<LocationModel> = ArrayList()
+        val location: ArrayList<LocationModel> = ArrayList()
 
         location.add(
             LocationModel(
@@ -303,9 +413,11 @@ internal class SelectLocationViewModelTest {
         collect.cancel()
 
         assertEquals(1, states.size)
-        assertEquals(SelectLocationState.SearchLocation(
-            false
-        ), states[0])
+        assertEquals(
+            SelectLocationState.SearchLocation(
+                false
+            ), states[0]
+        )
     }
 
     @Test
@@ -337,7 +449,7 @@ internal class SelectLocationViewModelTest {
         collect.cancel()
 
         assertEquals(1, states.size)
-        assertEquals(SelectLocationState.ToAssignFromSearch (true), states[0])
+        assertEquals(SelectLocationState.ToAssignFromSearch(true), states[0])
     }
 
     @Test
@@ -414,5 +526,70 @@ internal class SelectLocationViewModelTest {
 
         assertEquals(1, states.size)
         assertEquals(SelectLocationState.FilterFleet(filteredlist), states[0])
+    }
+
+    @Test
+    fun `clearSearchTest`() = runTest {
+        val filteredlist: ArrayList<LocationModel> = ArrayList()
+
+        filteredlist.add(
+            LocationModel(
+                id = 1,
+                name = "Location Name",
+                list = listOf(),
+                isExpanded = true,
+                type = 1
+            )
+        )
+
+        subjectUnderTest._locations.addAll(filteredlist)
+        every { UserUtils.getIsUserAirport() } returns false
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.clearSearch()
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(SelectLocationViewModel.EMPTY_STRING, subjectUnderTest.params.value)
+        assertEquals(SelectLocationState.FilterFleet(filteredlist), states[0])
+    }
+
+    @Test
+    fun `selectLocationAirportTest`() = runTest {
+
+        val dataParam = SubLocationModelCache(
+            id = 1L,
+            name = "aa",
+            prefix = "bb",
+            isPerimeter = false,
+            isWing = false
+        )
+        val result = LocationNavigation(
+            subLocationId = dataParam.id,
+            subLocationName = dataParam.name,
+            isPerimeter = dataParam.isPerimeter,
+            isWing = dataParam.isWing,
+            prefix = dataParam.prefix
+        )
+
+
+        val collect = launch {
+            subjectUnderTest.state.toList(states)
+        }
+
+        subjectUnderTest.selectLocationAirport(dataParam)
+        runCurrent()
+        collect.cancel()
+
+        assertEquals(1, states.size)
+        assertEquals(subjectUnderTest.locationNav, result)
+        assertEquals(LocationNavigationTemporary.getLocationNav(), result)
+        assertEquals(SelectLocationState.ToAssignAirport, states[0])
+
+
     }
 }

@@ -40,6 +40,12 @@ class UserManagementViewModel(
     @VisibleForTesting
     fun searchJob() = searchJob
 
+    @VisibleForTesting
+    fun getUserSettings() = userSettings
+
+    @VisibleForTesting
+    fun callClearCounterAndList() = clearCounterAndList()
+
     fun init() {
         val temp = UserUtils.getPrivilege()
         loginUserId = UserUtils.getUserId()

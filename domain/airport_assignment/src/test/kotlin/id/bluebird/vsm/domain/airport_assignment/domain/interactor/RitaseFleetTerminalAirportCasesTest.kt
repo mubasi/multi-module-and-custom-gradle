@@ -8,6 +8,7 @@ import id.bluebird.vsm.domain.airport_assignment.model.AssignFleetModel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import proto.AssignmentOuterClass
 
+@ExperimentalCoroutinesApi
 internal class RitaseFleetTerminalAirportCasesTest{
 
     private val repository : AirportAssignmentRepository = mockk()
