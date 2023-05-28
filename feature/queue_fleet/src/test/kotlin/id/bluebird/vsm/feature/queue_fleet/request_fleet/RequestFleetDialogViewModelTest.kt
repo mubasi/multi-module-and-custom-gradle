@@ -52,7 +52,11 @@ internal class RequestFleetDialogViewModelTest {
         job.cancel()
 
         // Result
-        Assertions.assertEquals(1, events.size)
+        Assertions.assertEquals(2, events.size)
+        Assertions.assertEquals(
+            RequestFleetDialogState.ProcessRequest,
+            events.first()
+        )
         Assertions.assertEquals(RequestFleetDialogState.RequestSuccess(11), events.last())
     }
 
@@ -75,7 +79,11 @@ internal class RequestFleetDialogViewModelTest {
             job.cancel()
 
             // Result
-            Assertions.assertEquals(1, events.size)
+            Assertions.assertEquals(2, events.size)
+            Assertions.assertEquals(
+                RequestFleetDialogState.ProcessRequest,
+                events.first()
+            )
             Assertions.assertEquals(
                 RequestFleetDialogState.MessageError(RequestFleetDialogViewModel.INVALID_COUNTER),
                 events.last()
@@ -102,7 +110,11 @@ internal class RequestFleetDialogViewModelTest {
             job.cancel()
 
             // Result
-            Assertions.assertEquals(1, events.size)
+            Assertions.assertEquals(2, events.size)
+            Assertions.assertEquals(
+                RequestFleetDialogState.ProcessRequest,
+                events.first()
+            )
             Assertions.assertEquals(
                 RequestFleetDialogState.MessageError(RequestFleetDialogViewModel.INVALID_SUB_LOCATION),
                 events.last()
