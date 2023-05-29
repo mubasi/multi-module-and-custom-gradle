@@ -65,6 +65,7 @@ class FragmentRequestFleetDialog(
                 }
                 false
             }
+            showProgress = false
         }
         _mRequestFleetDialogViewModel.initSubLocationId(subLocationId = subLocationId)
 
@@ -79,6 +80,7 @@ class FragmentRequestFleetDialog(
                     when (it) {
                         RequestFleetDialogState.CancelDialog -> {
                             dialog?.dismiss()
+                            showProgressState(false)
                         }
                         is RequestFleetDialogState.RequestSuccess -> {
                             callback(it.count)
@@ -89,13 +91,16 @@ class FragmentRequestFleetDialog(
                                 ), R.color.success_0
                             )
                             dialog?.dismiss()
+                            showProgressState(false)
                         }
                         is RequestFleetDialogState.Err -> {
                             Toast.makeText(requireContext(), it.err.message, Toast.LENGTH_SHORT)
                                 .show()
+                            showProgressState(false)
                         }
                         is RequestFleetDialogState.MessageError -> {
                             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                            showProgressState(false)
                         }
                         is RequestFleetDialogState.FocusState -> {
                             if (it.isFocus.not()) {
@@ -104,6 +109,10 @@ class FragmentRequestFleetDialog(
                                 imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
                             }
                             mBinding.counterView.isCursorVisible = it.isFocus
+                            showProgressState(false)
+                        }
+                        RequestFleetDialogState.ProcessRequest -> {
+                            showProgressState(true)
                         }
                         else -> {
                             // do nothing
@@ -128,5 +137,9 @@ class FragmentRequestFleetDialog(
         snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
         snackbar.view.setBackgroundColor(ContextCompat.getColor(requireActivity(), color))
         snackbar.show()
+    }
+
+    private fun showProgressState(progress : Boolean) {
+        mBinding.showProgress = progress
     }
 }
