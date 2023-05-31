@@ -412,6 +412,7 @@ class QueueFleetViewModel(
 
     fun refresh() {
         mCountCache = CountCache()
+        _fleetItems.clear()
         init()
     }
 
