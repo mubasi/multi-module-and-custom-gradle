@@ -106,6 +106,7 @@ class FragmentQueueFleet : Fragment() {
                                 navigateToSearchFleet()
                             }
                             QueueFleetState.GetUserInfoSuccess -> {
+                                _fleetAdapter.submitData(listOf())
                                 initLocation(_args.locationId, _args.subLocationId)
                                 getCounter()
                                 getFleetList()
