@@ -8,6 +8,9 @@ import id.bluebird.vsm.domain.location.GetLocationsWithSubState
 import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
 import id.bluebird.vsm.domain.location.model.LocationsWithSub
 import id.bluebird.vsm.domain.location.model.SubLocationResult
+import id.bluebird.vsm.domain.user.GetUserAssignmentState
+import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
+import id.bluebird.vsm.domain.user.model.AssignmentLocationItem
 import id.bluebird.vsm.feature.select_location.model.LocationModel
 import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import id.bluebird.vsm.feature.select_location.model.SubLocation
