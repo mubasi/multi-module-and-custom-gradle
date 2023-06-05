@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="queueNumber"
+            type="String" />
+
+        <variable
+            name="locationId"
+            type="Long" />
+
+        <variable
+            name="subLocationId"
+            type="Long" />
+
+        <variable
+            name="showProgress"
+            type="Boolean" />
+
+        <variable
+            name="vm"
+            type="id.bluebird.vsm.feature.queue_car_fleet.ritase_record.RitaseCarFleetRecordViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleRecordRitase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_bold"
+            android:text="@string/record_ritase"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/descriptionRecordRitase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:text="@string/description_record_ritase"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleRecordRitase" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/spinnerRecordRitase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_stock_request"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingVertical="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="21dp"
+            android:clickable="true"
+            android:onClick="@{() -> vm.showQueueList(queueNumber, locationId, subLocationId)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descriptionRecordRitase">
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:indeterminateTint="@color/primary_0"
+                android:visibility="@{showProgress ? View.VISIBLE : View.GONE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/queueName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="@{queueNumber}"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnShow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnShow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_down"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonCancelDepart"
+            style="@style/BackgroundCancel"
+            android:layout_width="156dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:onClick="@{() -> vm.cancelDepart()}"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerRecordRitase" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonDepart"
+            style="@style/ButtonPrimaryState"
+            android:layout_width="156dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/record_ritase_button"
+            android:textAllCaps="false"
+            android:enabled="@{!queueNumber.empty}"
+            android:onClick="@{() -> vm.departFleet(queueNumber)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/buttonCancelDepart"
+            app:layout_constraintTop_toTopOf="@id/buttonCancelDepart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
