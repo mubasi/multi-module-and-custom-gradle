@@ -85,7 +85,7 @@ class FragmentRitaseFleet : Fragment() {
                             is RitaseFleetState.CurrentQueueNotFound -> {
                                 val msg = requireContext().getString(R.string.current_queue_not_found)
                                 val message = SpannableString(msg)
-                                DialogUtils.showSnackbar(requireView(), requireContext() , message, R.color.error_color, null)
+                                DialogUtils.showSnackbar(requireView(), requireContext(), message, R.color.error_color, null)
                                 findNavController().popBackStack()
                             }
                             is RitaseFleetState.FailedGetList -> {

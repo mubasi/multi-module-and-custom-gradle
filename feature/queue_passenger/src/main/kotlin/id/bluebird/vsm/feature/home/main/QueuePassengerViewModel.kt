@@ -144,7 +144,6 @@ class QueuePassengerViewModel(
                                 locationId = nav?.locationId ?: dataUser.locationId,
                                 subLocationId = nav?.subLocationId ?: dataUser.subLocationId
                             )
-
                             createTitleLocation(userAssignment = dataUser)
                             _queuePassengerState.emit(QueuePassengerState.SuccessGetUser)
                         }

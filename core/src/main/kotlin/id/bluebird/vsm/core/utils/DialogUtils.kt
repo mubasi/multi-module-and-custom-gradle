@@ -54,21 +54,6 @@ object DialogUtils {
     }
 
     fun showSnackbar(view: View, context: Context, message: Spanned, background: Int?, textColor : Int?){
-//        val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-//        val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
-//
-//        layoutParams.gravity = Gravity.TOP
-//        val tv = TypedValue()
-//        val toolbarHeight = if (view.context.theme.resolveAttribute(R.attr.actionBarSize, tv, true)) {
-//            TypedValue.complexToDimensionPixelSize(tv.data, view.context.resources.displayMetrics)
-//        } else 0
-//        layoutParams.setMargins(0, toolbarHeight, 0, 0)
-//        snackbar.view.setPadding(0, 0, 0, 0)
-//        snackbar.view.layoutParams = layoutParams
-//        snackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_FADE
-//        snackbar.view.setBackgroundColor(ContextCompat.getColor(view.context, colorId))
-//        snackbar.show()
-
         val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
         val layoutParams = LinearLayout.LayoutParams(snackbar.view.layoutParams)
 

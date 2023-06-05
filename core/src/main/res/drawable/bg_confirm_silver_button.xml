@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/grayTitleColor">
+    android:color="@color/gray_tile">
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/white" />
@@ -10,7 +10,7 @@
 
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="@color/grayTitleColor" />
+            <solid android:color="@color/gray_tile" />
             <corners android:radius="5dp" />
         </shape>
     </item>
