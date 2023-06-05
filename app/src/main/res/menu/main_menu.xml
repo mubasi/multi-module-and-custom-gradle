@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/queue_fleet_nav"
-            android:icon="@drawable/ic_antrian_armada"
+            android:icon="@drawable/ic_antrean_armada"
             android:title="@string/fleet_queue" />
         <item
             android:id="@+id/queue_passenger_nav"

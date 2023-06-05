@@ -5,7 +5,7 @@
     <string name="request">Permintaan</string>
     <string name="eng_request">Request</string>
     <string name="ritase">Ritase</string>
-    <string name="fleet_title">Antrian Armada</string>
+    <string name="fleet_title">Antrean Armada</string>
     <string name="add_fleet">Tambah armada</string>
     <string name="search_fleet">Cari taxi</string>
     <string name="message_add_fleet">Masukkan no. lambung armada untuk menambah armada secara manual.</string>
@@ -22,14 +22,14 @@
     <string name="with_passenger">Dengan Penumpang</string>
     <string name="without_passenger">Tanpa Penumpang</string>
     <string name="record_ritase">Pencatatan ritase</string>
-    <string name="search_ritase">Cari no. antrian</string>
-    <string name="description_record_ritase">No. antrian terakhir:</string>
+    <string name="search_ritase">Cari no. antrean</string>
+    <string name="description_record_ritase">No. antrean terakhir:</string>
     <string name="record_ritase_button">Catat ritase</string>
     <string name="search">Cari</string>
     <string name="ok">Ok</string>
     <string name="fleet_depart_with_passenger">berangkat dengan penumpang</string>
     <string name="fleet_depart_without_passenger">berangkat tanpa penumpang</string>
-    <string name="search_queue_error_message">Gagal melakukan pencarian ticket antrian</string>
+    <string name="search_queue_error_message">Gagal melakukan pencarian ticket antrean</string>
     <string name="failed_depart_title">Gagal Memberangkatkan Armada</string>
     <string name="failed_depart_description"> gagal diberangkatkan. Silakan coba lagi</string>
     <string name="fleet">Armada</string>
@@ -40,5 +40,5 @@
     <string name="unavailable_queue">N/A</string>
     <string name="fleet_not_found">Armada belum tersedia</string>
     // Up to Version 1.0.1
-    <string name="failed_get_queue">Gagal mendapatkan Antrian</string>
+    <string name="failed_get_queue">Gagal mendapatkan Antrean</string>
 </resources>
