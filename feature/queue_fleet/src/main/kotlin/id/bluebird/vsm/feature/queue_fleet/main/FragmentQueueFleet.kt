@@ -106,7 +106,6 @@ class FragmentQueueFleet : Fragment() {
                                 navigateToSearchFleet()
                             }
                             QueueFleetState.GetUserInfoSuccess -> {
-                                _fleetAdapter.submitData(listOf())
                                 initLocation(_args.locationId, _args.subLocationId)
                                 getCounter()
                                 getFleetList()
@@ -228,7 +227,7 @@ class FragmentQueueFleet : Fragment() {
     }
 
     private fun showSnackbar(message: Spanned, color: Int) {
-        DialogUtils.showSnackbar(requireView(), message, color)
+        DialogUtils.showSnackbar(requireView(), requireContext(), message, color, null)
     }
 
     private fun showProgressDialog(message: String?) {

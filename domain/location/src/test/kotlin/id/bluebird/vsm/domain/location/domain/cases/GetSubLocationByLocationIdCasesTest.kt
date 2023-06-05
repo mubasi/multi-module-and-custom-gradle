@@ -17,7 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class GetSubLocationByLocationIdCasesTest {
@@ -41,8 +41,8 @@ internal class GetSubLocationByLocationIdCasesTest {
         every { Hawk.get<Long>(any()) } returns defaultLocationId
         every { repository.getSubLocationByLocationId(defaultLocationId) } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetSubLocationByLocationResp.newBuilder()
-                    .addSubLocationList(LocationPangkalanOuterClass.SubLocationItems.newBuilder().apply {
+                OutletLocationPangkalanOuterClass.GetSubLocationPangkalanByLocationResp.newBuilder()
+                    .addSubLocationList(OutletLocationPangkalanOuterClass.SubLocationPangkalanItems.newBuilder().apply {
                         this.subLocationId = defaultSubLocationId
                         this.subLocationName = defaultSubLocationName
                         this.prefix = prefix
@@ -76,7 +76,7 @@ internal class GetSubLocationByLocationIdCasesTest {
         every { Hawk.get<Long>(any()) } returns defaultLocationId
         every { repository.getSubLocationByLocationId(defaultLocationId) } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetSubLocationByLocationResp.newBuilder().build()
+                OutletLocationPangkalanOuterClass.GetSubLocationPangkalanByLocationResp.newBuilder().build()
             )
         }
 

@@ -16,10 +16,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.utils.DialogUtils
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.feature.select_location.R
 import id.bluebird.vsm.feature.select_location.SelectLocationState
 import id.bluebird.vsm.feature.select_location.SelectLocationViewModel
-import id.bluebird.vsm.feature.select_location.adapter.AdapterSelectLocation
+import id.bluebird.vsm.feature.select_location.adapter.airport.AdapterAirport
+import id.bluebird.vsm.feature.select_location.adapter.outlet.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.FragmentSearchLocationBinding
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -37,6 +39,9 @@ class FragmentSearchMallLocation : Fragment() {
     private lateinit var binding: FragmentSearchLocationBinding
     private val _adapterSearchLocation: AdapterSelectLocation by lazy {
         AdapterSelectLocation(vm)
+    }
+    private val _adapterLocationAirport: AdapterAirport by lazy {
+        AdapterAirport(vm)
     }
 
     override fun onCreateView(
@@ -81,8 +86,18 @@ class FragmentSearchMallLocation : Fragment() {
                                 )
                                 findNavController().popBackStack()
                             }
+                            is SelectLocationState.ToAssignAirport -> {
+                                setFragmentResult(
+                                    NOTIFICATION_MESSAGE,
+                                    bundleOf(STATUS_SEARCH to BACK)
+                                )
+                                findNavController().popBackStack()
+                            }
                             is SelectLocationState.FilterFleet -> {
                                 _adapterSearchLocation.submitList(it.result)
+                            }
+                            is SelectLocationState.FilterLocationAirport -> {
+                                _adapterLocationAirport.submitList(it.result)
                             }
                             is SelectLocationState.ErrorFilter -> {
                                 showErrorMassage()
@@ -94,12 +109,28 @@ class FragmentSearchMallLocation : Fragment() {
         }
     }
 
-    private fun initRcv() {
+    private fun initRcv(){
+        if(UserUtils.getIsUserAirport()) {
+            initRcvAirport()
+        } else {
+            initRcvOutlet()
+        }
+    }
+
+    private fun initRcvOutlet() {
         with(binding) {
             rcvSelectLocationFragment.layoutManager = LinearLayoutManager(requireContext())
             rcvSelectLocationFragment.adapter = _adapterSearchLocation
         }
         _adapterSearchLocation.submitList(vm._locations)
+    }
+
+    private fun initRcvAirport() {
+        with(binding) {
+            rcvSelectLocationFragment.layoutManager = LinearLayoutManager(requireContext())
+            rcvSelectLocationFragment.adapter = _adapterLocationAirport
+        }
+        _adapterLocationAirport.submitList(vm.locationsAirport)
     }
 
     private fun setListenerSearch() {

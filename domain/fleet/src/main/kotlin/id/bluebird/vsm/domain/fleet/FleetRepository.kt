@@ -1,7 +1,7 @@
 package id.bluebird.vsm.domain.fleet
 
 import kotlinx.coroutines.flow.Flow
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 import proto.FleetOuterClass
 
 interface FleetRepository {
@@ -9,7 +9,7 @@ interface FleetRepository {
         subLocation: Long,
         locationId: Long,
         todayEpoch: Long
-    ): Flow<AssignmentPangkalanOuterClass.StockCountResponse>
+    ): Flow<OutletAssignmentPangkalan.StockCountPangkalanResponse>
 
     fun searchFleet(param: String, itemPerPage: Int): Flow<FleetOuterClass.SearchResponse>
 
@@ -17,15 +17,15 @@ interface FleetRepository {
         count: Long,
         locationId: Long,
         subLocation: Long
-    ): Flow<AssignmentPangkalanOuterClass.RequestTaxiResponse>
+    ): Flow<OutletAssignmentPangkalan.RequestTaxiPangkalanResponse>
 
     fun addFleet(
         fleetNumber: String,
         subLocationId: Long,
         locationId: Long
-    ): Flow<AssignmentPangkalanOuterClass.StockResponse>
+    ): Flow<OutletAssignmentPangkalan.StockResponsePangkalan>
 
-    fun getListFleet(subLocationId: Long): Flow<AssignmentPangkalanOuterClass.GetListFleetTerminalResp>
+    fun getListFleet(subLocationId: Long): Flow<OutletAssignmentPangkalan.GetListFleetTerminalPangkalanResp>
 
     fun departFleet(
         locationId: Long,
@@ -34,5 +34,5 @@ interface FleetRepository {
         isWithPassenger: Boolean,
         departFleetItems: List<Long>,
         queueNumber: String
-    ): Flow<AssignmentPangkalanOuterClass.StockResponse>
+    ): Flow<OutletAssignmentPangkalan.StockResponsePangkalan>
 }

@@ -25,6 +25,10 @@ class FragmentMonitoring: Fragment() {
     private lateinit var tableAdapter: AdapterMonitoringTable
     private val monitoringViewModel: MonitoringViewModel by viewModel()
 
+    companion object {
+        const val ERROR_MESSAGE = "Error when getting data"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +60,7 @@ class FragmentMonitoring: Fragment() {
                     mBinding.state = it
                     when(it) {
                         is MonitoringState.OnFailedGetList -> {
-                            DialogUtils.showSnackbar(view, SpannableStringBuilder("Error when getting data"), R.color.warning_0)
+                            showNotification(SpannableStringBuilder(ERROR_MESSAGE), R.color.warning_0)
                         }
                         is MonitoringState.OnSuccessGetList -> {
                             tableAdapter.setItem(it.data)
@@ -137,8 +141,10 @@ class FragmentMonitoring: Fragment() {
     private fun showNotification(message : Spanned, color : Int){
         DialogUtils.showSnackbar(
             requireView(),
+            requireContext(),
             message,
-            color
+            color,
+            null
         )
     }
 
