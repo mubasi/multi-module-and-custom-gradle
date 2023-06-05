@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="queue_passenger">Antrian penumpang</string>
-    <string name="take_number_queue_text">Ambil no. antrian</string>
-    <string name="queue_ticket_text">Antrian Tiket</string>
-    <string name="make_queue_text">Antrian berhasil dibuat</string>
-    <string name="queue_number_text">No. Antrian</string>
-    <string name="queue_number_text_parameterized">No. Antrian %s</string>
-    <string name="current_queue_text">Antrian saat\nini</string>
-    <string name="sum_queue_text">Jumlah\nantrian</string>
+    <string name="queue_passenger">Antrean penumpang</string>
+    <string name="take_number_queue_text">Ambil no. antrean</string>
+    <string name="queue_ticket_text">Antrean Tiket</string>
+    <string name="make_queue_text">Antrean berhasil dibuat</string>
+    <string name="queue_number_text">No. Antrean</string>
+    <string name="queue_number_text_parameterized">No. Antrean %s</string>
+    <string name="current_queue_text">Antrean saat\nini</string>
+    <string name="sum_queue_text">Jumlah\nantrean</string>
     <string name="time_order_text">Waktu\npemesanan</string>
     <string name="ok_text">OK</string>
     <string name="skip_text">Lewati</string>
-    <string name="now_queue_text">Antrian sekarang</string>
-    <string name="move_to_create_queue">Geser untuk buat no. antrian</string>
-    <string name="message_ticket">Pastikan bukti antrian difoto oleh pemesan dan ditunjukan ke driver</string>
+    <string name="now_queue_text">Antrean sekarang</string>
+    <string name="move_to_create_queue">Geser untuk buat no. antrean</string>
+    <string name="message_ticket">Pastikan bukti antrean difoto oleh pemesan dan ditunjukan ke driver</string>
     <string name="tab_waiting_text">Menunggu (0)</string>
     <string name="tab_waiting_format">Menunggu (%s)</string>
     <string name="tab_delayed_text">Tertunda (0)</string>
     <string name="tab_delayed_format">Tertunda (%s)</string>
-    <string name="queue_not_found_message">Belum ada antrian \n untuk saat ini</string>
+    <string name="queue_not_found_message">Belum ada antrean \n untuk saat ini</string>
     <string name="recovery_text">Pulihkan</string>
     <string name="delete_text">Hapus</string>
     <string name="desc_dialog_skipped_text">
-        No antrian ini akan masuk kembali ke antrian sekarang
+        No antrean ini akan masuk kembali ke antrean sekarang
     </string>
-    <string name="antrian_text">Antrian</string>
+    <string name="antrean_text">Antrean</string>
     <string name="finish_text">Selesai</string>
     <string name="tertunda_text">Tertunda</string>
     <string name="waiting_label_text">Menunggu</string>
-    <string name="hint_queue_search">Cari no. antrian</string>
-    <string name="label_queue_search">Cari antrian</string>
-    <string name="search_queue_message">Silakan masukkan nomor\nantrian penumpang</string>
-    <string name="search_no_queue">Nomor antrian penumpang\ntidak tersedia</string>
-    <string name="error_current_queue_message">Antrian sekarang tidak tersedia</string>
+    <string name="hint_queue_search">Cari no. antrean</string>
+    <string name="label_queue_search">Cari antrean</string>
+    <string name="search_queue_message">Silakan masukkan nomor\nantrean penumpang</string>
+    <string name="search_no_queue">Nomor antrean penumpang\ntidak tersedia</string>
+    <string name="error_current_queue_message">Antrean sekarang tidak tersedia</string>
     <string name="select_no_fleet">Pilih No. Lambung</string>
     <string name="search_no_fleet">Cari No. Lambung</string>
-    <string name="current_queue_not_found">Antrian sekarang tidak tersedia</string>
+    <string name="current_queue_not_found">Antrean sekarang tidak tersedia</string>
     <string name="fleet_not_found">Armada tidak tersedia</string>
     <string name="msg_fleet_not_found">Daftar Armada tidak tersedia</string>
     <string name="save_text">Pilih</string>
@@ -43,7 +43,7 @@
     <string name="msg_fleet_not_selected">Silahkan pilih salah satu no. lambung</string>
     <string name="ritase_failed_title">Armada gagal diritase</string>
     <string name="all_text">Semua</string>
-    <string name="search_queue_search_more_character">Nomor antrian penumpang\nmelebih 5 karakter</string>
+    <string name="search_queue_search_more_character">Nomor antrean penumpang\nmelebih 5 karakter</string>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>

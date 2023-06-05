@@ -61,7 +61,7 @@ class FragmentDialogDeleteSkipped(
         }
 
         binding.showProses = false;
-        binding.titleDialog.text = Html.fromHtml("<b>Hapus antrian <font color=#005EB8>$number</font></b>", 1)
+        binding.titleDialog.text = Html.fromHtml("<b>Hapus antrean <font color=#005EB8>$number</font></b>", 1)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -70,7 +70,7 @@ class FragmentDialogDeleteSkipped(
                         when(it) {
                             is DialogDeleteSkippedState.FailedDeleteQueueSkipped -> {
                                 dialog?.dismiss()
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number</b> gagal dihapus",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number</b> gagal dihapus",1), R.color.error_color)
                             }
                             DialogDeleteSkippedState.ProsesDeleteQueueSkipped -> {
                                 binding.showProses = true;
@@ -83,7 +83,7 @@ class FragmentDialogDeleteSkipped(
                             }
                             DialogDeleteSkippedState.SuccessDeleteQueueSkipped -> {
                                 dialog?.dismiss()
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number</b> telah berhasil dihapus",1), R.color.success_color)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number</b> telah berhasil dihapus",1), R.color.success_color)
                                 findNavController().navigate(R.id.queuePassengerFragment)
                             }
                         }
