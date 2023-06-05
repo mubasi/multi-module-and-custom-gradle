@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="status"
+            type="Boolean" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_forgot_password_view"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
+
+        <View
+            android:id="@+id/action_bottom"
+            android:layout_width="24dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_bottom_sheet_view"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title_action_car_go"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:lineHeight="30sp"
+            android:text="@{!status ? @string/leaving : @string/arrived}"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/ll_main_action"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/action_bottom" />
+
+        <LinearLayout
+            android:id="@+id/ll_main_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/ll_submit"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_title_action_car_go">
+
+            <RadioGroup
+                android:id="@+id/rg_car_go"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{!status ? View.VISIBLE : View.GONE, default=gone}"
+                >
+
+                <RadioButton
+                    android:id="@+id/rb_with_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:text="@string/with_passenger"
+                    android:textColor="@color/gray_subtitle"
+                    android:textSize="@dimen/standard_font_size" />
+
+                <RadioButton
+                    android:id="@+id/rb_without_passenger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:text="@string/without_passenger"
+                    android:textColor="@color/gray_subtitle"
+                    android:textSize="@dimen/standard_font_size" />
+
+            </RadioGroup>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{!status ? View.GONE : View.VISIBLE, default=gone}"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="@string/konfirm_arrived_fleet_message"
+                android:textSize="@dimen/standard_font_size"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_submit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ll_main_action">
+
+            <androidx.appcompat.widget.AppCompatButton
+                buttonBackgroundFleetCancel="@{null}"
+                android:id="@+id/btn_cancel_bottom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="24dp"
+                android:layout_weight="5"
+                android:fontFamily="@font/ubuntu_bold"
+                android:lineHeight="@dimen/standard_line_height"
+                android:text="@string/cancel"
+                android:textAllCaps="false"
+                android:textSize="@dimen/standard_font_size" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                buttonBackgroundFleet="@{null}"
+                android:id="@+id/btn_yes_bottom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="24dp"
+                android:layout_weight="5"
+                android:fontFamily="@font/ubuntu_bold"
+                android:lineHeight="@dimen/standard_line_height"
+                android:text="@{!status ? @string/leaving : @string/confirm}"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/standard_font_size" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

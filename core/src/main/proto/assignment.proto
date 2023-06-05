@@ -1,0 +1,261 @@
+syntax="proto3";
+package proto;
+option go_package="./;proto";
+
+service Assignment{
+    rpc AddFleetStock (AddFleetStockRequest) returns (AddFleetStockResponse);
+    rpc AssignFleetTerminal (AssignFleetRequest) returns (AssignFleetResponse);
+    rpc GetListFleetTerminal (GetListFleetTerminalReq) returns (GetListFleetTerminalResp);
+    rpc AddFleetTerminal (AddFleetTerminalRequest) returns(AddFleetTerminalResponse);
+    rpc RitaseTerminalFleet (RitaseTerminalFleetRequest) returns (RitaseTerminalFleetResponse);
+    rpc Stock(StockRequest) returns (StockResponse);
+    rpc RequestTaxi(RequestTaxiRequest) returns (RequestTaxiResponse);
+    rpc GetSubLocationStockCount(StockCountRequest) returns (StockCountResponse);
+    rpc GetRequestSublocations (RequestSublocation) returns (ResponseSubLocation);
+    rpc CleanTable(RequestCleanTable) returns (ResponseCleanTable);
+    rpc AirportStockValidator(AirportStockValidatorRequest) returns (AirportStockValidatorResponse);
+    rpc GetTuSpace(RequestGetTuSpace) returns (ResponseGetTuSpace);
+    // Endpoint for save config
+    // in v2.2.2 Save config (TU SPACE)
+    rpc SaveConfig(RequestSaveConfig) returns (ResponseSaveConfig);
+    rpc GetDetailRequestInLocation(RequestGetDetailRequest) returns (ResponseGetDetailRequest);
+}
+
+message ErrorMessage {    
+    // custom error code
+    int32 error_code = 1;   
+    repeated ErrorDetail error_details = 2;
+}
+
+message ErrorDetail{    
+    string country_code_id = 1;    
+    string title = 2; // title error
+    string message = 3; // detail error
+} 
+
+message RequestFilter {
+    bool show_wings_child = 1;
+}
+
+enum StockType {
+    IN = 0;
+    OUT= 1;
+}
+
+// BDO 513...
+message HighestRequest {
+    int64  request = 1;
+    string sub_location = 2;
+}
+
+// [BDO 103] Add fleet stock
+message AddFleetStockRequest {
+    string taxi_no=1;
+    int64 sub_location_id=2;
+}
+message AddFleetStockResponse {
+    string message = 1;
+    string taxi_no=2;
+    string created_at=3;
+}
+
+// [BDO 160] AssignFleetItems ....
+message AssignFleetItems {
+    int64 stock_id =1;
+}
+// [BDO 104] Assign fleet to terminal
+message AssignFleetRequest {
+    int64   location_id =1;
+    int64   assign_location=2;
+    repeated AssignFleetItems assign_fleet = 3;
+    bool    with_passenger = 4;
+    bool    from_wings = 6;
+}
+
+message AssignFleetResponse {
+    string message = 1;
+    int64  total_assigned_fleet=2;
+}
+
+// [BDO 117] Get Terminal Stock
+message GetListFleetTerminalReq {
+    int64 sub_location=1;
+    int32 page=2;
+    int32 item_perPage=3;
+}
+
+message FleetItems {
+    int64  fleet_id = 1;
+    string taxi_no  = 2;
+    string created_at =3;
+    string status   = 4;
+    bool   is_tu    = 5;
+    int64  sequence = 6;
+}
+
+message GetListFleetTerminalResp {
+    repeated FleetItems fleet_list =1;
+}
+
+// [BDO 120] Add Fleet Terminal
+message AddFleetTerminalRequest {
+    string taxi_no = 1;
+    int64 assign_location = 2;
+}
+
+message AddFleetTerminalResponse {
+    string message = 1;
+    string taxi_no = 2;
+}
+
+// [BDO 121] RitaseTerminalFleet.....
+message RitaseTerminalFleetRequest {
+    int64 stock_id=1;
+    int64 depart_location=2;
+    int32 with_passenger=3;
+}
+
+message RitaseTerminalFleetResponse {
+    string message=1;
+    string taxi_no=2;
+}
+// [BDO 172] StockItems
+message DepartFleetItems {
+    int64 stock_id = 1;
+}
+
+message StockRequest {
+    int64  	sub_location_id=1;
+    string 	taxi_no = 2;
+    int64  	is_with_passenger=3;
+    repeated 	DepartFleetItems depart_fleet_items=4;
+    StockType 	stock_type = 5;
+    int64 	location_id = 6;
+    bool 		is_arrived = 7;
+    bool 		tu = 8;
+}
+
+// item for dump 
+// fleet number and stock id after press 'sampai button'
+message ArrivedItem {
+    int64 stock_id = 1;
+    string taxi_no = 2;
+    string created_at = 3;
+}
+
+message StockResponse {
+    string message = 1;
+    repeated string taxi_no = 2;
+    string stock_type=3;
+    int64  stock_id = 4;
+    string created_at = 5;
+    repeated ArrivedItem arrived_fleet = 6;
+    int64 current_tu_space = 7;
+}
+
+// [122] RequestTaxiRequest ...
+message RequestTaxiRequest {
+    int64 request_from = 1;
+    int64 location_id = 2;
+    int64 count = 3;
+    int64 request_to = 4;
+}
+
+// [122] RequestTaxiResponse ...
+message RequestTaxiResponse {
+    string message = 1;
+    int64 request_from = 2;
+    string created_at = 3;
+    int64 request_count = 4;
+}
+
+// [BDO 123]
+message StockCountRequest {
+    int64 sub_location_id = 1;
+    int64 location_id = 2;
+}
+
+message StockCountResponse {
+    int64 stock=1;
+    int64 request=2;
+    int64 ritase=3;
+    HighestRequest highest_request = 4;
+    int64 request_to_perimeter = 5;
+}
+
+// [BDO 151] GetCountRequestPerSubLocation
+
+message CountSubLocationItems {
+    string sub_location_name = 1;
+    int64  count = 2;
+    int64  sub_location_id = 3;
+    bool   with_passenger = 4;
+}
+
+message RequestSublocation {
+    int64 location_id = 1;
+    RequestFilter request_filter = 2;
+    int64 version_code = 3;
+}
+
+message ResponseSubLocation {
+    string location_name = 1;
+    int64  location_id = 2;
+    repeated CountSubLocationItems sub_location_items = 3;
+}
+
+// payload for cleanig table trx_*
+message RequestCleanTable {
+    int64 location_id = 1;
+}
+message ResponseCleanTable {
+    string message    = 1;
+    string last_reset = 2;
+}
+
+// [BDO 367] StockValidatorRequest...
+message AirportStockValidatorRequest {
+	string taxi_no = 1;
+}
+message AirportStockValidatorResponse {
+	bool is_available = 1;
+	string	taxi_no = 2;
+	string location_name = 3;
+}
+
+// BDO500...
+message RequestGetTuSpace {
+    int64 sub_location_id = 1;
+}
+message TuSpaceItem {
+    int64 value = 1;
+    bool  selected = 2;
+}
+message ResponseGetTuSpace {
+    repeated TuSpaceItem tu_space = 1;
+}
+
+// BDO 498
+message RequestSaveConfig  {
+    int64 sub_location_id = 1;
+    int64 tu_space  = 2;
+}
+
+message ResponseSaveConfig {
+    string message = 1;
+}
+
+message RequestGetDetailRequest {
+    int64 location_id = 1;
+    bool  show_wings_child = 2;
+}
+message DetailRequestItems {
+    string sub_location_name = 1;
+    int64  count = 2;
+    int64  sub_location_id = 3;
+}
+message ResponseGetDetailRequest {
+    string location_name = 1;
+    int64  location_id = 2;
+    repeated DetailRequestItems sub_location_items = 3;
+}

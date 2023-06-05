@@ -3,6 +3,7 @@ package id.bluebird.vsm.feature.login
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.user.domain.intercator.Login
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -24,7 +25,7 @@ class LoginViewModel(
     }
 
     init {
-        version.value =id.bluebird.vsm.core.BuildConfig.VERSION_NAME
+        version.value = id.bluebird.vsm.core.BuildConfig.VERSION_NAME
     }
 
     fun login() {
@@ -34,10 +35,23 @@ class LoginViewModel(
                 .catch { e ->
                     loginState.postValue(LoginState.Error(getError(e.message)))
                 }.collectLatest {
-                    loginState.postValue(LoginState.Success)
+                    checkUserType()
                 }
         }
     }
+
+    private fun checkUserType() {
+        with(UserUtils) {
+            loginState.postValue(
+                if (getIsUserAirport()) {
+                    LoginState.LoginAsAirportUser
+                } else {
+                    LoginState.LoginAsOutletUser
+                }
+            )
+        }
+    }
+
 
     fun callPhone() {
         loginState.value = LoginState.Phone

@@ -1,6 +1,16 @@
 package id.bluebird.vsm.pangkalan
 
 import android.content.Context
+import id.bluebird.vsm.domain.airport_assignment.AirportAssignmentRepository
+import id.bluebird.vsm.domain.airport_assignment.AirportAssignmentRepositoryImpl
+import id.bluebird.vsm.domain.airport_assignment.domain.cases.*
+import id.bluebird.vsm.domain.airport_assignment.domain.interactor.*
+import id.bluebird.vsm.domain.airport_location.AirportLocationRepositoryImpl
+import id.bluebird.vsm.domain.airport_location.AirportLocationRepository
+import id.bluebird.vsm.domain.airport_location.domain.cases.GetListSublocationAirport
+import id.bluebird.vsm.domain.airport_location.domain.cases.GetLocationAirport
+import id.bluebird.vsm.domain.airport_location.domain.interactor.GetListSublocationAirportCases
+import id.bluebird.vsm.domain.airport_location.domain.interactor.GetLocationAirportCases
 import id.bluebird.vsm.domain.fleet.FleetRepository
 import id.bluebird.vsm.domain.fleet.FleetRepositoryImpl
 import id.bluebird.vsm.domain.fleet.domain.cases.*
@@ -17,6 +27,12 @@ import id.bluebird.vsm.domain.user.UserRepository
 import id.bluebird.vsm.domain.user.UserRepositoryImpl
 import id.bluebird.vsm.domain.user.domain.intercator.*
 import id.bluebird.vsm.domain.user.domain.usescases.*
+import id.bluebird.vsm.feature.airport_fleet.add_by_camera.AddByCameraAirportViewModel
+import id.bluebird.vsm.feature.airport_fleet.add_fleet.AddFleetViewModelNonApsh
+import id.bluebird.vsm.feature.airport_fleet.assign_location.AssignLocationViewModel
+import id.bluebird.vsm.feature.airport_fleet.dialog_request_stock.DialogButtomRequestStockViewModel
+import id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModel
+import id.bluebird.vsm.feature.airport_fleet.request_list.RequestListViewModel
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewModel
@@ -80,12 +96,19 @@ object AppModule {
         viewModel { EditBufferViewModel(get()) }
         viewModel { SearchLocationViewModel(get()) }
         viewModel { QueueSearchViewModel() }
-        viewModel { SelectLocationViewModel(get()) }
+        viewModel { SelectLocationViewModel(get(), get()) }
         viewModel { AddByCameraViewModel() }
         viewModel { RitaseRecordViewModel(get()) }
         viewModel { SplashViewModel(get()) }
         viewModel { DialogRecordRitaseViewModel(get()) }
         viewModel { QrCodeViewModel(get()) }
+        viewModel { FleetNonApshViewModel(get(),get(),get(),get()) }
+        viewModel { DialogButtomRequestStockViewModel(get()) }
+        viewModel { AddFleetViewModelNonApsh(get(), get()) }
+        viewModel { AssignLocationViewModel(get(), get(), get()) }
+        viewModel { AddByCameraAirportViewModel(get()) }
+        viewModel { RequestListViewModel(get()) }
+
         viewModel { QueueCarFleetViewModel(get(), get(), get(), get()) }
         viewModel { AddCarFleetByCameraViewModel() }
         viewModel { AddCarFleetViewModel(get(), get(), get()) }
@@ -134,11 +157,31 @@ object AppModule {
         single<CounterBar> { CounterBarCases(get()) }
         single<SearchQueue> { SearchQueueCases(get()) }
     }
+    private val airportAssignmentCases = module {
+        single<AddFleetAirport> { AddFleetAirportCases(get()) }
+        single<AddStockDepart> { AddStockDepartCases(get()) }
+        single<AssignFleetTerminalAirport> { AssignFleetTerminalAirportCases(get()) }
+        single<DispatchFleetAirport> { DispatchFleetAirportCases(get()) }
+        single<GetListFleetTerminal> { GetListFleetTerminalCases(get()) }
+        single<GetSubLocationAirport> { GetSubLocationAirportCases(get())}
+        single<GetSubLocationStockCountDepart> { GetSubLocationStockCountDepartCases(get()) }
+        single<RequestTaxiDepart> { RequestTaxiDepartCases(get()) }
+        single<RitaseFleetTerminalAirport> { RitaseFleetTerminalAirportCases(get()) }
+        single<GetDetailRequestByLocationAirport> { GetDetailRequestByLocationAirportCases(get()) }
+    }
+
+    private val airportLocation = module {
+        single<GetLocationAirport> { GetLocationAirportCases(get()) }
+        single<GetListSublocationAirport> { GetListSublocationAirportCases(get()) }
+    }
+
     private val repository = module {
         single<UserRepository> { UserRepositoryImpl() }
         single<LocationRepository> { LocationRepositoryImpl() }
         single<FleetRepository> { FleetRepositoryImpl() }
         single<QueueReceiptRepository> { QueueReceiptRepositoryImpl() }
+        single<AirportAssignmentRepository> { AirportAssignmentRepositoryImpl() }
+        single<AirportLocationRepository> { AirportLocationRepositoryImpl() }
     }
     private val adapter = module {
         single { AdapterFleets() }
@@ -157,7 +200,9 @@ object AppModule {
                     repository,
                     vmModule,
                     adapter,
-                    passengerCases
+                    passengerCases,
+                    airportAssignmentCases,
+                    airportLocation
                 )
             )
         }.koin

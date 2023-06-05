@@ -313,7 +313,7 @@ class FragmentQueuePassenger : Fragment() {
     }
 
     private fun showNotifInfo(message: Spanned, color: Int) {
-        DialogUtils.showSnackbar(requireView(), message, color)
+        DialogUtils.showSnackbar(requireView(), requireContext(), message, color, null)
     }
 
     private fun gotoQrcodeScreen(locationId: Long, subLocationId: Long, titleLocation: String) {

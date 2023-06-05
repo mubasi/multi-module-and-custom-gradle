@@ -59,5 +59,18 @@
     <string name="ritase_record_msg">Pilih no. lambung untuk mencatat ritase antrean armada.</string>
     <string name="ritase_record_text">Catat ritase</string>
     <string name="qr_code_text">QR Code</string>
-
+    <string name="add_fleet">Tambah armada</string>
+    <string name="reset">Reset</string>
+    <string name="arrived">Sampai</string>
+    <string name="leaving">Berangkat</string>
+    <string name="confirm">Konfirmasi</string>
+    <string name="without_passenger">Tanpa penumpang</string>
+    <string name="with_passenger">Ada penumpang</string>
+    <string name="konfirm_arrived_fleet_message">Konfirmasi taksi yang telah tiba?</string>
+    <string name="leave_with_passenger">berangkat dengan penumpang</string>
+    <string name="leave_without_passenger">berangkat tanpa penumpang</string>
+    <string name="confirm_fleet_arrived_success">taksi telah sukses dikonfirmasi tiba</string>
+    <string name="armada">Fleet</string>
+    <string name="save">Simpan</string>
+    <string name="car_success_assign_to">berhasil ditugaskan ke</string>
 </resources>

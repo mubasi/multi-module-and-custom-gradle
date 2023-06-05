@@ -12,6 +12,12 @@ sealed class NavigationSealed(
     data class Splash(val destination: Int? = null, val frag: Fragment) :
         NavigationSealed(action = destination, fragment = frag)
 
+    data class FleetAirport(
+        val destination: Int? = null,
+        val frag: Fragment
+    ) :
+        NavigationSealed(action = destination, fragment = frag)
+
     data class QueueFleet(
         val destination: Int? = null,
         val frag: Fragment
@@ -46,4 +52,5 @@ sealed class NavigationSealed(
         val position: Long = 0
     ) :
         NavigationSealed(action = destination, fragment = frag)
+
 }

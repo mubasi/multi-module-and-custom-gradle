@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fleet_airport_nav"
+    app:startDestination="@id/fleetAirportFragment">
+    <fragment
+        android:id="@+id/fleetAirportFragment"
+        android:name="id.bluebird.vsm.feature.airport_fleet.main.FragmentFleetNonApsh">
+        <deepLink app:uri="android-app://id.bluebird.mall/fleet_airport" />
+    </fragment>
+    <fragment
+        android:id="@+id/actionAddFleetAirport"
+        android:name="id.bluebird.vsm.feature.airport_fleet.add_fleet.FragmentAddFleet"
+        android:label="@string/add_fleet" >
+        <argument
+            android:name="isPerimeter"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+        <argument
+            android:name="subLocationId"
+            android:defaultValue="-1L"
+            app:argType="long"
+            app:nullable="false" />
+        <argument
+            android:name="isWing"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/action_assign_location"
+        android:name="id.bluebird.vsm.feature.airport_fleet.assign_location.FragmentAssignLocation"
+        android:label="@string/assign">
+        <argument
+            android:name="fleetList"
+            app:argType="id.bluebird.vsm.feature.airport_fleet.main.model.AssignmentCarCache[]"
+            app:nullable="false" />
+        <argument
+            android:name="isPerimeter"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/take_picture_airport"
+        android:name="id.bluebird.vsm.feature.airport_fleet.add_by_camera.FragmentAddByCamera"
+        android:label="@string/scan_number_fleet" >
+        <argument
+            android:name="subLocationId"
+            android:defaultValue="-1L"
+            app:argType="long"
+            app:nullable="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/action_detail_assign"
+        android:name="id.bluebird.vsm.feature.airport_fleet.request_list.FragmentRequestList"
+        android:label="@string/detail_assign" >
+        <argument
+            android:name="isWing"
+            android:defaultValue="false"
+            app:argType="boolean"
+            app:nullable="false" />
+    </fragment>
+
+</navigation>

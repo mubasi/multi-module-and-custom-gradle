@@ -17,7 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class GetSubLocationQrCodeCasesTest {
@@ -43,7 +43,7 @@ internal class GetSubLocationQrCodeCasesTest {
         every { Hawk.get<Long>(any()) } returns defaultLocationId
         every { repository.getSubLocationQrCode(subLocationId) } returns flow {
             emit(
-                LocationPangkalanOuterClass.ResponseGetLocationQrCode.newBuilder()
+                OutletLocationPangkalanOuterClass.ResponseGetLocationPangkalanQrCode.newBuilder()
                     .apply {
                         this.subLocationId = subLocationId
                         this.locationId = defaultLocationId
