@@ -66,7 +66,7 @@ class FragmentLogin : Fragment() {
                 is LoginState.Phone -> {
                     intentToDial()
                 }
-                LoginState.Success -> {
+                LoginState.LoginAsOutletUser -> {
                     requireActivity().recreate()
                     NavigationNav.navigate(
                         NavigationSealed.QueueFleet(
@@ -75,11 +75,27 @@ class FragmentLogin : Fragment() {
                         )
                     )
                 }
+                LoginState.LoginAsAirportUser -> {
+                    requireActivity().recreate()
+//                    NavigationNav.navigate(
+//                        NavigationSealed.FleetAirport(
+//                            destination = R.id.loginFragment,
+//                            frag = this
+//                        )
+//                    )
+                }
+
                 LoginState.PasswordIsEmpty -> {
-                    showSnackbar(Html.fromHtml(getString(R.string.password_cannot_empty),1), R.color.danger_1)
+                    showSnackbar(
+                        Html.fromHtml(getString(R.string.password_cannot_empty), 1),
+                        R.color.danger_1
+                    )
                 }
                 LoginState.UsernameIsEmpty -> {
-                    showSnackbar(Html.fromHtml(getString(R.string.username_cannot_empty),1), R.color.danger_1)
+                    showSnackbar(
+                        Html.fromHtml(getString(R.string.username_cannot_empty), 1),
+                        R.color.danger_1
+                    )
                 }
                 else -> {
                     // do nothing

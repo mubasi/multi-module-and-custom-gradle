@@ -45,9 +45,17 @@ class FragmentSplash : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.splashState.collectLatest {
                     when (it) {
-                        SplashState.Home -> {
+                        SplashState.LoginAsOutletUser -> {
                             NavigationNav.navigate(
                                 NavigationSealed.QueueFleet(
+                                    destination = R.id.splashFragment,
+                                    frag = this@FragmentSplash
+                                )
+                            )
+                        }
+                        SplashState.LoginAsAirportUser -> {
+                            NavigationNav.navigate(
+                                NavigationSealed.FleetAirport(
                                     destination = R.id.splashFragment,
                                     frag = this@FragmentSplash
                                 )

@@ -66,6 +66,21 @@ class QueuePassengerViewModel(
     }
 
     @VisibleForTesting
+    fun getLocationName() : String {
+        return _locationName.value ?: EMPTY_STRING
+    }
+
+    @VisibleForTesting
+    fun getSubLocationName() : String {
+        return _subLocationName.value ?: EMPTY_STRING
+    }
+
+    @VisibleForTesting
+    fun getPrefix() : String {
+        return _prefix.value ?: EMPTY_STRING
+    }
+
+    @VisibleForTesting
     fun setSubLocationName(result: String) {
         _subLocationName.value = result
     }
@@ -144,7 +159,7 @@ class QueuePassengerViewModel(
         }
     }
 
-    private fun createTitleLocation(userAssignment: UserAssignment) {
+    fun createTitleLocation(userAssignment: UserAssignment) {
         with(userAssignment) {
             if (isOfficer) {
                 _locationName.value = locationName
