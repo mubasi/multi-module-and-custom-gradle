@@ -78,8 +78,8 @@ class FragmentDialogQueueReceipt :  BottomSheetDialogFragment() {
                                 dialog?.dismiss()
                             }
                             is DialogQueueReceiptState.FailedTakeQueue -> {
-                                val noAntrian : String = getString(R.string.queue_number_text_parameterized,  queueNumber.value.toString())
-                                showSnackbar(Html.fromHtml("<b>$noAntrian</b> gagal ditambahkan",1), R.color.error_color)
+                                val noAntrean : String = getString(R.string.queue_number_text_parameterized,  queueNumber.value.toString())
+                                showSnackbar(Html.fromHtml("<b>$noAntrean</b> gagal ditambahkan",1), R.color.error_color)
                                 dialog?.dismiss()
                                 binding.slideProses.visibility = View.VISIBLE
                                 binding.textQueue.visibility = View.VISIBLE
@@ -89,7 +89,7 @@ class FragmentDialogQueueReceipt :  BottomSheetDialogFragment() {
                                 binding.slideProses.visibility = View.GONE
                                 binding.textQueue.visibility = View.GONE
                                 binding.progressDialog.visibility = View.VISIBLE
-                                showSnackbar(Html.fromHtml("Antrian tidak dapat diambil",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("Antrean tidak dapat diambil",1), R.color.error_color)
                                 dialog?.dismiss()
                             }
                             is DialogQueueReceiptState.ProgressGetQueue -> {

@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -126,6 +125,18 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.ritaseFleetFragment  -> {
                         navigateBackWithArrow(R.id.ritaseFleetFragment)
                     }
+                    R.id.queueCarFleetFragment -> {
+                        setQueueToolbar(R.id.queueCarFleetFragment)
+                    }
+                    R.id.addCarFleetFragment -> {
+                        navigateBackWithArrow(R.id.addCarFleetFragment)
+                    }
+                    R.id.carFleetAddByCamera -> {
+                        navigateBackWithArrow(R.id.carFleetAddByCamera)
+                    }
+                    R.id.searchCarFleetFragment -> {
+                        navigateBackWithArrow(R.id.searchCarFleetFragment)
+                    }
                     else -> {
                         toolbarVisibility()
                     }
@@ -195,6 +206,7 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                 setOf(
                     R.id.searchLocationFragment,
                     R.id.queuePassengerFragment,
+                    R.id.queueCarFleetFragment,
                     R.id.monitoring_nav,
                     R.id.user_management_nav
                 ), mBinding.drawerLayout

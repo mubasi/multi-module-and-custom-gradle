@@ -306,7 +306,7 @@ class FragmentQueuePassenger : Fragment() {
     private fun callBackProses(fleetNumber: String, queueNumber: String) {
         getCounterAndListQueue()
         val message = Html.fromHtml(
-            "<b>No. antrian ${queueNumber}</b> berhasil berangkat dengan <b>${fleetNumber}</b>",
+            "<b>No. antrean ${queueNumber}</b> berhasil berangkat dengan <b>${fleetNumber}</b>",
             1
         )
         showNotifInfo(message, R.color.success_color)

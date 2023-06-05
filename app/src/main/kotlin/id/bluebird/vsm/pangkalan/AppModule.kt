@@ -30,6 +30,13 @@ import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
 import id.bluebird.vsm.feature.qrcode.QrCodeViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.adapter.AdapterCarFleets
+import id.bluebird.vsm.feature.queue_car_fleet.add_by_camera.AddCarFleetByCameraViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.add_fleet.AddCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.depart_fleet.DepartCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.request_fleet.RequestCarFleetDialogViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.search_fleet.SearchCarFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
@@ -79,6 +86,11 @@ object AppModule {
         viewModel { SplashViewModel(get()) }
         viewModel { DialogRecordRitaseViewModel(get()) }
         viewModel { QrCodeViewModel(get()) }
+        viewModel { QueueCarFleetViewModel(get(), get(), get(), get()) }
+        viewModel { AddCarFleetByCameraViewModel() }
+        viewModel { AddCarFleetViewModel(get(), get(), get()) }
+        viewModel { DepartCarFleetViewModel() }
+        viewModel { SearchCarFleetViewModel() }
     }
     private val userCases = module {
         single<GetUserAssignment> { GetUserAssignmentCases(get()) }
@@ -130,6 +142,7 @@ object AppModule {
     }
     private val adapter = module {
         single { AdapterFleets() }
+        single { AdapterCarFleets() }
     }
     lateinit var koin: Koin
 

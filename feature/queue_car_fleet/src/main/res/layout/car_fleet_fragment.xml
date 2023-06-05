@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="showHolder"
+            type="Boolean" />
+
+        <variable
+            name="showProgress"
+            type="Boolean" />
+
+        <variable
+            name="successList"
+            type="Boolean" />
+
+        <import type="android.view.View" />
+
+        <import type="id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetState" />
+
+        <variable
+            name="vm"
+            type="id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/pb_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary_0"
+            android:visibility="@{showHolder ? View.VISIBLE: View.GONE,default=gone}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_count_stock_request_perimeter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{showHolder ? View.GONE: View.VISIBLE,default=visible}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/buttonBottom"
+                app:layout_constraintTop_toTopOf="parent"
+                app:setOnRefresh="@{() -> vm.refresh()}">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvLocationNameFleetFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/ubuntu_medium"
+                        android:text="@{vm.titleLocation}"
+                        android:textColor="@color/black"
+                        app:drawableStartCompat="@drawable/ic_marker_sub_location_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/borderTitleFleetFragment"
+                        android:layout_width="0dp"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/grey_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvLocationNameFleetFragment" />
+
+                    <include
+                        android:id="@+id/layout_content_counter"
+                        layout="@layout/content_counter_bar"
+                        vm="@{vm}"
+                        android:layout_width="0dp"
+                        android:layout_height="70dp"
+                        android:layout_margin="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/borderTitleFleetFragment" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edtSearchFleetFleetFragment"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="7"
+                        android:background="@drawable/bg_search_field"
+                        android:cursorVisible="false"
+                        android:drawableStart="@drawable/ic_search"
+                        android:drawablePadding="16dp"
+                        android:focusable="false"
+                        android:fontFamily="@font/ubuntu_regular"
+                        android:hint="@string/hint_search_fleet_number"
+                        android:inputType="text"
+                        android:lines="1"
+                        android:maxLength="7"
+                        android:maxLines="1"
+                        android:onClick="@{() -> vm.searchFleet()}"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toTopOf="@id/borderSearchAndListFleetFragment"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layout_content_counter" />
+
+                    <View
+                        android:id="@+id/borderSearchAndListFleetFragment"
+                        android:layout_width="0dp"
+                        android:layout_height="8dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/grey_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/edtSearchFleetFleetFragment" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/borderSearchAndListFleetFragment">
+
+                        <ProgressBar
+                            android:id="@+id/listProgressBarFleetFragment"
+                            bindVisibility="@{showProgress}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminateTint="@color/primary_0" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="@{!successList &amp;&amp; !showProgress ? View.VISIBLE : View.GONE, default=visible}">
+
+                            <ImageView
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:src="@drawable/bg_queue_not_found" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:text="@string/fleet_not_found"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/mainListFleetFleetFragment"
+                            bindVisibility="@{successList &amp;&amp; !showProgress}"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                style="@style/BackgroundCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
+                android:layout_weight="5"
+                android:onClick="@{() -> vm.addFleet()}"
+                android:text="@string/add_fleet"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

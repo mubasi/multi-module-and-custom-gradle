@@ -64,7 +64,7 @@ class FragmentDialogSkipQueue(
         val locationId = arguments?.getLong("location_id") ?: 0
         val subLocationId = arguments?.getLong("sub_location_id") ?: 0
 
-        var setText = Html.fromHtml("Lewati antrian <font color=#005EB8>$number</font> ?", 1)
+        var setText = Html.fromHtml("Lewati antrean <font color=#005EB8>$number</font> ?", 1)
 
         binding.textButtonSeed.setText(setText)
 
@@ -85,11 +85,11 @@ class FragmentDialogSkipQueue(
                             }
                             DialogSkipQueueState.SuccessDialog -> {
                                 dialog?.dismiss()
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number telah ditunda</b>",1), R.color.error_color_second)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number telah ditunda</b>",1), R.color.error_color_second)
                                 chooseProcess()
                             }
                             is DialogSkipQueueState.FailedDialog -> {
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number tidak dapat diproses</b>",1), R.color.error_color)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number tidak dapat diproses</b>",1), R.color.error_color)
                             }
                         }
                     }
