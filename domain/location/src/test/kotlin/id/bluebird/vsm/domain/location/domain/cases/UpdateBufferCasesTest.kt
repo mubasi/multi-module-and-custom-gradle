@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Assertions.*
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class UpdateBufferCasesTest {
@@ -35,7 +35,7 @@ internal class UpdateBufferCasesTest {
         val testValue = 100L
         every { repository.updateBuffer(testLocationId, testValue) } returns flow {
             emit(
-                LocationPangkalanOuterClass.ResponseUpdateBuffer.newBuilder().build()
+                OutletLocationPangkalanOuterClass.ResponseUpdateBufferPangkalan.newBuilder().build()
             )
         }
 
@@ -55,7 +55,7 @@ internal class UpdateBufferCasesTest {
         val testMessage = "test message"
         every { repository.updateBuffer(testLocationId, testValue) } returns flow {
             emit(
-                LocationPangkalanOuterClass.ResponseUpdateBuffer.newBuilder().apply {
+                OutletLocationPangkalanOuterClass.ResponseUpdateBufferPangkalan.newBuilder().apply {
                     this.message = testMessage
                 }.build()
             )

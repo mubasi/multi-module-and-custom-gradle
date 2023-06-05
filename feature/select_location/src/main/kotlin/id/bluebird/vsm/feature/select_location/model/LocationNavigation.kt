@@ -5,7 +5,9 @@ data class LocationNavigation(
     val subLocationId: Long? = null,
     val locationName: String = "",
     val subLocationName: String = "",
-    val prefix: String = ""
+    val prefix: String = "",
+    val isPerimeter : Boolean = false,
+    val isWing : Boolean = false
 ) {
 
 }

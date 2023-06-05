@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 
 @ExperimentalCoroutinesApi
 internal class GetCountCasesTest {
@@ -34,7 +34,7 @@ internal class GetCountCasesTest {
         every { Hawk.get<Long>(any()) } returns 1L
         every { repository.getCount(any(), any(), any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.StockCountResponse.newBuilder()
+                OutletAssignmentPangkalan.StockCountPangkalanResponse.newBuilder()
                     .apply {
                         stock = 10
                         request = 10

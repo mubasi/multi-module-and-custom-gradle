@@ -1,0 +1,177 @@
+syntax="proto3";
+package proto;
+option go_package="./;proto";
+
+import "google/protobuf/empty.proto";
+
+service Location {
+    // mst_location_type
+    rpc CreateLocationType (CreateLocationTypeRequest) returns (CreateLocationTypeResponse);
+    rpc GetLocationType (google.protobuf.Empty) returns (GetLocationTypeResponse);
+    rpc GetLocationTypeById (GetLocationTypeByIdRequest) returns (GetLocationTypeByIdResponse);
+    // mst_location...
+    rpc CreateLocation (CreateLocationRequest) returns (CreateLocationResponse);
+    rpc GetLocations (google.protobuf.Empty) returns (GetLocationsResponse);
+    rpc GetLocationById (GetLocationByIdRequest) returns (GetLocationByIdResponse);
+    // mst_sub_location...
+    rpc CreateSubLocation (CreateSubLocationRequest) returns (CreateSubLocationResponse);
+    rpc GetSubLocationById (GetSubLocationByIdRequest) returns (GetSubLocationByIdResponse);
+    rpc GetSubLocationByLocation (GetSubLocationByLocationReq) returns (GetSubLocationByLocationResp);
+    rpc UpdateIntervalReset(RequestUpdateIntervalReset) returns (ResponseUpdateIntervalReset);
+    rpc UpdateSubLocation(RequestUpdateSubLocation) returns (ResponseUpdateSubLocation);
+}
+
+// filter
+message Filter {
+    bool show_deposition = 1;
+    bool show_wings_child = 2;
+}
+
+message SubLocationItems {
+    int64  sub_location_id=1;
+    string sub_location_name=2;
+    string sub_location_type=3;
+    bool   is_deposistion = 4;
+    bool   is_wings = 5;
+}
+
+// mst_sub_location
+message GetSubLocationByIdRequest {
+    int64 id=1;
+}
+
+message GetSubLocationByIdResponse {
+    int64  id=1;
+    string sub_location_name =2;
+    int64  location_id=3;
+    int64  pengendapan_location_id=4;
+    int64  location_type_id =5;
+    int32  has_queue_system=6;
+    int32  has_pengendapan=7;
+    int32  ble=8;
+    int32  geo_fence=9;
+    int32  is_active=10;
+    string created_at=11;
+    string modified_at=12;
+    int64  created_by=13;
+    int64  modified_by=14;
+    CreateLocationTypeRequest LocationType=15;
+    bool is_wings = 16;
+}
+
+message CreateSubLocationRequest {
+    int64  id=1;
+    string sub_location_name =2;
+    int64  location_id=3;
+    int64  pengendapan_location_id=4;
+    int64  location_type_id =5;
+    int32  has_queue_system=6;
+    int32  has_pengendapan=7;
+    int32  ble=8;
+    int32  geo_fence=9;
+    int32  is_active=10;
+    string created_at=11;
+    string modified_at=12;
+    int64  created_by=13;
+    int64  modified_by=14;
+    bool   is_wings = 15;
+}
+
+message CreateSubLocationResponse {
+    int64 id=1;
+}
+
+// mst_location...
+message GetLocationByIdRequest {
+    int64 location_id=1;
+}
+
+message GetLocationByIdResponse {
+    CreateLocationRequest location=1; 
+}
+
+message GetLocationsResponse {
+    repeated CreateLocationRequest list_locations =1;
+}
+
+message CreateLocationRequest {
+    int64  id=1;
+    string location_name=2;
+    int32  is_active=3;
+    string created_at=4;
+    string modified_at=5;
+    int64  created_by=6;
+    int64  modified_by=7;
+    string code_area = 8;
+    int64  interval_reset = 9;
+}
+
+message CreateLocationResponse {
+    int64 id=1;
+    string location_name=2;
+    string created_at=3;
+    string modified_at=5;
+    string code_area = 6;
+}
+
+//  mst_location_type
+message GetLocationTypeByIdRequest {
+    int64 id=1;
+}
+
+message GetLocationTypeByIdResponse {
+    CreateLocationTypeRequest location_type=1;
+}
+
+message CreateLocationTypeRequest {
+    int64   id=1;
+    string  location_type_name=2;
+    int64   created_by=3;
+    int64   modified_by=4;
+    string created_at=5;
+    string  modified_at=6;
+    int32   is_deposition=7;
+}
+
+message CreateLocationTypeResponse {
+    int64   id=1;
+    string  location_type_name=2;
+    int32   is_deposition=3;
+}
+
+message GetLocationTypeResponse {
+    repeated CreateLocationTypeRequest LocationTypes = 1;
+}
+
+// [BDO 124] GetSubLocationByLocation....
+message GetSubLocationByLocationReq {
+    int64  location_id = 1;
+    Filter filter = 2;
+}
+message GetSubLocationByLocationResp {
+    int64 location_id=1;
+    string location_name=2;
+    repeated SubLocationItems sub_location_list = 3;
+    string code_area = 4;
+}
+
+// BDO492-Interval-reset-data....
+message RequestUpdateIntervalReset {
+    int64 location_id = 1;
+    int64 interval = 2;
+}
+message ResponseUpdateIntervalReset {
+    string message = 1;
+    int64  interval = 2;
+}
+
+message RequestUpdateSubLocation {
+    int64  id= 1;
+    string sub_location_name = 2;
+    int32  is_active= 3;
+    bool   is_wings = 4;
+}
+message ResponseUpdateSubLocation {
+    int64  id=1;
+    string modified_at = 2;
+}

@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":domain:user"))
     implementation(project(":domain:location"))
+    implementation(project(":domain:airport_location"))
     implementation(project(":navigation"))
 
     applyJUnitTestImplementation()

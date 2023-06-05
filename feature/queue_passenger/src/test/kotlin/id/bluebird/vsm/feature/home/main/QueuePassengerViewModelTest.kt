@@ -2,6 +2,7 @@ package id.bluebird.vsm.feature.home.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.passenger.CounterBarState
 import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
@@ -17,9 +18,11 @@ import id.bluebird.vsm.domain.passenger.model.ListQueueResult
 import id.bluebird.vsm.domain.passenger.model.Queue
 import id.bluebird.vsm.domain.user.GetUserAssignmentState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
+import id.bluebird.vsm.domain.user.model.UserAssignment
 import id.bluebird.vsm.feature.home.TestCoroutineRule
 import id.bluebird.vsm.feature.home.model.*
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
+import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -603,4 +606,92 @@ internal class QueuePassengerViewModelTest {
             ), states[0]
         )
     }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is true`() = runTest {
+        //GIVEN
+        val itemUser = UserAssignment(
+            id = 1L,
+            locationId = 2L,
+            subLocationId = 3L,
+            locationName = "aa",
+            subLocationName = "bb",
+            prefix = "cc",
+            isOfficer = true
+        )
+
+        val result = "${itemUser.locationName} ${itemUser.subLocationName}".getLastSync()
+
+
+        //WHEN
+        subjectUnderTest.createTitleLocation(itemUser)
+
+        //THEN
+        assertEquals("aa", subjectUnderTest.getLocationName())
+        assertEquals("bb", subjectUnderTest.getSubLocationName())
+        assertEquals("cc", subjectUnderTest.getPrefix())
+        assertEquals(result, subjectUnderTest.titleLocation.value)
+    }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is false and getlocationnav is null`() =
+        runTest {
+            //GIVEN
+            val itemUser = UserAssignment(
+                id = 1L,
+                locationId = 2L,
+                subLocationId = 3L,
+                locationName = "aa",
+                subLocationName = "bb",
+                prefix = "cc",
+                isOfficer = false
+            )
+
+            val result = "${itemUser.locationName} ${itemUser.subLocationName}".getLastSync()
+            every { LocationNavigationTemporary.getLocationNav() } returns null
+
+            //WHEN
+            subjectUnderTest.createTitleLocation(itemUser)
+
+            //THEN
+            assertEquals("aa", subjectUnderTest.getLocationName())
+            assertEquals("bb", subjectUnderTest.getSubLocationName())
+            assertEquals("cc", subjectUnderTest.getPrefix())
+            assertEquals(result, subjectUnderTest.titleLocation.value)
+        }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is false and getlocationnav is not null`() =
+        runTest {
+            //GIVEN
+            val itemUser = UserAssignment(
+                id = 1L,
+                locationId = 2L,
+                subLocationId = 3L,
+                locationName = "aa",
+                subLocationName = "bb",
+                prefix = "cc",
+                isOfficer = false
+            )
+
+            every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
+                locationId = 1L,
+                subLocationId = 2L,
+                locationName = "dd",
+                subLocationName = "ee",
+                prefix = "ff",
+                isPerimeter = false,
+                isWing = false
+            )
+            val result = "dd ee".getLastSync()
+
+            //WHEN
+            subjectUnderTest.createTitleLocation(itemUser)
+
+            //THEN
+            assertEquals("dd", subjectUnderTest.getLocationName())
+            assertEquals("ee", subjectUnderTest.getSubLocationName())
+            assertEquals("ff", subjectUnderTest.getPrefix())
+            assertEquals(result, subjectUnderTest.titleLocation.value)
+        }
 }

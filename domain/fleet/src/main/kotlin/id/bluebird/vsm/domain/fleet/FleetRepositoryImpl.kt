@@ -4,14 +4,14 @@ import com.google.protobuf.Timestamp
 import id.bluebird.vsm.core.utils.OkHttpChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import proto.AssignmentPangkalanGrpc
-import proto.AssignmentPangkalanOuterClass
 import proto.FleetOuterClass
 import proto.FleetServiceGrpc
+import proto.OutltetAssignmentPangkalanGrpc
 import proto.FleetServiceGrpc.newBlockingStub
+import proto.OutletAssignmentPangkalan
 
 class FleetRepositoryImpl(
-    private val assignmentGrpc: AssignmentPangkalanGrpc.AssignmentPangkalanBlockingStub = AssignmentPangkalanGrpc.newBlockingStub(
+    private val assignmentGrpc: OutltetAssignmentPangkalanGrpc.OutltetAssignmentPangkalanBlockingStub = OutltetAssignmentPangkalanGrpc.newBlockingStub(
         OkHttpChannel.channel
     ),
     private val fleetGrpc: FleetServiceGrpc.FleetServiceBlockingStub = newBlockingStub(
@@ -23,21 +23,22 @@ class FleetRepositoryImpl(
         private const val DEFAULT = 0L
         private const val ITEM_PER_PAGE = 500
         private const val PAGE = 1
+        private const val FLEET_TYPE = "REGULER"
     }
 
     override fun getCount(
         subLocation: Long,
         locationId: Long,
         todayEpoch: Long
-    ): Flow<AssignmentPangkalanOuterClass.StockCountResponse> =
+    ): Flow<OutletAssignmentPangkalan.StockCountPangkalanResponse> =
         flow {
-            val request = AssignmentPangkalanOuterClass.StockCountRequest.newBuilder()
+            val request = OutletAssignmentPangkalan.StockCountPangkalanRequest.newBuilder()
                 .apply {
                     subLocationId = subLocation
                     this.locationId = locationId
                     this.createdAt = Timestamp.newBuilder().setSeconds(todayEpoch).build()
                 }.build()
-            val result = assignmentGrpc.getSubLocationStockCount(request)
+            val result = assignmentGrpc.getSubLocationStockCountPangkalan(request)
             emit(result)
         }
 
@@ -48,6 +49,7 @@ class FleetRepositoryImpl(
         flow {
             val request = FleetOuterClass.SearchRequest.newBuilder().apply {
                 keyword = param
+                fleetType = FLEET_TYPE
                 paging = FleetOuterClass.PagingRequest.newBuilder().apply {
                     this.itemPerPage = itemPerPage
                     page = 1
@@ -63,16 +65,16 @@ class FleetRepositoryImpl(
         count: Long,
         locationId: Long,
         subLocation: Long
-    ): Flow<AssignmentPangkalanOuterClass.RequestTaxiResponse> =
+    ): Flow<OutletAssignmentPangkalan.RequestTaxiPangkalanResponse> =
         flow {
-            val request = AssignmentPangkalanOuterClass.RequestTaxiRequest.newBuilder()
+            val request = OutletAssignmentPangkalan.RequestTaxiPangkalanRequest.newBuilder()
                 .apply {
                     this.count = count
                     this.locationId = locationId
                     requestFrom = subLocation
                 }
                 .build()
-            val result = assignmentGrpc.requestTaxi(request)
+            val result = assignmentGrpc.requestTaxiPangkalan(request)
             emit(result)
         }
 
@@ -80,30 +82,30 @@ class FleetRepositoryImpl(
         fleetNumber: String,
         subLocationId: Long,
         locationId: Long
-    ): Flow<AssignmentPangkalanOuterClass.StockResponse> = flow {
-        val request = AssignmentPangkalanOuterClass.StockRequest.newBuilder()
+    ): Flow<OutletAssignmentPangkalan.StockResponsePangkalan> = flow {
+        val request = OutletAssignmentPangkalan.StockRequestPangkalan.newBuilder()
             .apply {
                 taxiNo = fleetNumber
                 isArrived = false
-                stockType = AssignmentPangkalanOuterClass.StockType.IN
+                stockType = OutletAssignmentPangkalan.StockTypePangkalan.STOCK_PANGKALAN_IN
                 isWithPassenger = DEFAULT
                 this.subLocationId = subLocationId
                 this.locationId = locationId
             }.build()
-        val result = assignmentGrpc.stock(request)
+        val result = assignmentGrpc.stockPangkalan(request)
         emit(result)
     }
 
-    override fun getListFleet(subLocationId: Long): Flow<AssignmentPangkalanOuterClass.GetListFleetTerminalResp> =
+    override fun getListFleet(subLocationId: Long): Flow<OutletAssignmentPangkalan.GetListFleetTerminalPangkalanResp> =
         flow {
-            val request = AssignmentPangkalanOuterClass.GetListFleetTerminalReq.newBuilder()
+            val request = OutletAssignmentPangkalan.GetListFleetTerminalPangkalanReq.newBuilder()
                 .apply {
                     this.subLocation = subLocationId
                     page = PAGE
                     itemPerPage = ITEM_PER_PAGE
                 }
                 .build()
-            val result = assignmentGrpc.getListFleetTerminal(request)
+            val result = assignmentGrpc.getListFleetTerminalPangkalan(request)
             emit(result)
         }
 
@@ -114,24 +116,24 @@ class FleetRepositoryImpl(
         isWithPassenger: Boolean,
         departFleetItems: List<Long>,
         queueNumber: String
-    ): Flow<AssignmentPangkalanOuterClass.StockResponse> =
+    ): Flow<OutletAssignmentPangkalan.StockResponsePangkalan> =
         flow {
             val departItems = departFleetItems.map {
-                AssignmentPangkalanOuterClass.DepartFleetItems.newBuilder().apply { stockId = it }.build()
+                OutletAssignmentPangkalan.DepartFleetItemsPangkalan.newBuilder().apply { stockId = it }.build()
             }
-            val request = AssignmentPangkalanOuterClass.StockRequest.newBuilder()
+            val request = OutletAssignmentPangkalan.StockRequestPangkalan.newBuilder()
                 .apply {
                     this.locationId = locationId
                     this.subLocationId = subLocationId
                     this.taxiNo = fleetNumber
                     this.isWithPassenger = if (isWithPassenger) 1L else 0L
                     addAllDepartFleetItems(departItems)
-                    this.stockType = AssignmentPangkalanOuterClass.StockType.OUT
+                    this.stockType = OutletAssignmentPangkalan.StockTypePangkalan.STOCK_PANGKALAN_OUT
                     this.isArrived = true
                     this.queueNumber = queueNumber
                 }
                 .build()
-            val result = assignmentGrpc.stock(request)
+            val result = assignmentGrpc.stockPangkalan(request)
             emit(result)
         }
 }
