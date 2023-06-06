@@ -85,6 +85,7 @@ android {
         kotlin.srcDir(project(":feature:queue_passenger").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:monitoring").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:qr_code").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:queue_car_fleet").file("src/test/kotlin"))
     }
 
     flavorDimensions.add("env")
@@ -146,6 +147,7 @@ dependencies {
     implementation(project(":navigation"))
     implementation(project(":feature:monitoring"))
     implementation(project(":feature:qr_code"))
+    implementation(project(":feature:queue_car_fleet"))
 
     testImplementation(Junit5.jupiter)
     testImplementation(Junit5.suite)

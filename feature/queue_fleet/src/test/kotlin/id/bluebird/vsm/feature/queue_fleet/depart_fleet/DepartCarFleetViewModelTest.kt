@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(TestCoroutineRule::class)
-internal class DepartFleetViewModelTest {
+internal class DepartCarFleetViewModelTest {
 
     companion object {
         private const val ERROR = "error"

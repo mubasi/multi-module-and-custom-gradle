@@ -91,7 +91,7 @@
 
     <fragment
         android:id="@+id/searchQueueFragment"
-        android:name="id.bluebird.vsm.feature.queue_fleet.add_fleet.FragmentAddFleet"
+        android:name="id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet"
         android:label="@string/search_ritase">
         <argument
             android:name="location"
@@ -112,7 +112,5 @@
     </fragment>
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_fleet" />
-
-<!--    <include app:graph="@navigation/select_location_nav" />-->
 
 </navigation>
