@@ -32,8 +32,8 @@ class MonitoringTableHelper {
 
     /**
      * Lokasi
-     * Total Antrian Armada
-     * Total Antrian Penumpang
+     * Total Antrean Armada
+     * Total Antrean Penumpang
      * Request Armada
      * Buffer
      * */

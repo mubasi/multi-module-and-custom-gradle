@@ -32,6 +32,7 @@ import id.bluebird.vsm.feature.airport_fleet.add_fleet.AddFleetViewModelNonApsh
 import id.bluebird.vsm.feature.airport_fleet.assign_location.AssignLocationViewModel
 import id.bluebird.vsm.feature.airport_fleet.dialog_request_stock.DialogButtomRequestStockViewModel
 import id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModel
+import id.bluebird.vsm.feature.airport_fleet.request_list.RequestListViewModel
 import id.bluebird.vsm.feature.home.dialog_delete_skipped.DialogDeleteSkippedViewModel
 import id.bluebird.vsm.feature.home.dialog_queue_receipt.DialogQueueReceiptViewModel
 import id.bluebird.vsm.feature.home.dialog_record_ritase.DialogRecordRitaseViewModel
@@ -45,6 +46,13 @@ import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
 import id.bluebird.vsm.feature.qrcode.QrCodeViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.adapter.AdapterCarFleets
+import id.bluebird.vsm.feature.queue_car_fleet.add_by_camera.AddCarFleetByCameraViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.add_fleet.AddCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.depart_fleet.DepartCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.request_fleet.RequestCarFleetDialogViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.search_fleet.SearchCarFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel
 import id.bluebird.vsm.feature.queue_fleet.add_fleet.AddFleetViewModel
@@ -99,7 +107,13 @@ object AppModule {
         viewModel { AddFleetViewModelNonApsh(get(), get()) }
         viewModel { AssignLocationViewModel(get(), get(), get()) }
         viewModel { AddByCameraAirportViewModel(get()) }
+        viewModel { RequestListViewModel(get()) }
 
+        viewModel { QueueCarFleetViewModel(get(), get(), get(), get()) }
+        viewModel { AddCarFleetByCameraViewModel() }
+        viewModel { AddCarFleetViewModel(get(), get(), get()) }
+        viewModel { DepartCarFleetViewModel() }
+        viewModel { SearchCarFleetViewModel() }
     }
     private val userCases = module {
         single<GetUserAssignment> { GetUserAssignmentCases(get()) }
@@ -153,6 +167,7 @@ object AppModule {
         single<GetSubLocationStockCountDepart> { GetSubLocationStockCountDepartCases(get()) }
         single<RequestTaxiDepart> { RequestTaxiDepartCases(get()) }
         single<RitaseFleetTerminalAirport> { RitaseFleetTerminalAirportCases(get()) }
+        single<GetDetailRequestByLocationAirport> { GetDetailRequestByLocationAirportCases(get()) }
     }
 
     private val airportLocation = module {
@@ -170,6 +185,7 @@ object AppModule {
     }
     private val adapter = module {
         single { AdapterFleets() }
+        single { AdapterCarFleets() }
     }
     lateinit var koin: Koin
 

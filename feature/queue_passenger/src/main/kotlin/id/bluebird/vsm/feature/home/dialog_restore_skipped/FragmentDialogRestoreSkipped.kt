@@ -56,7 +56,7 @@ class FragmentDialogRestoreSkipped(
         binding.vm = dialogRestoreSkippedViewModel
 
         binding.showProses = false
-        binding.titleDialog.text = Html.fromHtml("<b>Pulihkan antrian <font color=#005EB8>$number</font>?</b>", 1)
+        binding.titleDialog.text = Html.fromHtml("<b>Pulihkan antrean <font color=#005EB8>$number</font>?</b>", 1)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -65,7 +65,7 @@ class FragmentDialogRestoreSkipped(
                         when(it) {
                             is DialogRestoreSkippedState.FailedRestoreQueueSkipped -> {
                                 dialog?.dismiss()
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number</b> gagal dipulihkan. Silahkan coba lagi",1), R.color.error_color_second)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number</b> gagal dipulihkan. Silahkan coba lagi",1), R.color.error_color_second)
                             }
                             DialogRestoreSkippedState.ProsesRestoreQueueSkipped -> {
                                 binding.showProses = true
@@ -76,7 +76,7 @@ class FragmentDialogRestoreSkipped(
                             }
                             DialogRestoreSkippedState.SuccessRestoreQueueSkipped -> {
                                 dialog?.dismiss()
-                                showSnackbar(Html.fromHtml("<b>No. antrian $number</b> telah dipulihkan",1), R.color.success_color)
+                                showSnackbar(Html.fromHtml("<b>No. antrean $number</b> telah dipulihkan",1), R.color.success_color)
                                 findNavController().navigate(R.id.queuePassengerFragment)
                             }
                         }

@@ -61,7 +61,7 @@ class FragmentQueueTicket : Fragment() {
         binding.totalQueue.text = totalQueue
 
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-        showSnackbar(Html.fromHtml("<b>No. antrian $queueNumber telah ditambahkan</b>",1), R.color.success_0)
+        showSnackbar(Html.fromHtml("<b>No. antrean $queueNumber telah ditambahkan</b>",1), R.color.success_0)
 
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {

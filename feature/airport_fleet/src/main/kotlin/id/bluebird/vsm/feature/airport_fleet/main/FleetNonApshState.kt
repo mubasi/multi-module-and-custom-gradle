@@ -41,4 +41,7 @@ sealed class FleetNonApshState {
         val isStatusArrived : Boolean,
         val isWithPassenger : Boolean,
     ) : FleetNonApshState()
+    data class ToRequestDetail(
+        val isWing: Boolean
+    ) : FleetNonApshState()
 }

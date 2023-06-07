@@ -44,4 +44,7 @@
     <string name="failed_to_add_stock">Gagal menambah stock</string>
     <string name="fleet_number_can_not_scan">Nomor lambung tidak dapat di scan</string>
     <string name="title_not_get_picture">Gagal mengambil gambar</string>
+    <string name="detail_assign">Detail Penugasan</string>
+    <string name="look_detail_assign">Lihat detail penugasan</string>
+    <string name="request_label">Request:</string>
 </resources>

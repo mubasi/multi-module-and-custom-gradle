@@ -198,4 +198,16 @@ class AirportAssignmentRepositoryImpl(
         val result = outletAssignGrpc.assignFleetTerminal(request)
         emit(result)
     }
+
+    override fun getDetailRequestInLocation(
+        locationId: Long,
+        showWingsChild: Boolean
+    ): Flow<AssignmentOuterClass.ResponseGetDetailRequest> = flow {
+        val request = AssignmentOuterClass.RequestGetDetailRequest.newBuilder().apply {
+            this.locationId = locationId
+            this.showWingsChild = showWingsChild
+        }.build()
+        val result = outletAssignGrpc.getDetailRequestInLocation(request)
+        emit(result)
+    }
 }

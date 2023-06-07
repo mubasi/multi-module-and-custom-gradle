@@ -6,6 +6,12 @@
     <data>
 
         <variable
+            name="showProgress"
+            type="Boolean" />
+
+        <import type="android.view.View" />
+
+        <variable
             name="vmPerimeter"
             type="id.bluebird.vsm.feature.airport_fleet.dialog_request_stock.DialogButtomRequestStockViewModel" />
     </data>
@@ -20,12 +26,24 @@
         android:paddingEnd="16dp"
         android:paddingBottom="24dp">
 
+        <ProgressBar
+            android:id="@+id/pb_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary_0"
+            android:visibility="@{showProgress ? View.VISIBLE: View.GONE,default=gone}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
         <View
             android:id="@+id/view_request"
             android:layout_width="24dp"
             android:layout_height="4dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_bottom_sheet_view"
+            android:visibility="@{showProgress ? View.GONE: View.VISIBLE,default=gone}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +58,7 @@
             android:text="@string/request_armada"
             android:textColor="@android:color/black"
             android:textSize="20sp"
+            android:visibility="@{showProgress ? View.GONE: View.VISIBLE,default=gone}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/imv_close_request"
             app:layout_constraintTop_toBottomOf="@id/view_request" />
@@ -52,6 +71,7 @@
             android:padding="10dp"
             android:onClick="@{() -> vmPerimeter.cancelFleetDialog()}"
             android:src="@drawable/ic_close"
+            android:visibility="@{showProgress ? View.GONE: View.VISIBLE,default=gone}"
             app:layout_constraintLeft_toRightOf="@id/tv_title_request"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_request" />
@@ -62,6 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:gravity="center"
+            android:visibility="@{showProgress ? View.GONE: View.VISIBLE,default=gone}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title_request">
@@ -112,6 +133,7 @@
             android:textAllCaps="false"
             android:textSize="@dimen/standard_font_size"
             android:textColor="@color/white"
+            android:visibility="@{showProgress ? View.GONE: View.VISIBLE,default=gone}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

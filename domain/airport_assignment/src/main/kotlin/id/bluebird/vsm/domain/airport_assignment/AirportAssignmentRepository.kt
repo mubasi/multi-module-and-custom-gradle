@@ -66,4 +66,9 @@ interface AirportAssignmentRepository {
     fun ritaseFleetTerminalAirport(assignFleetModel: AssignFleetModel): Flow<AssignmentOuterClass.StockResponse>
 
     fun assignFleetTerminal(assignFleetModel: AssignFleetModel): Flow<AssignmentOuterClass.AssignFleetResponse>
+
+    fun getDetailRequestInLocation(
+        locationId: Long,
+        showWingsChild: Boolean
+    ): Flow<AssignmentOuterClass.ResponseGetDetailRequest>
 }

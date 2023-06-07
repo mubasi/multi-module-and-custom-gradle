@@ -183,7 +183,7 @@ class FragmentSelectLocation : Fragment() {
     private fun navToMainPage(isFleetMenu: Boolean) {
         NavigationNav.navigate(
             if (isFleetMenu) {
-                NavigationSealed.QueueFleet(frag = this@FragmentSelectLocation)
+                NavigationSealed.QueueCarFleet(frag = this@FragmentSelectLocation)
             } else {
                 NavigationSealed.QueuePassenger(frag = this@FragmentSelectLocation)
             }

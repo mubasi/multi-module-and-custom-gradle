@@ -11,11 +11,11 @@
     <string name="success_change">Berhasil diubah</string>
     <string name="failed_change">Gagal diubah</string>
     <string-array name="column_header">
-        <item>Antrian Armada</item>
-        <item>Antrian Penumpang</item>
+        <item>Antrean Armada</item>
+        <item>Antrean Penumpang</item>
         <item>Total Ritase</item>
-        <item>Total Antrian Armada</item>
-        <item>Total Antrian Penumpang</item>
+        <item>Total Antrean Armada</item>
+        <item>Total Antrean Penumpang</item>
         <item>Permintaan Armada</item>
         <item>Pengendapan</item>
     </string-array></resources>

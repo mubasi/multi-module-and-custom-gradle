@@ -13,4 +13,5 @@
     <include app:graph="@navigation/select_location_nav" />
     <include app:graph="@navigation/qr_code_navigation" />
     <include app:graph="@navigation/fleet_airport_nav" />
+    <include app:graph="@navigation/queue_car_fleet_nav" />
 </navigation>

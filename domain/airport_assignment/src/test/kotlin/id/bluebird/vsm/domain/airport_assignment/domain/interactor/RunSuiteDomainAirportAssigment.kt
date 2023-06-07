@@ -15,7 +15,8 @@ import org.junit.platform.suite.api.Suite
     GetSubLocationStockCountDepartCasesTest::class,
     RequestTaxiDepartCasesTest::class,
     RitaseFleetTerminalAirportCasesTest::class,
-    GetSubLocationAirportCasesTest::class
+    GetSubLocationAirportCasesTest::class,
+    GetDetailRequestByLocationAirportCasesTest::class
 )
 
 @ExperimentalCoroutinesApi

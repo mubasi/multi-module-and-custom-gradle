@@ -33,8 +33,12 @@
             android:layout_weight="1"
             android:visibility="@{fleetNonApshViewModel.isPerimeter() ? View.VISIBLE : View.GONE, default= gone}"
             app:counterStyle="yellow"
-            app:counterText="@{String.valueOf(fleetNonApshViewModel.counterLiveData.request)}"
             app:plusIconVisible="false"
+            app:counterText="@{String.valueOf(fleetNonApshViewModel.counterLiveData.request)}"
+            app:additionalDataVisible="true"
+            app:highestRequestCount="@{fleetNonApshViewModel.highestRequest}"
+            app:highestRequestLocation="@{fleetNonApshViewModel.highestRequestLocation}"
+            app:onClickAdditionalDataFunction="@{()->fleetNonApshViewModel.toDetailRequest()}"
             app:titleText="@string/request_from_deposition"
             tools:visibility="visible" />
 

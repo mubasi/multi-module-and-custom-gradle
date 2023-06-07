@@ -71,3 +71,9 @@ sealed class AssignFleetTerminalAirportState{
         val result : AssignFleetTerminalAirportModel
     ) : AssignFleetTerminalAirportState()
 }
+
+sealed class GetDetailRequestInLocationAirportState{
+    data class Success(
+        val result : GetDetailRequestInLocationAirportModel
+    ) : GetDetailRequestInLocationAirportState()
+}

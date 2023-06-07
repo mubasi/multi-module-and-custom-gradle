@@ -42,6 +42,7 @@ class FleetNonApshViewModel(
         const val WRONG_LOCATION = "Wrong location"
         const val DELAY = 200L
         const val CANCEL_VALUE = -1L
+        const val LOOK_DETAIL_ASSIGN = "Lihat detail penugasan"
     }
 
     private val _state: MutableSharedFlow<FleetNonApshState> = MutableSharedFlow()
@@ -81,6 +82,8 @@ class FleetNonApshViewModel(
         request = 0,
         ritase = 0
     )
+    var highestRequest: MutableLiveData<Int> = MutableLiveData(-1)
+    val highestRequestLocation: MutableLiveData<String> = MutableLiveData(LOOK_DETAIL_ASSIGN)
 
     @VisibleForTesting
     fun getIdSubLocation(): Long = idSubLocation
@@ -210,6 +213,7 @@ class FleetNonApshViewModel(
                             )
                             mCountCache = tempCountCache
                             _counterLiveData.postValue(tempCountCache)
+                            highestRequest.value = temp.request.toInt()
                             if (refreshStock) {
                                 _state.emit(FleetNonApshState.GetCountSuccess)
                             }
@@ -597,6 +601,18 @@ class FleetNonApshViewModel(
         }
     }
 
+    fun toDetailRequest() {
+        if (isPerimeter.value == false) {
+            return
+        }
+        viewModelScope.launch {
+            _state.emit(
+                FleetNonApshState.ToRequestDetail(
+                    isWing = false
+                )
+            )
+        }
+    }
 
     enum class StatusUpdate {
         ADD,

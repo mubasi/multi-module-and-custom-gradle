@@ -87,6 +87,7 @@ class FragmentDialogRequestStock(
                             DialogRequestStockState.CancleDialog -> {
                                 callback(CANCEL_VALUE)
                                 dialog?.dismiss()
+                                showProgressState(false)
                             }
                             is DialogRequestStockState.Err -> {
                                 DialogUtils.showErrorDialog(
@@ -94,6 +95,7 @@ class FragmentDialogRequestStock(
                                     message = it.err.message ?: getString(R.string.error_unknown),
                                     title = getString(R.string.request_fleet_failed)
                                 )
+                                showProgressState(false)
                             }
                             is DialogRequestStockState.FocusState -> {
                                 if (it.isFocus.not()) {
@@ -102,15 +104,21 @@ class FragmentDialogRequestStock(
                                     imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
                                 }
                                 binding.counterView.isCursorVisible = it.isFocus
+                                showProgressState(false)
                             }
                             is DialogRequestStockState.MessageError -> {
                                 val message = SpannableStringBuilder()
                                     .append(it.message)
                                 showNotify(view, message, R.color.warning_color)
+                                showProgressState(false)
                             }
                             is DialogRequestStockState.RequestSuccess -> {
                                 callback(it.count)
                                 dialog?.dismiss()
+                                showProgressState(false)
+                            }
+                            DialogRequestStockState.SendRequestTaxiOnProgress -> {
+                                showProgressState(true)
                             }
                             else -> {
                                 //do nothing
@@ -121,6 +129,10 @@ class FragmentDialogRequestStock(
             }
         }
     }
+    private fun showProgressState(progress : Boolean) {
+        binding.showProgress = progress
+    }
+
 
     private fun showNotify(view: View, message : Spanned, background : Int) {
         DialogUtils.showSnackbar(view, requireContext(), message, background, null)

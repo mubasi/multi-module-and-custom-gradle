@@ -5,6 +5,7 @@ import id.bluebird.vsm.feature.airport_fleet.add_fleet.AddFleetViewModelNonApshT
 import id.bluebird.vsm.feature.airport_fleet.assign_location.AssignLocationViewModelTest
 import id.bluebird.vsm.feature.airport_fleet.dialog_request_stock.DialogButtomRequestStockViewModelTest
 import id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModelTest
+import id.bluebird.vsm.feature.airport_fleet.request_list.RequestListViewModelTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.platform.suite.api.SelectClasses
 import org.junit.platform.suite.api.Suite
@@ -15,7 +16,8 @@ import org.junit.platform.suite.api.Suite
     AddFleetViewModelNonApshTest::class,
     AssignLocationViewModelTest::class,
     DialogButtomRequestStockViewModelTest::class,
-    FleetNonApshViewModelTest::class
+    FleetNonApshViewModelTest::class,
+    RequestListViewModelTest::class
 )
 
 @ExperimentalCoroutinesApi

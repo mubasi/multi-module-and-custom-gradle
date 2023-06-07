@@ -17,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.core.utils.StringUtils
 import id.bluebird.vsm.feature.airport_fleet.R
@@ -202,6 +201,11 @@ class FragmentFleetNonApsh : Fragment() {
                                     getString(R.string.title_something_wrong),
                                     it.err.message.toString()
                                 )
+                            }
+                            is FleetNonApshState.ToRequestDetail -> {
+                                val bundle = Bundle()
+                                bundle.putBoolean("isWing", it.isWing)
+                                findNavController().navigate(R.id.action_detail_assign, bundle)
                             }
                             else -> {
                                 //do nothing
