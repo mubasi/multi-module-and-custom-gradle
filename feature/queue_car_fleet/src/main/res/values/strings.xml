@@ -42,4 +42,7 @@
     // Up to Version 1.0.1
     <string name="failed_get_queue">Gagal mendapatkan Antrean</string>
     <string name="msg_add_fleet_success"> berhasil ditambah ke antrian</string>
+    <string name="stock_title">Stok armada lobi: </string>
+    <string name="deposition_stock_title">Stok armada pengendapan: </string>
+    <string name="deposition_text">Pengendapan</string>
 </resources>

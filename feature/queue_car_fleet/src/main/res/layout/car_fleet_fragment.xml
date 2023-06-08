@@ -138,6 +138,38 @@
                         app:layout_constraintTop_toBottomOf="@id/edtSearchFleetFleetFragment" />
 
                     <LinearLayout
+                        android:id="@+id/stock_pages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:layout_margin="8dp"
+                        bindVisibility="@{!showProgress}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/borderSearchAndListFleetFragment" >
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/leftTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:text="@string/stock_title"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/val_counter_stock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:singleLine="true"
+                            android:text="@{String.valueOf(vm.counterLiveData.stock)}" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_marginStart="16dp"
@@ -149,7 +181,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/borderSearchAndListFleetFragment">
+                        app:layout_constraintTop_toBottomOf="@id/stock_pages">
 
                         <ProgressBar
                             android:id="@+id/listProgressBarFleetFragment"
@@ -193,7 +225,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/buttonBottom"
-                style="@style/BackgroundCancel"
+                style="@style/ButtonPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

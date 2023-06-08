@@ -47,7 +47,7 @@ class FragmentSplash : Fragment() {
                     when (it) {
                         SplashState.LoginAsOutletUser -> {
                             NavigationNav.navigate(
-                                NavigationSealed.QueueFleet(
+                                NavigationSealed.QueueCarFleet (
                                     destination = R.id.splashFragment,
                                     frag = this@FragmentSplash
                                 )

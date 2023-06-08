@@ -7,8 +7,8 @@ data class LocationNavigation(
     val subLocationName: String = "",
     val prefix: String = "",
     val isPerimeter : Boolean = false,
-    val isWing : Boolean = false
-) {
-
-}
+    val isWing : Boolean = false,
+    val haveDeposition : Boolean = false,
+    val idDeposition : Long? = null
+)
 

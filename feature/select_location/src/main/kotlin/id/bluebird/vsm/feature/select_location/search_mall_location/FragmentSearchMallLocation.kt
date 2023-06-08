@@ -32,7 +32,8 @@ class FragmentSearchMallLocation : Fragment() {
     companion object {
         const val NOTIFICATION_MESSAGE = "notificationMessage"
         const val STATUS_SEARCH = "search"
-        const val BACK = "back"
+        const val BACK_OUTLET = "back-outlet"
+        const val BACK_AIRPORT = "back-airport"
     }
 
     private val vm: SelectLocationViewModel by sharedViewModel()
@@ -82,14 +83,14 @@ class FragmentSearchMallLocation : Fragment() {
                             is SelectLocationState.ToAssign -> {
                                 setFragmentResult(
                                     NOTIFICATION_MESSAGE,
-                                    bundleOf(STATUS_SEARCH to BACK)
+                                    bundleOf(STATUS_SEARCH to BACK_OUTLET)
                                 )
                                 findNavController().popBackStack()
                             }
                             is SelectLocationState.ToAssignAirport -> {
                                 setFragmentResult(
                                     NOTIFICATION_MESSAGE,
-                                    bundleOf(STATUS_SEARCH to BACK)
+                                    bundleOf(STATUS_SEARCH to BACK_AIRPORT)
                                 )
                                 findNavController().popBackStack()
                             }

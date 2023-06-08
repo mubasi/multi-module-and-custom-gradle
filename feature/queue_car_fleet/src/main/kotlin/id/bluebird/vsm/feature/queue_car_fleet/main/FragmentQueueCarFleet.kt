@@ -134,6 +134,7 @@ class FragmentQueueCarFleet : Fragment() {
                                 mBinding.successList = it.list.isNotEmpty()
                             }
                             is QueueCarFleetState.GetListEmpty -> {
+                                mBinding.showProgress = false
                                 _fleetAdapter.submitData(arrayListOf())
                             }
                             is QueueCarFleetState.ShowRequestCarFleet -> {
@@ -217,6 +218,14 @@ class FragmentQueueCarFleet : Fragment() {
                             }
                             is QueueCarFleetState.GoToQrCodeScreen -> {
                                 gotoQrcodeScreen(it.locationId, it.subLocationId, it.titleLocation)
+                            }
+                            is QueueCarFleetState.GotoDepositionScreen -> {
+                                val bundle = Bundle()
+                                bundle.putString("title", it.title)
+                                bundle.putLong("sub_location_id", it.subLocationId)
+                                bundle.putLong("deposition_stock", it.depositionStock)
+                                bundle.putLong("id_deposition", it.idDeposition)
+                                findNavController().navigate(R.id.depositionFleetFragment, bundle)
                             }
                             else -> {
                                 // do nothing

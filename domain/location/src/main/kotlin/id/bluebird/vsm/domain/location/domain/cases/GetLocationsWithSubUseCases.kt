@@ -30,8 +30,9 @@ class GetLocationsWithSubUseCases(
                                 id = it.subLocationId,
                                 name = it.subLocationName,
                                 prefix = it.prefix,
+                                isDeposition = it.isDeposition,
                                 haveDeposition = it.haveDeposition,
-                                depositionId = 0 //it.isDeposition
+                                depositionId = it.idPengendapan
                             )
                         )
                     }

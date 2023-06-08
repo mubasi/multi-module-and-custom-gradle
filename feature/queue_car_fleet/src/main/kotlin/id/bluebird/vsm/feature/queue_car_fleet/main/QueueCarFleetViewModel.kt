@@ -40,7 +40,7 @@ class QueueCarFleetViewModel(
         const val EMPTY_STRING = ""
     }
 
-    val isPerimeter: MutableLiveData<Boolean> = MutableLiveData()
+    val isDeposition: MutableLiveData<Boolean> = MutableLiveData()
     val counterLiveData: MutableLiveData<CountCacheCarFleet> = MutableLiveData()
     val titleLocation: MutableLiveData<String> = MutableLiveData("...")
     private val _queueCarFleetState: MutableSharedFlow<QueueCarFleetState> =
@@ -48,9 +48,10 @@ class QueueCarFleetViewModel(
     val queueCarFleetState: SharedFlow<QueueCarFleetState> = _queueCarFleetState.asSharedFlow()
     private var mCountCacheCarFleet: CountCacheCarFleet = CountCacheCarFleet()
     var mUserRoleInfo: UserRoleInfo = UserRoleInfo()
-    private val _Car_fleetItems: MutableList<CarFleetItem> = mutableListOf()
+    private val _fleetItems: MutableList<CarFleetItem> = mutableListOf()
     private val _locationName: MutableLiveData<String> = MutableLiveData("...")
     private val _subLocationName: MutableLiveData<String> = MutableLiveData("...")
+    private val idDeposition: MutableLiveData<Long> = MutableLiveData()
 
     @VisibleForTesting
     fun setUserInfo(userRoleInfo: UserRoleInfo) {
@@ -63,14 +64,16 @@ class QueueCarFleetViewModel(
     }
 
     @VisibleForTesting
-    fun setCountCache(countCacheCarFleet: CountCacheCarFleet) {
-        mCountCacheCarFleet = countCacheCarFleet
+    fun setCountCache(countCacheCarFleet: CountCacheCarFleet?) {
+        if (countCacheCarFleet != null) {
+            mCountCacheCarFleet = countCacheCarFleet
+        }
         counterLiveData.value = mCountCacheCarFleet
     }
 
     @VisibleForTesting
     fun setFleetItems(list: List<CarFleetItem>) {
-        _Car_fleetItems.addAll(list)
+        _fleetItems.addAll(list)
     }
 
     @VisibleForTesting
@@ -90,12 +93,22 @@ class QueueCarFleetViewModel(
 
     @VisibleForTesting
     fun getFleetItem(): List<CarFleetItem> {
-        return _Car_fleetItems
+        return _fleetItems
     }
 
     @VisibleForTesting
     fun getCountCache(): CountCacheCarFleet {
         return mCountCacheCarFleet
+    }
+
+    @VisibleForTesting
+    fun setTitleLocation(result: String?) {
+        titleLocation.value = result ?: EMPTY_STRING
+    }
+
+    @VisibleForTesting
+    fun setIdDeposition(result : Long) {
+        idDeposition.value = result
     }
 
     fun init() {
@@ -143,6 +156,8 @@ class QueueCarFleetViewModel(
                                     locationId = it.result.locationId,
                                     subLocationId = it.result.subLocationId
                                 )
+                                isDeposition.postValue(nav?.haveDeposition ?: it.result.isDeposition)
+                                idDeposition.postValue(nav?.idDeposition ?: it.result.subLocationId)
                                 createTitleLocation(userAssignment = it.result)
                                 _queueCarFleetState.emit(QueueCarFleetState.GetUserInfoSuccess)
                             }
@@ -194,7 +209,8 @@ class QueueCarFleetViewModel(
                                         isInit = true,
                                         stock = result.stock,
                                         request = result.request,
-                                        ritase = result.ritase
+                                        ritase = result.ritase,
+                                        depositionStock = result.deposition
                                     )
                                     counterLiveData.postValue(mCountCacheCarFleet)
                                 }
@@ -265,12 +281,12 @@ class QueueCarFleetViewModel(
     }
 
     fun removeFleet(fleetNumber: String) {
-        val fleetIndex = _Car_fleetItems.indexOfFirst { it.name == fleetNumber }
+        val fleetIndex = _fleetItems.indexOfFirst { it.name == fleetNumber }
         if (fleetIndex < 0)
             return
-        _Car_fleetItems.removeAt(fleetIndex)
+        _fleetItems.removeAt(fleetIndex)
         viewModelScope.launch {
-            _queueCarFleetState.emit(QueueCarFleetState.NotifyDataCarFleetChanged(_Car_fleetItems.toList()))
+            _queueCarFleetState.emit(QueueCarFleetState.NotifyDataCarFleetChanged(_fleetItems.toList()))
         }
     }
 
@@ -311,7 +327,7 @@ class QueueCarFleetViewModel(
             _queueCarFleetState.emit(
                 QueueCarFleetState.SearchCarFleet(
                     subLocationId = mUserRoleInfo.subLocationId,
-                    list = _Car_fleetItems
+                    list = _fleetItems
                 )
             )
         }
@@ -345,10 +361,10 @@ class QueueCarFleetViewModel(
             calculateRequestAfterAddStock()
             counterLiveData.value = mCountCacheCarFleet
             viewModelScope.launch {
-                _Car_fleetItems.add(carFleetItem)
+                _fleetItems.add(carFleetItem)
                 _queueCarFleetState.emit(
                     QueueCarFleetState.NotifyDataCarFleetChanged(
-                        _Car_fleetItems.toList()
+                        _fleetItems.toList()
                     )
                 )
             }
@@ -382,8 +398,8 @@ class QueueCarFleetViewModel(
     fun getFleetList() {
         viewModelScope.launch {
             _queueCarFleetState.emit(QueueCarFleetState.ProgressGetCarFleetList)
-            if (_Car_fleetItems.isNotEmpty()) {
-                _queueCarFleetState.emit(QueueCarFleetState.GetListSuccess(_Car_fleetItems.toList()))
+            if (_fleetItems.isNotEmpty()) {
+                _queueCarFleetState.emit(QueueCarFleetState.GetListSuccess(_fleetItems.toList()))
             } else {
                 _getFleet.invoke(mUserRoleInfo.subLocationId)
                     .flowOn(Dispatchers.Main)
@@ -398,7 +414,7 @@ class QueueCarFleetViewModel(
                             }
                             is GetListFleetState.Success -> {
                                 it.list.forEach { item ->
-                                    _Car_fleetItems.add(
+                                    _fleetItems.add(
                                         CarFleetItem(
                                             id = item.fleetId,
                                             name = item.fleetName,
@@ -408,7 +424,7 @@ class QueueCarFleetViewModel(
                                 }
                                 _queueCarFleetState.emit(
                                     QueueCarFleetState.GetListSuccess(
-                                        _Car_fleetItems.toList()
+                                        _fleetItems.toList()
                                     )
                                 )
                             }
@@ -420,7 +436,7 @@ class QueueCarFleetViewModel(
 
     fun refresh() {
         mCountCacheCarFleet = CountCacheCarFleet()
-        _Car_fleetItems.clear()
+        _fleetItems.clear()
         init()
     }
 
@@ -431,6 +447,19 @@ class QueueCarFleetViewModel(
                     locationId = mUserRoleInfo.locationId,
                     subLocationId = mUserRoleInfo.subLocationId,
                     titleLocation = "${_locationName.value} ${_subLocationName.value}"
+                )
+            )
+        }
+    }
+
+    fun goToDepositionScreen() {
+        viewModelScope.launch {
+            _queueCarFleetState.emit(
+                QueueCarFleetState.GotoDepositionScreen(
+                    title = titleLocation.value ?: EMPTY_STRING,
+                    subLocationId = mUserRoleInfo.subLocationId,
+                    depositionStock = counterLiveData.value?.depositionStock ?: 0,
+                    idDeposition = idDeposition.value ?: 0
                 )
             )
         }

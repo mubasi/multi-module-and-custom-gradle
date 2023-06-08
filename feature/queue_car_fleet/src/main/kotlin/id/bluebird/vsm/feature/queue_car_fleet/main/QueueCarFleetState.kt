@@ -46,4 +46,10 @@ sealed class QueueCarFleetState {
         val subLocationId: Long,
         val titleLocation: String
     ) : QueueCarFleetState()
+    data class GotoDepositionScreen(
+        val title : String,
+        val subLocationId: Long,
+        val idDeposition: Long,
+        val depositionStock : Long
+    ) : QueueCarFleetState()
 }
