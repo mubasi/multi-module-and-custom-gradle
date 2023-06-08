@@ -193,6 +193,8 @@ class SelectLocationViewModel(
                                             name = subLocationResult.name,
                                             locationId = subLocations.locationId,
                                             locationName = subLocations.locationName,
+                                            depositionId = subLocationResult.depositionId,
+                                            haveDeposition = subLocationResult.haveDeposition,
                                             prefix = subLocationResult.prefix
                                         )
                                     )

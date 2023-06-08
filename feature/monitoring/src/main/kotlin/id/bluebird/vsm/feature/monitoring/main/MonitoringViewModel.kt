@@ -16,16 +16,26 @@ class MonitoringViewModel(
     private val monitoringUseCases: Monitoring
 ) : ViewModel() {
 
+    companion object {
+        const val EMPTY_STRING = ""
+    }
+
     private val _monitoringState: MutableSharedFlow<MonitoringState> = MutableSharedFlow()
     val monitoringState = _monitoringState.asSharedFlow()
     val notificationVisibility = MutableLiveData(true)
     val listLocation: MutableList<MonitoringModel> = mutableListOf()
     var params: MutableLiveData<String> = MutableLiveData("")
+    var sortIsDesc: Boolean = false
+    var activeColumnSort: MutableLiveData<ActiveSort> = MutableLiveData(ActiveSort.FleetNumber)
     private val isPrivilegedUser: Boolean by lazy {
         when (UserUtils.getPrivilege()) {
             UserUtils.SVP, UserUtils.OFFICER -> false
             else -> true
         }
+    }
+
+    enum class ActiveSort {
+       LocationName, FleetNumber, FleetPassenger, TotalRitase, TotalQueueFleet, TotalPassengerQueue, RequestFleet, Deposition
     }
 
     fun init() {
@@ -45,6 +55,7 @@ class MonitoringViewModel(
                                 MonitoringModel(
                                     subLocationId = result.subLocationId,
                                     locationName = result.locationName,
+                                    subLocationName = result.subLocationName,
                                     fleetCount = result.queueFleet,
                                     queueCount = result.queuePassenger,
                                     totalFleetCount = result.totalQueueFleet,
@@ -55,7 +66,8 @@ class MonitoringViewModel(
                                     editableBuffer = isPrivilegedUser
                                 )
                             }
-                            listLocation.addAll(data)
+                            val resultSort = orderingData(data)
+                            listLocation.addAll(resultSort)
                             _monitoringState.emit(
                                 MonitoringState.OnSuccessGetList(
                                     resultFilterLocation()
@@ -64,6 +76,99 @@ class MonitoringViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    private fun orderingData(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return when (activeColumnSort.value) {
+            ActiveSort.LocationName -> {
+                sortLocationName(data)
+            }
+            ActiveSort.FleetPassenger -> {
+                sortQueueCount(data)
+            }
+            ActiveSort.TotalRitase -> {
+                sortTotalRitase(data)
+            }
+            ActiveSort.TotalQueueFleet -> {
+                sortTotalFleetCount(data)
+            }
+            ActiveSort.TotalPassengerQueue -> {
+                sortTotalQueueCount(data)
+            }
+            ActiveSort.RequestFleet -> {
+                sortFleetRequest(data)
+            }
+            ActiveSort.Deposition -> {
+                sortBuffer(data)
+            }
+            else -> {
+                sortFleetCount(data)
+            }
+        }
+    }
+
+    private fun sortLocationName(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.locationName }
+        } else {
+            data.sortedBy { item -> item.locationName }
+        }
+    }
+
+    private fun sortQueueCount(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.queueCount }
+        } else {
+            data.sortedBy { item -> item.queueCount }
+        }
+    }
+
+    private fun sortTotalRitase(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.totalRitase }
+        } else {
+            data.sortedBy { item -> item.totalRitase }
+        }
+    }
+
+    private fun sortTotalFleetCount(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.totalFleetCount }
+        } else {
+            data.sortedBy { item -> item.totalFleetCount }
+        }
+    }
+
+    private fun sortTotalQueueCount(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.totalQueueCount }
+        } else {
+            data.sortedBy { item -> item.totalQueueCount }
+        }
+    }
+
+    private fun sortFleetRequest(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.fleetRequest }
+        } else {
+            data.sortedBy { item -> item.fleetRequest }
+        }
+    }
+
+    private fun sortFleetCount(data : List<MonitoringModel>) : List<MonitoringModel> {
+       return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.fleetCount }
+        } else {
+            data.sortedBy { item -> item.fleetCount }
+        }
+    }
+
+    private fun sortBuffer(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(sortIsDesc) {
+            data.sortedByDescending { item -> item.buffer }
+        } else {
+            data.sortedBy { item -> item.buffer }
         }
     }
 
@@ -117,7 +222,7 @@ class MonitoringViewModel(
             filteredList.addAll(listLocation)
         } else {
             for (item in listLocation) {
-                if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: "")) {
+                if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: EMPTY_STRING)) {
                     filteredList.add(item)
                 }
             }
@@ -129,4 +234,20 @@ class MonitoringViewModel(
         params.value = ""
         filterLocation()
     }
+
+    fun changeStatusOrder(sort : ActiveSort, isDesc : Boolean) {
+        viewModelScope.launch {
+            sortIsDesc = !isDesc
+            activeColumnSort.value = sort
+            val resultSort = orderingData(listLocation)
+            listLocation.clear()
+            listLocation.addAll(resultSort)
+            _monitoringState.emit(
+                MonitoringState.OnSuccessGetList(
+                    resultFilterLocation()
+                )
+            )
+        }
+    }
+
 }

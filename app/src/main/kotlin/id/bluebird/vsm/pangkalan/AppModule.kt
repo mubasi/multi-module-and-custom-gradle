@@ -51,7 +51,6 @@ import id.bluebird.vsm.feature.queue_car_fleet.add_by_camera.AddCarFleetByCamera
 import id.bluebird.vsm.feature.queue_car_fleet.add_fleet.AddCarFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.depart_fleet.DepartCarFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel
-import id.bluebird.vsm.feature.queue_car_fleet.request_fleet.RequestCarFleetDialogViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.search_fleet.SearchCarFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
 import id.bluebird.vsm.feature.queue_fleet.add_by_camera.AddByCameraViewModel

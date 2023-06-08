@@ -8,6 +8,7 @@ class RowHeaderViewHolder(private val binding: TableCellLayoutBinding): Abstract
     fun bind(item: MonitoringRowHeader) {
         with(binding ) {
             value = item.data
+            subValue = item.subData
             isColored = item.rowIndex % 2 != 0
         }
     }

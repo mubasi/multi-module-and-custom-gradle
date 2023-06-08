@@ -9,6 +9,9 @@ data class MonitoringData(
     @get:PropertyName("location_name")
     @set:PropertyName("location_name")
     var locationName: String = "",
+    @get:PropertyName("sub_location_name")
+    @set:PropertyName("sub_location_name")
+    var subLocationName: String = "",
     @get:PropertyName("queue_fleet")
     @set:PropertyName("queue_fleet")
     var queueFleet: Int = 0,

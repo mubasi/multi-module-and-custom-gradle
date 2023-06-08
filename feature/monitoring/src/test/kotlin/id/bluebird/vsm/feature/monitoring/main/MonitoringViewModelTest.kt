@@ -104,6 +104,7 @@ internal class MonitoringViewModelTest {
                 MonitoringResult(
                     buffer = i,
                     locationName = "aa $i",
+                    subLocationName = "bb $i",
                     queueFleet = i,
                     queuePassenger = i,
                     request = i,
@@ -117,6 +118,7 @@ internal class MonitoringViewModelTest {
                 MonitoringModel(
                     subLocationId = i.toLong(),
                     locationName = "aa $i",
+                    subLocationName = "bb $i",
                     fleetCount = i,
                     queueCount = i,
                     totalFleetCount = i,
@@ -259,6 +261,46 @@ internal class MonitoringViewModelTest {
                 MonitoringModel(
                     subLocationId = i.toLong(),
                     locationName = "aa $i",
+                    subLocationName = "bb $i",
+                    fleetCount = i,
+                    queueCount = i,
+                    totalFleetCount = i,
+                    totalQueueCount = i,
+                    totalRitase = i,
+                    fleetRequest = i,
+                    buffer = i,
+                    editableBuffer = true
+                )
+            )
+        }
+
+        subjectUnderTest.listLocation.addAll(result)
+
+        val collect = launch {
+            subjectUnderTest.monitoringState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.filterLocation()
+        runCurrent()
+        delay(2000)
+
+        //THEN
+        assertEquals(1, states.size)
+        assertEquals(MonitoringState.FilterLocation(result), states[0])
+        collect.cancel()
+    }
+
+    @Test
+    fun `changeStatusOrderTest`() = runTest {
+        val result : ArrayList<MonitoringModel> = ArrayList()
+
+        for (i in 1 .. 3) {
+            result.add(
+                MonitoringModel(
+                    subLocationId = i.toLong(),
+                    locationName = "aa $i",
+                    subLocationName = "bb $i",
                     fleetCount = i,
                     queueCount = i,
                     totalFleetCount = i,

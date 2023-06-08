@@ -32,6 +32,7 @@ class MonitoringUseCases : Monitoring {
                     MonitoringResult(
                         buffer = value.buffer,
                         locationName = value.locationName,
+                        subLocationName = value.subLocationName,
                         queueFleet = value.queueFleet,
                         queuePassenger = value.queuePassenger,
                         request = value.request,
@@ -41,8 +42,7 @@ class MonitoringUseCases : Monitoring {
                         totalRitase = value.totalRitase
                     )
                 }
-                val sortedItems = result.sortedBy { it.queueFleet }
-                this@callbackFlow.trySendBlocking(MonitoringResultState.Success(sortedItems))
+                this@callbackFlow.trySendBlocking(MonitoringResultState.Success(result))
             }
 
             override fun onCancelled(error: DatabaseError) {

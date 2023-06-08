@@ -239,6 +239,8 @@ internal class SelectLocationViewModelTest {
             val prefix = "prefix"
             val subLocationIds = arrayOf(11L, 12L)
             val subLocationName = "test subLocationName"
+            val haveDeposition = false
+            val idDeposition = 0L
 
             every { UserUtils.getIsUserAirport() } returns false
             every { getLocationsWithSub.invoke() } returns flow {
@@ -249,7 +251,7 @@ internal class SelectLocationViewModelTest {
                                 locationId,
                                 locationName,
                                 MutableList(subLocationIds.size) {
-                                    SubLocationResult(subLocationIds[it], subLocationName, prefix)
+                                    SubLocationResult(subLocationIds[it], subLocationName, prefix, haveDeposition, depositionId = idDeposition)
                                 })
                         )
                     )
@@ -278,7 +280,9 @@ internal class SelectLocationViewModelTest {
                                     subLocationName,
                                     locationId,
                                     locationName,
-                                    prefix
+                                    prefix,
+                                    haveDeposition,
+                                    idDeposition
                                 )
                             })
                     )
@@ -295,9 +299,11 @@ internal class SelectLocationViewModelTest {
             val locationId = 1L
             val locationName = "location name"
             val prefix = "prefix"
+            val haveDeposition = false
+            val idDeposition = 0L
             val testItem = LocationModel(
                 locationId, locationName, listOf(
-                    SubLocation(11L, "subLocation name", locationId, locationName, prefix)
+                    SubLocation(11L, "subLocation name", locationId, locationName, prefix, haveDeposition, idDeposition )
                 )
             )
             val testPosition = 0
@@ -321,7 +327,9 @@ internal class SelectLocationViewModelTest {
         runTest {
             //GIVEN
             val isFleetMenu = false
-            val subLocation = SubLocation(11L, "subLocation name", 1L, "location name", "prefix")
+            val haveDeposition = false
+            val idDeposition = 0L
+            val subLocation = SubLocation(11L, "subLocation name", 1L, "location name", "prefix", haveDeposition, idDeposition)
 
             val locNav = LocationNavigation(
                 locationId = subLocation.locationId,

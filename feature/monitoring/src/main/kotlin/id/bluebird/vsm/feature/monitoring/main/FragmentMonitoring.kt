@@ -53,7 +53,9 @@ class FragmentMonitoring: Fragment() {
         monitoringViewModel.notificationVisibility.observe(viewLifecycleOwner) {
             mBinding.isNotificationVisible = it
         }
-
+        monitoringViewModel.activeColumnSort.observe(viewLifecycleOwner) {
+            tableAdapter.updateCorner(it)
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 monitoringViewModel.monitoringState.collect {
