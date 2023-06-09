@@ -74,21 +74,6 @@ pipeline {
                 NAMESPACE="mall-officer"
             }
             stages {
-                 stage('Deploy Control') {
-                    when {
-                        branch 'control'
-                    }
-                    environment {
-                        MULTI   = "${env.VERSION_PREFIX}-multi${env.BUILD_NUMBER}"
-                        APP_ID  = "1:178128345896:android:42053fd72334ad42738e1d"
-                        GROUPS  = "qa-da"
-                    }
-                    steps {
-                        sh 'git submodule update --init --recursive'
-                        sh 'chmod +x build.sh'
-                        sh './build.sh $MULTI $ANDROID_HOME $APP_ID $GROUPS $BUILD_NUMBER'
-                    }
-                }
                 stage('Deploy Develop') {
                     when {
                         branch 'develop'
