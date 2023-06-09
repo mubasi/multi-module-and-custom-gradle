@@ -14,7 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 
 @ExperimentalCoroutinesApi
 internal class GetListFleetUseCasesTest {
@@ -31,7 +31,7 @@ internal class GetListFleetUseCasesTest {
         // Mock
         every { _fleetRepo.getListFleet(any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.GetListFleetTerminalResp.newBuilder()
+                OutletAssignmentPangkalan.GetListFleetTerminalPangkalanResp.newBuilder()
                     .build()
             )
         }
@@ -49,8 +49,8 @@ internal class GetListFleetUseCasesTest {
         // Mock
         every { _fleetRepo.getListFleet(any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.GetListFleetTerminalResp.newBuilder()
-                    .addFleetList(AssignmentPangkalanOuterClass.FleetItems.newBuilder().apply {
+                OutletAssignmentPangkalan.GetListFleetTerminalPangkalanResp.newBuilder()
+                    .addFleetList(OutletAssignmentPangkalan.FleetItemsPangkalan.newBuilder().apply {
                         createdAt = "2022-07-18T07:54:14Z"
                         fleetId = 12
                         taxiNo = "AB1212"

@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 
 @ExperimentalCoroutinesApi
 internal class DepartFleetUseCasesTest {
@@ -49,7 +49,7 @@ internal class DepartFleetUseCasesTest {
             )
         } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.StockResponse.newBuilder()
+                OutletAssignmentPangkalan.StockResponsePangkalan.newBuilder()
                     .apply {
                         message = "vv"
                         stockType = "AA"

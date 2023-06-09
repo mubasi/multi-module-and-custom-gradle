@@ -34,10 +34,16 @@
         <item name="android:windowIsFloating">false</item>
     </style>
 
+    <style name="BottomSheetDialogRequest" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
     <style name="TabLayoutCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
         <item name="android:fontFamily">@font/ubuntu_bold</item>
-        <item name="android:textSize">@dimen/sixty_sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 

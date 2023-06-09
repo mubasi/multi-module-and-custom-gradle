@@ -80,11 +80,14 @@ android {
         kotlin.srcDir(project(":domain:user").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:fleet").file("src/test/kotlin"))
         kotlin.srcDir(project(":domain:location").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain:airport_assignment").file("src/test/kotlin"))
+        kotlin.srcDir(project(":domain:airport_location").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:select_location").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:user_management").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:queue_passenger").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:monitoring").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:qr_code").file("src/test/kotlin"))
+        kotlin.srcDir(project(":feature:airport_fleet").file("src/test/kotlin"))
         kotlin.srcDir(project(":feature:queue_car_fleet").file("src/test/kotlin"))
     }
 
@@ -144,9 +147,12 @@ dependencies {
     implementation(project(":domain:fleet"))
     implementation(project(":domain:passenger"))
     implementation(project(":domain:location"))
+    implementation(project(":domain:airport_assignment"))
+    implementation(project(":domain:airport_location"))
     implementation(project(":navigation"))
     implementation(project(":feature:monitoring"))
     implementation(project(":feature:qr_code"))
+    implementation(project(":feature:airport_fleet"))
     implementation(project(":feature:queue_car_fleet"))
 
     testImplementation(Junit5.jupiter)

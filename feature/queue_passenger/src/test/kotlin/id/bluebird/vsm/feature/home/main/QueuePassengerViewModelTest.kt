@@ -2,6 +2,7 @@ package id.bluebird.vsm.feature.home.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.orhanobut.hawk.Hawk
+import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.passenger.CounterBarState
 import id.bluebird.vsm.domain.passenger.GetCurrentQueueState
@@ -17,9 +18,12 @@ import id.bluebird.vsm.domain.passenger.model.ListQueueResult
 import id.bluebird.vsm.domain.passenger.model.Queue
 import id.bluebird.vsm.domain.user.GetUserAssignmentState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
+import id.bluebird.vsm.domain.user.model.AssignmentLocationItem
+import id.bluebird.vsm.domain.user.model.UserAssignment
 import id.bluebird.vsm.feature.home.TestCoroutineRule
 import id.bluebird.vsm.feature.home.model.*
 import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
+import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -122,6 +126,39 @@ internal class QueuePassengerViewModelTest {
             collect.cancel()
         }
 
+
+    @Test
+    fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser massage response null`() =
+        runTest {
+            //GIVEN
+            val titleString = "..."
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserAssignment.invoke(any()) } returns flow {
+                throw Throwable(
+                    message = null
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
+            assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
+            assertEquals(titleString, resultTitle)
+
+            collect.cancel()
+        }
+
     @Test
     fun `init, when user is officer and locationNav not available and failed to getUser from State, emit failedGetUser`() =
         runTest {
@@ -151,6 +188,52 @@ internal class QueuePassengerViewModelTest {
             )
             assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
             assertEquals(titleString, resultTitle)
+
+            collect.cancel()
+        }
+
+    @Test
+    fun `init, when user is officer and locationNav not available and success to getUser from State, emit Success`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserAssignment.invoke(any()) } returns flow {
+                emit(GetUserAssignmentState.Success(
+                    AssignmentLocationItem(
+                        subLocationId = 1L,
+                        subLocationName ="aa",
+                        isDeposition = false,
+                        locationId = 2L,
+                        locationName = "bb",
+                        prefix = "dd",
+                        isWings = false
+                    )
+                ))
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(
+                QueuePassengerState.SuccessGetUser,
+                states[1]
+            )
+            assertEquals(UserInfo(
+                userId = 1L,
+                locationId = 2L,
+                subLocationId = 1L
+            ), subjectUnderTest.mUserInfo)
+            assertEquals("bb aa".getLastSync(), resultTitle)
 
             collect.cancel()
         }
@@ -574,6 +657,31 @@ internal class QueuePassengerViewModelTest {
             assertEquals(QueuePassengerState.FailedCounterBar(error), states[1])
         }
 
+
+    @Test
+    fun `getCounterBar, when counterBar response throw error message null, emit state FailedCounterBar`() =
+        runTest {
+            //GIVEN
+            every { counterBar.invoke(any(), any()) } returns flow {
+                throw Throwable(
+                    message = null
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.getCounterBar()
+            runCurrent()
+            collect.cancel()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesCounterBar, states[0])
+            assertEquals(QueuePassengerState.FailedCounterBar(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
+        }
+
     @Test
     fun `qrCodeScreenTest, emit state QrCodeScreen`() = runTest {
         //GIVEN
@@ -603,4 +711,111 @@ internal class QueuePassengerViewModelTest {
             ), states[0]
         )
     }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is true`() = runTest {
+        //GIVEN
+        val itemUser = UserAssignment(
+            id = 1L,
+            locationId = 2L,
+            subLocationId = 3L,
+            locationName = "aa",
+            subLocationName = "bb",
+            prefix = "cc",
+            isOfficer = true
+        )
+
+        val result = "${itemUser.locationName} ${itemUser.subLocationName}".getLastSync()
+
+
+        //WHEN
+        subjectUnderTest.createTitleLocation(itemUser)
+
+        //THEN
+        assertEquals("aa", subjectUnderTest.getLocationName())
+        assertEquals("bb", subjectUnderTest.getSubLocationName())
+        assertEquals("cc", subjectUnderTest.getPrefix())
+        assertEquals(result, subjectUnderTest.titleLocation.value)
+    }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is false and getlocationnav is null`() =
+        runTest {
+            //GIVEN
+            val itemUser = UserAssignment(
+                id = 1L,
+                locationId = 2L,
+                subLocationId = 3L,
+                locationName = "aa",
+                subLocationName = "bb",
+                prefix = "cc",
+                isOfficer = false
+            )
+
+            val result = "${itemUser.locationName} ${itemUser.subLocationName}".getLastSync()
+            every { LocationNavigationTemporary.getLocationNav() } returns null
+
+            //WHEN
+            subjectUnderTest.createTitleLocation(itemUser)
+
+            //THEN
+            assertEquals("aa", subjectUnderTest.getLocationName())
+            assertEquals("bb", subjectUnderTest.getSubLocationName())
+            assertEquals("cc", subjectUnderTest.getPrefix())
+            assertEquals(result, subjectUnderTest.titleLocation.value)
+        }
+
+    @Test
+    fun `createTitleLocationTest, when user officer is false and getlocationnav is not null`() =
+        runTest {
+            //GIVEN
+            val itemUser = UserAssignment(
+                id = 1L,
+                locationId = 2L,
+                subLocationId = 3L,
+                locationName = "aa",
+                subLocationName = "bb",
+                prefix = "cc",
+                isOfficer = false
+            )
+
+            every { LocationNavigationTemporary.getLocationNav() } returns LocationNavigation(
+                locationId = 1L,
+                subLocationId = 2L,
+                locationName = "dd",
+                subLocationName = "ee",
+                prefix = "ff",
+                isPerimeter = false,
+                isWing = false
+            )
+            val result = "dd ee".getLastSync()
+
+            //WHEN
+            subjectUnderTest.createTitleLocation(itemUser)
+
+            //THEN
+            assertEquals("dd", subjectUnderTest.getLocationName())
+            assertEquals("ee", subjectUnderTest.getSubLocationName())
+            assertEquals("ff", subjectUnderTest.getPrefix())
+            assertEquals(result, subjectUnderTest.titleLocation.value)
+        }
+
+    @Test
+    fun `prosesRitaseTest`() = runTest {
+        val collect = launch {
+            subjectUnderTest.queuePassengerState.toList(states)
+        }
+
+        //WHEN
+        subjectUnderTest.prosesRitase()
+        runCurrent()
+
+        //THEN
+        assertEquals(1, states.size)
+        assertEquals(QueuePassengerState.ProsesRitase, states[0])
+        collect.cancel()
+    }
+
+
+
 }

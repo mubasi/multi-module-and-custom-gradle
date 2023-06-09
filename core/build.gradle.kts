@@ -183,6 +183,7 @@ dependencies {
     testRuntimeOnly(Junit5.vintage_engine)
 
     testApi(OtherLib.json)
+    api(OtherLib.anko)
     api(OtherLib.hawk)
 }
 

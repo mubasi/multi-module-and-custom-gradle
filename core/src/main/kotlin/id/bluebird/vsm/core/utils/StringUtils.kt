@@ -23,6 +23,40 @@ class StringUtils {
                 .append(" ")
                 .append(msg)
         }
+
+        fun getMessage(
+            context: Context,
+            isNonTerminal: Boolean,
+            isWithPassenger: Boolean,
+            name : String
+        ): String {
+            return if (isNonTerminal) {
+                context.getString(if (isWithPassenger) R.string.leave_with_passenger else R.string.leave_without_passenger)
+            } else {
+                " ${
+                    context.getString(
+                        R.string.car_success_assign_to
+                    )
+                } $name"
+            }
+        }
+
+
+        fun getMessageRitase(
+            context: Context,
+            message : Any,
+            isWithPassenger : Boolean,
+            isStatusArrived : Boolean
+        ) : String {
+            val actionMessage = if (isStatusArrived) {
+                context.getString(
+                    if (isWithPassenger) R.string.leave_with_passenger else R.string.leave_without_passenger
+                )
+            } else {
+                context.getString(R.string.confirm_fleet_arrived_success)
+            }
+            return "$message ${if (message is Int) context.getString(R.string.armada) else ""} $actionMessage"
+        }
     }
 
 }

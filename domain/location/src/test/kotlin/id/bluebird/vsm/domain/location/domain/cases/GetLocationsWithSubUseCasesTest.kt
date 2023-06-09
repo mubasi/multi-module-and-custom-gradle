@@ -16,7 +16,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.LocationPangkalanOuterClass
+import proto.OutletLocationPangkalanOuterClass
 
 @ExperimentalCoroutinesApi
 internal class GetLocationsWithSubUseCasesTest {
@@ -37,29 +37,33 @@ internal class GetLocationsWithSubUseCasesTest {
         val prefix = "prefix"
         every { repository.getLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetLocationsResponse.newBuilder().apply {
-                    this.addListLocations(
-                        LocationPangkalanOuterClass.CreateLocationRequest.newBuilder().apply {
-                            this.id = locationId
-                            this.locationName = locationName
-                        })
+                OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse.newBuilder().apply {
+                    addListLocations(
+                        OutletLocationPangkalanOuterClass.CreateLocationPangkalanRequest.newBuilder()
+                            .apply {
+                                this.id = locationId
+                                this.locationName = locationName
+                            }
+                    )
                 }.build()
             )
         }
         every { repository.getSubLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetSubLocationsResponse.newBuilder().apply {
-                    for (i in 0 until subLocationSize) {
-                        this.addSubLocations(
-                            LocationPangkalanOuterClass.GetSubLocationsItem.newBuilder().apply {
-                                this.locationId = locationId
-                                this.subLocationId = i.toLong()
-                                this.subLocationName = subLocationName
-                                this.prefix = prefix
-                            }.build()
-                        )
-                    }
-                }.build()
+                OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanResponse.newBuilder()
+                    .apply {
+                        for (i in 0 until subLocationSize) {
+                            this.addSubLocations(
+                                OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanItem.newBuilder()
+                                    .apply {
+                                        this.locationId = locationId
+                                        this.subLocationId = i.toLong()
+                                        this.subLocationName = subLocationName
+                                        this.prefix = prefix
+                                    }.build()
+                            )
+                        }
+                    }.build()
             )
         }
         //WHEN
@@ -85,21 +89,24 @@ internal class GetLocationsWithSubUseCasesTest {
         val subLocationName = "testSubLocation"
         every { repository.getLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetLocationsResponse.newBuilder().apply {
-                    this.addListLocations(
-                        LocationPangkalanOuterClass.CreateLocationRequest.newBuilder().apply {
-                            this.id = locationId
-                            this.locationName = locationName
-                        })
-                }.build()
+                OutletLocationPangkalanOuterClass.GetLocationsPangkalanResponse.newBuilder()
+                    .apply {
+                        this.addListLocations(
+                            OutletLocationPangkalanOuterClass.CreateLocationPangkalanRequest.newBuilder()
+                                .apply {
+                                    this.id = locationId
+                                    this.locationName = locationName
+                                }
+                        )
+                    }.build()
             )
         }
         every { repository.getSubLocations() } returns flow {
             emit(
-                LocationPangkalanOuterClass.GetSubLocationsResponse.newBuilder().apply {
+                OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanResponse.newBuilder().apply {
                     for (i in 0 until subLocationSize) {
                         this.addSubLocations(
-                            LocationPangkalanOuterClass.GetSubLocationsItem.newBuilder().apply {
+                            OutletLocationPangkalanOuterClass.GetSubLocationsPangkalanItem.newBuilder().apply {
                                 this.locationId = locationId
                                 this.subLocationId = i.toLong()
                                 this.subLocationName = subLocationName

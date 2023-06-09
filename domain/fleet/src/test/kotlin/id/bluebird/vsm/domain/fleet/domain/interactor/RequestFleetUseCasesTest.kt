@@ -17,7 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import proto.AssignmentPangkalanOuterClass
+import proto.OutletAssignmentPangkalan
 
 @ExperimentalCoroutinesApi
 internal class RequestFleetUseCasesTest {
@@ -36,7 +36,7 @@ internal class RequestFleetUseCasesTest {
         // Execute
         every { _repository.requestFleet(any(), any(), any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.RequestTaxiResponse.newBuilder()
+                OutletAssignmentPangkalan.RequestTaxiPangkalanResponse.newBuilder()
                     .apply {
                         requestCount = 1
                     }.build()
@@ -58,7 +58,7 @@ internal class RequestFleetUseCasesTest {
         // Execute
         every { _repository.requestFleet(any(), any(), any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.RequestTaxiResponse.newBuilder()
+                OutletAssignmentPangkalan.RequestTaxiPangkalanResponse.newBuilder()
                     .apply {
                         requestCount = 1
                     }.build()
@@ -79,7 +79,7 @@ internal class RequestFleetUseCasesTest {
         every { Hawk.get<Long>(any()) } returns 1L
         every { _repository.requestFleet(any(), any(), any()) } returns flow {
             emit(
-                AssignmentPangkalanOuterClass.RequestTaxiResponse.newBuilder()
+                OutletAssignmentPangkalan.RequestTaxiPangkalanResponse.newBuilder()
                     .apply {
                         requestCount = 1
                     }.build()

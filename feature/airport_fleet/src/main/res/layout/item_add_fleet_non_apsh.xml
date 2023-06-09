@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="vm"
+            type="id.bluebird.vsm.feature.airport_fleet.add_fleet.AddFleetViewModelNonApsh" />
+
+        <variable
+            name="fleetNumber"
+            type="String" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:onClick="@{() -> vm.addFleetFromButton(fleetNumber, false)}"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:fontFamily="@font/ubuntu_bold"
+                android:text="@{fleetNumber}"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/bg_cancel_silver_button"
+                android:onClick="@{() -> vm.addFleetFromButton(fleetNumber, true)}"
+                android:text="@string/tu"
+                android:textAllCaps="false"
+                android:visibility="@{vm.isShowingTu ? View.VISIBLE :View.GONE, default=gone}" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/black" />
+
+    </LinearLayout>
+</layout>
