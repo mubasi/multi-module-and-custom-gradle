@@ -9,5 +9,4 @@ dependencies {
     compileOnly(Kotlin.javax_annotation)
 
     applyJUnitTestImplementation()
-    testImplementation(OtherLib.turbin)
 }

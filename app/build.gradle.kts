@@ -54,7 +54,7 @@ dependencies {
     implementation(project(":feature:airport_fleet"))
     implementation(project(":feature:queue_car_fleet"))
 
-    testImplementation(OtherLib.turbin)
+    
     applyJUnitTestImplementation()
 }
 

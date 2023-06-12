@@ -221,4 +221,5 @@ fun DependencyHandlerScope.applyJUnitTestImplementation() {
     add(configurationName, Junit.core)
     add(configurationName, Mockk.mockk)
     add(configurationName, Kotlin.coroutines_test)
+    add(configurationName, OtherLib.turbin)
 }
