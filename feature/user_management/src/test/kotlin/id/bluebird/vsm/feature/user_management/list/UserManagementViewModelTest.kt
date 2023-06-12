@@ -1,14 +1,22 @@
 package id.bluebird.vsm.feature.user_management.list
 
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
+import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.core.utils.hawk.UserUtils
+import id.bluebird.vsm.domain.user.SearchUserState
 import id.bluebird.vsm.domain.user.domain.intercator.SearchUser
+import id.bluebird.vsm.domain.user.model.SearchUserResult
+import id.bluebird.vsm.domain.user.model.UserSearchParam
 import id.bluebird.vsm.feature.user_management.TestCoroutineRule
+import id.bluebird.vsm.feature.user_management.create.CreateUserState
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -62,6 +70,25 @@ internal class UserManagementViewModelTest {
         Assertions.assertEquals(
             _vm.userSettingSealed.value,
             UserSettingSealed.GetUserOnError(error)
+        )
+    }
+
+    @Test
+    fun `searchUser, isFailed`() = runTest {
+
+        // Mock
+        justRun { actionSealedObserver.onChanged(any()) }
+        every { searchUser.invoke("") } returns flow {
+            throw NullPointerException()
+        }
+
+        // Execution
+        _vm.searchUser()
+
+        // Result
+        Assertions.assertEquals(
+            _vm.userSettingSealed.awaitValue(),
+            UserSettingSealed.OnGetUserListProgress
         )
     }
 

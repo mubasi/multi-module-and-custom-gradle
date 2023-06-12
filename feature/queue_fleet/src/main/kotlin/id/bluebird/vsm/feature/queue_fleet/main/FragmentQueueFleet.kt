@@ -28,8 +28,6 @@ import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDia
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -46,8 +44,6 @@ class FragmentQueueFleet : Fragment() {
     private lateinit var mBinding: FleetFragmentBinding
     private val _fleetAdapter: AdapterFleets by inject()
     private val _args by navArgs<FragmentQueueFleetArgs>()
-    private lateinit var _stateFlow:FlowCollector<QueueFleetState>
-    private lateinit var _coroutineScope: Job
     private var bottomProgressDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
@@ -217,8 +213,6 @@ class FragmentQueueFleet : Fragment() {
             }
         }
     }
-
-
 
     private fun successDialogDepartFleet(fleetNumber: String, isWithPassenger: Boolean) {
         val string = SpannableStringBuilder()

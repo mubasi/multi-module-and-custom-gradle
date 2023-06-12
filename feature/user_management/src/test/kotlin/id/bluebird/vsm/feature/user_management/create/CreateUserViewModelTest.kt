@@ -1,7 +1,9 @@
 package id.bluebird.vsm.feature.user_management.create
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import id.bluebird.vsm.domain.location.LocationDomainState
 import id.bluebird.vsm.domain.location.domain.interactor.GetSubLocationByLocationId
 import id.bluebird.vsm.domain.location.model.SubLocationResult
@@ -15,7 +17,6 @@ import id.bluebird.vsm.feature.user_management.create.model.SubLocationCache
 import id.bluebird.vsm.feature.user_management.search_location.model.Location
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -51,6 +52,7 @@ internal class CreateUserViewModelTest {
 
     @BeforeEach
     fun setup() {
+        mockkStatic(Transformations::class)
         actionSealedObserver = mockk()
         _vm = CreateUserViewModel(
             createEditUser,
@@ -66,6 +68,18 @@ internal class CreateUserViewModelTest {
     @AfterEach
     fun resetEvent() {
         _vm.actionSealed.removeObserver(actionSealedObserver)
+    }
+
+    private suspend fun <T> LiveData<T>.awaitValue(): T? {
+        return suspendCoroutine { cont ->
+            val observer = object : Observer<T> {
+                override fun onChanged(t: T?) {
+                    removeObserver(this)
+                    cont.resume(t)
+                }
+            }
+            observeForever(observer)
+        }
     }
 
     private fun givenAddUserInformation() {
@@ -136,7 +150,7 @@ internal class CreateUserViewModelTest {
         _vm.getUser()
 
         //result
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
     }
 
     @Test
@@ -295,7 +309,7 @@ internal class CreateUserViewModelTest {
         }
 
         _vm.setupSubLocation()
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
     }
 
     @Test
@@ -316,7 +330,7 @@ internal class CreateUserViewModelTest {
 
         //result
         Assertions.assertEquals(location.name, _vm.selectedLocation.value)
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.AssignSubLocationFromData)
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.AssignSubLocationFromData)
     }
 
     @Test
@@ -332,10 +346,9 @@ internal class CreateUserViewModelTest {
 
         //execute
         _vm.saveUser()
-        testScheduler.runCurrent()
 
         //result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.OnSaveProgress)
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.OnSaveProgress)
     }
 
     @Test
@@ -393,10 +406,9 @@ internal class CreateUserViewModelTest {
 
         // Execute
         _vm.requestDelete()
-        testScheduler.runCurrent()
 
         // Result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.DeleteUser("aa"))
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.DeleteUser("aa"))
     }
 
 
@@ -409,10 +421,9 @@ internal class CreateUserViewModelTest {
 
         // Execute
         _vm.requestDelete()
-        testScheduler.runCurrent()
 
         // Result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.DeleteUser(""))
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.DeleteUser(""))
     }
 
 
@@ -428,7 +439,7 @@ internal class CreateUserViewModelTest {
         _vm.delete()
 
         // Result
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
 
     }
 
@@ -448,7 +459,7 @@ internal class CreateUserViewModelTest {
         _vm.delete()
 
         // Result
-//        assert(_vm.actionSealed is CreateUserState.OnGetDataProcess)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnGetDataProcess)
 
     }
 
@@ -465,7 +476,7 @@ internal class CreateUserViewModelTest {
         runCurrent()
 
         // Result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.ForceLogout("aa"))
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.ForceLogout("aa"))
     }
 
     @Test
@@ -477,10 +488,9 @@ internal class CreateUserViewModelTest {
 
         // Execute
         _vm.requestForceLogout()
-        testScheduler.runCurrent()
 
         // Result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.ForceLogout(""))
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.ForceLogout(""))
     }
 
     @Test
@@ -510,10 +520,9 @@ internal class CreateUserViewModelTest {
 
         // Execute
         _vm.getInformation()
-        testScheduler.runCurrent()
 
         // Result
-        Assertions.assertEquals(_vm.actionSealed.value, CreateUserState.OnGetDataProcess)
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.OnGetDataProcess)
         _vm.getSubLocations().isEmpty()
         _vm.valRoles().isEmpty()
     }
@@ -574,7 +583,7 @@ internal class CreateUserViewModelTest {
 
         Assertions.assertEquals(_vm.subLocationLiveData.value!!.size, 0)
         Assertions.assertEquals(_vm.roleLiveData.value!!.size, 0)
-        Assertions.assertEquals(_vm.actionSealed.value!!, CreateUserState.GetInformationOnError(result))
+        Assertions.assertEquals(_vm.actionSealed.awaitValue(), CreateUserState.GetInformationOnError(result))
     }
 
     @Test
@@ -597,7 +606,7 @@ internal class CreateUserViewModelTest {
 
         _vm.forceLogout()
 
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
     }
 
 
@@ -617,7 +626,7 @@ internal class CreateUserViewModelTest {
         _vm.delete()
 
         // Result
-//        assert(_vm.actionSealed is CreateUserState.OnGetDataProcess)
+        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnGetDataProcess)
 
     }
 

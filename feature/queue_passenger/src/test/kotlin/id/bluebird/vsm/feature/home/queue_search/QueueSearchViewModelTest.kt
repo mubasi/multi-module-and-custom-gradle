@@ -226,7 +226,7 @@ internal class QueueSearchViewModelTest {
     }
 
     @Test
-    fun `filterQueueTest when result is not empty and status filter is all`() = runTest {
+    fun `filterQueueTest when result is not empty`() = runTest {
         val listQueue: ArrayList<QueueSearchCache> = ArrayList()
         for (i in 1..1) {
             val queueId = i.toLong()
@@ -243,88 +243,6 @@ internal class QueueSearchViewModelTest {
         val prefix = "aa"
         val params = "1"
 
-        subjectUnderTest.setPrefix(prefix)
-        subjectUnderTest.setParams(params)
-        subjectUnderTest.setListQueue(listQueue)
-
-        //given
-        val collect = launch {
-            subjectUnderTest.queueSearchState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.filterQueue()
-        runCurrent()
-        delay(500)
-        Assertions.assertEquals(1, states.size)
-        Assertions.assertEquals(
-            QueueSearchState.FilterResult(
-                listQueue
-            ), states[0]
-        )
-        collect.cancel()
-    }
-
-    @Test
-    fun `filterQueueTest when result is not empty and status filter is waiting`() = runTest {
-        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
-        for (i in 1..1) {
-            val queueId = i.toLong()
-            val queueName = "aa.$i"
-            listQueue.add(
-                QueueSearchCache(
-                    queueId,
-                    queueName,
-                    true
-                )
-            )
-        }
-
-        val prefix = "aa"
-        val params = "1"
-
-        subjectUnderTest.setFilterStatus(QueueSearchViewModel.StatusFilter.WAITING)
-        subjectUnderTest.setPrefix(prefix)
-        subjectUnderTest.setParams(params)
-        subjectUnderTest.setListQueue(listQueue)
-
-        //given
-        val collect = launch {
-            subjectUnderTest.queueSearchState.toList(states)
-        }
-
-        //WHEN
-        subjectUnderTest.filterQueue()
-        runCurrent()
-        delay(500)
-        Assertions.assertEquals(1, states.size)
-        Assertions.assertEquals(
-            QueueSearchState.FilterResult(
-                listQueue
-            ), states[0]
-        )
-        collect.cancel()
-    }
-
-    @Test
-    fun `filterQueueTest when result is not empty and status filter is skipped`() = runTest {
-        val listQueue: ArrayList<QueueSearchCache> = ArrayList()
-        for (i in 1..1) {
-            val queueId = i.toLong()
-            val queueName = "aa.$i"
-            listQueue.add(
-                QueueSearchCache(
-                    queueId,
-                    queueName,
-                    false
-                )
-            )
-        }
-
-        val prefix = "aa"
-        val params = "1"
-
-        subjectUnderTest.setFilterStatus(QueueSearchViewModel.StatusFilter.SKIPPED)
         subjectUnderTest.setPrefix(prefix)
         subjectUnderTest.setParams(params)
         subjectUnderTest.setListQueue(listQueue)

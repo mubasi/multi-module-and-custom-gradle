@@ -379,6 +379,7 @@ internal class FleetNonApshViewModelTest {
     @Test
     fun `getUserAssignmentTest when condition is success and list empty`() = runTest {
         //given
+        val versionCode = 42L
 
         every { UserUtils.getUserId() } returns 1L
         every { getUserAssignment.invoke(any()) } returns flow {
