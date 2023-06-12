@@ -159,6 +159,39 @@ internal class QueuePassengerViewModelTest {
             collect.cancel()
         }
 
+
+    @Test
+    fun `init, when user is officer and locationNav not available and failed to getUser, emit failedGetUser massage response null`() =
+        runTest {
+            //GIVEN
+            val titleString = "..."
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserAssignment.invoke(any()) } returns flow {
+                throw Throwable(
+                    message = null
+                )
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
+            assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
+            assertEquals(titleString, resultTitle)
+
+            collect.cancel()
+        }
+
     @Test
     fun `init, when user is officer and locationNav not available and failed to getUser from State, emit failedGetUser`() =
         runTest {
@@ -234,6 +267,52 @@ internal class QueuePassengerViewModelTest {
                 subLocationId = 1L
             ), subjectUnderTest.mUserInfo)
             assertEquals("bb aa".getLastSync(), resultTitle.value)
+
+            collect.cancel()
+        }
+
+    @Test
+    fun `init, when user is officer and locationNav not available and success to getUser from State, emit Success`() =
+        runTest {
+            //GIVEN
+            every { LocationNavigationTemporary.isLocationNavAvailable() } returns false
+            every { UserUtils.isUserOfficer() } returns true
+            every { UserUtils.getUserId() } returns 1L
+            every { getUserAssignment.invoke(any()) } returns flow {
+                emit(GetUserAssignmentState.Success(
+                    AssignmentLocationItem(
+                        subLocationId = 1L,
+                        subLocationName ="aa",
+                        isDeposition = false,
+                        locationId = 2L,
+                        locationName = "bb",
+                        prefix = "dd",
+                        isWings = false
+                    )
+                ))
+            }
+            val collect = launch {
+                subjectUnderTest.queuePassengerState.toList(states)
+            }
+
+            //WHEN
+            subjectUnderTest.init()
+            runCurrent()
+            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+
+            //THEN
+            assertEquals(2, states.size)
+            assertEquals(QueuePassengerState.ProsesGetUser, states[0])
+            assertEquals(
+                QueuePassengerState.SuccessGetUser,
+                states[1]
+            )
+            assertEquals(UserInfo(
+                userId = 1L,
+                locationId = 2L,
+                subLocationId = 1L
+            ), subjectUnderTest.mUserInfo)
+            assertEquals("bb aa".getLastSync(), resultTitle)
 
             collect.cancel()
         }

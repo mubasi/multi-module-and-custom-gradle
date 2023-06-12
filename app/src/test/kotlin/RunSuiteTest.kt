@@ -8,8 +8,6 @@ import id.bluebird.vsm.feature.airport_fleet.RunSuiteAirportFleet
 import id.bluebird.vsm.feature.home.RunSuiteFeatureQueuePassenger
 import id.bluebird.vsm.feature.monitoring.RunSuiteFeatureMonitoring
 import id.bluebird.vsm.feature.qrcode.RunSuiteFeatureQrcode
-import id.bluebird.vsm.feature.monitoring.RunSuiteFeatureMonitoring
-import id.bluebird.vsm.feature.qrcode.RunSuiteFeatureQrcode
 import id.bluebird.vsm.feature.queue_car_fleet.RunSuiteFeatureQueueCarFleet
 import id.bluebird.vsm.feature.queue_fleet.RunSuiteFeatureQueueFleet
 import id.bluebird.vsm.feature.user_management.RunSuiteFeatureUser
@@ -30,7 +28,8 @@ import org.junit.platform.suite.api.Suite
     RunSuiteFeatureQrcode::class,
     RunSuiteDomainAirportAssigment::class,
     RunSuiteDomainAirportLocation::class,
-    RunSuiteAirportFleet::class
+    RunSuiteAirportFleet::class,
+    RunSuiteFeatureQueueCarFleet::class
 )
 @ExperimentalCoroutinesApi
 class RunSuiteTest

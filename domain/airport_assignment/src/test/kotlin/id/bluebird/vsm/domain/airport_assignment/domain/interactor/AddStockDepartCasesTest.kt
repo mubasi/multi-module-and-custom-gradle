@@ -5,6 +5,7 @@ import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.airport_assignment.AirportAssignmentRepository
 import id.bluebird.vsm.domain.airport_assignment.StockDepartState
 import id.bluebird.vsm.domain.airport_assignment.model.AddStockDepartModel
+import id.bluebird.vsm.domain.airport_assignment.model.ArrivedItemModel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -45,6 +46,17 @@ internal class AddStockDepartCasesTest {
                         this.stockType = "bb"
                         this.stockId = 1L
                         this.createdAt = "cc"
+                        addArrivedFleet(
+                            AssignmentOuterClass.ArrivedItem.newBuilder()
+                                .apply {
+                                    this.stockId = 1L
+                                    this.taxiNo = "dd"
+                                    this.createdAt = "ee"
+                                }.build()
+                        )
+                        addTaxiNo(
+                            "aa"
+                        )
                     }.build()
             )
         }
@@ -61,6 +73,14 @@ internal class AddStockDepartCasesTest {
             )
         ).test {
             //result
+            val tempArrivedItem = ArrayList<ArrivedItemModel>()
+            tempArrivedItem.add(
+                ArrivedItemModel(
+                    stockId = 1L,
+                    createdAt = "ee",
+                    taxiNo = "dd"
+                )
+            )
             Assertions.assertEquals(
                 awaitItem().single(),
                 StockDepartState.Success(
@@ -69,8 +89,8 @@ internal class AddStockDepartCasesTest {
                         stockId = 1L,
                         stockType = "bb",
                         createdAt = "cc",
-                        taxiList = listOf(),
-                        arrivedItem = listOf(),
+                        taxiList = listOf("aa"),
+                        arrivedItem = tempArrivedItem,
                         currentTuSpace = 0L
                     )
                 )

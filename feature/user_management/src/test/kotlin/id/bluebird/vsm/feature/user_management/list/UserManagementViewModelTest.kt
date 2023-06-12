@@ -248,11 +248,11 @@ internal class UserManagementViewModelTest {
 
         //Result
         Assertions.assertEquals(
-            _vm.privilege.value,
+            _vm.privilege.value ,
             UserUtils.SVP
         )
         Assertions.assertEquals(
-            _vm.loginUserId,
+            _vm.loginUserId ,
             1L
         )
 
@@ -270,11 +270,11 @@ internal class UserManagementViewModelTest {
 
         //Result
         Assertions.assertEquals(
-            _vm.privilege.value,
+            _vm.privilege.value ,
             UserUtils.ADMIN
         )
         Assertions.assertEquals(
-            _vm.loginUserId,
+            _vm.loginUserId ,
             1L
         )
 
@@ -293,7 +293,7 @@ internal class UserManagementViewModelTest {
             0
         )
         Assertions.assertEquals(
-            _vm.counter.value,
+            _vm.counter.value ,
             0
         )
 
