@@ -62,8 +62,8 @@ class ProjectModulePlugin : Plugin<Project> {
             }
 
         project.dependencies {
-//            kotlinDependencies()
-//            koinDependencies()
+            kotlinDependencies()
+            koinDependencies()
         }
     }
 

@@ -15,6 +15,8 @@ dependencies {
     implementation(project(":domain:location"))
     implementation(UiMaterial.swipe)
 
+    applyJUnitTestImplementation()
+
     compileOnly(Kotlin.javax_annotation)
     
 }

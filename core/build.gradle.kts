@@ -113,9 +113,6 @@ dependencies {
     protobuf(Grpc.pb_java_utils)
     protobuf(Grpc.pb_google_apis)
 
-    testApi(Mockk.mockk)
-    testApi(Mockk.agent_jvm)
-
     api("com.google.api-client:google-api-client:1.31.5") {
         exclude(group = ("org.apache.httpcomponents"))
     }
@@ -129,14 +126,6 @@ dependencies {
     api(Firebase.auth_ktx)
     api(Firebase.crash_ktx)
     api(Firebase.analytics_ktx)
-
-    testApi(Junit5.jupiter)
-    testApi(Junit5.suite)
-    testApi(OtherLib.turbin)
-    testApi(Mockk.mockk)
-    testApi(Junit.junit)
-    testApi(Kotlin.coroutines_test)
-    testRuntimeOnly(Junit5.vintage_engine)
 
     testApi(OtherLib.json)
     api(OtherLib.anko)
