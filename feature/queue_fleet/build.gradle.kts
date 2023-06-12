@@ -1,15 +1,9 @@
 plugins {
     id(Plugins.library)
     id("project-plugins")
-    kotlin(Plugins.parcelize)
     id(Plugins.safeargs)
     id("jacoco")
 }
-
-//jacoco {
-//    toolVersion = "0.8.7"
-//    reportsDir = file("$buildDir/reports")
-//}
 
 apply {
     from("../../jacoco.gradle.kts")

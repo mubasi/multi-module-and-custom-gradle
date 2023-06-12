@@ -24,6 +24,11 @@ android {
             name = "VERSION_NAME",
             value = "\"${Version.versionName}\""
         )
+        buildConfigField(
+            type = "String",
+            name = "SPLASH_KEY",
+            value = "${keyProperties["splash_config_key"]}"
+        )
     }
 
     sourceSets.getByName("main") {
@@ -92,7 +97,7 @@ dependencies {
     api(UiMaterial.recyclerview)
     api(UiMaterial.material)
 
-    api(Lifecycle.runtime_ktx)
+    api(Lifecycle.viewmodel_ktx)
 
     api(Navigation.ktx)
     api(Navigation.ui_ktx)
@@ -119,7 +124,7 @@ dependencies {
 
     api(Grpc.okhttp)
 
-    implementation(platform(Firebase.bom))
+    api(platform(Firebase.bom))
     api(Firebase.core)
     api(Firebase.auth_ktx)
     api(Firebase.crash_ktx)

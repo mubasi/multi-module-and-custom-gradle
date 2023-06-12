@@ -102,6 +102,10 @@ class FragmentSearchMallLocation : Fragment() {
                             is SelectLocationState.ErrorFilter -> {
                                 showErrorMassage()
                             }
+
+                            else -> {
+                                // do nothing
+                            }
                         }
                     }
                 }

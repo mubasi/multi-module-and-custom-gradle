@@ -114,14 +114,14 @@ internal class QueuePassengerViewModelTest {
             //WHEN
             subjectUnderTest.init()
             runCurrent()
-            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+            val resultTitle = subjectUnderTest.titleLocation
 
             //THEN
             assertEquals(2, states.size)
             assertEquals(QueuePassengerState.ProsesGetUser, states[0])
             assertEquals(QueuePassengerState.FailedGetUser(error), states[1])
             assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
-            assertEquals(titleString, resultTitle)
+            assertEquals(titleString, resultTitle.value)
 
             collect.cancel()
         }
@@ -147,14 +147,14 @@ internal class QueuePassengerViewModelTest {
             //WHEN
             subjectUnderTest.init()
             runCurrent()
-            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+            val resultTitle = subjectUnderTest.titleLocation
 
             //THEN
             assertEquals(2, states.size)
             assertEquals(QueuePassengerState.ProsesGetUser, states[0])
             assertEquals(QueuePassengerState.FailedGetUser(QueuePassengerViewModel.ERROR_MESSAGE_UNKNOWN), states[1])
             assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
-            assertEquals(titleString, resultTitle)
+            assertEquals(titleString, resultTitle.value)
 
             collect.cancel()
         }
@@ -177,7 +177,7 @@ internal class QueuePassengerViewModelTest {
             //WHEN
             subjectUnderTest.init()
             runCurrent()
-            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+            val resultTitle = subjectUnderTest.titleLocation
 
             //THEN
             assertEquals(2, states.size)
@@ -187,7 +187,7 @@ internal class QueuePassengerViewModelTest {
                 states[1]
             )
             assertEquals(UserInfo(), subjectUnderTest.mUserInfo)
-            assertEquals(titleString, resultTitle)
+            assertEquals(titleString, resultTitle.value)
 
             collect.cancel()
         }
@@ -219,7 +219,7 @@ internal class QueuePassengerViewModelTest {
             //WHEN
             subjectUnderTest.init()
             runCurrent()
-            val resultTitle = subjectUnderTest.titleLocation.getOrAwaitValue()
+            val resultTitle = subjectUnderTest.titleLocation
 
             //THEN
             assertEquals(2, states.size)
@@ -233,7 +233,7 @@ internal class QueuePassengerViewModelTest {
                 locationId = 2L,
                 subLocationId = 1L
             ), subjectUnderTest.mUserInfo)
-            assertEquals("bb aa".getLastSync(), resultTitle)
+            assertEquals("bb aa".getLastSync(), resultTitle.value)
 
             collect.cancel()
         }
@@ -268,7 +268,7 @@ internal class QueuePassengerViewModelTest {
                 CurrentQueueCache(id, number, createdDate),
                 subjectUnderTest.currentQueueCache
             )
-            assertEquals(number, subjectUnderTest.currentQueueNumber.getOrAwaitValue())
+            assertEquals(number, subjectUnderTest.currentQueueNumber.value)
         }
 
     @Test
@@ -341,7 +341,7 @@ internal class QueuePassengerViewModelTest {
             )
             assertEquals(
                 resultCount.toString(),
-                subjectUnderTest.waitingQueueCount.getOrAwaitValue()
+                subjectUnderTest.waitingQueueCount.value
             )
         }
 
@@ -415,7 +415,7 @@ internal class QueuePassengerViewModelTest {
             )
             assertEquals(
                 responseCount.toString(),
-                subjectUnderTest.skippedQueueCount.getOrAwaitValue()
+                subjectUnderTest.skippedQueueCount.value
             )
         }
 
@@ -631,7 +631,7 @@ internal class QueuePassengerViewModelTest {
             assertEquals(QueuePassengerState.SuccessCounterBar, states[1])
             assertEquals(
                 CounterBarCache(1L, 1L, 2L, 3L, "10-10-2022"),
-                subjectUnderTest.currentCounterBar.getOrAwaitValue()
+                subjectUnderTest.currentCounterBar.value
             )
         }
 

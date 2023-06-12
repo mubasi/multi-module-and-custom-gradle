@@ -1,6 +1,6 @@
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
-const val kotlin_version = "1.6.0"
+const val kotlin_version = "1.8.10"
 
 object MainGradle {
     val gradle by lazy { "com.android.tools.build:gradle:7.1.3" }
@@ -113,7 +113,7 @@ object Kotlin {
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     }
     val coroutine_core by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" }
-    val ktx by lazy { "androidx.core:core-ktx:1.6.0" }
+    val ktx by lazy { "androidx.core:core-ktx:1.8.0" }
 }
 
 object UiMaterial {
@@ -150,7 +150,7 @@ object Firebase {
 }
 
 object Lifecycle {
-    private const val lifecycle_version = "2.5.0"
+    private const val lifecycle_version = "2.6.1"
     val extensions by lazy { "androidx.lifecycle:lifecycle-extensions:$lifecycle_version" }
     val viewmodel_ktx by lazy { "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" }
     val runtime by lazy { "androidx.lifecycle:lifecycle-runtime:$lifecycle_version" }

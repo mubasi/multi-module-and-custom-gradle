@@ -173,6 +173,10 @@ class CreateUserViewModel(
                         is GetUserByIdState.Success -> {
                             assignUserToField(it.result)
                         }
+
+                        else -> {
+                            // do nothing
+                        }
                     }
                 }
         }

@@ -125,6 +125,10 @@ class FragmentRitaseFleet : Fragment() {
                                 it.lastPosition,
                                 it.newPosition
                             )
+
+                            else -> {
+                                // do nothing
+                            }
                         }
                     }
                 }

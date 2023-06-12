@@ -23,11 +23,11 @@ repositories {
 
 dependencies {
     compileOnly(gradleApi())
-    implementation(kotlin("gradle-plugin", "1.6.0"))
+    implementation(kotlin("gradle-plugin", "1.8.0"))
     implementation(kotlin("stdlib"))
 
-    implementation("com.android.tools.build:gradle:7.1.3")
-    implementation("com.android.tools.build:gradle-api:7.1.3")
+    implementation("com.android.tools.build:gradle:7.4.2")
+    implementation("com.android.tools.build:gradle-api:7.4.2")
     implementation("com.google.protobuf:protobuf-gradle-plugin:0.9.1")
     implementation("androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5")
     implementation("org.jacoco:org.jacoco.core:0.8.7")

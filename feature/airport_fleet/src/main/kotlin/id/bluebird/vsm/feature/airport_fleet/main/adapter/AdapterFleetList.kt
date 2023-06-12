@@ -8,7 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import id.bluebird.vsm.feature.airport_fleet.R
-import id.bluebird.vsm.feature.airport_fleet.databinding.ItemCarFleetBinding
+import id.bluebird.vsm.feature.airport_fleet.databinding.ItemCarFleetAirportBinding
 import id.bluebird.vsm.feature.airport_fleet.databinding.ViewLoadingPagesBinding
 import id.bluebird.vsm.feature.airport_fleet.main.FleetNonApshViewModel
 import id.bluebird.vsm.feature.airport_fleet.main.model.AssignmentCarCache
@@ -40,9 +40,9 @@ class AdapterFleetList(
             )
             LoadingHolder(binding)
         } else {
-            val binding = DataBindingUtil.inflate<ItemCarFleetBinding>(
+            val binding = DataBindingUtil.inflate<ItemCarFleetAirportBinding>(
                 inflater,
-                R.layout.item_car_fleet,
+                R.layout.item_car_fleet_airport,
                 parent,
                 false
             )
@@ -118,7 +118,7 @@ class AdapterFleetList(
         }
     }
 
-    inner class ViewHolder(private val itemCarAssignmentBinding: ItemCarFleetBinding) :
+    inner class ViewHolder(private val itemCarAssignmentBinding:ItemCarFleetAirportBinding) :
         RecyclerView.ViewHolder(itemCarAssignmentBinding.root) {
         fun setData(
             perimeterViewModel: FleetNonApshViewModel,
@@ -192,15 +192,15 @@ class AdapterFleetList(
             if (p1 != null && p1.count > 0) {
                 tempModels.addAll(p1.values as List<AssignmentCarCache>)
             }
-            viewModel.updateListFleetState(tempChar.isNotEmpty() && tempModels.size == 0 && models.size != 0)
+            viewModel.updateListFleetState(tempChar.isNotEmpty() && tempModels.isEmpty() && models.isNotEmpty())
             notifyDataSetChanged()
         }
     }
 
     private fun checkIfItemCanAdd(it: AssignmentCarCache, char: CharSequence?): AssignmentCarCache? {
-        return if (it.fleetNumber.toLowerCase()
+        return if (it.fleetNumber.lowercase()
                 .contains(
-                    char.toString().toLowerCase()
+                    char.toString().lowercase()
                 )
         ) {
             if (selectedStatus.isEmpty() || selectedStatus == it.status) {

@@ -1,7 +1,7 @@
 object Version {
     val minSdk by lazy { 26 }
-    val compileSdk by lazy { 32 }
-    val targetSdk by lazy { 32 }
+    val compileSdk by lazy { 33 }
+    val targetSdk by lazy { 33 }
 
     private val major by lazy { 1 }
     private val minor by lazy { 2 }

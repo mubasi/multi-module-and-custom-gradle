@@ -28,9 +28,7 @@ import id.bluebird.vsm.feature.queue_fleet.ritase_record.FragmentRitaseRecordDia
 import id.bluebird.vsm.feature.queue_fleet.search_fleet.FragmentSearchFleet
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -57,9 +55,7 @@ class FragmentQueueFleet : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        mBinding = DataBindi private const val major = 2
-    private const val minor = 2
-    private const val patch = 1ngUtil.inflate(
+        mBinding = DataBindingUtil.inflate(
             inflater,
             R.layout.fleet_fragment,
             container,
@@ -221,6 +217,8 @@ class FragmentQueueFleet : Fragment() {
             }
         }
     }
+
+
 
     private fun successDialogDepartFleet(fleetNumber: String, isWithPassenger: Boolean) {
         val string = SpannableStringBuilder()

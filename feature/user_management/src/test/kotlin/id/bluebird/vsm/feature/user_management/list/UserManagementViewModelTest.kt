@@ -1,30 +1,19 @@
 package id.bluebird.vsm.feature.user_management.list
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
-import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.user.SearchUserState
 import id.bluebird.vsm.domain.user.domain.intercator.SearchUser
-import id.bluebird.vsm.domain.user.model.SearchUserResult
-import id.bluebird.vsm.domain.user.model.UserSearchParam
 import id.bluebird.vsm.feature.user_management.TestCoroutineRule
-import id.bluebird.vsm.feature.user_management.create.CreateUserState
 import id.bluebird.vsm.feature.user_management.utils.ModifyUserAction
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @ExperimentalCoroutinesApi
 @ExtendWith(TestCoroutineRule::class)
@@ -40,7 +29,6 @@ internal class UserManagementViewModelTest {
 
     @BeforeEach
     fun setup() {
-        mockkStatic(Transformations::class)
         mockkObject(UserUtils)
         actionSealedObserver = mockk()
         _vm = UserManagementViewModel(
@@ -54,34 +42,26 @@ internal class UserManagementViewModelTest {
         _vm.userSettingSealed.removeObserver(actionSealedObserver)
     }
 
-    private suspend fun <T> LiveData<T>.awaitValue(): T? {
-        return suspendCoroutine { cont ->
-            val observer = object : Observer<T> {
-                override fun onChanged(t: T?) {
-                    removeObserver(this)
-                    cont.resume(t)
-                }
-            }
-            observeForever(observer)
-        }
-    }
-
     @Test
     fun `searchUser, isFailed`() = runTest {
+        // Result
+        val error = NullPointerException()
 
         // Mock
         justRun { actionSealedObserver.onChanged(any()) }
         every { searchUser.invoke("") } returns flow {
-            throw NullPointerException()
+            throw error
         }
 
         // Execution
         _vm.searchUser()
+        testScheduler.runCurrent()
 
         // Result
+        verify(atLeast = 1) { actionSealedObserver.onChanged(UserSettingSealed.OnGetUserListProgress) }
         Assertions.assertEquals(
-            _vm.userSettingSealed.awaitValue(),
-            UserSettingSealed.OnGetUserListProgress
+            _vm.userSettingSealed.value,
+            UserSettingSealed.GetUserOnError(error)
         )
     }
 
@@ -124,10 +104,12 @@ internal class UserManagementViewModelTest {
 
         // Execution
         _vm.result("aa", action)
+        testScheduler.advanceTimeBy(300)
+        testScheduler.runCurrent()
 
         // Result
         Assertions.assertEquals(
-            _vm.userSettingSealed.awaitValue(),
+            _vm.userSettingSealed.value,
             UserSettingSealed.CreateUserSuccess("aa")
         )
         Assertions.assertNull(_vm.searchJob())
@@ -142,10 +124,12 @@ internal class UserManagementViewModelTest {
 
         // Execution
         _vm.result("aa", action)
+        testScheduler.advanceTimeBy(300)
+        testScheduler.runCurrent()
 
         // Result
         Assertions.assertEquals(
-            _vm.userSettingSealed.awaitValue(),
+            _vm.userSettingSealed.value,
             UserSettingSealed.EditUserSuccess("aa")
         )
         Assertions.assertNull(_vm.searchJob())
@@ -160,10 +144,12 @@ internal class UserManagementViewModelTest {
 
         // Execution
         _vm.result("aa", action)
+        testScheduler.advanceTimeBy(300)
+        testScheduler.runCurrent()
 
         // Result
         Assertions.assertEquals(
-            _vm.userSettingSealed.awaitValue(),
+            _vm.userSettingSealed.value,
             UserSettingSealed.DeleteSuccess("aa")
         )
         Assertions.assertNull(_vm.searchJob())
@@ -178,10 +164,12 @@ internal class UserManagementViewModelTest {
 
         // Execution
         _vm.result("aa", action)
+        testScheduler.advanceTimeBy(300)
+        testScheduler.runCurrent()
 
         // Result
         Assertions.assertEquals(
-            _vm.userSettingSealed.awaitValue(),
+            _vm.userSettingSealed.value,
             UserSettingSealed.ForceSuccess("aa")
         )
         Assertions.assertNull(_vm.searchJob())
@@ -233,11 +221,11 @@ internal class UserManagementViewModelTest {
 
         //Result
         Assertions.assertEquals(
-            _vm.privilege.value ,
+            _vm.privilege.value,
             UserUtils.SVP
         )
         Assertions.assertEquals(
-            _vm.loginUserId ,
+            _vm.loginUserId,
             1L
         )
 
@@ -255,11 +243,11 @@ internal class UserManagementViewModelTest {
 
         //Result
         Assertions.assertEquals(
-            _vm.privilege.value ,
+            _vm.privilege.value,
             UserUtils.ADMIN
         )
         Assertions.assertEquals(
-            _vm.loginUserId ,
+            _vm.loginUserId,
             1L
         )
 
@@ -278,7 +266,7 @@ internal class UserManagementViewModelTest {
             0
         )
         Assertions.assertEquals(
-            _vm.counter.value ,
+            _vm.counter.value,
             0
         )
 

@@ -62,8 +62,8 @@ class ProjectModulePlugin : Plugin<Project> {
             }
 
         project.dependencies {
-            kotlinDependencies()
-            koinDependencies()
+//            kotlinDependencies()
+//            koinDependencies()
         }
     }
 
@@ -108,6 +108,7 @@ class ProjectModulePlugin : Plugin<Project> {
         apply {
             plugin(Plugins.kotlin_android)
             plugin("kotlin-kapt")
+            plugin(Plugins.kotlin_parcelize)
         }
     }
 
@@ -186,7 +187,7 @@ class ProjectModulePlugin : Plugin<Project> {
                     "\"https://digitaloutlet-dev-1902.firebaseio.com\""
                 )
                 dimension = ENV_DIMENSION
-                versionName = "${Version.versionName} Dev"
+                versionName = "${Version.appName} Dev"
                 applicationIdSuffix = ".dev"
                 manifestPlaceholders["appName"] = Version.appNameDev
             }
@@ -198,7 +199,7 @@ class ProjectModulePlugin : Plugin<Project> {
                     "\"https://digitaloutlet-staging-1902.firebaseio.com\""
                 )
                 dimension = ENV_DIMENSION
-                versionName = "${Version.appVersion} Staging"
+                versionName = "${Version.appName} Staging"
                 applicationIdSuffix = ".stage"
                 manifestPlaceholders["appName"] = Version.appNameStaging
             }
@@ -210,7 +211,7 @@ class ProjectModulePlugin : Plugin<Project> {
                     "${keyProperties["firebase_url_secondary_production"]}"
                 )
                 dimension = ENV_DIMENSION
-                versionName = Version.appVersion
+                versionName = Version.appName
                 manifestPlaceholders["appName"] = Version.appName
             }
         }
