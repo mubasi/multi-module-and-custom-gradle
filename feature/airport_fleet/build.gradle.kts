@@ -1,66 +1,12 @@
 plugins {
     id(Plugins.library)
-    kotlin(Plugins.android)
-    kotlin(Plugins.kapt)
-    kotlin(Plugins.parcelize)
+    id("project-plugins")
     id(Plugins.safeargs)
     id("jacoco")
 }
 
 apply {
     from("../../jacoco.gradle.kts")
-}
-
-android {
-    compileSdk = Version.compileSdk
-
-    defaultConfig {
-        minSdk = Version.minSdk
-        targetSdk = Version.targetSdk
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    buildFeatures {
-        dataBinding = true
-    }
-
-    flavorDimensions.add("env")
-
-    productFlavors {
-        register("develop") {
-            dimension = "env"
-        }
-        register("stage") {
-            dimension = "env"
-        }
-        register("prod") {
-            dimension = "env"
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
@@ -72,7 +18,6 @@ dependencies {
     implementation(project(":domain:passenger"))
     implementation(project(":domain:fleet"))
     implementation(project(":navigation"))
-    implementation(Kotlin.coroutines_android)
     implementation(UiMaterial.swipe)
     implementation(OtherLib.cameraToText)
     implementation(OtherLib.cameraView)
@@ -80,11 +25,5 @@ dependencies {
 
     compileOnly(Kotlin.javax_annotation)
 
-    testImplementation(Junit5.jupiter)
-    testImplementation(Junit5.suite)
-    testImplementation(OtherLib.turbin)
-    testImplementation(Mockk.mockk)
-    testImplementation(Junit.junit)
-    testImplementation(Kotlin.coroutines_test)
-    testRuntimeOnly(Junit5.vintage_engine)
+    applyJUnitTestImplementation()
 }

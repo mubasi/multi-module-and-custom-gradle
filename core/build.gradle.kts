@@ -4,8 +4,7 @@ import java.util.*
 
 plugins {
     id(Plugins.library)
-    kotlin(Plugins.android)
-    kotlin(Plugins.kapt)
+    id("project-plugins")
     id(Plugins.protobuf)
 }
 
@@ -17,11 +16,8 @@ if (keyPropertiesFile.exists()) {
 val protobuf_platform = keyProperties.getProperty("protobuf_platform", "")
 
 android {
-    compileSdk = Version.compileSdk
 
     defaultConfig {
-        minSdk = Version.minSdk
-        targetSdk = Version.targetSdk
         multiDexEnabled = true
         buildConfigField(
             type = "String",
@@ -33,11 +29,6 @@ android {
             name = "SPLASH_KEY",
             value = "${keyProperties["splash_config_key"]}"
         )
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    tasks.withType<Test> {
-        useJUnitPlatform()
     }
 
     sourceSets.getByName("main") {
@@ -46,25 +37,8 @@ android {
         }
     }
 
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        debug {
-            isMinifyEnabled = false
-        }
-    }
-
-    flavorDimensions.add("env")
-
     productFlavors {
-        register("prod") {
-            dimension = "env"
+        getByName("prod") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -75,14 +49,8 @@ android {
                 name = "FIREBASE_URL",
                 value = "${keyProperties["firebase_url_secondary_production"]}"
             )
-            buildConfigField(
-                type = "String",
-                name = "VERSION_NAME",
-                value = "\"${Version.versionName}\""
-            )
         }
-        register("stage") {
-            dimension = "env"
+        getByName("stage") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -99,8 +67,7 @@ android {
                 value = "\"${Version.versionName} Staging\""
             )
         }
-        register("develop") {
-            dimension = "env"
+        getByName("develop") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
@@ -118,17 +85,6 @@ android {
             )
         }
     }
-
-    buildFeatures { dataBinding = true }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
@@ -141,7 +97,7 @@ dependencies {
     api(UiMaterial.recyclerview)
     api(UiMaterial.material)
 
-    api(Lifecycle.runtime_ktx)
+    api(Lifecycle.viewmodel_ktx)
 
     api(Navigation.ktx)
     api(Navigation.ui_ktx)
@@ -168,7 +124,7 @@ dependencies {
 
     api(Grpc.okhttp)
 
-    implementation(platform(Firebase.bom))
+    api(platform(Firebase.bom))
     api(Firebase.core)
     api(Firebase.auth_ktx)
     api(Firebase.crash_ktx)

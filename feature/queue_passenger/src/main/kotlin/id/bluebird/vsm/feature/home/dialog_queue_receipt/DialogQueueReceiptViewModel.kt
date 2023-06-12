@@ -1,6 +1,5 @@
 package id.bluebird.vsm.feature.home.dialog_queue_receipt
 
-import android.text.Html
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -76,6 +75,10 @@ class DialogQueueReceiptViewModel(
                             assignLocationId(createResult = it.result)
                             assignSubLocation(createResult = it.result)
                             _dialogQueueReceiptState.emit(DialogQueueReceiptState.GetUserInfoSuccess)
+                        }
+
+                        else -> {
+                            // do nothing
                         }
                     }
                 }

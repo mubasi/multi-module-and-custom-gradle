@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/bg_bottom_sheet_action"
-    android:orientation="vertical"
-    android:padding="24dp">
+<layout>
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_title_dialog_error_login"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/ubuntu_bold"
-        android:textColor="@color/gray_subtitle"
-        android:textSize="20sp" />
+        android:background="@drawable/bg_bottom_sheet_action"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tv_message_dialog_error_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/ubuntu_regular"
-        android:textColor="@color/gray_body_text" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_title_dialog_error_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntu_bold"
+            android:textColor="@color/gray_subtitle"
+            android:textSize="20sp" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_dialog_error_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/bg_button_enable_login"
-        android:fontFamily="@font/ubuntu_bold"
-        android:gravity="center"
-        android:paddingStart="16dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="12dp"
-        android:text="@string/close"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sixty_sp" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_message_dialog_error_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/ubuntu_regular"
+            android:textColor="@color/gray_body_text" />
 
-</LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_dialog_error_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_button_enable_login"
+            android:fontFamily="@font/ubuntu_bold"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp"
+            android:text="@string/close"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sixty_sp" />
+
+    </LinearLayout>
+</layout>

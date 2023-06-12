@@ -1,8 +1,10 @@
-const val kotlin_version = "1.6.10"
+import org.gradle.kotlin.dsl.DependencyHandlerScope
+
+const val kotlin_version = "1.8.10"
 
 object MainGradle {
-    val gradle by lazy { "com.android.tools.build:gradle:7.0.4" }
-    val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.18" }
+    val gradle by lazy { "com.android.tools.build:gradle:7.1.3" }
+    val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.13" }
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
     val google_service by lazy { "com.google.gms:google-services:4.3.3" }
     val firebase by lazy { "com.google.firebase:firebase-crashlytics-gradle:2.8.0" }
@@ -43,7 +45,9 @@ object Plugins {
     val application by lazy { "com.android.application" }
     val library by lazy { "com.android.library" }
     val android by lazy { "android" }
+    val kotlin_android by lazy { "kotlin-android" }
     val parcelize by lazy { "plugin.parcelize" }
+    val kotlin_parcelize by lazy { "kotlin-parcelize" }
     val android_extensions by lazy { "android-extensions" }
     val kapt by lazy { "kapt" }
     val protobuf by lazy { "com.google.protobuf" }
@@ -109,7 +113,7 @@ object Kotlin {
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     }
     val coroutine_core by lazy { "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version" }
-    val ktx by lazy { "androidx.core:core-ktx:1.6.0" }
+    val ktx by lazy { "androidx.core:core-ktx:1.8.0" }
 }
 
 object UiMaterial {
@@ -146,7 +150,7 @@ object Firebase {
 }
 
 object Lifecycle {
-    private const val lifecycle_version = "2.5.0"
+    private const val lifecycle_version = "2.6.1"
     val extensions by lazy { "androidx.lifecycle:lifecycle-extensions:$lifecycle_version" }
     val viewmodel_ktx by lazy { "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version" }
     val runtime by lazy { "androidx.lifecycle:lifecycle-runtime:$lifecycle_version" }
@@ -205,4 +209,16 @@ object OtherLib {
     val cameraToText by lazy { "com.google.android.gms:play-services-mlkit-text-recognition:18.0.2" }
     val cameraView by lazy { "com.otaliastudios:cameraview:1.6.0" }
     val flexBox by lazy { "com.google.android.flexbox:flexbox:3.0.0" }
+}
+
+fun DependencyHandlerScope.applyJUnitTestImplementation() {
+    val configurationName = "testImplementation"
+
+    add(configurationName, Junit5.jupiter)
+    add(configurationName, Junit5.suite)
+    add("testRuntimeOnly", Junit5.vintage_engine)
+    add(configurationName, Junit.junit)
+    add(configurationName, Junit.core)
+    add(configurationName, Mockk.mockk)
+    add(configurationName, Kotlin.coroutines_test)
 }

@@ -31,7 +31,7 @@ class AddFleetViewModelNonApsh(
 
     @VisibleForTesting
     fun setParam(qSearch : String?) {
-        param.value = qSearch
+        param.value = qSearch ?: ""
     }
 
     @VisibleForTesting
@@ -119,6 +119,10 @@ class AddFleetViewModelNonApsh(
                                 fleetNames.add(item)
                             }
                             _addFleetState.emit(AddFleetState.SearchFleetSuccess(fleetNames))
+                        }
+
+                        else -> {
+                            // do nothing
                         }
                     }
                 }

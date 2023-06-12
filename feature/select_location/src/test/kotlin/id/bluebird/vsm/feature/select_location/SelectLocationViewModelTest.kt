@@ -110,6 +110,7 @@ internal class SelectLocationViewModelTest {
             collect.cancel()
         }
 
+
     @Test
     fun `init, when isFleetMenu true and user is airport, result is success`() = runTest {
         //GIVEN
