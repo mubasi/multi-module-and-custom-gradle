@@ -1,8 +1,6 @@
 plugins {
     id(Plugins.library)
     id("project-plugins")
-
-
     id("jacoco")
 }
 apply {

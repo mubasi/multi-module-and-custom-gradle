@@ -15,7 +15,6 @@ dependencies {
     androidTestImplementation(Junit.android_junit)
 
     testImplementation(Mockk.agent_jvm)
-    testImplementation(OtherLib.turbin)
     testImplementation(OtherLib.json)
 
 }

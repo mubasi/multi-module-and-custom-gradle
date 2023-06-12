@@ -19,5 +19,5 @@ dependencies {
     implementation(OtherLib.slidetoact)
 
     applyJUnitTestImplementation()
-    testImplementation(OtherLib.turbin)
+    
 }

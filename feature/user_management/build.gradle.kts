@@ -16,5 +16,5 @@ dependencies {
     implementation(UiMaterial.swipe)
 
     compileOnly(Kotlin.javax_annotation)
-    testImplementation(OtherLib.turbin)
+    
 }
