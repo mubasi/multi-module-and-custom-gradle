@@ -6,6 +6,7 @@ import androidx.annotation.Keep
 data class MonitoringResult(
     var buffer: Int = 0,
     var locationName: String = "",
+    var subLocationName: String = "",
     var queueFleet: Int = 0,
     var queuePassenger: Int = 0,
     var request: Int = 0,

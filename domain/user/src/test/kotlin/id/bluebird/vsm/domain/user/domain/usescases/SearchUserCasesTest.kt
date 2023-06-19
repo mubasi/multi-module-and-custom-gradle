@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.domain.user.SearchUserState
 import id.bluebird.vsm.domain.user.UserRepository
+import id.bluebird.vsm.domain.user.model.SearchUserResult
+import id.bluebird.vsm.domain.user.model.UserSearchParam
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import proto.UserOuterClass
@@ -37,6 +40,18 @@ internal class SearchUserCasesTest {
         every { userRepository.searchUser("abc") } returns flow {
             emit(
                 UserOuterClass.SearchUserResponse.newBuilder()
+                    .apply {
+                        addSearchResult(
+                            UserOuterClass.SearchUserItems.newBuilder()
+                                .apply {
+                                    this.id = 1L
+                                    this.username = "aa"
+                                    this.uuid = "bb"
+                                    this.status = "cc"
+                                }
+                                .build()
+                        )
+                    }
                     .build()
             )
         }
@@ -45,7 +60,21 @@ internal class SearchUserCasesTest {
         flowOf(searchUserCases.invoke("abc")).test {
 
             // Result
-            assert(awaitItem().single() is SearchUserState.Success)
+            Assertions.assertEquals(
+                awaitItem().single(),
+                SearchUserState.Success(
+                    SearchUserResult(
+                        searchResult = arrayListOf(
+                            UserSearchParam(
+                                id = 1L,
+                                username = "aa",
+                                uuid = "bb",
+                                status = false
+                            )
+                        )
+                    )
+                )
+            )
             awaitComplete()
         }
     }

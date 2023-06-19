@@ -1,5 +1,6 @@
 package id.bluebird.vsm.feature.monitoring.tableview
 
+import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
 import id.bluebird.vsm.feature.monitoring.model.MonitoringCell
 import id.bluebird.vsm.feature.monitoring.model.MonitoringColumnHeader
 import id.bluebird.vsm.feature.monitoring.model.MonitoringModel
@@ -38,10 +39,47 @@ class MonitoringTableHelper {
      * Buffer
      * */
 
-    private fun createColumnHeaderList(): List<MonitoringColumnHeader> =
-        headerLabels.map {
-            MonitoringColumnHeader(it)
+    private fun createColumnHeaderList(isDesc : Boolean): List<MonitoringColumnHeader> {
+        val result : ArrayList<MonitoringColumnHeader> =  ArrayList()
+        headerLabels.forEachIndexed { index, s ->
+            result.add(
+                MonitoringColumnHeader(
+                    s,
+                    index,
+                    setStatusOrder(index),
+                    isDesc
+                )
+            )
         }
+        return result
+    }
+
+    private fun setStatusOrder(index : Int) : MonitoringViewModel.ActiveSort {
+        return when(index) {
+            1 -> {
+                MonitoringViewModel.ActiveSort.FleetPassenger
+            }
+            2 -> {
+                MonitoringViewModel.ActiveSort.TotalRitase
+            }
+            3 -> {
+                MonitoringViewModel.ActiveSort.TotalQueueFleet
+            }
+            4 -> {
+                MonitoringViewModel.ActiveSort.TotalPassengerQueue
+            }
+            5 -> {
+                MonitoringViewModel.ActiveSort.RequestFleet
+            }
+            6 -> {
+                MonitoringViewModel.ActiveSort.Deposition
+            }
+            else -> {
+                MonitoringViewModel.ActiveSort.FleetNumber
+            }
+        }
+    }
+
 
     fun setHeaderLabels(list: List<String>) {
         this.headerLabels = list
@@ -68,14 +106,14 @@ class MonitoringTableHelper {
     private fun createRowHeader(list: List<MonitoringModel>): List<MonitoringRowHeader> {
         val result = mutableListOf<MonitoringRowHeader>()
         list.forEachIndexed { index, value ->
-            result.add(MonitoringRowHeader(value.locationName, index, value.subLocationId.toInt()))
+            result.add(MonitoringRowHeader(value.locationName, value.subLocationName, index, value.subLocationId.toInt()))
         }
 
         return result
     }
 
-    fun generateListForTable(monitoringList: List<MonitoringModel>) {
-        _columnHeaderList = createColumnHeaderList()
+    fun generateListForTable(monitoringList: List<MonitoringModel>, isDesc : Boolean) {
+        _columnHeaderList = createColumnHeaderList(isDesc)
         _rowHeaderList = createRowHeader(monitoringList)
         _cellList = createCells(monitoringList)
     }

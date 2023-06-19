@@ -4,6 +4,9 @@
         <variable
             name="value"
             type="String" />
+        <variable
+            name="subValue"
+            type="String" />
 
         <variable
             name="isColored"
@@ -14,24 +17,38 @@
         android:layout_width="@dimen/default_row_header_width"
         android:layout_height="@dimen/cell_height">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
             android:background="@{isColored ? @color/primary_4 : @android:color/transparent}">
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/UbuntuRegularGraySubtle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/table_header_vertical_padding"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:ellipsize="end"
+                android:text="@{value}" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/UbuntuRegularGraySubtle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/table_header_vertical_padding"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
                 android:ellipsize="end"
-                android:text="@{value}" />
+                android:text="@{subValue}" />
 
-        </FrameLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="1dp"

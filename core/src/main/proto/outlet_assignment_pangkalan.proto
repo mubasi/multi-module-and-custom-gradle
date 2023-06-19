@@ -46,6 +46,7 @@ message StockResponsePangkalan {
     string created_at = 5;
     repeated ArrivedItemPangkalan arrived_fleet = 6;
     string sub_location_name = 7;
+    int64 fleet_sequence = 8;
 }
 
 message RequestTaxiPangkalanRequest {
@@ -69,6 +70,7 @@ message StockCountPangkalanResponse {
     int64 stock=1;
     int64 request=2;
     int64 ritase=3;
+    int64 pengendapan=4;
 }
 
 message GetListFleetTerminalPangkalanReq {
@@ -81,9 +83,11 @@ message FleetItemsPangkalan {
     string taxi_no  = 2;
     string created_at =3;
     string status = 4;
+    int64  fleet_sequence = 5;
 }
 message GetListFleetTerminalPangkalanResp {
     repeated FleetItemsPangkalan fleet_list =1;
+    int64 stock_count = 2;
 }
 
 message PagingPangkalan {
@@ -110,6 +114,8 @@ message ResponseGetStatusDriverPangkalan {
     int64 sub_location_id = 4;
     string sub_location_name = 5;
     string location_name = 6;
+    int64  fleet_sequence = 7;
+    string location_type = 8;
 }
 
 message CountSubLocationPangkalanItems {

@@ -27,7 +27,9 @@ class GetSubLocationByLocationIdCases(private val locationRepository: LocationRe
                 SubLocationResult(
                     it.subLocationId,
                     it.subLocationName,
-                    it.prefix
+                    it.prefix,
+                    it.havePengedapan,
+                    it.idPengendapan
                 )
             )
         }

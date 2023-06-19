@@ -29,7 +29,9 @@ class GetLocationsWithSubUseCases(
                             SubLocationResult(
                                 id = it.subLocationId,
                                 name = it.subLocationName,
-                                prefix = it.prefix
+                                prefix = it.prefix,
+                                haveDeposition = it.haveDeposition,
+                                depositionId = 0 //it.isDeposition
                             )
                         )
                     }

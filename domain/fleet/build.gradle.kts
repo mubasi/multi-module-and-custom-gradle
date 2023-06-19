@@ -2,6 +2,11 @@ plugins {
     id(Plugins.library)
     id("project-plugins")
     kotlin(Plugins.parcelize)
+    id("jacoco")
+}
+
+apply {
+    from("../../jacoco.gradle.kts")
 }
 
 

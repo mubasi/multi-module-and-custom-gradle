@@ -93,6 +93,7 @@ message GetSubLocationsPangkalanItem {
     string prefix = 6;
     string operational_time = 7;
     bool   is_deposition = 8;
+    bool   have_deposition = 9;
 }
 message GetSubLocationsPangkalanResponse {
 	repeated GetSubLocationsPangkalanItem sub_locations = 1;
@@ -221,6 +222,8 @@ message SubLocationPangkalanItems {
     string sub_location_type=3;
     bool   is_deposistion = 4;
     string prefix = 5;
+    bool   have_pengedapan = 6;
+    int64  id_pengendapan = 7;
 }
 message GetSubLocationPangkalanByLocationResp {
     int64   location_id=1;

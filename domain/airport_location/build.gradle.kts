@@ -1,7 +1,8 @@
 plugins {
     id(Plugins.library)
     id("project-plugins")
-    id("jacoco")
+    jacoco
+    id(Plugins.sonarqube)
 }
 apply {
     from("../../jacoco.gradle.kts")

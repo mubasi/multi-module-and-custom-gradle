@@ -265,7 +265,7 @@ internal class CreateUserViewModelTest {
                 LocationDomainState.Success(
                     value = listOf(
                         SubLocationResult(
-                            1, "aa", "bb"
+                            1, "aa", "bb", false, 0
                         ))
                 )
             )
@@ -489,7 +489,7 @@ internal class CreateUserViewModelTest {
         val itemList = ArrayList<SubLocationResult>()
         itemList.add(
             SubLocationResult(
-                1, "aa", "bb"
+                1, "aa", "bb", false, 0
             )
         )
 

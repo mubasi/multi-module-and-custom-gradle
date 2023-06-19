@@ -9,5 +9,7 @@ data class SubLocation(
     val locationId: Long,
     val locationName: String,
     val prefix: String,
+    val haveDeposition: Boolean,
+    val depositionId: Long,
     var type: Int = LocationModel.CHILD
 )
