@@ -120,6 +120,19 @@ class FragmentQueueCarFleet : Fragment() {
                                 _fleetAdapter.submitData(it.list)
                                 mBinding.successList = it.list.isNotEmpty()
                             }
+                            is QueueCarFleetState.AddFleetSuccess -> {
+                                val string = SpannableStringBuilder()
+                                    .bold { append(
+                                        it.itemAdd.name
+                                    ) }
+                                    .append(" ")
+                                    .append(
+                                        getString(R.string.msg_add_fleet_success)
+                                    )
+                                showSnackbar(string, R.color.success_0)
+                                _fleetAdapter.submitData(it.list)
+                                mBinding.successList = it.list.isNotEmpty()
+                            }
                             is QueueCarFleetState.GetListEmpty -> {
                                 _fleetAdapter.submitData(arrayListOf())
                             }
@@ -287,6 +300,16 @@ class FragmentQueueCarFleet : Fragment() {
             }
         }
         setFragmentResultListener(FragmentAddCarFleet.RESULT) { _, bundle ->
+            val result = bundle.getString(FragmentAddCarFleet.REQUEST_ADD_NUMBER)
+            if(result != null) {
+                val string = SpannableStringBuilder()
+                    .bold { append(result) }
+                    .append(" ")
+                    .append(
+                        getString(R.string.msg_add_fleet_success)
+                    )
+                showSnackbar(string, R.color.success_0)
+            }
             _mQueueCarFleetViewModel.addSuccess(bundle.getParcelable(FragmentAddCarFleet.REQUEST_ADD))
         }
     }

@@ -30,6 +30,7 @@ import id.bluebird.vsm.feature.queue_car_fleet.databinding.AddCarFleetFragmentBi
 class FragmentAddCarFleet : Fragment() {
     companion object {
         const val REQUEST_ADD = "requestAdd"
+        const val REQUEST_ADD_NUMBER = "requestAddNumber"
         const val RESULT = "resultAdd"
         const val REQUEST_SELECT = "requestSelectQueue"
         const val RESULT_SELECT = "resultSelect"
@@ -107,6 +108,7 @@ class FragmentAddCarFleet : Fragment() {
                         )
                         is AddCarFleetState.AddCarFleetSuccess -> {
                             val bundle = Bundle()
+                            bundle.putString(REQUEST_ADD_NUMBER, it.carFleetItem.name)
                             bundle.putParcelable(REQUEST_ADD, it.carFleetItem)
                             setFragmentResult(RESULT, bundle)
                             findNavController().popBackStack()
