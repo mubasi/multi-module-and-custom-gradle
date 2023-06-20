@@ -29,6 +29,12 @@ object StringExtensions {
         return sdf.format(dateTime.value)
     }
 
+    fun String.convertOnlyHourAndMinute(): String {
+        val dateTime = DateTime.parseRfc3339(this)
+        val sdf = SimpleDateFormat("HH:mm", Locale("id", "ID"))
+        return sdf.format(dateTime.value)
+    }
+
     fun String.convertBase64(): Bitmap {
         val bytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)

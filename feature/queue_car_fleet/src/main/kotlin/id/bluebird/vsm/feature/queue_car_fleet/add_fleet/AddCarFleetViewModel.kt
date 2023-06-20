@@ -150,7 +150,8 @@ class AddCarFleetViewModel(
             addFleet.invoke(
                 fleetNumber = selectedFleetNumber.value ?: "",
                 subLocationId = _subLocation,
-                locationId = locationId
+                locationId = locationId,
+
             ).flowOn(Dispatchers.Main).catch { cause: Throwable ->
                 _addCarFleetState.emit(AddCarFleetState.AddCarError(err = cause))
             }.collect {
@@ -159,7 +160,8 @@ class AddCarFleetViewModel(
                         val carFleetItem = CarFleetItem(
                             id = it.fleetItemResult.fleetId,
                             name = it.fleetItemResult.fleetName,
-                            arriveAt = it.fleetItemResult.arriveAt.convertCreateAtValue()
+                            arriveAt = it.fleetItemResult.arriveAt.convertCreateAtValue(),
+                            sequence = it.fleetItemResult.sequence
                         )
                         _addCarFleetState.emit(AddCarFleetState.AddCarFleetSuccess(carFleetItem))
                     }

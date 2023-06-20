@@ -43,8 +43,12 @@
     <string name="failed_get_queue">Gagal mendapatkan Antrean</string>
     <string name="msg_sub_title_depart_fleet">Pilih status keberangkatan armada</string>
     <string name="msg_slide_depart">Berangkatkan</string>
-    <string name="msg_add_fleet_success">berhasil ditambah ke antrian</string>
+    <string name="msg_add_fleet_success"> berhasil ditambah ke antrian</string>
     <string name="title_stock">Stok armada lobi: </string>
     <string name="deposition_stock_title">Stok armada pengendapan: </string>
     <string name="deposition_text">Pengendapan</string>
+    <string name="number_sequence_text">No. antrean</string>
+    <string name="number_fleet_text">No. lambung</string>
+    <string name="enter_sequence_text">Masuk antrean</string>
+    <string name="msg_can_not_show_list_deposition">Tidak dapat menampilkan daftar pengendapan</string>
 </resources>

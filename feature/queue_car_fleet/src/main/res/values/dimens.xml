@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="width_sequence">75sp</dimen>
+    <dimen name="height_item_car_list">40dp</dimen>
+    <dimen name="margin_sequence">14dp</dimen>
+</resources>

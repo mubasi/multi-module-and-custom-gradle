@@ -388,7 +388,8 @@ internal class QueueFleetViewModelTest {
                     FleetItemResult(
                         fleetId = i,
                         fleetName = "BB1${i}1",
-                        arriveAt = "2022-07-19T0${i}:03:13Z"
+                        arriveAt = "2022-07-19T0${i}:03:13Z",
+                        i
                     )
                 )
             }

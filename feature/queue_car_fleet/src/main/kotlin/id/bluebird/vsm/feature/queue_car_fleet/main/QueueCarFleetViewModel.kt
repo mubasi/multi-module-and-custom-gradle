@@ -4,7 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.vsm.core.extensions.StringExtensions.convertOnlyHourAndMinute
 import id.bluebird.vsm.core.extensions.StringExtensions.getLastSync
 import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.domain.fleet.DepartFleetState
@@ -427,7 +427,8 @@ class QueueCarFleetViewModel(
                                         CarFleetItem(
                                             id = item.fleetId,
                                             name = item.fleetName,
-                                            arriveAt = item.arriveAt.convertCreateAtValue()
+                                            arriveAt = item.arriveAt.convertOnlyHourAndMinute(),
+                                            sequence = item.sequence
                                         )
                                     )
                                 }

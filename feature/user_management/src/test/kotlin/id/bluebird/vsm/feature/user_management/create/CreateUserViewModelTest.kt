@@ -122,18 +122,22 @@ internal class CreateUserViewModelTest {
     fun `getUser, if not Idle, is Failed`() = runTest {
         //given
         _vm.setInitUser(1, "aa")
+        val result = NullPointerException()
 
         // Mock
         justRun { actionSealedObserver.onChanged(any()) }
         every { getUserId(1) } returns flow {
-            throw NullPointerException()
+            throw result
         }
 
         //execute
         _vm.getUser()
+        testScheduler.runCurrent()
 
-        //result
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+        Assertions.assertEquals(
+            _vm.actionSealed.value,
+            CreateUserState.OnError(result)
+        )
     }
 
     @Test
@@ -285,15 +289,21 @@ internal class CreateUserViewModelTest {
             1, 2, "aa", true
         ))
         _vm.setSubLocations(subLocation)
+        val result = NullPointerException()
 
         // Mock
         justRun { actionSealedObserver.onChanged(any()) }
         every { getSubLocationByLocationId(1) } returns flow {
-            throw NullPointerException()
+            throw result
         }
 
         _vm.setupSubLocation()
-//        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
+        testScheduler.runCurrent()
+
+        Assertions.assertEquals(
+            _vm.actionSealed.value,
+            CreateUserState.OnError(result)
+        )
     }
 
     @Test

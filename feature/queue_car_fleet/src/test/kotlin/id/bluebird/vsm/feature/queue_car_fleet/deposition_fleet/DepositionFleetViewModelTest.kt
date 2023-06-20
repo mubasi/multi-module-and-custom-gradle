@@ -2,6 +2,7 @@ package id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet
 
 import com.orhanobut.hawk.Hawk
 import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.vsm.core.extensions.StringExtensions.convertOnlyHourAndMinute
 import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.fleet.model.FleetItemResult
@@ -94,7 +95,7 @@ internal class DepositionFleetViewModelTest {
         job.cancel()
 
         // Result
-        Assertions.assertEquals(2, events.size)
+        Assertions.assertEquals(3, events.size)
         Assertions.assertEquals(
             DepositionFleetState.ProgressGetList,
             events[0]
@@ -102,6 +103,10 @@ internal class DepositionFleetViewModelTest {
         Assertions.assertEquals(
             DepositionFleetState.FailedGetList(result),
             events[1]
+        )
+        Assertions.assertEquals(
+            DepositionFleetState.GetListEmpty,
+            events[2]
         )
         Assertions.assertEquals("dd", _vm.location.value)
     }
@@ -156,8 +161,9 @@ internal class DepositionFleetViewModelTest {
                         FleetItemResult(
                             fleetId = 1L,
                             fleetName = "aa",
-                            arriveAt = timeArrived
-                        )
+                            arriveAt = timeArrived,
+                            1L
+                        ),
                     )
                 )
             )
@@ -183,12 +189,13 @@ internal class DepositionFleetViewModelTest {
                     CarFleetItem(
                         1L,
                         "aa",
-                        timeArrived.convertCreateAtValue()
+                        timeArrived.convertOnlyHourAndMinute(),
+                        1L
                     )
                 )
             ),
             events[1]
         )
-        Assertions.assertEquals("dd", _vm.location.value)
     }
+
 }

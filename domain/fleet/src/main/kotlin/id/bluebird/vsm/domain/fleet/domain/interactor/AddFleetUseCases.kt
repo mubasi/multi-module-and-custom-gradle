@@ -26,7 +26,8 @@ class AddFleetUseCases(private val fleetRepository: FleetRepository) : AddFleet 
         val fleetItemResult = FleetItemResult(
             fleetId = response.stockId,
             fleetName = fleetNumber.uppercase(),
-            arriveAt = response.createdAt
+            arriveAt = response.createdAt,
+            sequence = response.fleetSequence
         )
         emit(AddFleetState.Success(fleetItemResult))
     }

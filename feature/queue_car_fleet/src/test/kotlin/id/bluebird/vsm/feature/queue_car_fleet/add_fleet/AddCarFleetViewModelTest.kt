@@ -177,7 +177,7 @@ internal class AddCarFleetViewModelTest {
             _addFleet.invoke(
                 fleetNumber = any(),
                 subLocationId = any(),
-                locationId = any()
+                locationId = any(),
             )
         } returns flow {
             throw result //NullPointerException(ERROR)

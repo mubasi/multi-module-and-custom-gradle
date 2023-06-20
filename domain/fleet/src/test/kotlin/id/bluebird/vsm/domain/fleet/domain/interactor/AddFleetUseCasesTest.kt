@@ -57,7 +57,8 @@ internal class AddFleetUseCasesTest {
                     FleetItemResult(
                         fleetId = 1,
                         fleetName = "AA",
-                        arriveAt = "2022-07-18T07:54:14Z"
+                        arriveAt = "2022-07-18T07:54:14Z",
+                        0
                     )
                 )
             )
