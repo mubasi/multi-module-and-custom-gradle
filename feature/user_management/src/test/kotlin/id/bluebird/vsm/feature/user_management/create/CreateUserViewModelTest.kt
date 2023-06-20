@@ -265,8 +265,9 @@ internal class CreateUserViewModelTest {
                 LocationDomainState.Success(
                     value = listOf(
                         SubLocationResult(
-                            1, "aa", "bb", false, 0
-                        ))
+                            1, "aa", "bb", false, haveDeposition = false, depositionId = 0,
+                        )
+                    )
                 )
             )
         }
@@ -292,7 +293,7 @@ internal class CreateUserViewModelTest {
         }
 
         _vm.setupSubLocation()
-//        assert(_vm.actionSealed is CreateUserState.OnError)
+//        assert(_vm.actionSealed.awaitValue() is CreateUserState.OnError)
     }
 
     @Test
@@ -489,7 +490,12 @@ internal class CreateUserViewModelTest {
         val itemList = ArrayList<SubLocationResult>()
         itemList.add(
             SubLocationResult(
-                1, "aa", "bb", false, 0
+                1,
+                "aa",
+                "bb",
+                isDeposition = false,
+                haveDeposition = false,
+                depositionId = 0
             )
         )
 

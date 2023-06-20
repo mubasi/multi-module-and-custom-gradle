@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.bluebird.vsm.core.utils.DialogUtils
-import id.bluebird.vsm.core.utils.hawk.UserUtils
 import id.bluebird.vsm.feature.select_location.adapter.airport.AdapterAirport
 import id.bluebird.vsm.feature.select_location.adapter.outlet.AdapterSelectLocation
 import id.bluebird.vsm.feature.select_location.databinding.SelectLocationFragmentBinding
@@ -172,11 +171,9 @@ class FragmentSelectLocation : Fragment() {
     private fun onFragmentListenerResult() {
         setFragmentResultListener(FragmentSearchMallLocation.NOTIFICATION_MESSAGE) { _, bundle ->
             val status = bundle.getString(FragmentSearchMallLocation.STATUS_SEARCH)
-            if (status == FragmentSearchMallLocation.BACK) {
-                _vm.setFromSearch(
-                    UserUtils.getIsUserAirport()
-                )
-            }
+            _vm.setFromSearch(
+                status == FragmentSearchMallLocation.BACK_AIRPORT
+            )
         }
     }
 

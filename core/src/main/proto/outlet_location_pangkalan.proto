@@ -94,6 +94,7 @@ message GetSubLocationsPangkalanItem {
     string operational_time = 7;
     bool   is_deposition = 8;
     bool   have_deposition = 9;
+    int64  id_pengendapan = 10;
 }
 message GetSubLocationsPangkalanResponse {
 	repeated GetSubLocationsPangkalanItem sub_locations = 1;

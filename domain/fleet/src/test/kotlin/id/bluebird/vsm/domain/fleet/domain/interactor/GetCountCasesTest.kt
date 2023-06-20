@@ -39,6 +39,7 @@ internal class GetCountCasesTest {
                         stock = 10
                         request = 10
                         ritase = 10
+                        this.pengendapan = 10
                     }.build()
             )
         }
@@ -47,7 +48,7 @@ internal class GetCountCasesTest {
             // Result
             Assertions.assertEquals(
                 this.awaitItem().single(),
-                GetCountState.Success(CountResult(10, 10, 10))
+                GetCountState.Success(CountResult(10, 10, 10, 10))
             )
             awaitComplete()
         }

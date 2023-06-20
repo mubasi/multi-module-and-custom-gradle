@@ -110,6 +110,24 @@
             android:defaultValue="true"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/depositionFleetFragment"
+        android:name="id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet.FragmentDepositionFleet"
+        android:label="@string/fleet_title">
+        <argument
+            android:name="title"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="sub_location_id"
+            app:argType="long" />
+        <argument
+            android:name="deposition_stock"
+            app:argType="long" />
+        <argument
+            android:name="id_deposition"
+            app:argType="long" />
+    </fragment>
 
     <deepLink app:uri="android-app://id.bluebird.mall/queue_car_fleet" />
 </navigation>
