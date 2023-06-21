@@ -21,6 +21,7 @@ dependencies {
     implementation(OtherLib.cameraToText)
     implementation(OtherLib.cameraView)
     implementation(OtherLib.flexBox)
+    implementation(OtherLib.slidetoact)
 
     compileOnly(Kotlin.javax_annotation)
 

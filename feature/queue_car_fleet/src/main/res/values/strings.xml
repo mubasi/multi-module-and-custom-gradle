@@ -41,5 +41,7 @@
     <string name="fleet_not_found">Armada belum tersedia</string>
     // Up to Version 1.0.1
     <string name="failed_get_queue">Gagal mendapatkan Antrean</string>
-    <string name="msg_add_fleet_success"> berhasil ditambah ke antrian</string>
+    <string name="msg_sub_title_depart_fleet">Pilih status keberangkatan armada</string>
+    <string name="msg_slide_depart">Berangkatkan</string>
+    <string name="msg_add_fleet_success">berhasil ditambah ke antrian</string>
 </resources>
