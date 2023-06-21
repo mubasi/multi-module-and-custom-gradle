@@ -147,7 +147,7 @@
                             android:singleLine="true"
                             android:textSize="14sp"
                             android:textStyle="bold"
-                            android:text="@string/stock_title"/>
+                            android:text="@string/title_stock"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/val_counter_stock"
