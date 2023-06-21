@@ -27,6 +27,7 @@ class FragmentDepartCarFleetDialog(
 
     companion object {
         const val TAG = "FragmentDepartFleetDialog"
+        const val DISMISS = "DISMISS"
     }
 
     private lateinit var mBinding: DepartCarFleetDialogBinding
@@ -67,6 +68,7 @@ class FragmentDepartCarFleetDialog(
                     mBinding.showProgress = it == DepartCarFleetState.OnProgressGetCurrentQueue
                     when (it) {
                         is DepartCarFleetState.CancelDepartCar -> {
+                            onError(Throwable(DISMISS))
                             dialog?.dismiss()
                         }
                         is DepartCarFleetState.DepartCarFleet -> {

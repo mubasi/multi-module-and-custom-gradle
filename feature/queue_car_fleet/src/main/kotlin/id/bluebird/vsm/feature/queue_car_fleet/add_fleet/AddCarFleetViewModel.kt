@@ -111,7 +111,7 @@ class AddCarFleetViewModel(
         selectedFleetNumber.updateSelectedFleetNumberValue(fleetName)
         viewModelScope.launch {
             updatePosition(position)
-            _addCarFleetState.emit(AddCarFleetState.UpdateSelectPosition(_lastPosition, _newPosition))
+            addFleet()
         }
     }
 

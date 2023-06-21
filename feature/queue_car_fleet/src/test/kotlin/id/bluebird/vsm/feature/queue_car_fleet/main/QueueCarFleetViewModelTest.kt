@@ -473,7 +473,7 @@ internal class QueueCarFleetViewModelTest {
             job.cancel()
             // Result
             Assertions.assertEquals(11, _vm.counterLiveData.value!!.stock)
-            assert(_events.last() is QueueCarFleetState.NotifyDataCarFleetChanged)
+            assert(_events.last() is QueueCarFleetState.GetListSuccess)
         }
 
     @Test
@@ -716,13 +716,14 @@ internal class QueueCarFleetViewModelTest {
     }
 
     @Test
-    fun removeFleetTest() = runTest {
-        val listFleet = ArrayList<CarFleetItem>()
-
-        listFleet.add(
+    fun `removeFleetTest when list is not empty`() = runTest {
+        val listFleet = arrayListOf(
             CarFleetItem(
                 1, "aa", "bb"
-            )
+            ),
+            CarFleetItem(
+                2, "cc", "dd"
+            ),
         )
         _vm.setFleetItems(listFleet)
         val collect = launch {
@@ -732,7 +733,26 @@ internal class QueueCarFleetViewModelTest {
         runCurrent()
 
         Assertions.assertEquals(1, _events.size)
-        assert(_events.last() is QueueCarFleetState.NotifyDataCarFleetChanged)
+        assert(_events.last() is QueueCarFleetState.GetListSuccess)
+        collect.cancel()
+    }
+
+    @Test
+    fun `removeFleetTest when list is empty`() = runTest {
+        val listFleet = arrayListOf(
+            CarFleetItem(
+                1, "aa", "bb"
+            ),
+        )
+        _vm.setFleetItems(listFleet)
+        val collect = launch {
+            _vm.queueCarFleetState.toList(_events)
+        }
+        _vm.removeFleet("aa")
+        runCurrent()
+
+        Assertions.assertEquals(1, _events.size)
+        assert(_events.last() is QueueCarFleetState.GetListEmpty)
         collect.cancel()
     }
 
@@ -912,11 +932,14 @@ internal class QueueCarFleetViewModelTest {
         delay(500)
 
         //THEN
-        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(2, _events.size)
         Assertions.assertEquals(
             QueueCarFleetState.FailedGetQueueCar(
                 result
             ), _events[0]
+        )
+        Assertions.assertEquals(
+                QueueCarFleetState.GetListEmpty, _events[1]
         )
         job.cancel()
     }

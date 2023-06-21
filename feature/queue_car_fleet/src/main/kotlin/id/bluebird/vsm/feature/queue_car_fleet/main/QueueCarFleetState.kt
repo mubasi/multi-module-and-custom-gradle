@@ -30,6 +30,7 @@ sealed class QueueCarFleetState {
     data class RequestDepartCarFleet(val fleet: CarFleetItem, val locationId: Long, val subLocationId: Long) : QueueCarFleetState()
     data class SuccessDepartCarFleet(val fleetNumber: String, val isWithPassenger: Boolean) :
         QueueCarFleetState()
+    data class AddFleetSuccess(val list: List<CarFleetItem>, val itemAdd : CarFleetItem): QueueCarFleetState()
 
     data class SearchQueueToDepartCar(
         val fleet: CarFleetItem,

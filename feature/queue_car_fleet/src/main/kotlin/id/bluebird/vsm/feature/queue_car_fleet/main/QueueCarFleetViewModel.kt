@@ -16,6 +16,7 @@ import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.domain.user.GetUserByIdForAssignmentState
 import id.bluebird.vsm.domain.user.domain.intercator.GetUserByIdForAssignment
 import id.bluebird.vsm.domain.user.model.UserAssignment
+import id.bluebird.vsm.feature.queue_car_fleet.depart_fleet.FragmentDepartCarFleetDialog
 import id.bluebird.vsm.feature.queue_car_fleet.model.CountCacheCarFleet
 import id.bluebird.vsm.feature.queue_car_fleet.model.CarFleetItem
 import id.bluebird.vsm.feature.queue_car_fleet.model.UserRoleInfo
@@ -122,39 +123,40 @@ class QueueCarFleetViewModel(
     private fun getUserById() {
         viewModelScope.launch {
             _queueCarFleetState.emit(QueueCarFleetState.ProgressGetUser)
-                val nav = LocationNavigationTemporary.getLocationNav()
-                getUserByIdForAssignment.invoke(
-                    UserUtils.getUserId(),
-                    locationIdNav = nav?.locationId,
-                    subLocationIdNav = nav?.subLocationId
-                )
-                    .catch { cause ->
-                        _queueCarFleetState.emit(
-                            QueueCarFleetState.FailedGetUser(
-                                message = cause.message ?: ERROR_MESSAGE_UNKNOWN
-                            )
+            val nav = LocationNavigationTemporary.getLocationNav()
+            getUserByIdForAssignment.invoke(
+                UserUtils.getUserId(),
+                locationIdNav = nav?.locationId,
+                subLocationIdNav = nav?.subLocationId
+            )
+                .catch { cause ->
+                    _queueCarFleetState.emit(
+                        QueueCarFleetState.FailedGetUser(
+                            message = cause.message ?: ERROR_MESSAGE_UNKNOWN
                         )
-                    }
-                    .collect {
-                        when (it) {
-                            is GetUserByIdForAssignmentState.Success -> {
-                                mUserRoleInfo = UserRoleInfo(
-                                    userId = it.result.id,
-                                    locationId = it.result.locationId,
-                                    subLocationId = it.result.subLocationId
+                    )
+                }
+                .collect {
+                    when (it) {
+                        is GetUserByIdForAssignmentState.Success -> {
+                            mUserRoleInfo = UserRoleInfo(
+                                userId = it.result.id,
+                                locationId = it.result.locationId,
+                                subLocationId = it.result.subLocationId
+                            )
+                            createTitleLocation(userAssignment = it.result)
+                            _queueCarFleetState.emit(QueueCarFleetState.GetUserInfoSuccess)
+                        }
+
+                        GetUserByIdForAssignmentState.UserNotFound -> {
+                            _queueCarFleetState.emit(
+                                QueueCarFleetState.FailedGetUser(
+                                    ERROR_MESSAGE_UNKNOWN
                                 )
-                                createTitleLocation(userAssignment = it.result)
-                                _queueCarFleetState.emit(QueueCarFleetState.GetUserInfoSuccess)
-                            }
-                            GetUserByIdForAssignmentState.UserNotFound -> {
-                                _queueCarFleetState.emit(
-                                    QueueCarFleetState.FailedGetUser(
-                                        ERROR_MESSAGE_UNKNOWN
-                                    )
-                                )
-                            }
+                            )
                         }
                     }
+                }
         }
     }
 
@@ -162,7 +164,7 @@ class QueueCarFleetViewModel(
         with(userAssignment) {
             if (isOfficer) {
                 _locationName.value = locationName
-                _subLocationName.value = subLocationName
+                _subLocationName.value = subLocationName ?: EMPTY_STRING
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
                 _locationName.value = location?.locationName ?: EMPTY_STRING
@@ -212,7 +214,11 @@ class QueueCarFleetViewModel(
         }
     }
 
-    fun departFleet(carFleetItem: CarFleetItem, isWithPassenger: Boolean = false, queueId: String = "") {
+    fun departFleet(
+        carFleetItem: CarFleetItem,
+        isWithPassenger: Boolean = false,
+        queueId: String = ""
+    ) {
         /**
          * disable this condition (showRecordRitase)
          * for not selected queue and set fleet only ada penumpang or tanpa penumpang
@@ -270,7 +276,7 @@ class QueueCarFleetViewModel(
             return
         _Car_fleetItems.removeAt(fleetIndex)
         viewModelScope.launch {
-            _queueCarFleetState.emit(QueueCarFleetState.NotifyDataCarFleetChanged(_Car_fleetItems.toList()))
+            checkStateList()
         }
     }
 
@@ -302,7 +308,10 @@ class QueueCarFleetViewModel(
 
     fun onErrorFromDialog(throwable: Throwable) {
         viewModelScope.launch {
-            _queueCarFleetState.emit(QueueCarFleetState.FailedGetQueueCar(throwable))
+            if(throwable.message != FragmentDepartCarFleetDialog.DISMISS) {
+                _queueCarFleetState.emit(QueueCarFleetState.FailedGetQueueCar(throwable))
+            }
+            checkStateList()
         }
     }
 
@@ -347,7 +356,7 @@ class QueueCarFleetViewModel(
             viewModelScope.launch {
                 _Car_fleetItems.add(carFleetItem)
                 _queueCarFleetState.emit(
-                    QueueCarFleetState.NotifyDataCarFleetChanged(
+                    QueueCarFleetState.GetListSuccess(
                         _Car_fleetItems.toList()
                     )
                 )
@@ -396,6 +405,7 @@ class QueueCarFleetViewModel(
                             GetListFleetState.EmptyResult -> {
                                 _queueCarFleetState.emit(QueueCarFleetState.GetListEmpty)
                             }
+
                             is GetListFleetState.Success -> {
                                 it.list.forEach { item ->
                                     _Car_fleetItems.add(
@@ -416,6 +426,18 @@ class QueueCarFleetViewModel(
                     }
             }
         }
+    }
+
+    private suspend fun checkStateList() {
+        _queueCarFleetState.emit(
+            if (_Car_fleetItems.isEmpty()) {
+                QueueCarFleetState.GetListEmpty
+            } else {
+                QueueCarFleetState.GetListSuccess(
+                    _Car_fleetItems.toList()
+                )
+            }
+        )
     }
 
     fun refresh() {
