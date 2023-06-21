@@ -125,7 +125,21 @@ class FragmentQueueCarFleet : Fragment() {
                                 showSnackbar(string, R.color.success_0)
                                 _fleetAdapter.submitData(it.list)
                             }
+                            is QueueCarFleetState.AddFleetSuccess -> {
+                                val string = SpannableStringBuilder()
+                                    .bold { append(
+                                        it.itemAdd.name
+                                    ) }
+                                    .append(" ")
+                                    .append(
+                                        getString(R.string.msg_add_fleet_success)
+                                    )
+                                showSnackbar(string, R.color.success_0)
+                                _fleetAdapter.submitData(it.list)
+                                mBinding.successList = it.list.isNotEmpty()
+                            }
                             is QueueCarFleetState.GetListEmpty -> {
+                                mBinding.showProgress = false
                                 _fleetAdapter.submitData(arrayListOf())
                             }
                             is QueueCarFleetState.ShowRequestCarFleet -> {

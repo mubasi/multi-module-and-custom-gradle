@@ -1019,4 +1019,79 @@ internal class QueueCarFleetViewModelTest {
         delay(500)
         job.cancel()
     }
+
+    @Test
+    fun `goToDepositionScreenTest, when title value is null and counter is null`() = runTest {
+        //given
+        _vm.setTitleLocation(null)
+        _vm.setCountCache(null)
+        _vm.setIdDeposition(1L)
+        _vm.setUserInfo(
+            UserRoleInfo(
+                subLocationId = 1L
+            )
+        )
+
+        // Execute
+        val job = launch {
+            _vm.queueCarFleetState.toList(_events)
+        }
+        _vm.goToDepositionScreen()
+        runCurrent()
+        delay(500)
+
+        //THEN
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(
+            QueueCarFleetState.GotoDepositionScreen(
+                QueueCarFleetViewModel.EMPTY_STRING,
+                1L,
+                1L,
+                0
+            ), _events[0]
+        )
+        runCurrent()
+        delay(500)
+        job.cancel()
+    }
+
+
+    @Test
+    fun `goToDepositionScreenTest, when title value is not null and counter is not null`() = runTest {
+        //given
+        _vm.setTitleLocation("aa")
+        _vm.setCountCache(
+            CountCacheCarFleet(
+                stock = 1, request =  2, ritase = 3, depositionStock= 4
+            )
+        )
+        _vm.setUserInfo(
+            UserRoleInfo(
+                subLocationId = 1L
+            )
+        )
+        _vm.setIdDeposition(1L)
+
+        // Execute
+        val job = launch {
+            _vm.queueCarFleetState.toList(_events)
+        }
+        _vm.goToDepositionScreen()
+        runCurrent()
+        delay(500)
+
+        //THEN
+        Assertions.assertEquals(1, _events.size)
+        Assertions.assertEquals(
+            QueueCarFleetState.GotoDepositionScreen(
+                "aa",
+                1L,
+                1L,
+                4
+            ), _events[0]
+        )
+        runCurrent()
+        delay(500)
+        job.cancel()
+    }
 }
