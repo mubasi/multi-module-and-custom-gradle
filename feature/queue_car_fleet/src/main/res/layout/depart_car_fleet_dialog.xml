@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        
+
         <variable
             name="title"
             type="String" />
@@ -30,104 +31,172 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_bottom_sheet"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="24dp">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/titleDepartFleetDialog"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:fontFamily="@font/ubuntu_bold"
-            mainText="@{title}"
-            coloredText="@{fleetNumber}"
-            toColor="@{@color/primary_0}"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:visibility="@{!showProgress ? View.VISIBLE : View.GONE}"
+            android:onClick="@{()-> vm.cancelDepart()}"
+            android:layout_marginRight="@dimen/fab_margin"
+            app:cardCornerRadius="@dimen/eight_dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_close_black"/>
+        </androidx.cardview.widget.CardView>
 
-        <RadioGroup
-            android:id="@+id/radioGroupFleetStatus"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:checkedButton="@id/rbWithPassenger"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleDepartFleetDialog">
+            android:background="@drawable/bg_bottom_sheet"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="24dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/layout_close">
 
-            <RadioButton
-                android:id="@+id/rbWithPassenger"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/titleDepartFleetDialog"
+                coloredText="@{fleetNumber}"
+                mainText="@{title}"
+                toColor="@{@color/primary_0}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-4dp"
-                android:buttonTint="@color/radio_button_state_color"
-                android:fontFamily="@font/ubuntu_regular"
-                android:onClick="@{() -> vm.setDepartStatus(true)}"
-                android:paddingVertical="14dp"
-                android:text="@string/with_passenger"
-                android:textColor="@color/gray_subtitle"
-                android:textSize="16sp" />
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/ubuntu_bold"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
-                android:id="@+id/rbWithoutPassenger"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/layout_sub_title"
+                android:text="@string/msg_sub_title_depart_fleet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="-4dp"
-                android:buttonTint="@color/radio_button_state_color"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@font/ubuntu_regular"
-                android:onClick="@{() -> vm.setDepartStatus(false)}"
-                android:paddingVertical="14dp"
-                android:text="@string/without_passenger"
-                android:textColor="@color/gray_subtitle"
-                android:textSize="16sp" />
-        </RadioGroup>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleDepartFleetDialog" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonCancelDepart"
-            style="@style/BackgroundCancel"
-            android:layout_width="156dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:text="@string/cancel"
-            android:textAllCaps="false"
-            android:onClick="@{() -> vm.cancelDepart()}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/radioGroupFleetStatus" />
+            <LinearLayout
+                android:id="@+id/layout_select_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:visibility="@{!showProgress ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_sub_title">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/buttonDepart"
-            style="@style/ButtonPrimary"
-            android:layout_width="156dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_submit"
-            android:gravity="center"
-            android:text="@string/depart"
-            android:textAllCaps="false"
-            android:onClick='@{() -> vm.departFleet("")}'
-            android:enabled="@{!showProgress}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@id/buttonCancelDepart"
-            app:layout_constraintTop_toTopOf="@id/buttonCancelDepart" />
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/layout_with_passenger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> vm.setDepartStatus(true)}"
+                    android:layout_marginRight="10dp"
+                    passengerStatus="@{true}"
+                    borderPassenger="@{vm.departWithPassenger}"
+                    app:strokeWidth="2dp">
 
-        <ProgressBar
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:indeterminateTint="@color/white"
-            android:layout_marginStart="8dp"
-            android:visibility="@{showProgress ? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toTopOf="@id/buttonDepart"
-            app:layout_constraintBottom_toBottomOf="@id/buttonDepart"
-            app:layout_constraintStart_toStartOf="@id/buttonDepart"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            stPassenger="@{true}"
+                            withPassenger="@{vm.departWithPassenger}"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/ubuntu_bold"
+                            android:layout_gravity="center_horizontal"
+                            statusPassenger="@{true}"
+                            colorTextPassenger="@{vm.departWithPassenger}"
+                            android:text="@string/with_passenger"/>
+                    </LinearLayout>
 
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/layout_without_passenger"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> vm.setDepartStatus(false)}"
+                    android:layout_marginLeft="10dp"
+                    passengerStatus="@{false}"
+                    borderPassenger="@{vm.departWithPassenger}"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="18dp">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            stPassenger="@{false}"
+                            withPassenger="@{vm.departWithPassenger}"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/ubuntu_bold"
+                            android:layout_gravity="center_horizontal"
+                            statusPassenger="@{false}"
+                            colorTextPassenger="@{vm.departWithPassenger}"
+                            android:text="@string/without_passenger"/>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <com.ncorti.slidetoact.SlideToActView
+                android:id="@+id/layout_slide_proses"
+                android:visibility="@{!showProgress ? View.VISIBLE : View.GONE}"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:text="@string/msg_slide_depart"
+                app:text_color="@color/primary_color"
+                app:text_style="bold"
+                app:text_size="16dp"
+                app:slider_height="60dp"
+                app:border_radius="10dp"
+                app:area_margin="-8dp"
+                app:slider_icon="@drawable/ic_button_right"
+                app:slider_icon_color="@color/white"
+                app:inner_color="@color/primary_color"
+                app:outer_color="@color/bg_slider"
+                app:complete_icon="@drawable/slidetoact_animated_ic_check"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_select_status"/>
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:indeterminateTint="@color/white"
+                android:visibility="@{showProgress ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@id/layout_slide_proses"
+                app:layout_constraintStart_toStartOf="@id/layout_slide_proses"
+                app:layout_constraintTop_toTopOf="@id/layout_slide_proses" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

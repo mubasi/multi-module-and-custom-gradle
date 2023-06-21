@@ -10,29 +10,32 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class DepartCarFleetViewModel: ViewModel() {
+    companion object {
+        const val EMPTY_STRING = ""
+    }
     private val _departCarFleetState = MutableSharedFlow<DepartCarFleetState>()
     val sharedDepartFleetState = _departCarFleetState.asSharedFlow()
     val showProgress: MutableLiveData<Boolean> = MutableLiveData(false)
-    private var _departWithPassenger: MutableLiveData<Boolean> = MutableLiveData(true)
-    private lateinit var _Car_fleetItem: CarFleetItem
+    var departWithPassenger: MutableLiveData<Boolean> = MutableLiveData(true)
+    private lateinit var carFleetItem: CarFleetItem
 
     @VisibleForTesting
     fun setStatusDepart(temp : Boolean) {
-        _departWithPassenger.value = temp
+        departWithPassenger.value = temp
     }
 
     @VisibleForTesting
     fun setFleetItem(temp : CarFleetItem) {
-        _Car_fleetItem = temp
+        carFleetItem = temp
     }
 
 
     fun setDepartStatus(withPassenger: Boolean) {
-        _departWithPassenger.postValue(withPassenger)
+        departWithPassenger.postValue(withPassenger)
     }
 
-    fun init(carFleetItem: CarFleetItem) {
-        _Car_fleetItem = carFleetItem
+    fun init(result: CarFleetItem) {
+        carFleetItem = result
     }
 
     fun cancelDepart() {
@@ -41,12 +44,12 @@ class DepartCarFleetViewModel: ViewModel() {
         }
     }
 
-    fun departFleet(queueNumber: String = "") {
-        _departWithPassenger.value?.let { withPassenger ->
+    fun departFleet(queueNumber: String = EMPTY_STRING) {
+        departWithPassenger.value?.let { withPassenger ->
             viewModelScope.launch {
                 _departCarFleetState.emit(
                     DepartCarFleetState.DepartCarFleet(
-                        _Car_fleetItem,
+                        carFleetItem,
                         withPassenger,
                         queueNumber
                     )
@@ -59,7 +62,7 @@ class DepartCarFleetViewModel: ViewModel() {
         viewModelScope.launch {
             _departCarFleetState.emit(
                 DepartCarFleetState.SelectQueueToDepartCar(
-                    _Car_fleetItem,
+                    carFleetItem,
                     currentQueueNumber,
                     locationId,
                     subLocationId

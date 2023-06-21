@@ -11,9 +11,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.ncorti.slidetoact.SlideToActView
 import id.bluebird.vsm.feature.queue_car_fleet.R
 import id.bluebird.vsm.feature.queue_car_fleet.databinding.DepartCarFleetDialogBinding
 import id.bluebird.vsm.feature.queue_car_fleet.model.CarFleetItem
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -61,10 +63,11 @@ class FragmentDepartCarFleetDialog(
             setCancelable(false)
             setContentView(view)
         }
+        setupSlideProses()
 
         viewLifecycleOwner.lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                _departViewModel.sharedDepartFleetState.collect {
+                _departViewModel.sharedDepartFleetState.collectLatest {
                     mBinding.showProgress = it == DepartCarFleetState.OnProgressGetCurrentQueue
                     when (it) {
                         is DepartCarFleetState.CancelDepartCar -> {
@@ -84,6 +87,13 @@ class FragmentDepartCarFleetDialog(
                         }
                     }
                 }
+            }
+        }
+    }
+    private fun setupSlideProses()  {
+        mBinding.layoutSlideProses.onSlideCompleteListener = object : SlideToActView.OnSlideCompleteListener{
+            override fun onSlideComplete(view: SlideToActView) {
+                _departViewModel.departFleet()
             }
         }
     }

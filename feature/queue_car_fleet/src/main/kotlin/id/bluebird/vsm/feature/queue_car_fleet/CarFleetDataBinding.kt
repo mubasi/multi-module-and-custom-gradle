@@ -9,6 +9,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -19,6 +20,8 @@ import id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.model.CarFleetItem
 import id.bluebird.vsm.feature.queue_car_fleet.request_fleet.RequestCarFleetDialogViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.search_fleet.SearchCarFleetViewModel
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.textColor
 
 object CarFleetDataBinding {
 
@@ -127,4 +130,48 @@ object CarFleetDataBinding {
             view.isRefreshing = false
         }
     }
+    @JvmStatic
+    @BindingAdapter("colorTextPassenger", "statusPassenger")
+    fun setColorTextPassenger(view: TextView, withPassenger : Boolean, statusPassenger : Boolean) {
+        view.textColor = view.context.getColor(
+            if(statusPassenger) setColorWithPassenger(withPassenger) else setColorWithoutPassenger(withPassenger)
+        )
+    }
+    private fun setColorWithPassenger(status : Boolean) : Int {
+        return if(status) R.color.white else R.color.gray_disable
+    }
+    private fun setColorWithoutPassenger(status : Boolean) : Int {
+        return if(status) R.color.gray_disable else R.color.white
+    }
+    @JvmStatic
+    @BindingAdapter("withPassenger", "stPassenger")
+    fun setImagePassenger(view: AppCompatImageView, withPassenger : Boolean, stPassenger : Boolean) {
+        view.setImageDrawable(
+            AppCompatResources.getDrawable(
+                view.context,
+                if(stPassenger) setImageWitPassenger(withPassenger) else setImageWithoutPassenger(withPassenger)
+            )
+        )
+    }
+    private fun setImageWithoutPassenger(status : Boolean) : Int {
+        return if(status) R.drawable.no_with_passenger_no_active else R.drawable.no_with_passenger_active
+    }
+    private fun setImageWitPassenger(status : Boolean) : Int {
+        return if(status) R.drawable.with_passenger_active else R.drawable.with_passenger_no_active
+    }
+
+    @JvmStatic
+    @BindingAdapter("borderPassenger", "passengerStatus")
+    fun setBorderPassenger(view: CardView, borderPassenger : Boolean, passengerStatus : Boolean) {
+         view.backgroundColor = view.context.getColor(
+             if(passengerStatus) setBorderWithPassenger(borderPassenger) else setBorderWithoutPassenger(borderPassenger)
+         )
+    }
+    private fun setBorderWithPassenger(status : Boolean) : Int {
+        return if(status) R.color.primary_0 else R.color.white
+    }
+    private fun setBorderWithoutPassenger(status : Boolean) : Int {
+        return if(status) R.color.white else R.color.primary_0
+    }
+
 }
