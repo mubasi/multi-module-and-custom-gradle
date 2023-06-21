@@ -111,7 +111,8 @@ internal class MonitoringViewModelTest {
                     subLocationId = i.toLong(),
                     totalQueueFleet = i,
                     totalQueuePassenger = i,
-                    totalRitase = i
+                    totalRitase = i,
+                    isDeposition = false
                 )
             )
             result.add(
@@ -126,7 +127,8 @@ internal class MonitoringViewModelTest {
                     totalRitase = i,
                     fleetRequest = i,
                     buffer = i,
-                    editableBuffer = true
+                    editableBuffer = true,
+                    isDeposition = false
                 )
             )
         }
@@ -269,7 +271,8 @@ internal class MonitoringViewModelTest {
                     totalRitase = i,
                     fleetRequest = i,
                     buffer = i,
-                    editableBuffer = true
+                    editableBuffer = true,
+                    isDeposition = false
                 )
             )
         }
@@ -308,7 +311,8 @@ internal class MonitoringViewModelTest {
                     totalRitase = i,
                     fleetRequest = i,
                     buffer = i,
-                    editableBuffer = true
+                    editableBuffer = true,
+                    isDeposition = false
                 )
             )
         }

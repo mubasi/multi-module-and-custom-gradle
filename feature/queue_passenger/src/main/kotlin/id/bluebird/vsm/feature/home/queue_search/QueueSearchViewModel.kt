@@ -40,7 +40,7 @@ class QueueSearchViewModel : ViewModel() {
 
     @VisibleForTesting
     fun setParams(result: String?) {
-        params.value = result
+        params.value = result ?: EMPTY_STRING
     }
 
     @VisibleForTesting

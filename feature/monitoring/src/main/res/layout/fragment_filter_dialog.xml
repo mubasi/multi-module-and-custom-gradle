@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+
+        <import type="id.bluebird.vsm.feature.monitoring.filter_dialog.FilterDialogState"/>
+
+        <variable
+            name="state"
+            type="id.bluebird.vsm.feature.monitoring.filter_dialog.FilterDialogState" />
+
+        <variable
+            name="vm"
+            type="id.bluebird.vsm.feature.monitoring.filter_dialog.FilterDialogViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()-> vm.closeDialog()}"
+            android:layout_marginRight="@dimen/fab_margin"
+            app:cardCornerRadius="@dimen/eight_dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_clear"/>
+        </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bottom_sheet"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="24dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/layout_close">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleDepartFleetDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/ubuntu_bold"
+            android:textSize="20sp"
+            android:text="@string/text_filter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/layout_sub_title"
+            android:text="@string/text_sub_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/ubuntu_regular"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleDepartFleetDialog" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/filter_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/layout_sub_title"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filter_all"
+                style="@style/CustomeChipStyleSuccess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_all" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filter_waiting"
+                style="@style/CustomeChipStylePrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_deposition" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filter_skipped"
+                style="@style/CustomeChipStyleWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_lobby" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

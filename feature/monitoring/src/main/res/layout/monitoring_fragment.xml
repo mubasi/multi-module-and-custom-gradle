@@ -14,6 +14,10 @@
         <variable
             name="vm"
             type="id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel" />
+
+        <variable
+            name="titleFloating"
+            type="String" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -74,6 +78,22 @@
             app:show="@{!(state instanceof MonitoringState.OnProgressGetList)}"
             app:layout_constraintTop_toBottomOf="@id/notification"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/layout_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_gravity="bottom|right"
+            android:text="@string/text_filter"
+            android:backgroundTint="@color/primary_0"
+            android:textColor="@color/white"
+            app:show="@{!(state instanceof MonitoringState.OnProgressGetList)}"
+            app:icon="@drawable/ic_filter"
+            app:iconTint="@color/white"
+            android:onClick="@{() -> vm.openDialogFilter()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,6 +1,7 @@
 package id.bluebird.vsm.feature.monitoring
 
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
@@ -16,7 +17,7 @@ object DataBinding {
 
     @JvmStatic
     @BindingAdapter("bindingIsDesc", "bindingStatusSort", "bindingVm")
-    fun setVisibleIconOrder(view: AppCompatImageButton, isDesc : Boolean, statusSort: MonitoringViewModel.ActiveSort, viewModel : MonitoringViewModel) {
+    fun setVisibleIconOrder(view: AppCompatImageView, isDesc : Boolean, statusSort: MonitoringViewModel.ActiveSort, viewModel : MonitoringViewModel) {
         view.isVisible = statusSort == viewModel.activeColumnSort.value
         view.setImageResource(
             if(isDesc) {
