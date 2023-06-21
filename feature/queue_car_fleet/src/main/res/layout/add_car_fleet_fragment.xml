@@ -97,7 +97,7 @@
             android:layout_height="0dp"
             android:gravity="center"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/submitFleetFragment"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/errSearchFleetFragment">
@@ -117,19 +117,6 @@
                 android:visibility="@{state instanceof AddCarFleetState.OnProgressGetList ? View.VISIBLE : View.GONE,default=visible}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/submitFleetFragment"
-            style="@style/BackgroundCancel"
-            bindingButtonSubmit="@{vm.selectedFleetNumber}"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> vm.addFleet()}"
-            android:text="@{isSearchQueue ? @string/ok : @string/add}"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

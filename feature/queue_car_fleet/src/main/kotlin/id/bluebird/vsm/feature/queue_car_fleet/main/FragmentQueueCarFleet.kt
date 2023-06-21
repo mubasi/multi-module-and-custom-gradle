@@ -70,8 +70,6 @@ class FragmentQueueCarFleet : Fragment() {
         mBinding.apply {
             vm = _mQueueCarFleetViewModel
             lifecycleOwner = viewLifecycleOwner
-            showProgress = true
-            successList = false
         }
         setHasOptionsMenu(true)
         initRcv()
@@ -85,12 +83,9 @@ class FragmentQueueCarFleet : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(_mQueueCarFleetViewModel) {
                     queueCarFleetState.collectLatest {
+                        mBinding.state = it
                         when (it) {
-                            QueueCarFleetState.ProgressHolder -> {
-                                mBinding.showHolder = true
-                            }
                             QueueCarFleetState.ToSelectLocation -> {
-                                mBinding.showHolder = false
                                 NavigationNav.navigate(
                                     NavigationSealed.SelectLocation(
                                         destination = null,
@@ -112,13 +107,22 @@ class FragmentQueueCarFleet : Fragment() {
                                 getFleetList()
                             }
                             is QueueCarFleetState.GetListSuccess -> {
-                                mBinding.showProgress = false
-                                mBinding.successList = true
                                 _fleetAdapter.submitData(it.list)
                             }
                             is QueueCarFleetState.NotifyDataCarFleetChanged -> {
                                 _fleetAdapter.submitData(it.list)
-                                mBinding.successList = it.list.isNotEmpty()
+                            }
+                            is QueueCarFleetState.AddFleetSuccess -> {
+                                val string = SpannableStringBuilder()
+                                    .bold { append(
+                                        it.itemAdd.name
+                                    ) }
+                                    .append(" ")
+                                    .append(
+                                        getString(R.string.msg_add_fleet_success)
+                                    )
+                                showSnackbar(string, R.color.success_0)
+                                _fleetAdapter.submitData(it.list)
                             }
                             is QueueCarFleetState.GetListEmpty -> {
                                 _fleetAdapter.submitData(arrayListOf())
@@ -131,13 +135,6 @@ class FragmentQueueCarFleet : Fragment() {
                                 delay(500)
                                 bottomProgressDialog?.dismiss()
                                 showRequestFleet(it.subLocationId)
-                            }
-                            is QueueCarFleetState.FailedGetList -> {
-                                mBinding.showProgress = false
-                                mBinding.successList = false
-                            }
-                            QueueCarFleetState.ProgressGetUser -> {
-                                mBinding.showProgress = false
                             }
                             is QueueCarFleetState.RequestDepartCarFleet -> {
                                 FragmentDepartCarFleetDialog(
@@ -287,6 +284,16 @@ class FragmentQueueCarFleet : Fragment() {
             }
         }
         setFragmentResultListener(FragmentAddCarFleet.RESULT) { _, bundle ->
+            val result = bundle.getString(FragmentAddCarFleet.REQUEST_ADD_NUMBER)
+            if(result != null) {
+                val string = SpannableStringBuilder()
+                    .bold { append(result) }
+                    .append(" ")
+                    .append(
+                        getString(R.string.msg_add_fleet_success)
+                    )
+                showSnackbar(string, R.color.success_0)
+            }
             _mQueueCarFleetViewModel.addSuccess(bundle.getParcelable(FragmentAddCarFleet.REQUEST_ADD))
         }
     }

@@ -4,21 +4,13 @@
 
     <data>
 
-        <variable
-            name="showHolder"
-            type="Boolean" />
-
-        <variable
-            name="showProgress"
-            type="Boolean" />
-
-        <variable
-            name="successList"
-            type="Boolean" />
-
         <import type="android.view.View" />
 
         <import type="id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetState" />
+
+        <variable
+            name="state"
+            type="id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetState" />
 
         <variable
             name="vm"
@@ -34,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/primary_0"
-            android:visibility="@{showHolder ? View.VISIBLE: View.GONE,default=gone}"
+            android:visibility="@{state instanceof QueueCarFleetState.ProgressHolder ? View.VISIBLE : View.GONE, default=visible}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -44,7 +36,7 @@
             android:id="@+id/cl_count_stock_request_perimeter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="@{showHolder ? View.GONE: View.VISIBLE,default=visible}"
+            android:visibility="@{state instanceof QueueCarFleetState.ProgressHolder ? View.GONE: View.VISIBLE,default=visible}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -153,7 +145,7 @@
 
                         <ProgressBar
                             android:id="@+id/listProgressBarFleetFragment"
-                            bindVisibility="@{showProgress}"
+                            bindVisibility="@{state instanceof QueueCarFleetState.ProgressGetCarFleetList}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:indeterminateTint="@color/primary_0" />
@@ -164,7 +156,7 @@
                             android:layout_marginTop="50dp"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:visibility="@{!successList &amp;&amp; !showProgress ? View.VISIBLE : View.GONE, default=visible}">
+                            android:visibility="@{state instanceof QueueCarFleetState.GetListEmpty ? View.VISIBLE : View.GONE, default=visible}">
 
                             <ImageView
                                 android:layout_width="150dp"
@@ -182,7 +174,7 @@
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/mainListFleetFleetFragment"
-                            bindVisibility="@{successList &amp;&amp; !showProgress}"
+                            android:visibility="@{state instanceof QueueCarFleetState.GetListSuccess ? View.VISIBLE : View.GONE, default=visible}"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
                     </LinearLayout>
