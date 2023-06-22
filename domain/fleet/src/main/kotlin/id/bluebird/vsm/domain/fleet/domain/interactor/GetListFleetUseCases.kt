@@ -23,7 +23,8 @@ class GetListFleetUseCases(private val _fleetRepo: FleetRepository) : GetListFle
                 val fleetItemResult = FleetItemResult(
                     fleetId = it.fleetId,
                     fleetName = it.taxiNo,
-                    arriveAt = it.createdAt
+                    arriveAt = it.createdAt,
+                    sequence = it.fleetSequence
                 )
                 fleetItemResults.add(fleetItemResult)
             }

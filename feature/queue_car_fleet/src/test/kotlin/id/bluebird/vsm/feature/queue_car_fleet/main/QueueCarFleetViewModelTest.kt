@@ -389,7 +389,8 @@ internal class QueueCarFleetViewModelTest {
                     FleetItemResult(
                         fleetId = i,
                         fleetName = "BB1${i}1",
-                        arriveAt = "2022-07-19T0${i}:03:13Z"
+                        arriveAt = "2022-07-19T0${i}:03:13Z",
+                        i
                     )
                 )
             }
@@ -975,8 +976,6 @@ internal class QueueCarFleetViewModelTest {
                 0
             ), _events[0]
         )
-        runCurrent()
-        delay(500)
         job.cancel()
     }
 
@@ -1015,8 +1014,6 @@ internal class QueueCarFleetViewModelTest {
                 4
             ), _events[0]
         )
-        runCurrent()
-        delay(500)
         job.cancel()
     }
 }

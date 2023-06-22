@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
+import id.bluebird.vsm.core.extensions.StringExtensions.convertOnlyHourAndMinute
 import id.bluebird.vsm.domain.fleet.GetListFleetState
 import id.bluebird.vsm.domain.fleet.domain.cases.GetListFleet
 import id.bluebird.vsm.feature.queue_car_fleet.model.CarFleetItem
@@ -41,7 +41,7 @@ class DepositionFleetViewModel(
         getFleetList()
     }
 
-    private fun getFleetList() {
+    fun getFleetList() {
         viewModelScope.launch {
             _actionState.emit(DepositionFleetState.ProgressGetList)
             if (listFleets.isNotEmpty()) {
@@ -50,6 +50,7 @@ class DepositionFleetViewModel(
                 _getFleet.invoke(subLocationId)
                     .catch { cause: Throwable ->
                         _actionState.emit(DepositionFleetState.FailedGetList(cause))
+                        _actionState.emit(DepositionFleetState.GetListEmpty)
                     }
                     .collect {
                         when (it) {
@@ -63,7 +64,8 @@ class DepositionFleetViewModel(
                                         CarFleetItem(
                                             id = item.fleetId,
                                             name = item.fleetName,
-                                            arriveAt = item.arriveAt.convertCreateAtValue()
+                                            arriveAt = item.arriveAt.convertOnlyHourAndMinute(),
+                                            sequence = item.sequence
                                         )
                                     )
                                 }

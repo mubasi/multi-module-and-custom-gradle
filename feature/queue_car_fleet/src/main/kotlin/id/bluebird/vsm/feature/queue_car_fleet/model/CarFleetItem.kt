@@ -6,5 +6,5 @@ import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-data class CarFleetItem(val id: Long = -2, val name: String = "", val arriveAt: String = "") :
+data class CarFleetItem(val id: Long = -2, val name: String = "", val arriveAt: String = "", val sequence : Long = -1) :
     Parcelable

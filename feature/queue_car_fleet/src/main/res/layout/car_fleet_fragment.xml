@@ -204,6 +204,32 @@
 
                         </LinearLayout>
 
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            bindVisibility="@{state instanceof QueueCarFleetState.GetListSuccess }"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/primary_4">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="8dp"
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:layout_width="@dimen/width_sequence"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:layout_marginHorizontal="@dimen/margin_sequence"
+                                    android:text="@string/number_sequence_text" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="left"
+                                    android:text="@string/number_fleet_text" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/mainListFleetFleetFragment"
                             android:visibility="@{state instanceof QueueCarFleetState.GetListSuccess ? View.VISIBLE : View.GONE, default=visible}"

@@ -97,14 +97,15 @@ internal class RitaseFleetViewModelTest {
                 FleetItemResult(
                     fleetId = i.toLong(),
                     fleetName = "aa $i",
-                    arriveAt = tempDate
+                    arriveAt = tempDate,
+                    i.toLong()
                 )
             )
             currentListResult.add(
                 FleetItemList(
                     id = i.toLong(),
                     name = "aa $i",
-                    arriveAt = tempDate.convertCreateAtValue()
+                    arriveAt = tempDate.convertCreateAtValue(),
                 )
             )
         }

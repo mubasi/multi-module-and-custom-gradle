@@ -10,6 +10,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import id.bluebird.vsm.core.utils.DialogUtils
 import id.bluebird.vsm.feature.queue_car_fleet.R
 import id.bluebird.vsm.feature.queue_car_fleet.databinding.DepositionFleetFragmentBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -21,6 +23,9 @@ class FragmentDepositionFleet : Fragment() {
     private val viewModel : DepositionFleetViewModel by viewModel()
     private val _args by navArgs<FragmentDepositionFleetArgs>()
     private lateinit var mBinding : DepositionFleetFragmentBinding
+    private val adapterDepositionFleet: AdapterDepositionFleet by lazy {
+        AdapterDepositionFleet(viewModel)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,10 +50,11 @@ class FragmentDepositionFleet : Fragment() {
         }
         arguments()
         observe()
+        initRcv()
     }
 
     private fun arguments() {
-        viewModel.init(_args.subLocationId, _args.depositionStock, _args.title)
+        viewModel.init(_args.idDeposition, _args.depositionStock, _args.title)
     }
 
     private fun observe() {
@@ -57,10 +63,36 @@ class FragmentDepositionFleet : Fragment() {
                 with(viewModel) {
                     actionState.collectLatest {
                         mBinding.state = it
+                        when(it) {
+                            is DepositionFleetState.FailedGetList -> {
+                                showDialogError(it.result.message ?: getString(R.string.msg_can_not_show_list_deposition))
+                            }
+                            is DepositionFleetState.GetListSuccess -> {
+                                adapterDepositionFleet.updateData(it.result)
+                            }
+                            else -> {
+                                //do nothing
+                            }
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun initRcv() {
+        with(mBinding) {
+            fleetListRcv.layoutManager = LinearLayoutManager(requireContext())
+            fleetListRcv.adapter = adapterDepositionFleet
+        }
+    }
+
+    private fun showDialogError(msg : String) {
+        DialogUtils.showErrorDialog(
+            requireContext(),
+            null,
+            msg
+        )
     }
 
 }

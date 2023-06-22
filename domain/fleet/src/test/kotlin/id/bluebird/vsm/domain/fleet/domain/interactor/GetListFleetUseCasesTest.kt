@@ -54,6 +54,7 @@ internal class GetListFleetUseCasesTest {
                         createdAt = "2022-07-18T07:54:14Z"
                         fleetId = 12
                         taxiNo = "AB1212"
+                        fleetSequence = 1L
                     }.build())
                     .build()
             )
