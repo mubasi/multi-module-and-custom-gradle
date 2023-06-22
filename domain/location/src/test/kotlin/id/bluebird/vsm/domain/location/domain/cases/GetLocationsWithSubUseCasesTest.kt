@@ -35,6 +35,7 @@ internal class GetLocationsWithSubUseCasesTest {
         val subLocationSize = 2
         val subLocationName = "testSubLocation"
         val prefix = "prefix"
+        val isDeposition = false
         val haveDeposition = false
         val idDeposition = 0L
         every { repository.getLocations() } returns flow {
@@ -76,7 +77,14 @@ internal class GetLocationsWithSubUseCasesTest {
                 GetLocationsWithSubState.Success(
                     listOf(LocationsWithSub(
                         locationId, locationName, MutableList(subLocationSize) {
-                            SubLocationResult(it.toLong(), subLocationName, prefix, haveDeposition, idDeposition)
+                            SubLocationResult(
+                                it.toLong(),
+                                subLocationName,
+                                prefix,
+                                isDeposition,
+                                haveDeposition,
+                                idDeposition,
+                            )
                         }
                     ))
                 ), awaitItem().singleOrNull())

@@ -44,4 +44,7 @@
     <string name="msg_sub_title_depart_fleet">Pilih status keberangkatan armada</string>
     <string name="msg_slide_depart">Berangkatkan</string>
     <string name="msg_add_fleet_success">berhasil ditambah ke antrian</string>
+    <string name="title_stock">Stok armada lobi: </string>
+    <string name="deposition_stock_title">Stok armada pengendapan: </string>
+    <string name="deposition_text">Pengendapan</string>
 </resources>

@@ -40,6 +40,7 @@ internal class GetSubLocationByLocationIdCasesTest {
         val prefix = "prefix"
         val havePengendapan = false
         val idPengendapan = 1L
+        val isDeposition = false
         every { Hawk.get<Long>(any()) } returns defaultLocationId
         every { repository.getSubLocationByLocationId(defaultLocationId) } returns flow {
             emit(
@@ -65,6 +66,7 @@ internal class GetSubLocationByLocationIdCasesTest {
                             defaultSubLocationId,
                             defaultSubLocationName,
                             prefix,
+                            isDeposition,
                             havePengendapan,
                             idPengendapan
                         )

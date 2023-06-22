@@ -9,8 +9,6 @@ import id.bluebird.vsm.domain.airport_location.GetListSublocationAirportState
 import id.bluebird.vsm.domain.airport_location.domain.cases.GetListSublocationAirport
 import id.bluebird.vsm.domain.location.GetLocationsWithSubState
 import id.bluebird.vsm.domain.location.domain.interactor.GetLocationsWithSub
-import id.bluebird.vsm.domain.user.GetUserAssignmentState
-import id.bluebird.vsm.domain.user.domain.intercator.GetUserAssignment
 import id.bluebird.vsm.feature.select_location.model.LocationModel
 import id.bluebird.vsm.feature.select_location.model.LocationNavigation
 import id.bluebird.vsm.feature.select_location.model.SubLocation
@@ -127,6 +125,7 @@ class SelectLocationViewModel(
 
     fun setFromSearch(isAirport : Boolean) {
         viewModelScope.launch {
+            updateValNav()
             _state.emit(
                 if(isAirport) SelectLocationState.ToAssignFromSearchAirport else
                 SelectLocationState.ToAssignFromSearch(isFleetMenu = _isFleetMenu)
@@ -195,7 +194,8 @@ class SelectLocationViewModel(
                                             locationName = subLocations.locationName,
                                             depositionId = subLocationResult.depositionId,
                                             haveDeposition = subLocationResult.haveDeposition,
-                                            prefix = subLocationResult.prefix
+                                            prefix = subLocationResult.prefix,
+                                            isDeposition = subLocationResult.isDeposition
                                         )
                                     )
                                 }
@@ -228,7 +228,10 @@ class SelectLocationViewModel(
                 locationName = subLocation.locationName,
                 subLocationId = subLocation.id,
                 subLocationName = subLocation.name,
-                prefix = subLocation.prefix
+                prefix = subLocation.prefix,
+                isPerimeter = subLocation.isDeposition,
+                haveDeposition = subLocation.haveDeposition,
+                idDeposition = subLocation.depositionId
             )
             locationNav = tempLocationNav
             updateValNav()
@@ -243,7 +246,9 @@ class SelectLocationViewModel(
                 subLocationName = subLocation.name,
                 isPerimeter = subLocation.isPerimeter,
                 isWing = subLocation.isWing,
-                prefix = subLocation.prefix
+                prefix = subLocation.prefix,
+                haveDeposition = subLocation.haveDeposition,
+                idDeposition = subLocation.idDeposition
             )
             locationNav = tempLocationNav
             updateValNav()

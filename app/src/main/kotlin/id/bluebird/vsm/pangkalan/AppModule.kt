@@ -50,6 +50,7 @@ import id.bluebird.vsm.feature.queue_car_fleet.adapter.AdapterCarFleets
 import id.bluebird.vsm.feature.queue_car_fleet.add_by_camera.AddCarFleetByCameraViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.add_fleet.AddCarFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.depart_fleet.DepartCarFleetViewModel
+import id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet.DepositionFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.main.QueueCarFleetViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.search_fleet.SearchCarFleetViewModel
 import id.bluebird.vsm.feature.queue_fleet.adapter.AdapterFleets
@@ -113,6 +114,7 @@ object AppModule {
         viewModel { AddCarFleetViewModel(get(), get(), get()) }
         viewModel { DepartCarFleetViewModel() }
         viewModel { SearchCarFleetViewModel() }
+        viewModel { DepositionFleetViewModel(get()) }
     }
     private val userCases = module {
         single<GetUserAssignment> { GetUserAssignmentCases(get()) }

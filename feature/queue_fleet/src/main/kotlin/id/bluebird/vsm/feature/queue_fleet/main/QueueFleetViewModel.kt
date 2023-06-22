@@ -162,7 +162,7 @@ class QueueFleetViewModel(
         with(userAssignment) {
             if (isOfficer) {
                 _locationName.value = locationName
-                _subLocationName.value = subLocationName
+                _subLocationName.value = subLocationName ?: EMPTY_STRING
             } else {
                 val location = LocationNavigationTemporary.getLocationNav()
                 _locationName.value = location?.locationName ?: EMPTY_STRING

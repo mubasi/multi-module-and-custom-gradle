@@ -24,7 +24,7 @@ class GetCountCases(private val fleetRepository: FleetRepository) : GetCount {
         )
             .flowOn(Dispatchers.IO)
             .singleOrNull() ?: throw NullPointerException()
-        val countResult = CountResult(response.stock, response.ritase, response.request)
+        val countResult = CountResult(response.stock, response.ritase, response.request, response.pengendapan)
         emit(GetCountState.Success(countResult))
     }
 }

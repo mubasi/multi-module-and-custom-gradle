@@ -149,6 +149,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     R.id.searchCarFleetFragment -> {
                         navigateBackWithArrow(R.id.searchCarFleetFragment)
                     }
+                    R.id.depositionFleetFragment -> {
+                        navigateBackWithArrow(R.id.depositionFleetFragment)
+                    }
                     else -> {
                         toolbarVisibility()
                     }
