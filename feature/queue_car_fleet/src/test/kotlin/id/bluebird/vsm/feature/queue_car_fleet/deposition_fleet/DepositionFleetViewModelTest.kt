@@ -54,7 +54,7 @@ internal class DepositionFleetViewModelTest {
         val job = launch {
             _vm.actionState.toList(events)
         }
-        _vm.init(1, 2)
+        _vm.init(1, 2, "dd")
         runCurrent()
         job.cancel()
 
@@ -70,6 +70,7 @@ internal class DepositionFleetViewModelTest {
             ),
             events[1]
         )
+        Assertions.assertEquals("dd", _vm.location.value)
     }
 
     @Test
@@ -88,7 +89,7 @@ internal class DepositionFleetViewModelTest {
         val job = launch {
             _vm.actionState.toList(events)
         }
-        _vm.init(1, 2)
+        _vm.init(1, 2, "dd")
         runCurrent()
         job.cancel()
 
@@ -102,6 +103,7 @@ internal class DepositionFleetViewModelTest {
             DepositionFleetState.FailedGetList(result),
             events[1]
         )
+        Assertions.assertEquals("dd", _vm.location.value)
     }
 
     @Test
@@ -121,7 +123,7 @@ internal class DepositionFleetViewModelTest {
         val job = launch {
             _vm.actionState.toList(events)
         }
-        _vm.init(1, 2)
+        _vm.init(1, 2, "dd")
         runCurrent()
         job.cancel()
 
@@ -135,6 +137,7 @@ internal class DepositionFleetViewModelTest {
             DepositionFleetState.GetListEmpty,
             events[1]
         )
+        Assertions.assertEquals("dd", _vm.location.value)
     }
 
 
@@ -164,7 +167,7 @@ internal class DepositionFleetViewModelTest {
         val job = launch {
             _vm.actionState.toList(events)
         }
-        _vm.init(1, 2)
+        _vm.init(1, 2, "dd")
         runCurrent()
         job.cancel()
 
@@ -186,5 +189,6 @@ internal class DepositionFleetViewModelTest {
             ),
             events[1]
         )
+        Assertions.assertEquals("dd", _vm.location.value)
     }
 }

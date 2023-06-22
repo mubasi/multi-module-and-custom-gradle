@@ -1,6 +1,8 @@
 package id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet
 
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.core.extensions.StringExtensions.convertCreateAtValue
@@ -13,10 +15,17 @@ import kotlinx.coroutines.launch
 class DepositionFleetViewModel(
     private val _getFleet: GetListFleet,
 ) : ViewModel() {
+
+    companion object {
+        const val DEFAULT_TITLE = "..."
+    }
+
     private val _actionState: MutableSharedFlow<DepositionFleetState> =
         MutableSharedFlow()
     val actionState: SharedFlow<DepositionFleetState> = _actionState.asSharedFlow()
     private val listFleets: MutableList<CarFleetItem> = mutableListOf()
+    private val _location : MutableLiveData<String> = MutableLiveData(DEFAULT_TITLE)
+    val location : LiveData<String> = _location
     var depositionStock : Long = 0L
     var subLocationId : Long = -1
 
@@ -25,13 +34,14 @@ class DepositionFleetViewModel(
         listFleets.addAll(list)
     }
 
-    fun init(idSubLocation : Long, stockDeposition : Long) {
+    fun init(idSubLocation : Long, stockDeposition : Long, title : String) {
         subLocationId = idSubLocation
         depositionStock = stockDeposition
+        _location.postValue(title)
         getFleetList()
     }
 
-    private  fun getFleetList() {
+    private fun getFleetList() {
         viewModelScope.launch {
             _actionState.emit(DepositionFleetState.ProgressGetList)
             if (listFleets.isNotEmpty()) {

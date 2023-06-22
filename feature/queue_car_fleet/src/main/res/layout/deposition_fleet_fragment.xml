@@ -3,11 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable
-            name="showProgress"
-            type="Boolean" />
 
         <import type="android.view.View" />
+
+        <variable
+            name="state"
+            type="id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet.DepositionFleetState" />
+
+        <import type="id.bluebird.vsm.feature.queue_car_fleet.deposition_fleet.DepositionFleetState"/>
 
         <variable
             name="vm"
@@ -23,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminateTint="@color/primary_0"
-            bindVisibility="@{showProgress}"
+            bindVisibility="@{state instanceof DepositionFleetState.ProgressGetList }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -39,6 +42,7 @@
             android:drawablePadding="8dp"
             android:fontFamily="@font/ubuntu_medium"
             android:textColor="@color/black"
+            android:text="@{vm.location}"
             app:drawableStartCompat="@drawable/ic_marker_sub_location_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +64,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:layout_margin="12dp"
-            bindVisibility="@{!showProgress}"
+            bindVisibility="@{state instanceof DepositionFleetState.GetListSuccess || state instanceof DepositionFleetState.GetListEmpty}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/borderTitleFleetFragment" >

@@ -39,21 +39,16 @@ class FragmentDepositionFleet : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.apply {
-            showProgress = true
+            lifecycleOwner = viewLifecycleOwner
+            state = DepositionFleetState.ProgressGetList
             vm = viewModel
         }
         arguments()
         observe()
-
     }
 
     private fun arguments() {
-        createTitle(_args.title)
-        viewModel.init(_args.subLocationId, _args.depositionStock)
-    }
-
-    private fun createTitle(title : String) {
-        mBinding.tvLocationNameFleetFragment.text = title
+        viewModel.init(_args.subLocationId, _args.depositionStock, _args.title)
     }
 
     private fun observe() {
@@ -61,29 +56,11 @@ class FragmentDepositionFleet : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(viewModel) {
                     actionState.collectLatest {
-                        when(it) {
-                            is DepositionFleetState.FailedGetList -> {
-                                showProgress(false)
-                            }
-                            DepositionFleetState.GetListEmpty -> {
-                                showProgress(false)
-                            }
-                            is DepositionFleetState.GetListSuccess -> {
-                                showProgress(false)
-                            }
-                            DepositionFleetState.ProgressGetList -> {
-                                showProgress(false)
-                            }
-                        }
+                        mBinding.state = it
                     }
                 }
             }
         }
     }
-
-    private fun showProgress(status : Boolean) {
-        mBinding.showProgress = status
-    }
-
 
 }
