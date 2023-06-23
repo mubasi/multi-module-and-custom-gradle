@@ -16,6 +16,7 @@ import id.bluebird.vsm.core.utils.StringUtils
 import id.bluebird.vsm.feature.monitoring.R
 import id.bluebird.vsm.feature.monitoring.databinding.MonitoringFragmentBinding
 import id.bluebird.vsm.feature.monitoring.edit_buffer.FragmentEditBufferDialog
+import id.bluebird.vsm.feature.monitoring.filter_dialog.FragmentFilterDialog
 import id.bluebird.vsm.feature.monitoring.tableview.AdapterMonitoringTable
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -45,6 +46,7 @@ class FragmentMonitoring: Fragment() {
             vm = monitoringViewModel
             isNotificationVisible = true
             state = MonitoringState.OnProgressGetList
+            layoutFloatingButton.text = getString(R.string.text_filter)
         }
         setHasOptionsMenu(true)
         initTable()
@@ -55,6 +57,9 @@ class FragmentMonitoring: Fragment() {
         }
         monitoringViewModel.activeColumnSort.observe(viewLifecycleOwner) {
             tableAdapter.updateCorner(it)
+        }
+        monitoringViewModel.titleStatusFilter.observe(viewLifecycleOwner) {
+            mBinding.layoutFloatingButton.text = it
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
@@ -94,6 +99,16 @@ class FragmentMonitoring: Fragment() {
                         }
                         MonitoringState.SearchScreen -> {
                             findNavController().navigate(R.id.monitoringFragmentSearch)
+                        }
+                        is MonitoringState.OpenDialogFilter -> {
+                            FragmentFilterDialog(
+                                it.data
+                            ) { result ->
+                                monitoringViewModel.updateFilterStatus(result)
+                            }.show(
+                                requireActivity().supportFragmentManager,
+                                FragmentFilterDialog.TAG
+                            )
                         }
                         else -> {
                             //do noting

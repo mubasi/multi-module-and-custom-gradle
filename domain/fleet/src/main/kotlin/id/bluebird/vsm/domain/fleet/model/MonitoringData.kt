@@ -12,6 +12,9 @@ data class MonitoringData(
     @get:PropertyName("sub_location_name")
     @set:PropertyName("sub_location_name")
     var subLocationName: String = "",
+    @get:PropertyName("is_deposition")
+    @set:PropertyName("is_deposition")
+    var isDeposition: Boolean = false,
     @get:PropertyName("queue_fleet")
     @set:PropertyName("queue_fleet")
     var queueFleet: Int = 0,

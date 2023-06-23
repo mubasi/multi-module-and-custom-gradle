@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
@@ -20,8 +19,8 @@
             type="id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/default_row_header_width"
-        android:layout_height="@dimen/default_column_header_height">
+        android:layout_width="@dimen/default_layout_width_table"
+        android:layout_height="@dimen/default_layout_height_table">
 
         <LinearLayout
             android:id="@+id/action_sort"
@@ -39,9 +38,9 @@
                 android:layout_gravity="center"
                 android:layout_weight="4"
                 android:gravity="center"
-                tools:text="@{value}" />
+                android:text="@{value}"/>
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/column_header_button"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

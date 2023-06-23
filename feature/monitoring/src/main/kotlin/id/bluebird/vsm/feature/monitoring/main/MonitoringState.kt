@@ -13,4 +13,7 @@ sealed class MonitoringState {
     object BackSearchScreen : MonitoringState()
     object ErrorFilter : MonitoringState()
     data class FilterLocation(val data: List<MonitoringModel>): MonitoringState()
+    data class OpenDialogFilter(
+        val data : MonitoringViewModel.FilterStatus
+    ) : MonitoringState()
 }

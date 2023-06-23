@@ -18,6 +18,9 @@ class MonitoringViewModel(
 
     companion object {
         const val EMPTY_STRING = ""
+        const val ALL = "Semua"
+        const val DEPOSITION = "Pengendapan"
+        const val LOBBY = "Lobi"
     }
 
     private val _monitoringState: MutableSharedFlow<MonitoringState> = MutableSharedFlow()
@@ -33,7 +36,11 @@ class MonitoringViewModel(
             else -> true
         }
     }
-
+    private var filterStatus : FilterStatus = FilterStatus.ALL
+    var titleStatusFilter : MutableLiveData<String> = MutableLiveData(ALL)
+    enum class FilterStatus {
+        ALL, DEPOSITION, LOBBY
+    }
     enum class ActiveSort {
        LocationName, FleetNumber, FleetPassenger, TotalRitase, TotalQueueFleet, TotalPassengerQueue, RequestFleet, Deposition
     }
@@ -56,6 +63,7 @@ class MonitoringViewModel(
                                     subLocationId = result.subLocationId,
                                     locationName = result.locationName,
                                     subLocationName = result.subLocationName,
+                                    isDeposition = result.isDeposition,
                                     fleetCount = result.queueFleet,
                                     queueCount = result.queuePassenger,
                                     totalFleetCount = result.totalQueueFleet,
@@ -70,7 +78,7 @@ class MonitoringViewModel(
                             listLocation.addAll(resultSort)
                             _monitoringState.emit(
                                 MonitoringState.OnSuccessGetList(
-                                    resultFilterLocation()
+                                    resultFilterLocation(resultSort)
                                 )
                             )
                         }
@@ -155,21 +163,30 @@ class MonitoringViewModel(
             data.sortedBy { item -> item.fleetRequest }
         }
     }
-
     private fun sortFleetCount(data : List<MonitoringModel>) : List<MonitoringModel> {
-       return if(sortIsDesc) {
-            data.sortedByDescending { item -> item.fleetCount }
+        val resultData = resultFilterStatus(data)
+        return if(sortIsDesc) {
+            resultData.sortedByDescending { item -> item.fleetCount }
         } else {
-            data.sortedBy { item -> item.fleetCount }
+            resultData.sortedBy { item -> item.fleetCount }
         }
     }
 
     private fun sortBuffer(data : List<MonitoringModel>) : List<MonitoringModel> {
+        val resultData = resultFilterStatus(data)
         return if(sortIsDesc) {
-            data.sortedByDescending { item -> item.buffer }
+            resultData.sortedByDescending { item -> item.buffer }
         } else {
-            data.sortedBy { item -> item.buffer }
+            resultData.sortedBy { item -> item.buffer }
         }
+    }
+
+    private fun resultFilterStatus(data : List<MonitoringModel>) : List<MonitoringModel> {
+        return if(filterStatus != FilterStatus.ALL) {
+            data.filter { it.isDeposition == (filterStatus == FilterStatus.DEPOSITION)}
+       } else {
+           data
+       }
     }
 
     fun toggleNotificationVisibility() {
@@ -208,20 +225,20 @@ class MonitoringViewModel(
 
     fun filterLocation() {
         viewModelScope.launch {
-            if (resultFilterLocation().isEmpty()) {
+            if (resultFilterLocation(listLocation.toList()).isEmpty()) {
                 _monitoringState.emit(MonitoringState.ErrorFilter)
             } else {
-                _monitoringState.emit(MonitoringState.FilterLocation(resultFilterLocation()))
+                _monitoringState.emit(MonitoringState.FilterLocation(resultFilterLocation(listLocation.toList())))
             }
         }
     }
 
-    private fun resultFilterLocation(): List<MonitoringModel> {
+    private fun resultFilterLocation(datas : List<MonitoringModel>): List<MonitoringModel> {
         val filteredList: MutableList<MonitoringModel> = mutableListOf()
         if (params.value.isNullOrEmpty()) {
-            filteredList.addAll(listLocation)
+            filteredList.addAll(datas)
         } else {
-            for (item in listLocation) {
+            for (item in datas) {
                 if (item.locationName.toLowerCase().contains(params.value?.toLowerCase() ?: EMPTY_STRING)) {
                     filteredList.add(item)
                 }
@@ -236,17 +253,47 @@ class MonitoringViewModel(
     }
 
     fun changeStatusOrder(sort : ActiveSort, isDesc : Boolean) {
+        sortIsDesc = !isDesc
+        activeColumnSort.value = sort
+        setResultFilter()
+    }
+
+    private fun setResultFilter() {
         viewModelScope.launch {
-            sortIsDesc = !isDesc
-            activeColumnSort.value = sort
             val resultSort = orderingData(listLocation)
-            listLocation.clear()
-            listLocation.addAll(resultSort)
             _monitoringState.emit(
                 MonitoringState.OnSuccessGetList(
-                    resultFilterLocation()
+                    resultFilterLocation(resultSort)
                 )
             )
+        }
+    }
+    fun openDialogFilter() {
+        viewModelScope.launch {
+            _monitoringState.emit(
+                MonitoringState.OpenDialogFilter(
+                    filterStatus
+                )
+            )
+        }
+    }
+    fun updateFilterStatus(result : FilterStatus) {
+        filterStatus = result
+        getStatusFilterToString()
+        setResultFilter()
+    }
+
+    private fun getStatusFilterToString() {
+        when(filterStatus) {
+            FilterStatus.DEPOSITION -> {
+                titleStatusFilter.value = DEPOSITION
+            }
+            FilterStatus.LOBBY -> {
+                titleStatusFilter.value = LOBBY
+            }
+            else -> {
+                titleStatusFilter.value = ALL
+            }
         }
     }
 

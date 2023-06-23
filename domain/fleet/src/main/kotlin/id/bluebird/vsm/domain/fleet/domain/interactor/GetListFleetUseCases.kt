@@ -28,6 +28,7 @@ class GetListFleetUseCases(private val _fleetRepo: FleetRepository) : GetListFle
                 )
                 fleetItemResults.add(fleetItemResult)
             }
+            fleetItemResults.sortBy { it.sequence }
             emit(GetListFleetState.Success(fleetItemResults))
         }
     }

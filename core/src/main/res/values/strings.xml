@@ -73,4 +73,9 @@
     <string name="armada">Fleet</string>
     <string name="save">Simpan</string>
     <string name="car_success_assign_to">berhasil ditugaskan ke</string>
+    <string name="text_filter">Filter</string>
+    <string name="text_sub_filter">Pilih lokasi yang ingin ditampilkan</string>
+    <string name="text_deposition">Pengendapan</string>
+    <string name="text_lobby">Lobi</string>
+    <string name="text_all">Semua</string>
 </resources>

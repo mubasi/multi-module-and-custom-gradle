@@ -33,6 +33,7 @@ class MonitoringUseCases : Monitoring {
                         buffer = value.buffer,
                         locationName = value.locationName,
                         subLocationName = value.subLocationName,
+                        isDeposition = value.isDeposition,
                         queueFleet = value.queueFleet,
                         queuePassenger = value.queuePassenger,
                         request = value.request,

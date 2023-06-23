@@ -108,7 +108,6 @@ class MonitoringTableHelper {
         list.forEachIndexed { index, value ->
             result.add(MonitoringRowHeader(value.locationName, value.subLocationName, index, value.subLocationId.toInt()))
         }
-
         return result
     }
 

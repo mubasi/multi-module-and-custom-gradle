@@ -73,7 +73,7 @@ class AdapterMonitoringTable(private val viewModel: MonitoringViewModel): Abstra
     }
 
     override fun onCreateRowHeaderViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
-        return RowHeaderViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.table_cell_layout, parent, false))
+        return RowHeaderViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.table_cell_corner_layout, parent, false))
     }
 
     override fun onBindRowHeaderViewHolder(

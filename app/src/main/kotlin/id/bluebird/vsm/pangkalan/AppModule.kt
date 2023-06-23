@@ -44,6 +44,7 @@ import id.bluebird.vsm.feature.home.queue_ticket.QueueTicketViewModel
 import id.bluebird.vsm.feature.home.ritase_fleet.RitaseFleetViewModel
 import id.bluebird.vsm.feature.login.LoginViewModel
 import id.bluebird.vsm.feature.monitoring.edit_buffer.EditBufferViewModel
+import id.bluebird.vsm.feature.monitoring.filter_dialog.FilterDialogViewModel
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
 import id.bluebird.vsm.feature.qrcode.QrCodeViewModel
 import id.bluebird.vsm.feature.queue_car_fleet.adapter.AdapterCarFleets
@@ -115,6 +116,7 @@ object AppModule {
         viewModel { DepartCarFleetViewModel() }
         viewModel { SearchCarFleetViewModel() }
         viewModel { DepositionFleetViewModel(get()) }
+        viewModel { FilterDialogViewModel() }
     }
     private val userCases = module {
         single<GetUserAssignment> { GetUserAssignmentCases(get()) }
