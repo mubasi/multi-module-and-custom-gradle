@@ -46,6 +46,7 @@ class FragmentMonitoring: Fragment() {
             vm = monitoringViewModel
             isNotificationVisible = true
             state = MonitoringState.OnProgressGetList
+            layoutFloatingButton.text = getString(R.string.text_filter)
         }
         setHasOptionsMenu(true)
         initTable()
@@ -56,6 +57,9 @@ class FragmentMonitoring: Fragment() {
         }
         monitoringViewModel.activeColumnSort.observe(viewLifecycleOwner) {
             tableAdapter.updateCorner(it)
+        }
+        monitoringViewModel.titleStatusFilter.observe(viewLifecycleOwner) {
+            mBinding.layoutFloatingButton.text = it
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {

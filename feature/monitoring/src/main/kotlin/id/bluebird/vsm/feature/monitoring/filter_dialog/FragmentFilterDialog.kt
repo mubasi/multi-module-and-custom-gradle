@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.bluebird.vsm.feature.monitoring.R
 import id.bluebird.vsm.feature.monitoring.databinding.FragmentFilterDialogBinding
 import id.bluebird.vsm.feature.monitoring.main.MonitoringViewModel
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentFilterDialog(
@@ -66,7 +67,7 @@ class FragmentFilterDialog(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
                 with(viewModel) {
-                    state.collect {
+                    state.collectLatest {
                         binding.state = it
                         when (it) {
                             is FilterDialogState.SaveFilter -> {

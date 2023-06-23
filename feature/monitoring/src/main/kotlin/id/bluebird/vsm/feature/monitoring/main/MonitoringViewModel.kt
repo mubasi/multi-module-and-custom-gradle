@@ -41,7 +41,6 @@ class MonitoringViewModel(
     enum class FilterStatus {
         ALL, DEPOSITION, LOBBY
     }
-
     enum class ActiveSort {
        LocationName, FleetNumber, FleetPassenger, TotalRitase, TotalQueueFleet, TotalPassengerQueue, RequestFleet, Deposition
     }
