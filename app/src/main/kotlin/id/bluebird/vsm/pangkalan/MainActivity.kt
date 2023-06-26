@@ -20,7 +20,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
 import id.bluebird.vsm.core.BuildConfig
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.feature.select_location.SelectNavigationVariable
 import id.bluebird.vsm.pangkalan.databinding.ActivityMainBinding
 import id.bluebird.vsm.pangkalan.extensions.backArrowButton
 import id.bluebird.vsm.pangkalan.extensions.setToolbarBackArrow
@@ -75,82 +74,9 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             showHideNavMenu()
             with(mBinding) {
                 when (destination.id) {
-                    R.id.loginFragment, R.id.splashFragment -> {
+                    R.id.splashFragment -> {
                         toolbar.visibility = View.GONE
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                    }
-                    R.id.createUserFragment -> {
-                        navigateToCreateUser(args = args)
-                    }
-                    R.id.addFleetFragment -> {
-                        navigateBackWithArrow(R.id.addFleetFragment)
-                    }
-                    R.id.addByCameraFragment -> {
-                        navigateBackWithArrow(R.id.addByCameraFragment)
-                    }
-                    R.id.searchFleetFragment -> {
-                        navigateBackWithArrow(R.id.searchFleetFragment)
-                    }
-                    R.id.qrCodeFragment -> {
-                        navigateBackWithArrow(R.id.qrCodeFragment)
-                    }
-                    R.id.searchQueueFragment -> {
-                        navigateBackWithArrow(R.id.searchQueueFragment)
-                    }
-                    R.id.queueFleetFragment -> {
-                        setQueueToolbar(R.id.queueFleetFragment)
-                    }
-                    R.id.queuePassengerFragment -> {
-                        setQueueToolbar(R.id.queuePassengerFragment)
-                    }
-                    R.id.queueTicket -> {
-                        navigateBackWithArrow(R.id.queueTicket)
-                    }
-                    R.id.monitoringFragment -> {
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                    }
-                    R.id.searchLocationFragment -> {
-                        navigateBackWithArrow(R.id.searchLocationFragment)
-                    }
-                    R.id.selectLocationFragment -> {
-                        setToolbarTittleForLocationFragment(args)
-                    }
-                    R.id.monitoringFragmentSearch -> {
-                        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-                        navigateBackWithArrow(R.id.monitoringFragmentSearch)
-                    }
-                    R.id.ritaseFleetFragment  -> {
-                        navigateBackWithArrow(R.id.ritaseFleetFragment)
-                    }
-                    R.id.fleetAirportFragment -> {
-                        setQueueToolbar(R.id.fleetAirportFragment)
-                    }
-                    R.id.actionAddFleetAirport -> {
-                        navigateBackWithArrow(R.id.actionAddFleetAirport)
-                    }
-                    R.id.action_assign_location  -> {
-                        navigateBackWithArrow(R.id.action_assign_location)
-                    }
-                    R.id.take_picture_airport -> {
-                        navigateBackWithArrow(R.id.take_picture_airport)
-                    }
-                    R.id.action_detail_assign -> {
-                        navigateBackWithArrow(R.id.action_detail_assign)
-                    }
-                    R.id.queueCarFleetFragment -> {
-                        setQueueToolbar(R.id.queueCarFleetFragment)
-                    }
-                    R.id.addCarFleetFragment -> {
-                        navigateBackWithArrow(R.id.addCarFleetFragment)
-                    }
-                    R.id.carFleetAddByCamera -> {
-                        navigateBackWithArrow(R.id.carFleetAddByCamera)
-                    }
-                    R.id.searchCarFleetFragment -> {
-                        navigateBackWithArrow(R.id.searchCarFleetFragment)
-                    }
-                    R.id.depositionFleetFragment -> {
-                        navigateBackWithArrow(R.id.depositionFleetFragment)
                     }
                     else -> {
                         toolbarVisibility()
@@ -169,10 +95,10 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     private fun setToolbarTittleForLocationFragment(args: Bundle?) {
-        val isMenu = args?.getBoolean(SelectNavigationVariable.IS_MENU)
-        mBinding.toolbar.title =
-            if (isMenu == true) getString(R.string.fleet_title) else getString(R.string.queue_passenger)
-        toolbarVisibility()
+//        val isMenu = args?.getBoolean(SelectNavigationVariable.IS_MENU)
+//        mBinding.toolbar.title =
+//            if (isMenu == true) getString(R.string.fleet_title) else getString(R.string.queue_passenger)
+//        toolbarVisibility()
     }
 
     private fun toolbarVisibility() {
@@ -184,12 +110,12 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     private fun setupVisibleToolbar(destination : Int){
-        if(destination == R.id.monitoringFragmentSearch) {
-            supportActionBar?.hide()
-        } else {
-            supportActionBar?.show()
-            toolbarVisibility()
-        }
+//        if(destination == R.id.monitoringFragmentSearch) {
+//            supportActionBar?.hide()
+//        } else {
+//            supportActionBar?.show()
+//            toolbarVisibility()
+//        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -215,16 +141,11 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     private fun setNavViewByUserRole() {
-        navController.setGraph(R.navigation.main_nav)
+//        navController.setGraph(R.navigation.main_nav)
         appBarConfiguration =
             AppBarConfiguration(
                 setOf(
-                    R.id.fleet_airport_nav,
-                    R.id.searchLocationFragment,
-                    R.id.queuePassengerFragment,
-                    R.id.queueCarFleetFragment,
-                    R.id.monitoring_nav,
-                    R.id.user_management_nav
+                    R.id.splashFragment,
                 ), mBinding.drawerLayout
             )
     }
@@ -261,10 +182,10 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                 actionBar = supportActionBar,
                 args = args
             )
-            toolbar.backArrowButton(
-                navController,
-                destinationId = R.id.createUserFragment
-            )
+//            toolbar.backArrowButton(
+//                navController,
+//                destinationId = R.id.createUserFragment
+//            )
         }
     }
 
@@ -297,14 +218,14 @@ internal class MainActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
     private fun showHideNavMenu() {
         with(mBinding) {
-            navView.menu.findItem(R.id.fleet_airport_nav).isVisible =
-                !UserUtils.isUserOfficer().not()
-            navView.menu.findItem(R.id.queue_fleet_nav).isVisible =
-                UserUtils.isUserOfficer().not()
-            navView.menu.findItem(R.id.user_management_nav).isVisible =
-                UserUtils.isUserOfficer().not()
-            navView.menu.findItem(R.id.queue_passenger_nav).isVisible =
-                UserUtils.getIsUserAirport().not()
+//            navView.menu.findItem(R.id.fleet_airport_nav).isVisible =
+//                !UserUtils.isUserOfficer().not()
+//            navView.menu.findItem(R.id.queue_fleet_nav).isVisible =
+//                UserUtils.isUserOfficer().not()
+//            navView.menu.findItem(R.id.user_management_nav).isVisible =
+//                UserUtils.isUserOfficer().not()
+//            navView.menu.findItem(R.id.queue_passenger_nav).isVisible =
+//                UserUtils.getIsUserAirport().not()
         }
     }
 }

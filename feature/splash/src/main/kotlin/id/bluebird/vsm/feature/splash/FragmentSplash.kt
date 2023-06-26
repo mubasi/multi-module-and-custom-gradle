@@ -43,37 +43,37 @@ class FragmentSplash : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.splashState.collectLatest {
-                    when (it) {
-                        SplashState.LoginAsOutletUser -> {
-                            NavigationNav.navigate(
-                                NavigationSealed.QueueCarFleet (
-                                    destination = R.id.splashFragment,
-                                    frag = this@FragmentSplash
-                                )
-                            )
-                        }
-                        SplashState.LoginAsAirportUser -> {
-                            NavigationNav.navigate(
-                                NavigationSealed.FleetAirport(
-                                    destination = R.id.splashFragment,
-                                    frag = this@FragmentSplash
-                                )
-                            )
-                        }
-                        SplashState.Login -> {
-                            NavigationNav.navigate(
-                                NavigationSealed.Login(
-                                    destination = R.id.splashFragment,
-                                    frag = this@FragmentSplash
-                                )
-                            )
-                        }
-                        is SplashState.DoUpdateVersion -> {
-                            forceUpdate(url = it.url, versionName = it.versionName)
-                        }
-                    }
-                }
+//                vm.splashState.collectLatest {
+//                    when (it) {
+//                        SplashState.LoginAsOutletUser -> {
+//                            NavigationNav.navigate(
+//                                NavigationSealed.QueueCarFleet (
+//                                    destination = R.id.splashFragment,
+//                                    frag = this@FragmentSplash
+//                                )
+//                            )
+//                        }
+//                        SplashState.LoginAsAirportUser -> {
+//                            NavigationNav.navigate(
+//                                NavigationSealed.FleetAirport(
+//                                    destination = R.id.splashFragment,
+//                                    frag = this@FragmentSplash
+//                                )
+//                            )
+//                        }
+//                        SplashState.Login -> {
+//                            NavigationNav.navigate(
+//                                NavigationSealed.Login(
+//                                    destination = R.id.splashFragment,
+//                                    frag = this@FragmentSplash
+//                                )
+//                            )
+//                        }
+//                        is SplashState.DoUpdateVersion -> {
+//                            forceUpdate(url = it.url, versionName = it.versionName)
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -84,12 +84,12 @@ class FragmentSplash : Fragment() {
     }
 
     private fun getVersion() {
-        try {
-            val pInfo = context!!.packageManager.getPackageInfo(context!!.packageName, 0)
-           vm.checkNewVersion(codeVersion = getVersionCode(pInfo))
-        } catch (e: Exception) {
-            vm.checkNewVersion()
-        }
+//        try {
+//            val pInfo = context!!.packageManager.getPackageInfo(context!!.packageName, 0)
+//           vm.checkNewVersion(codeVersion = getVersionCode(pInfo))
+//        } catch (e: Exception) {
+//            vm.checkNewVersion()
+//        }
     }
 
     private fun getVersionCode(pInfo:PackageInfo) :Long{

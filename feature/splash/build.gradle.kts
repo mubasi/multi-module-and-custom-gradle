@@ -6,6 +6,5 @@ plugins {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":domain:user"))
     implementation(project(":navigation"))
 }

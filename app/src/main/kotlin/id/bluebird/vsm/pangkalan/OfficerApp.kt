@@ -9,7 +9,6 @@ import id.bluebird.vsm.core.extensions.getVersionCode
 import id.bluebird.vsm.core.utils.OkHttpChannel
 import id.bluebird.vsm.core.utils.hawk.AuthUtils
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import id.bluebird.vsm.pangkalan.AppModule.initDependencyInjection
 
 class OfficerApp : Application() {
@@ -31,7 +30,7 @@ class OfficerApp : Application() {
     }
 
     private fun resetActivity() {
-        LocationNavigationTemporary.removeTempData()
+//        LocationNavigationTemporary.removeTempData()
         FirebaseAuth.getInstance().signOut()
         AuthUtils.logout()
         startActivity(MainActivity.startNewIntent(this@OfficerApp))

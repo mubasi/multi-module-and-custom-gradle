@@ -19,15 +19,7 @@ object NavigationNav {
 
     private fun getNavigateUri(navigationSealed: NavigationSealed): Uri {
         val target = when (navigationSealed) {
-            is NavigationSealed.Login -> "login"
             is NavigationSealed.Splash -> "splash"
-            is NavigationSealed.FleetAirport -> "fleet_airport"
-            is NavigationSealed.QueueFleet -> "queue_fleet"
-            is NavigationSealed.QueuePassenger -> "queue_passenger"
-            is NavigationSealed.Monitoring -> "monitoring_nav"
-            is NavigationSealed.SelectLocation -> "select_location/${navigationSealed.isMenuFleet}"
-            is NavigationSealed.QrCode -> "qr_code/${navigationSealed.locationId}/${navigationSealed.subLocationId}/${navigationSealed.titleLocation}/${navigationSealed.position}"
-            is NavigationSealed.QueueCarFleet -> "queue_car_fleet"
         }
         return "android-app://id.bluebird.mall/$target".toUri()
     }

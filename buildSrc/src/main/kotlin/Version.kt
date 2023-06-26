@@ -9,7 +9,7 @@ object Version {
 
     private val versionType by lazy { "" }
 
-    val appName by lazy { "VSM Pangkalan" }
+    val appName by lazy { "MM Single Gradle" }
     val appNameStaging by lazy { "$appName (Staging)" }
     val appNameDev by lazy { "$appName (Dev)" }
     val versionName by lazy { "$major.$minor.$patch$versionType" }

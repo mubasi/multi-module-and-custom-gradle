@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.bluebird.vsm.core.utils.hawk.AuthUtils
 import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.user.ValidateForceUpdateState
-import id.bluebird.vsm.domain.user.domain.intercator.ValidateForceUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -16,7 +14,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
-    private val validateForceUpdate: ValidateForceUpdate,
     private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ViewModel() {
 
@@ -51,29 +48,29 @@ class SplashViewModel(
     }
 
 
-    fun checkNewVersion(codeVersion: Long? = null) {
-        viewModelScope.launch(coroutineDispatcher) {
-            validateForceUpdate.invoke(
-                key = id.bluebird.vsm.core.BuildConfig.SPLASH_KEY,
-                codeVersion = codeVersion
-            ).catch {
-                validateUserLogin()
-            }.collectLatest {
-                when (it) {
-                    is ValidateForceUpdateState.FoundNewVersion -> {
-                        _splashState.emit(
-                            SplashState.DoUpdateVersion(
-                                url = it.url,
-                                versionName = it.versionName
-                            )
-                        )
-                    }
-                    ValidateForceUpdateState.CodeVersionNotFound,
-                    ValidateForceUpdateState.NotFoundNewVersion -> {
-                        validateUserLogin()
-                    }
-                }
-            }
-        }
-    }
+//    fun checkNewVersion(codeVersion: Long? = null) {
+//        viewModelScope.launch(coroutineDispatcher) {
+//            validateForceUpdate.invoke(
+//                key = id.bluebird.vsm.core.BuildConfig.SPLASH_KEY,
+//                codeVersion = codeVersion
+//            ).catch {
+//                validateUserLogin()
+//            }.collectLatest {
+//                when (it) {
+//                    is ValidateForceUpdateState.FoundNewVersion -> {
+//                        _splashState.emit(
+//                            SplashState.DoUpdateVersion(
+//                                url = it.url,
+//                                versionName = it.versionName
+//                            )
+//                        )
+//                    }
+//                    ValidateForceUpdateState.CodeVersionNotFound,
+//                    ValidateForceUpdateState.NotFoundNewVersion -> {
+//                        validateUserLogin()
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

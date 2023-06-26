@@ -2,14 +2,11 @@ package id.bluebird.vsm.pangkalan.logout
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.bluebird.vsm.core.utils.hawk.UserUtils
-import id.bluebird.vsm.domain.user.UserRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
-class LogoutDialogViewModel(private val userRepository: UserRepository) : ViewModel() {
+class LogoutDialogViewModel() : ViewModel() {
 
     private val _logoutDialogState: MutableSharedFlow<LogoutDialogState> =
         MutableSharedFlow()
@@ -22,15 +19,15 @@ class LogoutDialogViewModel(private val userRepository: UserRepository) : ViewMo
     }
 
     fun prosesDialog() {
-        viewModelScope.launch {
-            userRepository.forceLogout(UserUtils.getUUID())
-                .catch { cause ->
-                    _logoutDialogState.emit(LogoutDialogState.Err(cause))
-                }
-                .collect {
-                    _logoutDialogState.emit(LogoutDialogState.ProsesDialog)
-            }
-        }
+//        viewModelScope.launch {
+//            userRepository.forceLogout(UserUtils.getUUID())
+//                .catch { cause ->
+//                    _logoutDialogState.emit(LogoutDialogState.Err(cause))
+//                }
+//                .collect {
+//                    _logoutDialogState.emit(LogoutDialogState.ProsesDialog)
+//            }
+//        }
     }
 
 }

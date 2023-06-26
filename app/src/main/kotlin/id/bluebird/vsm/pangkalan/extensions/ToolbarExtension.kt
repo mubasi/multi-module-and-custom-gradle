@@ -5,7 +5,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import id.bluebird.vsm.feature.user_management.R
+import id.bluebird.vsm.pangkalan.R
 
 fun Toolbar.setToolbarBackArrow(
     actionBar: ActionBar?
@@ -15,7 +15,7 @@ fun Toolbar.setToolbarBackArrow(
         it.setHomeAsUpIndicator(
             ContextCompat.getDrawable(
                 context,
-                R.drawable.ic_arrow_back
+                R.drawable.ic_baseline_clear_24
             )
         )
         it.setDisplayShowHomeEnabled(true)
@@ -31,7 +31,7 @@ fun Toolbar.setToolbarCreateUserFragment(
         it.setHomeAsUpIndicator(
             ContextCompat.getDrawable(
                 context,
-                R.drawable.ic_arrow_back
+                R.drawable.ic_baseline_clear_24
             )
         )
         it.setDisplayShowHomeEnabled(true)

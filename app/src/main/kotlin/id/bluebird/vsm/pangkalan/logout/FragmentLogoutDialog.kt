@@ -13,7 +13,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import id.bluebird.vsm.core.utils.hawk.AuthUtils
-import id.bluebird.vsm.feature.select_location.LocationNavigationTemporary
 import id.bluebird.vsm.navigation.NavigationNav
 import id.bluebird.vsm.navigation.NavigationSealed
 import id.bluebird.vsm.pangkalan.R
@@ -71,14 +70,13 @@ class FragmentLogoutDialog : BottomSheetDialogFragment() {
                         }
                         LogoutDialogState.ProsesDialog -> {
                             dialog?.dismiss()
-                            LocationNavigationTemporary.removeTempData()
                             AuthUtils.logout()
-                            NavigationNav.navigate(
-                                NavigationSealed.Login(
-                                    destination = null,
-                                    frag = this@FragmentLogoutDialog
-                                )
-                            )
+//                            NavigationNav.navigate(
+//                                NavigationSealed.Login(
+//                                    destination = null,
+//                                    frag = this@FragmentLogoutDialog
+//                                )
+//                            )
                         }
                     }
                 }

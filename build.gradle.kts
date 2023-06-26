@@ -9,7 +9,8 @@ buildscript {
 
     }
     dependencies {
-//        classpath(MainGradle.kotlin)
+classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20")
+        //        classpath(MainGradle.kotlin)
 //        classpath(MainGradle.gradle)
 //        classpath(MainGradle.jacoco_gradle)
 //        classpath(MainGradle.sonarqube_gradle)
