@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import id.bluebird.vsm.feature.airport_fleet.R
 import id.bluebird.vsm.feature.airport_fleet.databinding.ItemLocationAssignListBinding
 import id.bluebird.vsm.feature.airport_fleet.main.model.AssignLocationModel
-import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
 
 class AssignLocationAdapter(
     private val assignViewModel : AssignLocationViewModel
@@ -42,10 +41,10 @@ class AssignLocationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val pos = holder.adapterPosition
+        val pos = holder.absoluteAdapterPosition
         val model = models[pos]
         holder.setData(assignViewModel, model, pos)
-        holder.binding.radioAssignLocation.onCheckedChange { _, isChecked ->
+        holder.binding.radioAssignLocation.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 assignViewModel.updateSelectedLocation(model)
                 if (selectedPosition != -1 && pos != selectedPosition) {

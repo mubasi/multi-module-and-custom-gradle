@@ -201,7 +201,6 @@ object OtherLib {
     val multiDex by lazy { "androidx.multidex:multidex:2.0.1" }
     val hawk by lazy { "com.orhanobut:hawk:2.0.1" }
     val timber by lazy { "com.jakewharton.timber:timber:4.7.1" }
-    val anko by lazy { "org.jetbrains.anko:anko:0.10.8" }
     val json by lazy { "org.json:json:20220320" }
     val turbin by lazy { "app.cash.turbine:turbine:0.7.0" }
     val slidetoact by lazy { "com.ncorti:slidetoact:0.9.0" }

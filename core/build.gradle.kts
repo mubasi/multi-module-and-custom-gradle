@@ -128,7 +128,6 @@ dependencies {
     api(Firebase.analytics_ktx)
 
     testApi(OtherLib.json)
-    api(OtherLib.anko)
     api(OtherLib.hawk)
 }
 
