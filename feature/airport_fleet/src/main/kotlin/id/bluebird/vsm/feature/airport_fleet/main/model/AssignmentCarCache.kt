@@ -1,9 +1,11 @@
 package id.bluebird.vsm.feature.airport_fleet.main.model
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Keep
 data class AssignmentCarCache(
     val fleetNumber: String = "",
     var date: String = "",
