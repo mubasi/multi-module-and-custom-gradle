@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/homepage_nav"
+    app:startDestination="@id/homepageFragment">
+
+    <fragment
+        android:id="@+id/homepageFragment"
+        android:name="id.multi.module.custome.feature.home.FragmentHomePage"
+        android:label="HomePage">
+        <deepLink app:uri="android-app://id.modularization.custom/homepage" />
+    </fragment>
+
+</navigation>

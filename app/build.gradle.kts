@@ -2,7 +2,7 @@
 plugins {
     id(Plugins.application)
     id("project-plugins")
-    id(Plugins.gms)
+//    id(Plugins.gms)
     jacoco
     id(Plugins.sonarqube)
 }
@@ -12,9 +12,9 @@ jacoco {
     reportsDir = file("$buildDir/reports")
 }
 
-apply {
-    from("../jacoco_app.gradle.kts")
-}
+//apply {
+//    from("../jacoco_app.gradle.kts")
+//}
 
 android {
     sourceSets.getByName("test") {
@@ -22,7 +22,8 @@ android {
 }
 dependencies {
     implementation(project(":core"))
-    implementation(project(":feature:splash"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:home"))
     implementation(project(":navigation"))
 
     

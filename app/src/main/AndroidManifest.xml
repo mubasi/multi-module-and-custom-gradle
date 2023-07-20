@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="id.bluebird.vsm.pangkalan">
+    package="id.multi.module.custome">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,7 +14,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name="id.bluebird.vsm.pangkalan.OfficerApp"
+        android:name="id.multi.module.custome.OfficerApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
@@ -24,7 +28,7 @@
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr" />
         <activity
-            android:name="id.bluebird.vsm.pangkalan.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize">
             <intent-filter>

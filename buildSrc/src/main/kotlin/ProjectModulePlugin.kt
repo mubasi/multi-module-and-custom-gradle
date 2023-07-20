@@ -142,7 +142,7 @@ class ProjectModulePlugin : Plugin<Project> {
         }
 
         defaultConfig {
-            applicationId = "id.bluebird.vsm.pangkalan"
+            applicationId = "id.multi.module.custome"
             vectorDrawables.useSupportLibrary = true
             multiDexEnabled = true
             versionCode = Version.versionCode
@@ -152,10 +152,9 @@ class ProjectModulePlugin : Plugin<Project> {
 
         signingConfigs {
             create("pangkalan") {
-                keyAlias = keyProperties["keyAlias"] as String
-                keyPassword = keyProperties["keyPassword"] as String
-                storeFile = keyProperties["storeFile"]?.let { project.file(it) }
-                storePassword = keyProperties["storePassword"] as String
+                keyAlias = ""
+                keyPassword = ""
+                storePassword = ""
             }
         }
 
@@ -180,11 +179,12 @@ class ProjectModulePlugin : Plugin<Project> {
 
         productFlavors {
             register("develop") {
-                buildConfigField("String", "BASE_URL", "\"dev${keyProperties["base_url"]}\"")
+                buildConfigField("String", "BASE_URL",
+                    "\"devlocalhost\"")
                 buildConfigField(
                     "String",
                     "FIREBASE_URL",
-                    "\"https://digitaloutlet-dev-1902.firebaseio.com\""
+                    "\"devlocalhost\""
                 )
                 dimension = ENV_DIMENSION
                 versionName = "${Version.appName} Dev"
@@ -192,11 +192,12 @@ class ProjectModulePlugin : Plugin<Project> {
                 manifestPlaceholders["appName"] = Version.appNameDev
             }
             register("stage") {
-                buildConfigField("String", "BASE_URL", "\"stg${keyProperties["base_url"]}\"")
+                buildConfigField("String", "BASE_URL",
+                    "\"stglocalhost\"")
                 buildConfigField(
                     "String",
                     "FIREBASE_URL",
-                    "\"https://digitaloutlet-staging-1902.firebaseio.com\""
+                    "\"stglocalhost\""
                 )
                 dimension = ENV_DIMENSION
                 versionName = "${Version.appName} Staging"
@@ -204,11 +205,12 @@ class ProjectModulePlugin : Plugin<Project> {
                 manifestPlaceholders["appName"] = Version.appNameStaging
             }
             register("prod") {
-                buildConfigField("String", "BASE_URL", "\"${keyProperties["base_url"]}\"")
+                buildConfigField("String", "BASE_URL",
+                    "\"localhost\"")
                 buildConfigField(
                     "String",
                     "FIREBASE_URL",
-                    "${keyProperties["firebase_url_secondary_production"]}"
+                    "\"localhost\""
                 )
                 dimension = ENV_DIMENSION
                 versionName = Version.appName

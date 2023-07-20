@@ -2,16 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_nav"
-    app:startDestination="@id/splash_nav">
+    app:startDestination="@id/homepage_nav">
 
-    <include app:graph="@navigation/splash_nav" />
-<!--    <include app:graph="@navigation/login_nav" />-->
-<!--    <include app:graph="@navigation/queue_passenger_nav" />-->
-<!--    <include app:graph="@navigation/queue_fleet_nav" />-->
-<!--    <include app:graph="@navigation/user_management_nav" />-->
-<!--    <include app:graph="@navigation/monitoring_nav" />-->
-<!--    <include app:graph="@navigation/select_location_nav" />-->
-<!--    <include app:graph="@navigation/qr_code_navigation" />-->
-<!--    <include app:graph="@navigation/fleet_airport_nav" />-->
-<!--    <include app:graph="@navigation/queue_car_fleet_nav" />-->
+    <include app:graph="@navigation/homepage_nav" />
+    <include app:graph="@navigation/profile_nav" />
 </navigation>

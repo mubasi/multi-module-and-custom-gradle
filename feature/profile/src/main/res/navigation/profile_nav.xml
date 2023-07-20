@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_nav"
+    app:startDestination="@id/profilePageFragment">
+
+    <fragment
+        android:id="@+id/profilePageFragment"
+        android:name="id.multi.module.custome.feature.profile.FragmentProfilePage"
+        android:label="ProfilePage">
+        <deepLink app:uri="android-app://id.modularization.custom/profilepage" />
+    </fragment>
+
+</navigation>

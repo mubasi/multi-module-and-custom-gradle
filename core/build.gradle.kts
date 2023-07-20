@@ -27,7 +27,7 @@ android {
         buildConfigField(
             type = "String",
             name = "SPLASH_KEY",
-            value = "${keyProperties["splash_config_key"]}"
+            value = "\"${Version.versionName}\""
         )
     }
 
@@ -42,24 +42,14 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "\"${keyProperties["base_url"]}\""
-            )
-            buildConfigField(
-                type = "String",
-                name = "FIREBASE_URL",
-                value = "${keyProperties["firebase_url_secondary_production"]}"
+                value = "\"localhost\""
             )
         }
         getByName("stage") {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "\"stg${keyProperties["base_url"]}\""
-            )
-            buildConfigField(
-                type = "String",
-                name = "FIREBASE_URL",
-                value = "${keyProperties["firebase_url_secondary_staging"]}"
+                value = "\"stglocalhost\""
             )
             buildConfigField(
                 type = "String",
@@ -71,12 +61,7 @@ android {
             buildConfigField(
                 type = "String",
                 name = "BASE_URL",
-                value = "\"dev${keyProperties["base_url"]}\""
-            )
-            buildConfigField(
-                type = "String",
-                name = "FIREBASE_URL",
-                value = "${keyProperties["firebase_url_secondary_dev"]}"
+                value = "\"devlocalhost\""
             )
             buildConfigField(
                 type = "String",

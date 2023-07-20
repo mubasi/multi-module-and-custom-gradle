@@ -6,7 +6,7 @@ object MainGradle {
     val gradle by lazy { "com.android.tools.build:gradle:7.1.3" }
     val protobuf by lazy { "com.google.protobuf:protobuf-gradle-plugin:0.8.13" }
     val kotlin by lazy { "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
-    val google_service by lazy { "com.google.gms:google-services:4.3.3" }
+//    val google_service by lazy { "com.google.gms:google-services:4.3.3" }
     val firebase by lazy { "com.google.firebase:firebase-crashlytics-gradle:2.8.0" }
     val safe_args by lazy { "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5" }
     val firebase_analytics by lazy { "com.google.firebase:firebase-crashlytics-gradle:2.8.1" }
